@@ -1,0 +1,244 @@
+.event-viewer {
+	position: relative;
+	height: 100%;
+	@apply tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-4;
+}
+
+.lighter {
+	color: #ccc !important;
+}
+
+.event-viewer table th {
+	width: 20%;
+	color: var(--color-neutral-900);
+}
+
+.picker-date {
+	width: 100px;
+	margin: 0 5px 0 0;
+}
+
+.title {
+	color: #dddddd;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 0.8rem;
+	@apply tw-mb-4;
+}
+.role-section {
+	@apply tw-flex tw-flex-col;
+}
+.role-title {
+	padding: 0.3rem 0.5rem;
+	color: #fafafa;
+	font-size: 0.8rem;
+	display: flex;
+	justify-content: flex-start;
+	text-transform: uppercase;
+	@apply tw-rounded tw-bg-shark-1000;
+}
+
+.table-role-title {
+	padding: 0.3rem;
+	align-items: center;
+}
+
+.point-readiness {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	position: absolute;
+	z-index: 2;
+	left: 0px;
+	top: 0px;
+}
+
+.cont {
+	@apply tw-flex tw-flex-wrap tw-gap-2 tw-py-2;
+}
+
+.td-smaller {
+	font-size: 0.9em;
+	padding: 0.2em 0.5em !important;
+}
+
+.td-smaller > * > input {
+	text-align: center;
+}
+.svgIcon {
+	width: 1rem;
+	height: 1rem;
+}
+
+.disabled {
+	color: #757575 !important;
+	pointer-events: none;
+	cursor: default;
+}
+
+.soccer-card {
+	width: 18px;
+	height: 25px;
+	margin: auto;
+	border-radius: 5%;
+}
+
+.red {
+	background-color: red;
+}
+
+.yellow {
+	background-color: yellow;
+}
+
+.double-yellow {
+	background: linear-gradient(to right bottom, yellow 50%, red 50%);
+}
+.drill-info {
+	font-size: 0.8rem;
+	vertical-align: top;
+	background: unset !important;
+}
+
+.drill-info .goals {
+	text-transform: capitalize;
+}
+
+.drill-info .goals span:last-child span {
+	display: none;
+}
+
+.drill-info-el {
+	padding: 0rem 2rem 2rem 0;
+}
+
+.drill-info-el h3 {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	margin-bottom: 0.2rem;
+	font-weight: normal;
+	color: var(--color-neutral-900);
+}
+
+.drill-info-el * + h3 {
+	margin-top: 1.5rem;
+}
+
+.drill-info-photo {
+	width: 28.7%;
+}
+
+.drill-info-photo img {
+	display: block;
+	width: 100%;
+}
+
+.drill-info-desc {
+	width: 37.2%;
+}
+
+.drill-info-goals {
+	width: 34%;
+}
+
+.drill-info-elements {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 1rem 0;
+}
+
+.icons > i,
+span {
+	font-size: 1em;
+}
+
+/*
+Dropbox with team and crest
+*/
+
+.crest {
+	width: 20px;
+}
+
+.team-name {
+	margin-left: 5px;
+	white-space: nowrap;
+}
+.video-footer {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+
+.flexed {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flexed.flex-end {
+	justify-content: flex-end;
+}
+
+.flexed.flex-start {
+	justify-content: flex-start;
+}
+
+li {
+	display: flex;
+	align-items: flex-start;
+}
+.match-stats {
+	flex-grow: 4;
+}
+.player-thumb {
+	width: 45px;
+	background-color: white;
+}
+
+.drill-info-position {
+	display: flex;
+	margin-bottom: 1em;
+	flex-direction: column;
+}
+
+.drill-player-position-label {
+	font-weight: bold;
+	margin-bottom: 0.25em;
+}
+
+.drill-players {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	row-gap: 0.25em;
+}
+
+.drill-player {
+	margin-right: 1em;
+	display: flex;
+	align-items: center;
+}
+
+.drill-player img {
+	margin-right: 0.5em;
+}
+
+.drill-player span {
+	color: var(--color-neutral-900);
+	width: 5vw;
+}
+
+.injuryOccurred {
+	z-index: 2;
+	left: 0px;
+	bottom: 0px;
+	padding: 0.1em;
+	font-weight: 900;
+}
+
+.injuryOccurred > i {
+	font-size: 1em;
+	color: #dc143c;
+	cursor: auto;
+}

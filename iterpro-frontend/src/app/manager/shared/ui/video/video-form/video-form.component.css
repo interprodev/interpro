@@ -1,0 +1,74 @@
+form {
+	font-size: 1em;
+}
+.form-group {
+	@apply tw-bg-shark-1000 tw-rounded;
+	padding: 10px;
+	color: #fafafa;
+	margin-bottom: 10px;
+}
+.saveform-group {
+	display: flex;
+	justify-content: flex-end;
+}
+.saveform-group.edit {
+	justify-content: space-between;
+}
+
+.p-dropdown-label.p-inputtext,
+.matchDropDown {
+	color: #fafafa;
+}
+label {
+	color: #999;
+	margin-bottom: 5px;
+	padding-left: 2px;
+	display: block;
+}
+.video-filename,
+.radios {
+	margin-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2px;
+}
+.invalid-feedback {
+	width: 100%;
+	margin-top: 0.25rem;
+	font-size: 80%;
+	color: #dc3545;
+}
+
+.main-container {
+	display: flex;
+}
+
+.video-container {
+	width: 66%;
+}
+
+.others-container {
+	width: 34%;
+	padding-left: 15px;
+}
+.delete-btn {
+	font-size: 0.8rem;
+}
+.btn-danger {
+	background-color: #dc3545;
+}
+.right-margin {
+	margin-right: 1rem;
+}
+.video-attachment-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.hidden {
+	display: none;
+}
+
+.content {
+	border-radius: var(--iterpro-border-radius);
+}
+

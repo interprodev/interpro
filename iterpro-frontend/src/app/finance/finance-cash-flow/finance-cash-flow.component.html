@@ -1,0 +1,139 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>navigator.cashflow</h1>
+			<div *ngIf="tabIndex === 0" class="header-buttons">
+				<p-button size="small" *ngIf="!editService.editMode" (click)="edit()" [label]="'buttons.edit' | translate"></p-button>
+				<p-button size="small" *ngIf="editService.editMode" (click)="save()" [label]="'buttons.save' | translate">buttons.save</p-button>
+				<p-button size="small" *ngIf="editService.editMode" (click)="discard()" [label]="'buttons.discard' | translate"></p-button>
+			</div>
+		</header>
+
+		<p-tabView class="mainMenu" [activeIndex]="tabIndex" (onChange)="onTabChange($event)">
+			<p-tabPanel class="info" header="{{ 'table' | translate }}">
+				<div class="content-simple">
+					<div class="table-row-header">
+						<div class="national-sel">
+							<p-multiSelect appendTo="body" [options]="nationalItems" [(ngModel)]="national"
+								(onChange)="onChangeParameters()">
+							</p-multiSelect>
+						</div>
+						<div class="achieved-sel">
+							<p-dropdown [options]="bonusItems" [(ngModel)]="achieved" (onChange)="onChangeParameters()"></p-dropdown>
+							<iterpro-report-download appendTo="body" style="margin-left: 1em; font-size: 1rem"
+								(downloadCSV)="downloadCSV()" (downloadPDF)="downloadPDF()">
+							</iterpro-report-download>
+						</div>
+					</div>
+					<p-progressSpinner *ngIf="isLoading$ | async" class="cf-loader" [style]="{ width: '50px', height: '50px' }">
+					</p-progressSpinner>
+					<div class="table-wrapper">
+						<div *ngIf="!(isLoading$ | async)" class="table-container">
+							<table *ngIf="tableData$ | async">
+								<thead>
+									<tr>
+										<th class="headcol">
+											{{ 'profile.overview.value' | translate }}/{{ 'profile.season' | translate }}
+										</th>
+										<th *ngFor="let col of tableData$ | async" scope="col">{{ col.season }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="table-divisor">
+										<th class="headcol table-divisor-header" translate>transfers.sales</th>
+										<td *ngFor="let col of tableData$ | async" class="table-divisor-header"></td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>admin.contracts.transferFee</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.sales.transferFee | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>bonus.bonus</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.sales.bonuses | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>profile.contracts.agentFee</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.sales.agentFee | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>finance.cashFlow.bonusAgent</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.sales.agentBonuses | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr class="table-divisor">
+										<th class="headcol table-divisor-header" translate>transfers.purchase</th>
+										<td *ngFor="let col of tableData$ | async" class="table-divisor-header"></td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>admin.contracts.transferFee</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.purchases.transferFee | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>bonus.bonus</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.purchases.bonuses | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>profile.contracts.agentFee</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.purchases.agentFee | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr>
+										<th class="headcol" scope="row" translate>finance.cashFlow.bonusAgent</th>
+										<td *ngFor="let col of tableData$ | async">
+											{{ col.purchases.agentBonuses | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr class="table-divisor">
+										<th class="headcol table-divisor-header" translate>tradingBalance</th>
+										<td *ngFor="let col of tableData$ | async" class="table-divisor-header"
+											[ngStyle]="{ color: col.tradingBalance < 0 ? 'red' : 'green' }">
+											{{ col.tradingBalance | number : '1.0-0' : 'it-IT' }}{{ currency }}
+										</td>
+									</tr>
+									<tr *ngIf="clubSeasons$ | async">
+										<th class="headcol" translate>club.season.operatingCashFlow</th>
+										<td *ngFor="let col of tableData$ | async; let i = index">
+											<span *ngIf="col.season !== 'TOTAL'">
+												<span *ngIf="!editService.editMode">{{
+													(clubSeasons$ | async)[i]?.operatingCashFlow | number : '1.0-0' : 'it-IT'
+													}}</span>
+												<input *ngIf="editService.editMode && (clubSeasons$ | async)[i]" pInputText
+													[ngModel]="(clubSeasons$ | async)[i].operatingCashFlow"
+													(ngModelChange)="onChangeOperatingCashFlow($event, i)" iterproMask
+													style="text-align: right; width: 50%" />{{ currency }}
+											</span>
+											<span *ngIf="col.season === 'TOTAL'">{{ totalOperatingCashFlow$ | async | number : '1.0-0' :
+												'it-IT' }}{{ currency }}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</p-tabPanel>
+			<p-tabPanel class="info" header="{{ 'chart' | translate }}">
+				<div class="content-simple">
+					<p-progressSpinner *ngIf="isLoading$ | async" class="loader" [style]="{ width: '50px', height: '50px' }">
+					</p-progressSpinner>
+					<div *ngIf="!(isLoading$ | async)" style="width: 100%; height: 100%">
+						<p-chart type="bar" [data]="chartData$ | async" [options]="chartOptions$ | async"></p-chart>
+					</div>
+					<span> </span>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+</div>

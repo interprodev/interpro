@@ -1,0 +1,316 @@
+<div class="content">
+	<div class="box-container">
+		<div class="box-element card-box">
+			<div *ngIf="!isLoading; else isLoadingTemplate">
+				<h3 translate>financial.dashboard.contractDetails</h3>
+				<div class="card-grid contract-grid">
+					<ng-container *ngIf="offlinePlayerData?.contractDuration?.remainingTime > 0; else contractExpired">
+						<div>
+							<div class="card-box-label" translate>financial.dashboard.contractDuration</div>
+							<div class="card-box-val">
+								<span *ngIf="offlinePlayerData?.contractDuration?.years >= 1">
+									<span>{{ offlinePlayerData?.contractDuration?.years | number : '1.0-0' }}</span>
+									<span class="card-box-val-label"> {{ 'years' | translate }}</span>
+								</span>
+								<span *ngIf="
+										offlinePlayerData?.contractDuration?.years < 1 && offlinePlayerData?.contractDuration?.years >= 0
+									">
+									<span>{{ offlinePlayerData?.contractDuration?.months }}</span>
+									<span class="card-box-val-label"> {{ 'months' | translate }}</span>
+								</span>
+							</div>
+						</div>
+						<div>
+							<div class="duration">
+								<div>
+									<div class="card-box-label" translate>financial.dashboard.contractStart</div>
+									<div class="duration-value">
+										{{ offlinePlayerData?.contractDuration?.start | date: 'MM/yyyy'}}
+									</div>
+								</div>
+								<div>
+									<div class="card-box-label" translate>financial.dashboard.contractEnd</div>
+									<div class="duration-value">
+										{{ offlinePlayerData?.contractDuration?.end | date: 'MM/yyyy'}}
+									</div>
+								</div>
+							</div>
+							<p-progressBar [ngClass]="'blue'" [style]="{ height: '14px', backgroundColor: '#888' }"
+								[showValue]="false" [value]="offlinePlayerData?.contractDuration?.completionPercentage"></p-progressBar>
+							<div class="duration-months">
+								{{
+								offlinePlayerData?.contractDuration?.remainingTime <= 0 ? ('profile.status.expired' | translate) :
+									(offlinePlayerData?.contractDuration?.remainingTime | number : '1.0-0' ) + ' months' }} </div>
+							</div>
+							<div>
+								<div class="card-box-label" translate>financial.dashboard.fixedWage</div>
+								<div class="card-box-val">
+									{{ currency
+									}}{{
+									((taxesFlag ? offlinePlayerData?.wageGross : offlinePlayerData?.wage)
+									| shortNumber : true) || 0
+									}}
+								</div>
+							</div>
+							<div>
+								<div class="card-box-label" translate>financial.dashboard.bonus</div>
+								<div class="card-box-val">
+									{{ currency
+									}}{{
+									((taxesFlag ? offlinePlayerData?.bonusGross : offlinePlayerData?.bonus)
+									| shortNumber : true) || 0
+									}}
+									<span class="card-box-val-small">
+										{{ ' ' }}
+										/
+										{{ ' ' }}
+										{{
+										((taxesFlag ? offlinePlayerData?.residualBonusGross : offlinePlayerData?.residualBonus)
+										| shortNumber : true) || 0
+										}}
+									</span>
+								</div>
+							</div>
+					</ng-container>
+				</div>
+
+				<ng-template #contractExpired>
+					<span> {{ 'profile.status.expired' | translate }}</span>
+				</ng-template>
+			</div>
+		</div>
+
+		<div class="box-element card-box">
+			<div *ngIf="!isLoading; else isLoadingTemplate">
+				<h3 translate>financial.dashboard.capitalGain</h3>
+				<div class="card-grid capital-grid">
+					<div>
+						<div class="card-box-label" translate>assetValue</div>
+						<div class="card-box-val">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.assetValueGross : offlinePlayerData?.assetValue)
+							| shortNumber : true) || 0
+							}}
+						</div>
+					</div>
+					<div>
+						<div class="card-box-label" translate>financial.dashboard.currentValue</div>
+						<div class="card-box-val" style="display: flex; justify-content: space-between">
+							<span>{{ currency
+								}}{{
+								((taxesFlag ? offlinePlayerData?.marketValueGross : offlinePlayerData?.marketValue)
+								| shortNumber : true) || 0
+								}}</span>
+							<span class="card-box-val perc-diff-val"
+								[ngClass]="offlinePlayerData?.gainLossPercent >= 0 ? 'green' : 'red'"
+								pTooltip="{{ 'finance.dashboard.gainLossPercent' | translate }}">
+								<span *ngIf="offlinePlayerData?.gainLossPercent > 0">+</span>
+								{{ offlinePlayerData?.gainLossPercent | number : '1.0-0' }}%
+							</span>
+						</div>
+						<div class="card-box-label" style="margin-top: 1em" translate>financial.dashboard.bookValue</div>
+						<div class="card-box-val">
+							<span>{{ currency
+								}}{{
+								((taxesFlag ? offlinePlayerData?.netBookValueGross : offlinePlayerData?.netBookValue)
+								| shortNumber : true) || 0
+								}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="box-chart trend-chart"
+					[ngClass]="offlinePlayerData?.pastValues?.length > 0 ? 'with-chart' : 'no-chart'">
+					<div class="card-box-label" syle="margin-bottom:1em" translate>financial.dashboard.trendValue</div>
+					<p-chart [data]="pastValuesChartData" [options]="pastValuesChartOptions" type="line"></p-chart>
+					<ng-template #noValues>
+						<span translate>financial.dashboard.noValues</span>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<div class="box-element card-box investment-box">
+			<div *ngIf="!isLoading; else isLoadingTemplate">
+				<h3 class="icon-title">
+					<span translate>financial.dashboard.investmentPerformance</span>
+					<i class="fas fa-gear" (click)="toggleParamsBox()"
+						pTooltip="{{ 'financial.dashboard.params.settings' | translate }}"></i>
+				</h3>
+				<div class="filters-container" *ngIf="showParams">
+					<div class="filters">
+						<div class="filter">
+							<div class="filter-label" translate>financial.dashboard.params.startDate</div>
+							<div class="filter-input">
+								<p-dropdown [options]="analysisModes" [(ngModel)]="selectedMode" (onChange)="onParamsChange()">
+								</p-dropdown>
+							</div>
+						</div>
+
+						<div class="filter">
+							<div class="filter-label" translate>financial.dashboard.params.matchesNumber</div>
+							<div class="filter-input">
+								<p-inputNumber size="3" [(ngModel)]="futureMatches" [min]="0" [max]="100" (onBlur)="onParamsChange()">
+								</p-inputNumber>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-grid card-investment">
+					<div class="investment-cell">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.totInvestmentCost</span>
+							<i pTooltip="{{ getTotalInvestmentCostTooltip() }}" [escape]="false"
+								class="fas fa-question icon label-tooltip"></i>
+						</div>
+						<div class="card-box-val">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.totalInvestmentCostGross : offlinePlayerData?.totalInvestmentCost)
+							| shortNumber : true : 2) || 0
+							}}
+						</div>
+					</div>
+					<div class="investment-cell">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.yearsInClub</span>
+						</div>
+						<div class="card-box-val">
+							<span *ngIf="offlinePlayerData?.yearsInTeam >= 1">
+								<span>{{ offlinePlayerData?.yearsInTeam | number : '1.0-0' }}</span>
+								<span class="card-box-val-label"> {{ 'years' | translate }}</span>
+							</span>
+							<span *ngIf="offlinePlayerData?.yearsInTeam < 1 && offlinePlayerData?.yearsInTeam > 0">
+								<span>{{ offlinePlayerData?.monthsInTeam | number : '1.0-0' }}</span>
+								<span class="card-box-val-label"> {{ 'months' | translate }}</span>
+							</span>
+							<span class="card-box-val-small">
+								{{ ' ' }}
+								/
+								{{ ' ' }}
+								<span *ngIf="offlinePlayerData?.yearsLastContract >= 1">
+									<span>{{ offlinePlayerData?.yearsLastContract | number : '1.0-0' }}</span>
+									<span class="card-box-val-label"> {{ 'years' | translate }}</span>
+								</span>
+								<span *ngIf="offlinePlayerData?.yearsLastContract < 1 && offlinePlayerData?.yearsLastContract > 0">
+									<span>{{ offlinePlayerData?.monthsLastContract | number : '1.0-0' }}</span>
+									<span class="card-box-val-label"> {{ 'months' | translate }}</span>
+								</span>
+								<span *ngIf="offlinePlayerData?.yearsLastContract <= 0">
+									<span class="card-box-val-label">{{ 'profile.status.expired' | translate }}</span>
+								</span>
+							</span>
+						</div>
+					</div>
+					<div class="investment-cell" style="min-height: 95px">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.roi</span>
+							<i pTooltip="{{ getRoiTooltip() }}" [escape]="false" class="fas fa-question icon label-tooltip"></i>
+						</div>
+						<div class="card-box-val-small">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.roiGross : offlinePlayerData?.roi)
+							| shortNumber : true : 2) || 0
+							}}
+						</div>
+						<div class="percent-value">
+							<i class="point roi"></i>{{ (offlinePlayerData?.roi_perc | number : '1.0-1') + '%' }}
+						</div>
+					</div>
+					<div class="investment-cell">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.residualRoi</span>
+						</div>
+						<div class="card-box-val-small">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.residualRoiGross : offlinePlayerData?.residualRoi)
+							| shortNumber : true : 2) || 0
+							}}
+						</div>
+						<div class="percent-value">
+							<i class="point residual-roi"></i>{{ (offlinePlayerData?.residualRoi_perc | number : '1.0-1') + '%' }}
+						</div>
+					</div>
+					<div class="investment-cell">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.losses</span>
+							<i pTooltip="{{ 'financial.dashboard.tooltip.injury' | translate }}"
+								class="fas fa-question icon label-tooltip" tooltipPosition="top"></i>
+						</div>
+						<div class="card-box-val-small">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.lossesGross : offlinePlayerData?.losses)
+							| shortNumber : true : 2) || 0
+							}}
+						</div>
+						<div class="percent-value">
+							<i class="point losses"></i>{{ (offlinePlayerData?.losses_perc | number : '1.0-1') + '%' }}
+						</div>
+					</div>
+					<div class="investment-cell">
+						<div class="card-box-label">
+							<span translate>financial.dashboard.untapped</span>
+						</div>
+						<div class="card-box-val-small">
+							{{ currency
+							}}{{
+							((taxesFlag ? offlinePlayerData?.untappedGross : offlinePlayerData?.untapped)
+							| shortNumber : true : 2) || 0
+							}}
+						</div>
+						<div class="percent-value">
+							<i class="point untapped"></i>{{ (offlinePlayerData?.untapped_perc | number : '1.0-1') + '%' }}
+						</div>
+					</div>
+				</div>
+				<div class="box-chart">
+					<p-chart *ngIf="investmentPerformanceChartData" [data]="investmentPerformanceChartData"
+						[options]="investmentPerformanceChartOptions" type="bar">
+					</p-chart>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div>
+			<div *ngFor="let alert of alerts" class="container"
+				style="margin-bottom: 1em; display: flex; flex-direction: row">
+				<span style="margin-right: 2em; color: red; font-weight: bold"><i class="fas fa-exclamation-triangle"
+						style="margin-right: 1em"></i>ALERT</span>
+				<span>{{ alert.message }}</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #isLoadingTemplate>
+	<div class="container" style="height: 35vh">
+		<h3>
+			<p-skeleton width="100%" height="2rem"></p-skeleton>
+		</h3>
+		<div class="pflex-col-12" style="display: flex; justify-content: space-between">
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+		</div>
+		<div class="pflex-col-12" style="display: flex; justify-content: space-between">
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+		</div>
+	</div>
+</ng-template>

@@ -1,0 +1,106 @@
+<p-table [value]="playersMappingForm.controls" [scrollable]="true" [scrollHeight]="'70vh'" [styleClass]="'p-datatable-gridlines'">
+	<ng-template pTemplate="header">
+		<tr class="tw-h-10">
+			<th translate>preferences.displayName</th>
+			@switch (provider) {
+				@case ('Wyscout') {
+					<th translate>preferences.wyscoutId</th>
+				}
+			}
+			@if (isNationalClub) {
+				<th translate>profile.team</th>
+			}
+			@if (device !== 'Dyanamic' && team?.thirdPartyCredentials) {
+				@switch (device) {
+					@case ('Gpexe') {
+						<th translate>preferences.gpexeId</th>
+					}
+					@case ('StatsportAPI') {
+						<th translate>preferences.statsportId</th>
+					}
+					@case ('Sonra') {
+						<th translate>preferences.sonraId</th>
+					}
+					@case ('Catapult') {
+						<th translate>preferences.catapultId</th>
+					}
+					@case ('Wimu') {
+						<th translate>preferences.wimuId</th>
+					}
+				}
+			}
+			@if (team.fieldwizId) {
+				<th translate>preferences.fieldwizId</th>
+			}
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-form let-rowIndex="rowIndex">
+		<tr class="tw-h-10">
+			<td>{{form.controls.playerId.value | selectItemLabel : playersOptions}}</td>
+			<td>
+				@switch (provider) {
+					@case ('Wyscout') {
+						<p-dropdown appendTo="body"
+												showClear="true"
+												filter="true"
+												[formControl]="form.controls.wyscoutId"
+												[options]="tacticalPlayersOptions" [style]="{ width: '100%' }"
+												[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+						</p-dropdown>
+					}
+				}
+			</td>
+			@if (isNationalClub) {
+				<td>
+					@if (!isSecondaryTeamColumnLoading) {
+						<!--							<td>{{form.controls.wyscoutSecondaryTeamId.value | selectItemLabel : teamOptions : 'currentTeamId'}}</td>-->
+						@if (provider === 'Wyscout') {
+							<span>{{form.controls.wyscoutId.value | selectItemLabel : teamOptions}}</span>
+						}
+					} @else {
+						<p-progressSpinner [style]="{ width: '20px', height: '20px' }"> </p-progressSpinner>
+					}
+				</td>
+			}
+			@if (device !== 'Dynamic' && team?.thirdPartyCredentials) {
+				@if (device !== 'Sonra') {
+					<td>
+						@switch (device) {
+							@case ('Gpexe') {
+								<ng-container *ngTemplateOutlet="deviceDropdown; context: { control: form.controls.gpexeId }"></ng-container>
+							}
+							@case ('Catapult') {
+								<ng-container *ngTemplateOutlet="deviceDropdown; context: { control: form.controls.catapultId }"></ng-container>
+							}
+							@case ('Wimu') {
+								<ng-container *ngTemplateOutlet="deviceDropdown; context: { control: form.controls.wimuId }"></ng-container>
+							}
+						}
+					</td>
+				} @else {
+					<td>
+						<input pInputText [formControl]="form.controls.sonraId" [placeholder]="editMode ? ('input-text.placeholder' | translate) : null" />
+					</td>
+				}
+			}
+			@if (team?.fieldwizId) {
+				<td>
+					<iterpro-icon-button [icon]="'fas fa-plus'" [tooltip]="'buttons.add'" (click)="addMappedFieldwizPlayer(form.controls.playerId.value)"></iterpro-icon-button>
+					<iterpro-icon-button [icon]="'fas fa-plus'" [tooltip]="'buttons.remove'" (click)="removeMappedFieldwizPlayer(form.controls.playerId.value)"></iterpro-icon-button>
+				</td>
+			}
+		</tr>
+	</ng-template>
+</p-table>
+
+<ng-template #deviceDropdown let-control="control">
+	<p-dropdown appendTo="body"
+							showClear="true"
+							filter="true"
+							[formControl]="control"
+							[options]="gpsPlayersOptions" [style]="{ width: '100%' }"
+							[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+							[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+	</p-dropdown>
+</ng-template>

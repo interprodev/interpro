@@ -1,0 +1,10 @@
+<ng-container>
+	<!-- Chart -->
+	<div class="pflex-flex pflex-w-full plex-align-items-center pflex-jusify-content-center">
+		@if (chartData) {
+		<p-chart class="pflex-w-full pflex-block pflex-h-20rem" [data]="chartData" [options]="chartOptions" type="bar"> </p-chart>
+		} @else {
+		<p class="pflex-text-base">{{ 'primeng.emptyMessage' | translate }}</p>
+		}
+	</div>
+</ng-container>

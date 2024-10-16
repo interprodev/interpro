@@ -1,0 +1,46 @@
+{
+	"name": "PlayerPlanningReport",
+	"base": "PlayerReport",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"denormalizedEventFields": {
+			"start": "date",
+			"homeTeam": "string",
+			"awayTeam": "string",
+			"title": "string"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"reportDataHistory": {
+			"type": "array"
+		},
+		"notesHistory": {
+			"type": "array"
+		},
+		"reportDataShareWithPlayer": {
+			"type": "boolean"
+		},
+		"notesShareWithPlayer": {
+			"type": "boolean"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"event": {
+			"type": "belongsTo",
+			"model": "Event",
+			"foreignKey": ""
+		},
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

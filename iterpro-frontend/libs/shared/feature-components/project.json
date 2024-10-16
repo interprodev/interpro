@@ -1,0 +1,14 @@
+{
+	"name": "shared-feature-components",
+	"$schema": "../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/feature-components/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:shared", "type:feature"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

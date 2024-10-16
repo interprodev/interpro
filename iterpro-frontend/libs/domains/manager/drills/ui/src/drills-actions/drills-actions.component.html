@@ -1,0 +1,45 @@
+<div class="tw-flex tw-items-center tw-gap-4">
+	<!-- PDF/CSV REPORT -->
+	<iterpro-report-download
+		(downloadPDF)="onDownloadPDF()"
+		(downloadCSV)="onDownloadCSV()"
+	/>
+	<!-- ORDER -->
+	<i
+		*ngIf="selectedView === VIEW_TYPES.Comparison"
+		class="fas"
+		[class.fa-active]="!!chartFlags.order"
+		[ngClass]="
+			chartFlags.order === ORDER_TYPES.Unordered || chartFlags.order === ORDER_TYPES.Asc
+				? 'fa-sort-amount-up'
+				: 'fa-sort-amount-down'
+		"
+		[pTooltip]="'drillStats.orderFlag' | translate"
+		(click)="orderClick()"
+	>
+	</i>
+	<!-- PERCENTAGE -->
+	<i
+		class="fas fa-percentage"
+		[ngClass]="{ 'fa-active': chartFlags.percentage }"
+		[pTooltip]="'drillStats.percentageFlag' | translate"
+		(click)="percentageClick()"
+	>
+	</i>
+	<!-- LABELS -->
+	<i
+		class="fas fa-tag"
+		[ngClass]="{ 'fa-active': chartFlags.labels }"
+		[pTooltip]="'drillStats.labelsFlag' | translate"
+		(click)="labelsClick()"
+	>
+	</i>
+
+	<!-- SIDEBAR -->
+	<i
+		[class]="!isFullscreen ? 'fas fa-expand' : 'fas fa-compress fa-active'"
+		[pTooltip]="!isFullscreen ? ('button.expand' | translate) : ('button.collapse' | translate)"
+		(click)="sidebarClick()"
+	>
+	</i>
+</div>

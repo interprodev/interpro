@@ -1,0 +1,33 @@
+.message-container {
+	position: relative;
+}
+.message-icon {
+	position: absolute;
+	right: 1em;
+	bottom: 0.7em;
+	display: flex;
+	justify-content: space-between;
+	width: 4vw;
+}
+.fields-table {
+	border-spacing: 0 3px;
+	background-color: transparent;
+	width: 100%;
+}
+
+.fields-table th,
+.fields-table td {
+	font-size: 0.8rem;
+}
+
+.session-summary-table {
+	margin-top: 2em;
+	width: 100%;
+	max-height: 60vh;
+	overflow-y: scroll;
+}
+
+.session-summary-table td {
+	/* width: 20%; */
+	text-align: left !important;
+}

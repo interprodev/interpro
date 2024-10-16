@@ -1,0 +1,375 @@
+<div class="tw-flex tw-justify-end tw-items-center tw-gap-4 tw-mb-4">
+	<ng-container *ngIf="!isBulkUploading">
+		<iterpro-report-download
+			(downloadPDF)="downloadPDFReport()"
+			(downloadCSV)="downloadCSVReport()"
+		></iterpro-report-download>
+		<iterpro-csv-upload-download
+			(downloadEmptyCSV)="downloadEmptyCsv()"
+			(uploadCSV)="inputjson.click()">
+			<input
+				type="file"
+				#inputjson
+				accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+				style="display: none"
+				(change)="fileChanged($event)"
+			/>
+		</iterpro-csv-upload-download>
+		<iterpro-icon-button
+			[icon]="showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+			[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+			(click)="showFilters = !showFilters">
+		</iterpro-icon-button>
+	</ng-container>
+	<p-button
+		type="button"
+		icon="fas fa-plus"
+		[size]="'small'"
+		[label]="'buttons.add' | translate"
+		(onClick)="add()"
+	></p-button>
+</div>
+<!-- Filters section -->
+<div class="tw-p-4 tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4 tw-mb-4 tw-bg-shark-900 tw-bg-opacity-85 tw-rounded-lg" *ngIf="showFilters && filters && !isBulkUploading">
+	<div class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900" translate>profile.season</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="clubSeasonOptions"
+				[(ngModel)]="filters.seasonIds"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+	<div class="tw-col-span-2" *ngIf="!personId">
+		<div class="tw-text-sm iterpro-text-color-900" translate>profile.team</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="teamsOptions"
+				[(ngModel)]="filters.teamIds"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+	<div class="tw-col-span-2" *ngIf="!personId">
+		<div class="tw-text-sm iterpro-text-color-900" translate>{{ filterPersonLabel.plural }}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[group]="true"
+				[options]="personOptions"
+				[(ngModel)]="filters.personIds"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+	<div class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900" translate>costItem.type</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="typeOptions"
+				[(ngModel)]="filters.types"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+	<div class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900" translate>sidebar.period<span> (<span translate>costItem.occurrenceDate</span>)</span></div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-calendar
+				showButtonBar="true"
+				selectionMode="range"
+				[(ngModel)]="filters.occurrencePeriod"
+				(onSelect)="filtersChanged()"
+				(onClearClick)="filtersChanged()"
+				[clearButtonStyleClass]="'p-button-sm'"
+				[todayButtonStyleClass]="'p-button-sm'"
+			>
+			</p-calendar>
+		</div>
+	</div>
+	<div *ngIf="!personId" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900">
+			<span translate>profile.status.archived</span>
+			<span translate> {{ filterPersonLabel.plural }}</span>
+		</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-inputSwitch class="small-input-switch" [(ngModel)]="filters.archivedPersons" (onChange)="filtersChanged()"></p-inputSwitch>
+		</div>
+	</div>
+	<div class="tw-col-span-2">
+		<p-button
+			type="button"
+			[size]="'small'"
+			[label]="'buttons.resetFilters' | translate"
+			(onClick)="resetFilters()"
+		></p-button>
+	</div>
+</div>
+<div>
+	<div class="overview-containers" *ngIf="!isBulkUploading">
+		<div class="overview-container" *ngFor="let type of typeOptionsPlural">
+			<h3 class="type-label" translate>{{ type.label }}</h3>
+			<div class="overview">
+				<div class="section">
+					<h4 class="label" translate>costItem.pending<span>: </span></h4>
+					<span class="value" *ngIf="!isLoading"
+					><span>{{ currency }}{{ calcTotalAmount('pending', type.value) }}</span></span
+					>
+					<p-skeleton *ngIf="isLoading" width="50px" height="25px"></p-skeleton>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>costItem.paid<span>: </span></h4>
+					<span class="value" *ngIf="!isLoading"
+					><span>{{ currency }}{{ calcTotalAmount('paid', type.value) }}</span></span
+					>
+					<p-skeleton *ngIf="isLoading" width="50px" height="25px"></p-skeleton>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>costItem.outstanding<span>: </span></h4>
+					<span class="value" *ngIf="!isLoading"
+					><span>{{ currency }}{{ calcTotalAmount('outstanding', type.value) }}</span></span
+					>
+					<p-skeleton *ngIf="isLoading" width="50px" height="25px"></p-skeleton>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tw-flex tw-justify-between tw-items-center tw-gap-4 tw-mb-4" *ngIf="isBulkUploading">
+		<h3>{{ 'import.preview' | translate : { value: ('navigator.transactions' | translate) }  }}</h3>
+		<div class="tw-flex tw-items-center tw-gap-4">
+			<p-button
+				type="button"
+				[size]="'small'"
+				[label]="'buttons.save' | translate"
+				(onClick)="onBulkSave()"
+			></p-button>
+			<p-button
+				type="button"
+				[size]="'small'"
+				[label]="'buttons.discard' | translate"
+				(onClick)="onBulkCancel()"
+			></p-button>
+		</div>
+	</div>
+	<div>
+		<ng-container *ngIf="items && !isLoading; else showTableLoading">
+			<ng-container *ngIf="items.length > 0; else noRecordsFound">
+				<p-table styleClass="p-datatable-striped" [value]="items" [scrollable]="true" scrollHeight="400px">
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th *ngIf="!isBulkUploading" class="tw-justify-center" translate>dialog.file.actions</th>
+							<th translate>profile.season</th>
+							<th translate>profile.team</th>
+							<th translate *ngIf="!personId">{{ filterPersonLabel.single }}</th>
+							<th class="flex-1-5" [pSortableColumn]="'occurrenceDate'" translate>
+								costItem.occurrenceDate
+							</th>
+							<th [pSortableColumn]="'type'" translate>costItem.type</th>
+							<th class="flex-1-5" [pSortableColumn]="'description'" translate>costItem.description</th>
+							<th [pSortableColumn]="'value'" translate>costItem.cost</th>
+							<th class="flex-1-5" [pSortableColumn]="'paymentDate'" translate>costItem.paymentDate</th>
+							<th [pSortableColumn]="'paid'" class="tw-justify-center" translate>
+								costItem.paid
+							</th>
+							<th [pSortableColumn]="'expiryDate'" style="justify-content: left" translate>
+								costItem.expiryDate
+							</th>
+							<th class="tw-justify-center" translate>costItem.notes</th>
+							<th class="tw-justify-center" translate>costItem.receipts</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+						<tr class="tw-h-10">
+							<td *ngIf="!isBulkUploading">
+								<div class="tw-flex tw-items-center tw-justify-center tw-gap-4">
+									<i
+										*ngIf="rowData.editMode"
+										class="fas fa-trash iterpro-clickable-icon"
+										[pTooltip]="'buttons.delete' | translate"
+										(click)="delete(rowData, rowIndex)"
+									></i>
+									<i
+										*ngIf="rowData.editMode"
+										class="fas fa-copy iterpro-clickable-icon"
+										[pTooltip]="'buttons.duplicate' | translate"
+										(click)="clone(rowData)"
+									></i>
+									<i
+										*ngIf="!rowData.editMode"
+										class="fas fa-pencil iterpro-clickable-icon"
+										[pTooltip]="'buttons.edit' | translate"
+										(click)="edit(rowData, rowIndex)"
+									></i>
+									<i
+										*ngIf="rowData.editMode"
+										class="fas fa-save iterpro-clickable-icon"
+										[pTooltip]="'buttons.save' | translate"
+										(click)="save(rowData)"
+									></i>
+									<i
+										*ngIf="rowData.editMode"
+										class="fas fa-close iterpro-clickable-icon"
+										[pTooltip]="'buttons.discard' | translate"
+										(click)="discard(rowData, rowIndex)"
+									></i>
+								</div>
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!rowData.editMode"
+									[options]="clubSeasonOptions"
+									[(ngModel)]="rowData.clubSeasonId"
+									[dropdownIcon]="!rowData.editMode ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="rowData.editMode ? ('dropdown.placeholder' | translate) : null"
+								>
+								</p-dropdown>
+								<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.clubSeasonId"></i>
+							</td>
+							<td>
+								<span *ngIf="!personId">{{
+										rowData.personId | costItemPersonTeam : personOptions : teamsOptions
+									}}</span>
+								<span *ngIf="personId && personTeamId">{{ personTeamId | selectItemLabel : teamsOptions }}</span>
+							</td>
+							<td *ngIf="!personId">
+								<p-dropdown
+									[group]="true"
+									[disabled]="!rowData.editMode"
+									[options]="personOptions"
+									[(ngModel)]="rowData.personId"
+									[dropdownIcon]="!rowData.editMode ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="rowData.editMode ? ('dropdown.placeholder' | translate) : null"
+									(ngModelChange)="personChanged(rowData)"
+									appendTo="body"
+								></p-dropdown>
+								<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.personId"></i>
+							</td>
+							<td class="flex-1-5 tw-text-center">
+								<p-calendar
+									[disabled]="!rowData.editMode"
+									[(ngModel)]="rowData.occurrenceDate"
+									appendTo="body"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+								<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.occurrenceDate"></i>
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[options]="typeOptions"
+									[disabled]="!rowData.editMode"
+									[(ngModel)]="rowData.type"
+									[dropdownIcon]="!rowData.editMode ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="rowData.editMode ? ('dropdown.placeholder' | translate) : null"
+								>
+								</p-dropdown>
+								<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.type"></i>
+							</td>
+							<td class="flex-1-5">
+								<input
+									type="text"
+									[(ngModel)]="rowData.description"
+									[disabled]="!rowData.editMode"
+									[pTooltip]="rowData.description"
+								/>
+							</td>
+							<td>
+								<div class="tw-flex tw-items-center">
+									<span>{{ currency }}</span>
+									<input style="width: unset" type="number" [(ngModel)]="rowData.value" [disabled]="!rowData.editMode" />
+									<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.value"></i>
+								</div>
+							</td>
+							<td class="flex-1-5 tw-text-center">
+								<p-calendar
+									[disabled]="!rowData.editMode"
+									[(ngModel)]="rowData.paymentDate"
+									appendTo="body"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+								<i class="fas fa-exclamation" style="color: red" *ngIf="!rowData.paymentDate"></i>
+							</td>
+							<td class="tw-justify-center">
+								<p-inputSwitch *ngIf="rowData.editMode" [(ngModel)]="rowData.paid"></p-inputSwitch>
+								<ng-container *ngIf="!rowData.editMode">
+									<i [class]="getPaymentStatus(rowData).icon" [style.color]="getPaymentStatus(rowData).color"></i>
+								</ng-container>
+							</td>
+							<td class="tw-text-center">
+								<p-calendar
+									[disabled]="!rowData.editMode"
+									[(ngModel)]="rowData.expiryDate"
+									required
+									appendTo="body"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+							</td>
+							<td class="tw-justify-center">
+								<i
+									(click)="openDialogNote(rowData)"
+									aria-hidden="true"
+									class="fas fa-search"
+									style="cursor: pointer"
+									[pTooltip]="'tooltip.add.notes' | translate"
+								></i>
+							</td>
+							<ng-container
+								*ngTemplateOutlet="attachmentsTemplate; context: { rowData: rowData, rowIndex: rowIndex }"
+							></ng-container>
+						</tr>
+					</ng-template>
+				</p-table>
+			</ng-container>
+			<ng-template #noRecordsFound>
+				<p style="padding: 2rem 1rem">{{ 'alert.noRecordsFound' | translate }}</p>
+			</ng-template>
+		</ng-container>
+		<ng-template #showTableLoading>
+			<iterpro-skeleton-table [rows]="10" [cols]="11"></iterpro-skeleton-table>
+		</ng-template>
+	</div>
+
+	<ng-template #attachmentsTemplate let-rowData="rowData" let-editMode="editMode" let-rowIndex="rowIndex">
+		<td class="tw-justify-center">
+			<i
+				class="fas fa-folder-open"
+				style="font-size: 1em"
+				(click)="rowData.fileRepositoryVisibility = true"
+				[pTooltip]="
+					rowData?._attachments.length > 0
+						? ('dialog.file.showDialog' | translate) + ' (' + rowData?._attachments.length + ')'
+						: ('dialog.file.noFileAttached' | translate)
+				"
+			></i>
+			<iterpro-multiple-file-upload
+				*ngIf="rowData.fileRepositoryVisibility"
+				[visible]="rowData.fileRepositoryVisibility"
+				[editMode]="rowData.editMode"
+				[attachmentModel]="rowData._attachments"
+				(save)="saveFileDialog(rowData, $event)"
+				(discard)="rowData.fileRepositoryVisibility = false"
+			>
+			</iterpro-multiple-file-upload>
+		</td>
+	</ng-template>
+</div>

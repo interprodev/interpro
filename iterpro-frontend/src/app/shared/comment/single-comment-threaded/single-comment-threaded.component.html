@@ -1,0 +1,34 @@
+<!-- Iterpro comment -->
+<iterpro-comment
+	[comment]="comment"
+	[customer]="customer"
+	[editMode]="false"
+	(commentEdited)="onCommentEdited(comment, $event)"
+	(commentDeleted)="onCommentDeleted(comment)"
+	(commentReply)="onCommentReplies(comment)"
+/>
+
+<div class="top-input-section">
+	<iterpro-comment-input [editMode]="editMode" (onAdd)="addComment($event, comment)" placeholder="Reply" />
+</div>
+
+<!-- Reply -->
+<div class="reply-div" *ngIf="comment.notesThreads && comment.notesThreads.length">
+	<span>{{ comment.notesThreads.length }} <span translate>replies</span></span>
+	<hr />
+</div>
+
+<!-- Subcomments -->
+<div class="subcomments">
+	<ul *ngIf="comment.notesThreads && comment.notesThreads.length" class="comments-list">
+		<li *ngFor="let subcomment of comment.notesThreads">
+			<iterpro-comment
+				[comment]="subcomment"
+				[customer]="customer"
+				[editMode]="editMode"
+				(commentEdited)="onCommentEdited(subcomment, $event, comment)"
+				(commentDeleted)="onCommentDeleted(subcomment, comment)"
+			/>
+		</li>
+	</ul>
+</div>

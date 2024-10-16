@@ -1,0 +1,118 @@
+table {
+	width: 100%;
+}
+
+tr {
+	margin: 1em 0 1em 0;
+	min-height: 30px;
+}
+
+.row-table:hover {
+	background-color: #111;
+}
+
+td {
+	display: flex;
+	align-items: center;
+}
+
+th {
+	text-align: left !important;
+	/* vertical-align: top; */
+}
+.th-width-20 {
+	th {
+		width: 20%;
+	}
+}
+
+.th-width-100 {
+	th {
+		width: 100%;
+	}
+}
+
+.within-date {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.within-date > .fas {
+	margin: 0 3px;
+}
+.within-disabled > .fas {
+	display: none;
+}
+.within-label {
+	color: var(--color-neutral-900);
+	margin: 0 10px;
+	line-height: 15px;
+}
+.within-input {
+	max-width: 110px;
+	margin: 0 5px;
+}
+.within-date .fas {
+	opacity: 0.5;
+	cursor: pointer;
+}
+.within-date .fas.within-selected,
+.within-date .fas:hover {
+	opacity: 1;
+}
+
+.row {
+	display: flex;
+	align-items: center;
+}
+
+.header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	font-family: 'Gotham';
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-bottom: 1em;
+	padding: 0 1em 0 1em;
+}
+
+.cell {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5em;
+}
+
+.table-cell {
+	display: table-cell;
+}
+
+.fa-exclamation {
+	color: red;
+}
+
+.amount-container {
+	display: flex;
+	width: 100%;
+	.suggested-amount {
+		margin-left: 12px;
+		font-size: 0.8em;
+		p-chip {
+			cursor: pointer;
+		}
+	}
+}
+
+iterpro-nx2-conditions-table,
+iterpro-nx2-installments-table {
+	width: 100%;
+}
+
+.asset-cost {
+	display: flex;
+	width: 100%;
+	justify-content: flex-end;
+}

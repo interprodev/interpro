@@ -1,0 +1,126 @@
+<div>
+	<div class="custom-recurrence-row">
+		<div class="label">Repeat every</div>
+		<p-inputNumber
+			[showButtons]="true"
+			[(ngModel)]="customRecurrence.count"
+			[step]="1"
+			[min]="1"
+			[max]="getMaxRepeatRecurrence()"
+			[style]="{ width: '80px' }"
+			incrementButtonIcon="fas fa-arrow-up"
+			decrementButtonIcon="fas fa-arrow-down"
+			mode="decimal"
+		></p-inputNumber>
+		<p-dropdown
+			appendTo="body"
+			[placeholder]="'Day'"
+			[options]="basicRepeatList"
+			[(ngModel)]="customRecurrence.repeatOn"
+			(ngModelChange)="onCustomRecurrenceRepeatEveryChange($event)"
+		>
+		</p-dropdown>
+	</div>
+	<div style="margin-top: 24px" *ngIf="customRecurrence.repeatOn === repeatOnTypes.Weeks">
+		<div class="label">Repeat on</div>
+		<div class="weekly-days-buttons">
+			<button
+				pButton
+				type="button"
+				class="p-button-raised p-button-rounded"
+				*ngFor="let day of customRecurrence.weeklyDays"
+				[value]="day.key"
+				[label]="day.label"
+				[title]="day.key"
+				[(ngModel)]="day.checked"
+				ngDefaultControl
+				[class.selected-button]="day.checked"
+				(click)="day.checked = !day.checked"
+			></button>
+		</div>
+	</div>
+	<div *ngIf="customRecurrence.repeatOn === repeatOnTypes.Months">
+		<div class="radio-buttons-container">
+			<p-radioButton
+				[(ngModel)]="customRecurrence.monthlyType.onSpecificDay.checked"
+				[label]="'Monthly on day ' + customRecurrence.monthlyType.onSpecificDay.dayNumber"
+				(ngModelChange)="customRecurrence.monthlyType.onSpecificDayAndWeek.checked = false"
+			></p-radioButton>
+			<p-radioButton
+				[(ngModel)]="customRecurrence.monthlyType.onSpecificDayAndWeek.checked"
+				[label]="
+					'Monthly on ' +
+					getWordFromNumber(customRecurrence.monthlyType.onSpecificDayAndWeek.weekNumber) +
+					' ' +
+					customRecurrence.monthlyType.onSpecificDayAndWeek.weekday
+				"
+				(ngModelChange)="customRecurrence.monthlyType.onSpecificDay.checked = false"
+			></p-radioButton>
+		</div>
+	</div>
+	<div style="margin-top: 24px">
+		<div class="label">Ends</div>
+		<div class="radio-buttons-container">
+			<p-radioButton
+				[(ngModel)]="customRecurrence.ends.type"
+				[value]="endTypes.Never"
+				label="Never"
+				(ngModelChange)="onEndTypeChange($event)"
+			></p-radioButton>
+			<div class="custom-recurrence-row">
+				<p-radioButton
+					[(ngModel)]="customRecurrence.ends.type"
+					[value]="endTypes.On"
+					label="On"
+					(ngModelChange)="onEndTypeChange($event)"
+				></p-radioButton>
+				<p-calendar
+					placeholder="Select Date"
+					[minDate]="minimumDate"
+					[disabled]="customRecurrence.ends.type !== endTypes.On"
+					[(ngModel)]="customRecurrence.ends.onDay"
+					showButtonBar="true"
+					appendTo="body"
+					[clearButtonStyleClass]="'p-button-sm'"
+					[todayButtonStyleClass]="'p-button-sm'"
+				></p-calendar>
+			</div>
+			<div class="custom-recurrence-row">
+				<p-radioButton
+					[(ngModel)]="customRecurrence.ends.type"
+					[value]="endTypes.After"
+					label="After"
+					(ngModelChange)="onEndTypeChange($event)"
+				></p-radioButton>
+				<p-inputNumber
+					placeholder="10"
+					[disabled]="customRecurrence.ends.type !== endTypes.After"
+					[(ngModel)]="customRecurrence.ends.afterOccurrencesCount"
+					[showButtons]="true"
+					[step]="1"
+					[min]="1"
+					[style]="{ width: '80px' }"
+					incrementButtonIcon="fas fa-arrow-up"
+					decrementButtonIcon="fas fa-arrow-down"
+					mode="decimal"
+				></p-inputNumber>
+				<div>Occurrences</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="dynamic-dialog-footer" *ngIf="editable">
+	<button
+		type="button"
+		pButton
+		(click)="onConfirm()"
+		[disabled]="!getSaveEnabled()"
+		label="{{ 'buttons.confirm' | translate }}"
+	></button>
+	<button
+		type="button"
+		pButton
+		(click)="onDiscard()"
+		label="{{ (editable ? 'buttons.discard' : 'buttons.close') | translate }}"
+	></button>
+</div>

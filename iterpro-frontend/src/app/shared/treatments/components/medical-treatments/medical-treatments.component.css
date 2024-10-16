@@ -1,0 +1,61 @@
+.spacing {
+	color: var(--color-primary-500);
+	font-weight: normal;
+	margin-bottom: 1em;
+}
+
+.table-wrapper {
+	min-height: 175px;
+	margin-bottom: 1rem;
+}
+
+.fal {
+	cursor: default;
+	font-size: 1.2em;
+}
+
+.fas {
+	cursor: default;
+	font-size: 1.2em;
+}
+.topped {
+	margin-top: 2rem;
+}
+.download {
+	float: right;
+	cursor: pointer;
+}
+
+.treat-actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 220px;
+	width: 220px;
+	max-width: 220px;
+}
+
+.treat-actions > i {
+	padding-left: 8px;
+	padding-right: 8px;
+	font-size: 1.2em;
+}
+
+.attachment-preview {
+	margin-right: 5px;
+}
+.multi-dialog > h3 {
+	margin-bottom: 1rem;
+}
+.multi-actions {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: flex-end;
+}
+.multi-actions > * {
+	margin-left: 1rem;
+}
+.treatment-detail-icon {
+	font-size: 0.8rem;
+	margin-right: 1em;
+}

@@ -1,0 +1,47 @@
+<div class="main">
+	<div class="pflex-w-full pflex-mb-4">
+		<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-w-full">
+			<!-- Transfer Window Selector -->
+			<iterpro-transfers-window-selection
+				[clubSeasons]="clubSeasons"
+				[transferWindow]="transferWindow"
+				(changeTransferWindow)="chooseTransferWindowByClubSeason($event)"
+			/>
+		</div>
+	</div>
+
+	@if (allTransfers && allTransfers.length) {
+	<div class="pflex-w-full pflex-mt-4">
+		<!-- Select And Compare -->
+		<div class="pflex-flex pflex-gap-4 pflex-justify-content-between pflex-mb-4">
+			<!-- Left -->
+			<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-block pflex-w-full">
+				<iterpro-trading-compare-player
+					[sportType]="sportType"
+					[playerCompare]="leftComparePlayer$ | async"
+					[clubTransfers]="allTransfers"
+					(changeTransfer)="changeLeftTransfer($event)"
+				/>
+			</div>
+			<!-- Right -->
+			<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-block pflex-w-full">
+				<iterpro-trading-compare-player
+					[sportType]="sportType"
+					[playerCompare]="rightComparePlayer$ | async"
+					[clubTransfers]="allTransfers"
+					[isRightPlayer]="true"
+					(changeTransfer)="changeRightTransfer($event)"
+				/>
+			</div>
+		</div>
+
+		<!-- Chart Overview -->
+		<div class="pflex-w-full">
+			<iterpro-trading-compare-deal-overview
+				[leftComparePlayer]="leftComparePlayer$ | async"
+				[rightComparePlayer]="rightComparePlayer$ | async"
+			/>
+		</div>
+	</div>
+	}
+</div>

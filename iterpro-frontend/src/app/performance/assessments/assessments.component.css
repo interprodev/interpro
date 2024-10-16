@@ -1,0 +1,58 @@
+.col-no-scroll {
+    max-height: none;
+    overflow: visible;
+}
+
+.col-main {
+  width: 80%;
+  flex-grow: 1;
+}
+
+.col-sidebar {
+  width: 20%;
+}
+
+
+.content-with-test {
+	padding: 0;
+	height:80vh;
+}
+
+.list {
+    color: #ffffff;
+}
+
+.listbox {
+    width: 100%;
+}
+
+.side-button {
+    margin: 20px 0px;
+}
+
+.side-button {
+    display: flex;
+		justify-content: space-between;
+		align-items: center;
+    flex-direction: row;
+    margin-bottom: 20px
+}
+.add-test {
+    display: flex;
+    align-items: flex-start;
+		justify-content: space-between;
+		margin-bottom:0.5rem;
+}
+.add-test > div > * {
+    margin-left: 5px;
+}
+.add-test i {
+    cursor: pointer;
+}
+.add-test h3 {
+    font-size: 0.9rem;
+}
+
+.content {
+    border-radius: var(--iterpro-border-radius);
+}

@@ -1,0 +1,200 @@
+<!-- DIALOG -->
+<p-dialog
+	[visible]="dialogVisible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[blockScroll]="true"
+	[modal]="true"
+	[style]="{ width: '80vw', 'max-height': '60vw' }">
+
+	<!-- HEADER -->
+	<p-header><span translate>wysearch.title</span></p-header>
+
+	<!-- CONTENT -->
+	<div class="container">
+		<form (ngSubmit)="searchByName(name)">
+			<div class="row" style="justify-content: flex-start">
+				<div class="cell">
+					<span class="inline-label">Name</span>
+					<input
+						style="width: auto"
+						pInputText
+						[(ngModel)]="name"
+						[ngModelOptions]="{ standalone: true }"
+						class="p-inputtext"
+					/>
+				</div>
+				<button pButton size="small" type="submit" style="margin-left: 3em" [label]="'search' | translate"></button>
+			</div>
+		</form>
+		<form (ngSubmit)="searchByFilter()" style="margin-top: 1em">
+			<div class="row">
+				<div class="cell">
+					<span class="inline-label">Competition</span>
+					<p-multiSelect
+						appendTo="body"
+						[virtualScroll]="true"
+						[virtualScrollItemSize]="30"
+						[options]="competitions"
+						optionLabel="name"
+						[(ngModel)]="competition"
+						[filter]="true"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						[ngModelOptions]="{ standalone: true }"
+						[maxSelectedLabels]="1"
+						[selectionLimit]="4"
+					></p-multiSelect>
+				</div>
+				<div class="cell">
+					<span class="inline-label">Nationality</span>
+					<p-multiSelect
+						appendTo="body"
+						[virtualScroll]="true"
+						[virtualScrollItemSize]="30"
+						[options]="nationalities"
+						[(ngModel)]="nationality"
+						[filter]="true"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						[ngModelOptions]="{ standalone: true }"
+					>
+					</p-multiSelect>
+				</div>
+				<div class="cell">
+					<span class="inline-label">Positions</span>
+					<p-multiSelect
+						appendTo="body"
+						[virtualScroll]="true"
+						[virtualScrollItemSize]="30"
+						[options]="positions"
+						[(ngModel)]="position"
+						[filter]="true"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						[ngModelOptions]="{ standalone: true }"
+					>
+					</p-multiSelect>
+				</div>
+				<div class="cell">
+					<span class="inline-label">Age</span>
+					<span class="inline-val">{{ ageValues[0] }}</span>
+					<p-slider
+						id="age"
+						[(ngModel)]="ageValues"
+						[range]="true"
+						[min]="15"
+						[max]="40"
+						[ngModelOptions]="{ standalone: true }"
+						[style]="{ width: '14em' }"
+					></p-slider
+					><span style="margin-left: 1em; margin-right: 0.5em" class="inline-val">{{ ageValues[1] }}</span>
+				</div>
+
+				<button pButton size="small" type="submit" [label]="'search' | translate"></button>
+			</div>
+		</form>
+
+		<div class="results-list with-tooltips player-tooltips" *blockUI="'wysearch'">
+			<p-table styleClass="p-datatable-striped" *ngIf="results" [value]="results" [paginator]="true" [rows]="10" [(selection)]="selectedPlayers" #table>
+				<ng-template pTemplate="header">
+					<tr class="tw-h-10">
+						<th style="width: 40px">
+							<p-tableHeaderCheckbox *ngIf="selection !== 'single'"></p-tableHeaderCheckbox>
+						</th>
+						<th
+							[ngStyle]="{ 'text-align': col.field === 'shortName' ? 'left' : 'center' }"
+							*ngFor="let col of cols"
+							[pSortableColumn]="col.sortable ? col.field : undefined"
+						>
+							{{ col.header }}
+							<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+						</th>
+						<th class="pt-last"></th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+					<tr
+						class="tw-h-10"
+						[pSelectableRow]="rowData"
+						[pSelectableRowDisabled]="rowData.alreadyImported"
+						styleClass="wysearch"
+						[ngClass]="{ disabled: rowData.alreadyImported }"
+					>
+						<td [ngSwitch]="selection" style="width: 3%">
+							<p-tableRadioButton
+								*ngSwitchCase="'single'"
+								[value]="rowData"
+								[disabled]="rowData.alreadyImported"
+								[pTooltip]="
+									rowData.alreadyImportedTeam ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''
+								"
+							></p-tableRadioButton>
+							<p-tableCheckbox
+								*ngSwitchDefault
+								[value]="rowData"
+								[disabled]="rowData.alreadyImported"
+								[pTooltip]="
+									rowData.alreadyImported ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''
+								"
+							></p-tableCheckbox>
+						</td>
+
+						<td style="text-align: left" class="pt-name">
+							<iterpro-wyscout-player-additional-info
+								[player]="rowData"
+								[hasAdditionalInfo]="rowData.hasAdditionalInfo"
+								(emptyAdditionalInfo)="getAdditionalInfo($event)"
+							/>
+						</td>
+						<td class="pt-flag pt-numeric">
+							<iterpro-player-flag *ngIf="rowData.birthArea?.alpha2code" [lang]="rowData.birthArea.alpha2code" />
+							<iterpro-player-flag
+								*ngIf="rowData.birthArea?.alpha2code !== rowData.passportArea?.alpha2code"
+								[lang]="rowData.passportArea.alpha2code"
+							/>
+						</td>
+						<td class="pt-year pt-numeric">
+							{{ today | amDifference: rowData.birthDate:'years' }}
+							<!-- <span *ngIf="rowData.birthDate" class="inline-label">({{rowData.birthDate | date : 'yyyy'}})</span> -->
+						</td>
+						<td class="pt-pos pt-numeric">
+							{{ rowData.role.code2 | translate }}
+						</td>
+						<td class="pt-pos pt-numeric">
+							{{ rowData.currentTeam ? rowData.currentTeam.name : '-' }}
+						</td>
+						<td>{{ rowData.transferValue | shortNumber: true }}</td>
+						<td
+							class="table-cell"
+							[pTooltip]="rowData.alreadyImported ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''"
+						>
+							{{ rowData.alreadyImportedTeam }}
+						</td>
+						<td class="pt-last"></td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<p-footer>
+		<p-button
+			size="small"
+			[outlined]="true"
+			icon="fas fa-times"
+			(click)="discard()"
+			label="{{ 'buttons.close' | translate }}"
+		></p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			(click)="save()"
+			label="{{ 'buttons.import' | translate }}"
+			[disabled]="selectedPlayers.length === 0"
+		></p-button>
+	</p-footer>
+
+</p-dialog>

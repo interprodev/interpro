@@ -1,0 +1,15 @@
+<div class="player">
+	<img class="pic" src="{{ playerPic() | azureUrl }}" onError="this.src='assets/img/default_icon.png';" />
+	<div class="data">
+		<span *ngIf="player.position; else noValue">{{ player.position + '.short' | translate }}</span>
+		<small>
+			{{ player.birthDate | date : 'yyyy' }}
+			<span *ngIf="player.nationality" class="flag-icon" [ngClass]="getLangClass(player.nationality)"
+				title="{{ 'nationalities.' + player.nationality | translate }}"></span>
+		</small>
+	</div>
+</div>
+
+<ng-template #noValue>
+	<span>-</span>
+</ng-template>

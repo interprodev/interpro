@@ -1,0 +1,836 @@
+{
+	"name": "Player",
+	"plural": "players",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": [
+				"lastName",
+				"name",
+				"firstName",
+				"displayName",
+				"passport",
+				"altPassport",
+				"nationality",
+				"altNationality",
+				"facebook",
+				"twitter",
+				"instagram",
+				"linkedin",
+				"snapchat",
+				"mobilePhone",
+				"otherMobile",
+				"birthDate",
+				"birthPlace",
+				"phone",
+				"email",
+				"school",
+				"education",
+				"address.street",
+				"address.city",
+				"address.state",
+				"address.nation",
+				"address.zipCode",
+				"domicile.street",
+				"domicile.city",
+				"domicile.state",
+				"domicile.nation",
+				"domicile.zipCode",
+				"fiscalIssue",
+				"federalId",
+				"bankAccount.bank",
+				"bankAccount.accountNumber",
+				"bankAccount.routingNumber",
+				"bankAccount.iban",
+				"bankAccount.swift"
+			]
+		}
+	},
+	"properties": {
+		"instatId": {
+			"type": "number"
+		},
+		"instatTeamId": {
+			"type": "number"
+		},
+		"instatSecondaryTeamId": {
+			"type": "number"
+		},
+		"wyscoutId": {
+			"type": "number"
+		},
+		"wyscoutTeamId": {
+			"type": "number"
+		},
+		"wyscoutSecondaryTeamId": {
+			"type": "number"
+		},
+		"gpexeId": {
+			"type": "number"
+		},
+		"catapultId": {
+			"type": "any"
+		},
+		"fieldwizId": {
+			"type": "any"
+		},
+		"sonraId": {
+			"type": "any"
+		},
+		"statsportId": {
+			"type": "any"
+		},
+		"wimuId": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"displayName": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"altNationality": {
+			"type": "string"
+		},
+		"passport": {
+			"type": "string"
+		},
+		"altPassport": {
+			"type": "string"
+		},
+		"shoeSize": {
+			"type": "string"
+		},
+		"captain": {
+			"type": "boolean"
+		},
+		"additionalInfo": {
+			"type": "string"
+		},
+		"inTeamFrom": {
+			"type": "date"
+		},
+		"inTeamTo": {
+			"type": "date"
+		},
+		"facebook": {
+			"type": "string"
+		},
+		"twitter": {
+			"type": "string"
+		},
+		"instagram": {
+			"type": "string"
+		},
+		"linkedin": {
+			"type": "string"
+		},
+		"snapchat": {
+			"type": "string"
+		},
+		"mobilePhone": {
+			"type": "string"
+		},
+		"otherMobile": {
+			"type": "array"
+		},
+		"education": {
+			"type": "string"
+		},
+		"school": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date"
+		},
+		"birthPlace": {
+			"type": "string"
+		},
+		"weight": {
+			"type": "number"
+		},
+		"height": {
+			"type": "number"
+		},
+		"position": {
+			"type": "string"
+		},
+		"role1": {
+			"type": ["string"]
+		},
+		"position2": {
+			"type": "string"
+		},
+		"role2": {
+			"type": ["string"]
+		},
+		"position3": {
+			"type": "string"
+		},
+		"role3": {
+			"type": ["string"]
+		},
+		"foot": {
+			"type": "string"
+		},
+		"jersey": {
+			"type": "number"
+		},
+		"valueField": {
+			"type": "string"
+		},
+		"value": {
+			"type": "number"
+		},
+		"transfermarktValue": {
+			"type": "number"
+		},
+		"clubValue": {
+			"type": "number"
+		},
+		"agentValue": {
+			"type": "number"
+		},
+		"wage": {
+			"type": "number"
+		},
+		"contractStart": {
+			"type": "date"
+		},
+		"contractEnd": {
+			"type": "date"
+		},
+		"phone": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"address": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"domicile": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"botId": {
+			"type": "string"
+		},
+		"botMessageUrl": {
+			"type": "string"
+		},
+		"anamnesys": {
+			"type": "array"
+		},
+		"_thresholds": {
+			"type": "object"
+		},
+		"archived": {
+			"type": "boolean",
+			"default": false
+		},
+		"archivedDate": {
+			"type": "date"
+		},
+		"archivedMotivation": {
+			"type": "string"
+		},
+		"currentStatus": {
+			"type": "string"
+		},
+		"statusDetails": {
+			"type": "object"
+		},
+		"movOnBall": {
+			"type": ["string"]
+		},
+		"movOffBall": {
+			"type": ["string"]
+		},
+		"passing": {
+			"type": ["string"]
+		},
+		"finishing": {
+			"type": ["string"]
+		},
+		"defending": {
+			"type": ["string"]
+		},
+		"technique": {
+			"type": ["string"]
+		},
+		"documents": {
+			"type": ["object"]
+		},
+		"nationalityOrigin": {
+			"type": "string"
+		},
+		"fiscalIssue": {
+			"type": "string"
+		},
+		"ageGroup": {
+			"type": "string"
+		},
+		"biography": {
+			"type": "string"
+		},
+		"federalId": {
+			"type": "string"
+		},
+		"federalMembership": {
+			"type": ["object"]
+		},
+		"sportPassport": {
+			"type": ["object"]
+		},
+		"maritalStatus": {
+			"type": "string"
+		},
+		"_statusHistory": {
+			"type": ["object"]
+		},
+		"deleted": {
+			"type": "boolean",
+			"default": false
+		},
+		"bankAccount": {
+			"type": "object"
+		},
+		"firstFederalMembership": {
+			"type": "date"
+		},
+		"transferNotesThreads": {
+			"type": ["object"]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		},
+		"customerPlayer": {
+			"type": "hasOne",
+			"model": "CustomerPlayer",
+			"foreignKey": "playerId"
+		},
+		"sessionPlayerData": {
+			"type": "hasMany",
+			"model": "SessionPlayerData",
+			"foreignKey": ""
+		},
+		"wellnesses": {
+			"type": "hasMany",
+			"model": "Wellness",
+			"foreignKey": ""
+		},
+		"playerStats": {
+			"type": "hasMany",
+			"model": "PlayerStat",
+			"foreignKey": ""
+		},
+		"thresholdsPlayer": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsPlayer",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"thresholdsTests": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsTests",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"thresholdsAttendances": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsAttendances",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"thresholdsMedical": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsMedical",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"preventionExams": {
+			"type": "embedsMany",
+			"model": "PreventionExam",
+			"property": "_preventionExams",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"chronicInjuries": {
+			"type": "embedsMany",
+			"model": "ChronicInjury",
+			"property": "_chronicInjuries",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"goScores": {
+			"type": "hasMany",
+			"model": "GOScore",
+			"foreignKey": ""
+		},
+		"injuries": {
+			"type": "hasMany",
+			"model": "Injury",
+			"foreignKey": ""
+		},
+		"pastValues": {
+			"type": "embedsMany",
+			"model": "PlayerValue",
+			"property": "_pastValues",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"pastTransfermarktValues": {
+			"type": "embedsMany",
+			"model": "PlayerValue",
+			"property": "_pastTransfermarktValues",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"pastAgentValues": {
+			"type": "embedsMany",
+			"model": "PlayerValue",
+			"property": "_pastAgentValues",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"pastClubValues": {
+			"type": "embedsMany",
+			"model": "PlayerValue",
+			"property": "_pastClubValues",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"thresholdsFinancial": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsFinancial",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"thresholdsAutoGenSettings": {
+			"type": "embedsMany",
+			"model": "ThresholdAutoGenSetting",
+			"property": "_thresholdsAutoGenSettings",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"attributes": {
+			"type": "hasMany",
+			"model": "PlayerAttributesEntry",
+			"polymorphic": "person"
+		},
+		"descriptions": {
+			"type": "hasMany",
+			"model": "PlayerDescriptionEntry",
+			"polymorphic": "person"
+		},
+		"costItems": {
+			"type": "hasMany",
+			"model": "PersonCostItem",
+			"polymorphic": "person"
+		},
+		"videos": {
+			"type": "hasMany",
+			"model": "VideoAsset",
+			"foreignKey": ""
+		},
+		"employmentContracts": {
+			"type": "hasMany",
+			"model": "EmploymentContract",
+			"property": "employmentContracts",
+			"polymorphic": "person"
+		},
+		"transferContracts": {
+			"type": "hasMany",
+			"model": "TransferContract",
+			"property": "transferContracts",
+			"polymorphic": "person"
+		},
+		"transfer": {
+			"type": "hasOne",
+			"model": "ClubTransfer",
+			"property": "transfer",
+			"polymorphic": "person"
+		},
+		"medicalTreatments": {
+			"type": "hasMany",
+			"model": "MedicalTreatment"
+		},
+		"gameReports": {
+			"type": "hasMany",
+			"model": "PlayerGameReport",
+			"foreignKey": ""
+		},
+		"trainingReports": {
+			"type": "hasMany",
+			"model": "PlayerTrainingReport",
+			"foreignKey": ""
+		}
+	},
+	"acls": [
+		{
+			"accessType": "EXECUTE",
+			"principalType": "ROLE",
+			"principalId": "$authenticated",
+			"permission": "ALLOW"
+		}
+	],
+	"methods": {
+		"getAmortizationData": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns values for amortization forecast",
+			"http": {
+				"path": "/:id/amortization",
+				"verb": "get"
+			}
+		},
+		"getActiveContract": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "type",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/current-contract",
+				"verb": "get"
+			},
+			"description": "Returns the current contract of the player, provided the contract type (employment or transfer)"
+		},
+		"triggerRobustnessUpdate": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "currentSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"description": "Manually triggers re-calculation of robustness data with Azure Functions",
+			"http": {
+				"path": "/triggerRobustnessUpdate",
+				"verb": "post"
+			}
+		},
+		"triggerThresholdsUpdate": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "currentSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"description": "Manually triggers re-calculation of thresholds with Azure Functions",
+			"http": {
+				"path": "/triggerThresholdsUpdate",
+				"verb": "post"
+			}
+		},
+		"createPlayerAppCredentials": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/customer-player",
+				"verb": "post"
+			}
+		},
+		"deletePlayerAppCredentials": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/customer-player",
+				"verb": "del"
+			}
+		},
+		"getFitnessProfile": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "testIds",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "metrics",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns fitness profile for a player",
+			"http": {
+				"path": "/:id/fitness",
+				"verb": "get"
+			}
+		},
+		"getInvestmentPerformance": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "mode",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "minutesField",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "numberOfMatches",
+					"type": "number",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns financial profile for a player",
+			"http": {
+				"path": "/:id/investment-performance",
+				"verb": "get"
+			}
+		},
+		"getBonuses": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "filters",
+					"type": "object",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/bonuses",
+				"verb": "get"
+			},
+			"description": "Returns all the bonuses of the player"
+		}
+	},
+	"indexes": {
+		"clubId_1": {
+			"keys": {
+				"clubId": 1
+			}
+		},
+		"_id_1_botId_1_botMessageUrl_1": {
+			"keys": {
+				"_id": 1,
+				"botId": 1,
+				"botMessageUrl": 1
+			}
+		},
+		"teamId_1__id_1": {
+			"keys": {
+				"_id": 1,
+				"teamId": 1
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+<div>
+	<div class="gps-container file-uploader-container" [class.ready-to-upload]="isFileSelected">
+		<p-fileUpload
+			class="file-uploader"
+			mode="basic"
+			[disabled]="currentTeam && checkForTeamProviderMapping(currentTeam)"
+			#fUpload
+			[url]="urlUpload"
+			(onSelect)="onSelect($event)"
+			(onClear)="clear()"
+			multiple="multiple"
+			name="files[]"
+			accept=".csv"
+			maxFileSize="1048576"
+			chooseLabel="{{ 'fileUploader.chooseLabel' | translate }}"
+			cancelLabel="{{ 'fileUploader.cancelLabel' | translate }}"
+			[showUploadButton]="false"
+		>
+		</p-fileUpload>
+	</div>
+	<div class="gps-container">
+		<span *ngIf="currentTeam && !currentTeam._teamProviderMapping">No Players provider mapping found!</span>
+	</div>
+</div>

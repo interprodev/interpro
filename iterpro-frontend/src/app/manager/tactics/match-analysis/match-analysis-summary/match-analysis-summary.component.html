@@ -1,0 +1,133 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+	<div class="tw-col-span-4">
+		<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-relative tw-flex tw-flex-col tw-items-center tw-overflow-auto">
+			<h3 *ngIf="playerView === false" class="tw-text-center tw-mb-2" translate>matchAnalysis.teamAverage</h3>
+			<h3 *ngIf="playerView === true" class="tw-text-center tw-mb-2" translate>matchAnalysis.gameProfile</h3>
+			<div class="tw-h-[300px] tw-w-[300px]">
+				<p-chart *ngIf="radarData" type="radar" [data]="radarData" [options]="radarOptions"></p-chart>
+			</div>
+		</div>
+	</div>
+	<div class="tw-col-span-8">
+		<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-h-full">
+			<div class="tw-flex tw-justify-between tw-mb-2">
+				<h3 translate>matchAnalysis.gameSummary</h3>
+				<div class="tw-flex tw-justify-end tw-items-center tw-gap-0 graph-actions">
+					<!-- #region ACTIONS -->
+					<!-- SIDEBAR -->
+					<i
+						[class]="sidebarOpen ? 'fas fa-expand' : 'fas fa-compress fa-active'"
+						[pTooltip]="sidebarOpen ? ('button.expand' | translate) : ('button.collapse' | translate)"
+						(click)="onToggleSidebar()"
+					>
+					</i>
+
+					<!-- PDF REPORT -->
+					<iterpro-report-download (downloadPDF)="downloadReport()" />
+
+					<!-- CALENDAR ICON -->
+					<i
+						href="#"
+						class="fas fa-calendar-day"
+						[pTooltip]="'profile.tabs.openPlanning' | translate"
+						[routerLink]="getLinkPlanning()"
+					>
+					</i>
+
+					<!-- THRESHOLDS -->
+					<i
+						class="fas fa-sliders-h"
+						[ngClass]="{ 'fa-active': showThresholds }"
+						[pTooltip]="'profile.tabs.thresholds' | translate"
+						(click)="onToggleThresholds()"
+					>
+					</i>
+
+					<!-- FOLDER -->
+					<i
+						class="fas fa-folder-open"
+						[ngClass]="{ 'fa-active': uploadDialogVisibility }"
+						(click)="uploadDialogVisibility = true"
+						[pTooltip]="
+							match.event._attachments.length > 0
+								? ('dialog.file.showDialog' | translate) + ' (' + match.event._attachments.length + ')'
+								: ('dialog.file.noFileAttached' | translate)
+						"
+					></i>
+					<!-- #endregion -->
+				</div>
+			</div>
+			<p-table styleClass="p-datatable-striped p-datatable-sticky" [value]="metrics" [scrollable]="true" [scrollHeight]="'280px'">
+				<ng-template pTemplate="header">
+					<tr class="tw-h-8">
+						<th translate>sidebar.metrics</th>
+						<th translate>value</th>
+						<th>{{ (showThresholds ? 'threshold' : 'game') | translate }}%</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-metric let-index="rowIndex">
+					<tr class="tw-h-8">
+						<td class="tw-text-xs" [style.width]="'15rem'">
+								<span class="tw-capitalize" [pTooltip]="getMetricLabelForIndex(index) | translate">
+									{{ getMetricLabelForIndex(index) | translate }}
+								</span>
+						</td>
+						<td class="tw-text-xs" [style.width]="'10rem'">
+								<span>
+									{{ getMetricValueForIndex(index) | number: '1.0-1' }}
+								</span>
+						</td>
+						<td class="tw-text-xs">
+							<div class="tw-h-5 tw-overflow-hidden tw-relative tw-rounded-xl tw-flex tw-bg-shark-900 tw-border-solid tw-border-0.3 tw-border-shark-800">
+								<div
+									class="metric-bar-inner"
+									[ngStyle]="{
+											'background-color': getColor(index),
+											width: getMetricValueNormForIndex(index)
+										}"
+								></div>
+								<div class="tw-absolute tw-w-full tw-l-0 tw-r-0 tw-t-0 tw-b-0 tw-flex tw-items-center tw-justify-center" [ngStyle]="{ color: getTextColor(index) }">
+									{{ getMetricValueNormForIndex(index) }}
+								</div>
+							</div>
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+</div>
+
+<!-- #region CHART -->
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4 tw-relative">
+	<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+		<i
+			class="fas fa-percentage tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': percentage }"
+			pTooltip="{{ 'matchAnalysis.percentage' | translate }}"
+			(click)="onTogglePercent()"
+		></i>
+		<i
+			class="fas fa-tag tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': datalabels }"
+			pTooltip="{{ 'sessionAnalysis.labels' | translate }}"
+			(click)="onToggleLabels()"
+		></i>
+	</div>
+	<h3 class="tw-text-center tw-mb-2" translate>matchAnalysis.lastGamesComparison</h3>
+	<div class="tw-h-[400px]">
+		<p-chart *ngIf="barData" height="400" type="bar" [data]="barData" [options]="barOptions"></p-chart>
+	</div>
+</div>
+<!-- #endregion -->
+
+<!-- #region FILE UPLOAD -->
+<iterpro-multiple-file-upload
+	*ngIf="uploadDialogVisibility"
+	[visible]="uploadDialogVisibility"
+	[editMode]="true"
+	[attachmentModel]="match.event._attachments"
+	(save)="saveAttachments($event)"
+	(discard)="uploadDialogVisibility = false"
+/>
+<!-- #endregion -->

@@ -1,0 +1,193 @@
+<ng-container *ngIf="!scoutingGame">
+	<div class="tw-rounded tw-p-2">
+		<div class="row-header">
+			<div class="right-section">
+				<iterpro-tiered-menu
+					[isLoading]="tieredMenuLoading"
+					[styleClass]="'p-button-contrast'"
+					[label]="'scouting.gameReport.addNew' | translate"
+					[icon]="'fas fa-add'"
+					[menuItems]="tieredMenuItems"
+				></iterpro-tiered-menu>
+			</div>
+			<div class="left-section iterpro-text-color-900 tw-text-sm">
+				<div *ngIf="recap">
+					<span class="row-header-cell">No. of games: {{ recap.gamesCounter }}</span>
+					<span class="row-header-cell">Game Level Avg: {{ recap.levelAverage | translate }}</span>
+					<ng-container *ngIf="isTipssActive">
+						<span class="row-header-cell">TIPSS Avg: {{ recap.tipssAverage }}</span>
+						<span class="row-header-cell">TIPSS STD Deviation: {{ recap.tipssDeviation }}</span>
+					</ng-container>
+				</div>
+				<i
+					class="button-icon iterpro-clickable-icon fas fa-trash"
+					[pTooltip]="'Delete selected game reports' | translate"
+					[class.icon-disabled]="selectedReports.length < 2"
+					(click)="askToDeleteScoutingGameReports()"
+				></i>
+			</div>
+		</div>
+		<p-table
+			*ngIf="!!tableGames"
+			[value]="tableGames"
+			[scrollable]="true"
+			dataKey="start"
+			[columns]="columns"
+			[(selection)]="selectedReports"
+			styleClass="p-datatable-striped"
+		>
+			<ng-template pTemplate="header" let-columns>
+				<tr class="tw-h-10">
+					<th pFrozenColumn [ngStyle]="{ minWidth: '150px', width: '150px', height: '46px', textAlign: 'center' }">
+						<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+					</th>
+					<th
+						*ngFor="let col of columns"
+						[ngStyle]="{
+							height: '46px',
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? col.width + 'px' : '200px'
+						}"
+						[pSortableColumn]="col.sortable ? col.field : false"
+					>
+						<div class="pflex-flex pflex-align-items-center pflex-justify-content-center pflex-gap-2">
+							<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+							<span pTooltip="{{ col.header | translate }}">{{ col.header | translate }}</span>
+						</div>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-gameReportRow let-columns="columns">
+				<tr class="tw-h-10">
+					<td class="cell-center" pFrozenColumn [ngStyle]="{ minWidth: '150px', width: '150px', height: '46px', textAlign: 'center' }">
+						<p-tableCheckbox [value]="gameReportRow" style="margin-right: 1em"></p-tableCheckbox>
+						<i
+							(click)="onEditClicked(gameReportRow.game)"
+							aria-hidden="true"
+							class="fas fa-eye game-action"
+							pTooltip="{{ 'bonus.detail' | translate }}"
+							style="margin-right: 1em"
+						></i>
+						<i
+							(click)="askToDeleteScoutingGameReports(gameReportRow.game)"
+							aria-hidden="true"
+							class="fas fa-trash game-action"
+							[class.icon-disabled]="isTrashRowDisabled(gameReportRow.game)"
+							pTooltip="{{ 'buttons.delete' | translate }}"
+						></i>
+					</td>
+					<td
+						*ngFor="let col of columns"
+						[ngStyle]="{
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? col.width + 'px' : '200px'
+						}"
+					>
+						<ng-container [ngSwitch]="col.type">
+							<span *ngSwitchCase="'date'">
+								{{ gameReportRow[col.field] | formatDateBySetting : 'HH:mm' }}
+							</span>
+
+							<span *ngSwitchCase="'level'" translate>{{ gameReportRow.level }}</span>
+
+							<span *ngSwitchCase="'report'">
+								<i class="fas fa-search" (click)="openReportDialog(gameReportRow)"></i>
+							</span>
+							<span *ngSwitchCase="'video'">
+								<div class="game-attachment">
+									<ng-container *ngIf="gameReportRow.videoAttachment">
+										<span class="attachment-preview">
+											<iterpro-icon-modal-preview
+												[style.font-size]="'1.2rem'"
+												[url]="gameReportRow.videoAttachment.downloadUrl || '' | azureUrl"
+												[name]="gameReportRow.videoAttachment.name"
+											></iterpro-icon-modal-preview>
+										</span>
+										<a
+											(click)="downloadVideo(gameReportRow.videoAttachment.downloadUrl, gameReportRow.videoAttachment.name)"
+											style="margin-left: 1em; cursor: pointer"
+											[title]="'dialog.file.link' | translate"
+										>
+											<i class="fas fa-download"></i>
+										</a>
+									</ng-container>
+								</div>
+							</span>
+							<span *ngSwitchCase="'document'">
+								<div class="game-attachment">
+									<ng-container *ngIf="gameReportRow.docAttachment">
+										<span class="attachment-preview">
+											<iterpro-icon-modal-preview
+												[style.font-size]="'1.2rem'"
+												[url]="gameReportRow.docAttachment.downloadUrl || '' | azureUrl"
+												[name]="gameReportRow.docAttachment.name"
+											></iterpro-icon-modal-preview>
+										</span>
+										<a
+											[href]="gameReportRow.docAttachment.downloadUrl || '' | azureUrl"
+											target="_blank"
+											rel="noopener noreferrer"
+											(click)="$event.stopPropagation()"
+											style="margin-left: 1em"
+										>
+											<i class="fas fa-download"></i>
+										</a>
+									</ng-container>
+								</div>
+							</span>
+							<span *ngSwitchCase="'completed'">
+								<i *ngIf="gameReportRow.completed" class="fas fa-check" style="color: green"></i>
+								<i *ngIf="!gameReportRow.completed" class="fas fa-times" style="color: red"></i>
+							</span>
+							<ng-container *ngSwitchCase="'colorType'">
+								<span *ngIf="gameReportRow[col.field]" [style.color]="gameReportRow[col.field].color">
+									{{ gameReportRow[col.field].value || '-' }}
+								</span>
+								<span style="min-width: 19.2px" class="margin-left">
+									<i
+										*ngIf="gameReportRow[col.field]?.comment"
+										class="fas fa-search"
+										[pTooltip]="gameReportRow[col.field].comment | htmlToString"
+									></i>
+								</span>
+							</ng-container>
+							<ng-container *ngSwitchCase="'pointType'">
+								<span *ngIf="gameReportRow[col.field]"
+									>{{ gameReportRow[col.field].value || '-' }}
+									<span
+										class="iterpro-point"
+										*ngIf="gameReportRow[col.field].color && gameReportRow[col.field].value"
+										[style.background-color]="gameReportRow[col.field].color"
+									></span
+								></span>
+								<span class="margin-left">
+									<i
+										*ngIf="gameReportRow[col.field]?.comment"
+										class="fas fa-search"
+										[pTooltip]="gameReportRow[col.field].comment | htmlToString"
+									></i>
+								</span>
+							</ng-container>
+							<ng-container *ngSwitchCase="'booleanType'">
+								<ng-container *ngIf="gameReportRow[col.field]">
+									<i *ngIf="gameReportRow[col.field].value === true" class="fas fa-check" [style.color]="'#009900'"></i>
+									<i *ngIf="gameReportRow[col.field].value === false" class="fas fa-close" [style.color]="'#dd0000'"></i>
+									<span class="margin-left">
+										<i
+											*ngIf="gameReportRow[col.field]?.comment"
+											class="fas fa-search"
+											[pTooltip]="gameReportRow[col.field].comment | htmlToString"
+										></i>
+									</span>
+								</ng-container>
+							</ng-container>
+							<span *ngSwitchDefault class="cell-with-tooltip">
+								{{ gameReportRow[col.field] }}
+							</span>
+						</ng-container>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</ng-container>

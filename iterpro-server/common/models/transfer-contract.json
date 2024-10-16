@@ -1,0 +1,117 @@
+{
+	"name": "TransferContract",
+	"plural": "TransferContracts",
+	"base": "Contract",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"typeTransfer": {
+			"type": "string"
+		},
+		"on": {
+			"type": "date",
+			"required": true
+		},
+		"endDate": {
+			"type": "date"
+		},
+		"stipulationDate": {
+			"type": "date"
+		},
+		"itcDate": {
+			"type": "date"
+		},
+		"club": {
+			"type": "string"
+		},
+		"homeTransfer": {
+			"type": "boolean",
+			"default": false
+		},
+		"amount": {
+			"type": "number"
+		},
+		"grossAmount": {
+			"type": "number"
+		},
+		"installments": {
+			"type": ["object"]
+		},
+		"amountAsset": {
+			"type": "boolean",
+			"default": true
+		},
+		"mechanismSolidarity": {
+			"type": "number"
+		},
+		"mechanismSolidarityAsset": {
+			"type": "boolean",
+			"default": true
+		},
+		"mechanismSolidarityType": {
+			"type": "string",
+			"default": "add"
+		},
+		"within": {
+			"type": "date"
+		},
+		"withinDays": {
+			"type": "number"
+		},
+		"withinMode": {
+			"type": "string"
+		},
+		"options": {
+			"type": "object"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"person": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "personId",
+				"discriminator": "personType"
+			},
+			"description": "Transfer contract belongs to either a Player or a PlayerScouting"
+		},
+		"agentContracts": {
+			"type": "hasMany",
+			"model": "AgentContract",
+			"property": "agentContracts",
+			"polymorphic": "contract"
+		},
+		"loanOption": {
+			"type": "hasMany",
+			"model": "LoanOption",
+			"property": "loanOption",
+			"foreignKey": "contractId"
+		},
+		"sellOnFee": {
+			"type": "hasMany",
+			"model": "TransferClause",
+			"property": "sellOnFee",
+			"foreignKey": "contractId"
+		},
+		"buyBack": {
+			"type": "hasMany",
+			"model": "TransferClause",
+			"property": "buyBack",
+			"foreignKey": "contractId"
+		},
+		"valorization": {
+			"type": "hasMany",
+			"model": "BasicWage",
+			"property": "valorization",
+			"polymorphic": "contract"
+		},
+		"renewContract": {
+			"type": "belongsTo",
+			"model": "TransferContract"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

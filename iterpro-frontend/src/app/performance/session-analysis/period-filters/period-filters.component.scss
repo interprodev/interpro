@@ -1,0 +1,32 @@
+.sidebar-col {
+  display: flex;
+
+  div {
+    flex: 1 1 auto;
+  }
+}
+
+p-calendar,
+p-multiselect,
+.label--small {
+  font-size: .9rem;
+}
+
+.video-button {
+  margin: 2rem 0 1rem 0;
+  width: 100%;
+}
+
+.icon-heading {
+  display: flex;
+  align-items: center;
+
+  h3,
+  p-progressSpinner {
+    display: inline;
+  }
+
+  .icon {
+    margin: 0.5rem 0 0 0.5rem;
+  }
+}

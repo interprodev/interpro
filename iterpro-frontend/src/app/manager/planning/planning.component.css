@@ -1,0 +1,108 @@
+.main {
+	max-width: 95% !important;
+}
+
+.col-main {
+	position: relative;
+}
+
+.content {
+	border-radius: var(--iterpro-border-radius);
+}
+
+.report-planning {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	z-index: 1000;
+}
+
+.date-time-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	column-gap: 2rem;
+}
+
+.trigger-calendar {
+	width: 175px;
+}
+
+.report-planning span {
+	cursor: pointer;
+}
+
+.header-buttons {
+	display: flex;
+	align-items: center;
+	column-gap: 1rem;
+}
+
+.filters > div {
+	white-space: nowrap;
+}
+
+.event-main {
+	padding-left: 5vw;
+	padding-right: 5vw;
+	display: flex;
+	justify-content: center;
+}
+.event-container {
+	position: relative;
+}
+.event-container > .fas {
+	position: absolute;
+	cursor: pointer;
+	left: -32px;
+	font-size: 32px;
+	color: rgba(255, 255, 255, 0.8);
+	top: 150px;
+}
+.event-container > .fas:hover {
+	color: rgba(255, 255, 255, 1);
+}
+.event-container > .next-event {
+	left: auto;
+	right: -32px;
+}
+@media only screen and (max-width: 1000px) {
+	.event-container > .fas {
+		left: -16px;
+		font-size: 16px;
+		top: 100px;
+	}
+	.event-container > .next-event {
+		left: auto;
+		right: -16px;
+	}
+}
+
+.calendar-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	align-items: center;
+}
+.header-hidden {
+	visibility: hidden !important;
+}
+
+.event-tooltip-table th {
+	border: 0px solid transparent !important;
+	text-align: left !important;
+	font-weight: normal !important;
+	color: #999 !important;
+	font-size: 0.8rem !important;
+	width: 35%;
+}
+
+.event-tooltip-table td {
+	border: 0px solid transparent !important;
+	width: 65%;
+}
+.customer-pic {
+	width: 35px;
+	background: white;
+	margin-right: 12px;
+}

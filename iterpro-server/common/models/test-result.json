@@ -1,0 +1,28 @@
+{
+	"name": "TestResult",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"results": {
+			"type": ["object"]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

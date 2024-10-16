@@ -1,0 +1,14 @@
+{
+	"name": "talkjs",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/data-access/talkjs/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:shared", "tag:data-access"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

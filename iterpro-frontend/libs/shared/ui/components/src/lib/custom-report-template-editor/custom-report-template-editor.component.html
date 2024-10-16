@@ -1,0 +1,190 @@
+<p-dialog [visible]="show" [showHeader]="true" [closable]="false" [draggable]="false"
+  [resizable]="false" [modal]="true" [style]="{ width: '90vw', height: '80vh' }">
+  <p-header translate>scouting.gameReportTemplate.templateEditor</p-header>
+  <div class="tw-grid tw-grid-cols-12 tw-gap-2">
+    <div class="tw-col-span-7">
+      <form [formGroup]="form" id="form" (ngSubmit)="onSubmit()" (keydown.enter)="$event.preventDefault()">
+        <div class="field">
+          <label for="title"><span translate>scouting.gameReportTemplate.templateName</span>: </label>
+          <input pInputText id="title" type="text" class="input-text" formControlName="title" required>
+          <span style="font-size: 0.85em" *ngIf="template?.version">{{'Version' | translate}}: {{template.version}}</span>
+        </div>
+        <ng-container formArrayName="sections" *ngTemplateOutlet="sectionForm; context: {$implicit: sections}">
+        </ng-container>
+      </form>
+    </div>
+		<div class="tw-col-span-5">
+			<ng-container *ngTemplateOutlet="preview; context: {$implicit: form}"></ng-container>
+		</div>
+  </div>
+  <p-footer>
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+			<button pButton size="small" class="p-button p-button-primary" type="submit" form="form" icon="fas fa-check" [label]="'buttons.save' | translate"
+							[disabled]="!form.valid || !form.dirty"></button>
+			<p-button size="small" [outlined]="true" icon="fas fa-times iterpro-clickable-icon" (click)="cancel()"
+								[label]="'buttons.discard' | translate"></p-button>
+		</div>
+  </p-footer>
+</p-dialog>
+
+<ng-template #sectionForm let-sections>
+	<h4><span translate>scouting.gameReportTemplate.sections</span> <i class="fas fa-plus iterpro-clickable-icon" (click)="addSection()"></i></h4>
+	<p-accordion>
+		<div *ngFor="let section of sections.controls; let i=index" class="section-container">
+			<p-accordionTab [header]="('scouting.gameReportTemplate.section' | translate) + ' ' + (i+1)">
+				<ng-container [formGroup]="section">
+					<div class="field">
+						<label for="section-{{ i }}"><span translate>scouting.gameReportTemplate.sectionName</span>:</label>
+						<input pInputText id="section-{{ i }}" type="text" class="input-text" formControlName="title">
+						<i class="fas fa-close iterpro-clickable-icon" (click)="removeSection(i)"></i>
+					</div>
+					<ng-container formArrayName="properties" *ngTemplateOutlet="propertyForm; context: {$implicit: section, sectionIndex: i}">
+					</ng-container>
+				</ng-container>
+			</p-accordionTab>
+		</div>
+	</p-accordion>
+</ng-template>
+
+<p-accordion>
+	<ng-template #propertyForm let-section let-sectionIndex="sectionIndex">
+		<h5 style="margin-top: 1em"><span translate>scouting.gameReportTemplate.properties</span> <i class="fas fa-plus iterpro-clickable-icon" (click)="addProperty(section)"></i></h5>
+		<div *ngFor="let property of getSectionPropertiesControls(section); let i=index" class="property-container">
+			<p-accordionTab class="property-accordion-tab" [header]="('scouting.gameReportTemplate.property' | translate) + ' ' + (i+1)"
+											[pDraggable]="'properties'" (onDragStart)="dragStart(property, sectionIndex, i)" (onDragEnd)="dragEnd()" dragHandle=".fa-hamburger"
+											[pDroppable]="'properties'" (onDrop)="drop(i)">
+				<div style="width: 100%; text-align: right; margin-top: 6px">
+					<i class="clickable fas fa-copy"
+						 style="margin-right: 1em; font-size: 1em" (click)="duplicateProperty(section, property)"
+						 pTooltip="{{ ('buttons.duplicateEvent' | translate) }}"></i>
+					<i class="fas fa-hamburger"
+						 style="margin-right: 1em; font-size: 1em"
+						 pTooltip="{{ ('buttons.drag' | translate) }}"></i>
+				</div>
+				<ng-container [formGroup]="property">
+					<div class="field">
+						<label for="property-name-{{ i }}"><span translate>scouting.gameReportTemplate.propertyName</span>:</label>
+						<input pInputText id="property-name-{{ i }}" type="text" class="input-text" formControlName="name">
+						<i class="fas fa-close iterpro-clickable-icon" (click)="removeProperty(section, i)"></i>
+					</div>
+					<div class="other">
+						<div class="subcontainer">
+							<div class="field">
+								<label for="property-label-{{ i }}"><span translate>scouting.gameReportTemplate.label</span>:</label>
+								<input pInputText id="property-label-{{ i }}" type="text" class="input-text" formControlName="label">
+							</div>
+						</div>
+						<div class="subcontainer">
+							<div class="field">
+								<label for="property-type-{{ i }}"><span translate>scouting.gameReportTemplate.type</span>:</label>
+								<p-dropdown appendTo="body" [options]="types" formControlName="type" name="type" id="property-type-{{ i }}"
+														placeholder="{{ 'dropdown.placeholder' | translate }}"></p-dropdown>
+							</div>
+							<div class="field" style="width: 200px">
+								<ng-container *ngIf="isNumber(property)" formArrayName="range">
+									<label for="property-range-{{ i }}"><span translate>scouting.gameReportTemplate.range</span>:</label>
+									<p-inputNumber id="property-range-{{ i }}" class="input-number" [formControlName]="0" mode="decimal"
+																 [locale]="getLocale()" [placeholder]="'min'" [minFractionDigits]="getFractionDigits(property)">
+									</p-inputNumber>
+									<p-inputNumber id="property-range-{{ i }}-max" class="input-number" [formControlName]="1" mode="decimal"
+																 [locale]="getLocale()" [placeholder]="'max'" [minFractionDigits]="getFractionDigits(property)">
+									</p-inputNumber>
+								</ng-container>
+								<ng-container *ngIf="isString(property)" formArrayName="fields">
+									<label for="property-fields-{{ i }}"><span translate>scouting.gameReportTemplate.fields</span>:</label>
+									<input pInputText id="property-fields-{{ i }}" type="text" class="input-text" [formControlName]="0">
+									<input pInputText id="property-fields-{{ i }}-max" type="text" class="input-text" [formControlName]="1">
+								</ng-container>
+								<ng-container *ngIf="isEnum(property)">
+									<label for="property-enum-{{ i }}"><span translate>scouting.gameReportTemplate.choices</span>:</label>
+									<p-chips id="property-enum-{{ i }}" formControlName="enum" separator="," [addOnTab]="true" [addOnBlur]="true">
+									</p-chips>
+								</ng-container>
+								<ng-container *ngIf="isOperation(property)" formGroupName="operation">
+									<label for="property-operation-name-{{ i }}">Operation:</label>
+									<p-dropdown appendTo="body" [options]="operations" formControlName="name" name="name"
+															id="property-operation-name-{{ i }}" placeholder="{{ 'dropdown.placeholder' | translate }}">
+									</p-dropdown>
+
+									<label for="property-operation-parameters-{{i}}"><span translate>scouting.gameReportTemplate.parameters</span>:</label>
+									<p-multiSelect appendTo="body" [options]="getOtherSectionProperties(section, property.value.name)"
+																 formControlName="parameters" name="parameters" id="property-operation-parameters-{{ i }}"
+																 placeholder="{{ 'multiselect.placeholder' | translate }}">
+									</p-multiSelect>
+								</ng-container>
+							</div>
+						</div>
+						<div class="subcontainer">
+							<div class="field">
+								<label for="property-description-{{ i }}"><span translate>scouting.gameReportTemplate.description</span>:</label>
+								<input pInputText id="property-description-{{ i }}" type="text" class="input-text"
+											 formControlName="description">
+							</div>
+							<div class="field">
+								<label for="property-hascomment-{{ i }}"><span translate>scouting.gameReportTemplate.hasComment</span>:</label>
+								<p-checkbox id="property-hascomment-{{ i }}" formControlName="hasComment" name="hasComment" [binary]="true" />
+							</div>
+						</div>
+						<ng-container *ngIf="!isBoolean(property)">
+							<ng-container formArrayName="colorMapping" *ngTemplateOutlet="colorMappingForm; context: {$implicit: property}">
+							</ng-container>
+						</ng-container>
+					</div>
+
+				</ng-container>
+			</p-accordionTab>
+		</div>
+	</ng-template>
+
+
+	<ng-template #colorMappingForm let-property>
+		<h5><span translate>scouting.gameReportTemplate.colorMapping</span> <i class="fas fa-plus iterpro-clickable-icon" (click)="addColorMapping(property)"></i></h5>
+
+		<div *ngFor="let mapping of getPropertiesColorMappingControls(property); let i=index" class="colorMapping-container">
+			<ng-container [formGroup]="mapping">
+				<div class="field">
+					<label for="mapping-color-{{ i }}"><span translate>scouting.gameReportTemplate.color</span>:</label>
+					<input id="mapping-color-{{ i }}" type="color" class="input-color" formControlName="color">
+				</div>
+				<div *ngIf="isNumber(property) || isOperationOccurrence(property) || isOperationSum(property) || isOperationAvg(property)" class="field" style="width: 200px">
+					<label for="mapping-min-{{ i }}">Min:</label>
+					<p-inputNumber id="mapping-min-{{ i }}" class="input-number" formControlName="min"
+												 [minFractionDigits]="getFractionDigits(property)">
+					</p-inputNumber>
+					<label for="mapping-max-{{ i }}">Max:</label>
+					<p-inputNumber id="mapping-max-{{ i }}" class="input-number" formControlName="max"
+												 [minFractionDigits]="getFractionDigits(property)">
+					</p-inputNumber>
+				</div>
+				<div *ngIf="isEnum(property) || isString(property)" class="field" style="width: 200px">
+					<label for="mapping-values-{{ i }}"><span translate>scouting.gameReportTemplate.values</span>:</label>
+					<p-multiSelect *ngIf="isEnum(property)" appendTo="body"
+												 [options]="(getPropertiesEnum(property)).value | selectItem" formControlName="values" name="values"
+												 id="property-values-{{ i }}" placeholder="{{ 'dropdown.placeholder' | translate }}">
+					</p-multiSelect>
+					<p-multiSelect *ngIf="isString(property)" appendTo="body"
+												 [options]="getOptionsByType(property.value)" formControlName="values" name="values"
+												 id="property-values-{{ i }}" placeholder="{{ 'dropdown.placeholder' | translate }}">
+					</p-multiSelect>
+				</div>
+				<div class="field">
+					<label for="mapping-label-{{ i }}"><span translate>scouting.gameReportTemplate.label</span>:</label>
+					<input pInputText id="mapping-label-{{ i }}" type="text" class="input-text" formControlName="label">
+				</div>
+				<i class="fas fa-close iterpro-clickable-icon" (click)="removeColorMapping(property, i)"></i>
+			</ng-container>
+		</div>
+	</ng-template>
+
+	<ng-template #preview let-form>
+		<div class="tw-w-full tw-bg-shark-1000 tw-rounded-lg tw-p-4">
+			<iterpro-custom-report-template
+				[disabled]="false"
+				[schema]="form.value"
+				[reportData]="previewInstance"
+				[isEditorPreview]="true"
+				(reportDataChange)="onReportDataChange($event)"
+			></iterpro-custom-report-template>
+		</div>
+	</ng-template>
+</p-accordion>

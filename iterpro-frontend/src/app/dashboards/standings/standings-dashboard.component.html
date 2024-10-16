@@ -1,0 +1,56 @@
+<div class="main">
+	<!-- Header -->
+	<div class="tw-flex tw-items-center tw-justify-end tw-gap-4 tw-mt-4" *ngIf="isValidStandings()">
+		<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+			<i
+				class="fas fa-sync tw-cursor-pointer"
+				[pTooltip]="'dashboard.resync' | translate"
+				(click)="resync()"
+			></i>
+		</div>
+		<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+			<iterpro-change-season [reset]="true" />
+		</div>
+	</div>
+
+	<!--  NO VALID STANDINGS Handling of displayed message to user when no team season found or no wyscoutId found -->
+	<div
+		*ngIf="!isValidStandings()"
+		class="tw-flex tw-items-center tw-bg-shark-950 tw-bg-opacity-85 tw-p-8 tw-rounded-lg tw-mt-8"
+	>
+		<div class="tw-w-full tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-4">
+			<i class="fas fa-exclamation-triangle tw-text-warning tw-text-4xl"></i>
+			<div>{{ getMessageForMissingWyscoutData() }}</div>
+			<a href="#" [routerLink]="getClubSettingsLink()">
+				<div class="tw-float-right tw-flex tw-cursor-pointer tw-justify-center tw-italic">{{getRedirectText() }}</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- STANDINGS -->
+	<div *ngIf="isValidStandings()" class="tw-mx-6">
+		<div class="match-list">
+			<iterpro-match-list [isLoading]="isLoading" [selected]="selected" [data]="data" [currentTeam]="currentTeam" [matches]="list" (matchClicked)="onClickMatch($event)" />
+		</div>
+
+		<div class="row">
+			<div class="col col-details">
+				<span class="download-report">
+					<iterpro-report-download *ngIf="!isLoading" (downloadCSV)="downloadMatchReportCSV()" (downloadPDF)="downloadMatchReportPDF()" />
+				</span>
+				<iterpro-match-details [isLoading]="isLoading" [selected]="selected" />
+			</div>
+
+			<div class="col col-leaderboard">
+				<span class="download-report">
+					<iterpro-report-download
+						*ngIf="!isLoading"
+						(downloadCSV)="downloadLeaderboardReportCSV()"
+						(downloadPDF)="downloadLeaderboardReportPDF()"
+					/>
+				</span>
+				<iterpro-leaderboard [isLoading]="isLoading" [data]="data" [team]="currentTeam" />
+			</div>
+		</div>
+	</div>
+</div>

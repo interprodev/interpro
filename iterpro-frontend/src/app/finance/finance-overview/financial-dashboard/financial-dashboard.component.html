@@ -1,0 +1,308 @@
+<div *blockUI="'chart'">
+	<ng-container *ngIf="!isLoading; else isLoadingActionsTemplate">
+		<div class="header-actions">
+			<h2>
+				{{ selectedPlayer?.displayName }}
+				<span *ngIf="selectedPlayer?.archived" class="fas fa-archive"
+					[pTooltip]="getArchiveTooltip(selectedPlayer)"></span>
+			</h2>
+			<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+				<div class="tw-flex tw-items-center tw-gap-2 tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+					<div class="tw-text-sm" [pTooltip]="'financial.taxes.values' | translate : taxesParam" translate>financial.dashboard.netCosts</div>
+					<p-inputSwitch [(ngModel)]="taxesFlag" (onChange)="updateChart()"> </p-inputSwitch>
+				</div>
+				<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded"  *ngIf="selectedPlayer">
+					<p-button size="small" (click)="backToTeam()" [label]="'buttons.backToTeam' | translate"></p-button>
+				</div>
+
+				<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+					<iterpro-player-dropdown *ngIf="players"
+																	 [imgHeight]="'30px'"
+																	 [playerId]="selectedPlayer?.id"
+																	 [options]="players"
+																	 [showClear]="true"
+																	 [placeholder]="'dropdown.placeholderPlayer' | translate"
+																	 (playerIdChanged)="onSelectPlayer($event)"></iterpro-player-dropdown>
+				</div>
+				<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+					<i class="fas fa-sync tw-cursor-pointer" pTooltip="{{ 'dashboard.resync' | translate }}" (click)="onResync()"></i>
+				</div>
+
+				<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+					<!-- PDF REPORT -->
+					<iterpro-report-download (downloadPDF)="selectedPlayer ? getPlayerReport() : getTeamReport()">
+					</iterpro-report-download>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<ng-container *ngIf="!selectedPlayer; else playerDashboard">
+		<div class="content">
+			<div class="box-container">
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container column">
+						<h3 translate>financial.overview.totSquadValue</h3>
+						<div class="pflex-col-12">
+							<span class="value">{{ currency
+								}}{{
+								(taxesFlag ? totalSquadValue?.totalSquadValueGross : totalSquadValue?.totalSquadValue)
+								| shortNumber : true
+								}}</span>
+						</div>
+						<div class="pflex-col-12">
+							<p-chart *ngIf="teamValuesChartData" [data]="teamValuesChartData" [options]="teamValuesChartOptions"
+								type="bar"></p-chart>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container">
+						<h3 translate>financial.overview.totalContractValue</h3>
+						<div class="pflex-col-12 flexed">
+							<div class="pflex-col-6 column left-content">
+								<div class="card-box-label">
+									<span translate>admin.contracts.totalValue</span>
+								</div>
+								<span class="value">{{ currency
+									}}{{
+									(taxesFlag ? contractsData?.totalContractValueGross : contractsData?.totalContractValue)
+									| shortNumber : true
+									}}</span>
+							</div>
+							<div class="pflex-col-6 column right-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.avgLength</span>
+								</div>
+								<span class="value">
+									{{ contractsData?.avgContractLength.years }}
+									<span class="value-label"> years</span>
+									{{ contractsData?.avgContractLength.months }}
+									<span class="value-label"> months</span>
+								</span>
+							</div>
+						</div>
+						<div class="pflex-col-12 flexed" style="margin-top: 3em">
+							<div class="pflex-col-6 column left-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.playersPa</span>
+								</div>
+								<span class="value">{{ currency
+									}}{{
+									(taxesFlag ? contractsData?.playersPaGross : contractsData?.playersPa)
+									| shortNumber : true
+									}}</span>
+							</div>
+							<div class="pflex-col-6 column right-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.staffsPa</span>
+								</div>
+								<span class="value">{{ currency
+									}}{{
+									(taxesFlag ? contractsData?.staffsPaGross : contractsData?.staffsPa)
+									| shortNumber : true
+									}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container column"
+						style="justify-content: space-between">
+						<h3 translate>financial.overview.contractExpiry</h3>
+						<div class="pflex-col-12">
+							<span class="value">{{ contractExpiry?.contractsExpireIn1Year }} </span><span class="value-label"
+								translate>financial.overview.expiry</span>
+						</div>
+						<div class="pflex-col-12">
+							<p-chart *ngIf="expiringContractsChartData" [data]="expiringContractsChartData"
+								[options]="expiringContractChartOptions" type="bar"></p-chart>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container">
+						<span style="display: flex">
+							<h3 class="left-content" style="width: 40%" translate>financial.dashboard.fixedWage</h3>
+							<h3 class="right-content" style="width: 60%" translate>financial.dashboard.bonus</h3>
+						</span>
+						<div class="pflex-col-12">
+							<div class="card-box-label" translate>financial.overview.players</div>
+							<div class="pflex-col-12 flexed" style="padding:0">
+								<div class="pflex-col-6 column left-content" style="width: 40%">
+									<span class="value">{{ currency
+										}}{{
+										(taxesFlag ? contractsData?.fixedWagePlayersSumGross : contractsData?.fixedWagePlayersSum)
+										| shortNumber : true
+										}}</span>
+								</div>
+								<div class="pflex-col-6 column right-content" style="width: 60%">
+									<span class="value">
+										{{ currency }}
+										{{
+										(taxesFlag ? contractsData?.bonusWonGross : contractsData?.bonusWon)
+										| shortNumber : true
+										}}
+										<span class="card-box-val-small">/{{
+											(taxesFlag ? contractsData?.residualBonusGross : contractsData?.residualBonus)
+
+											| shortNumber : true
+											}}</span>
+									</span>
+								</div>
+							</div>
+
+						</div>
+						<div class="pflex-col-12" style="margin-top: 3em">
+							<div class="card-box-label" translate>financial.overview.staff</div>
+							<div class="pflex-col-12 flexed" style="padding:0">
+								<div class="pflex-col-6 column left-content" style="width: 40%">
+									<span class="value">{{ currency
+										}}{{
+										(taxesFlag ? contractsData?.fixedWageStaffSumGross : contractsData?.fixedWageStaffSum)
+										| shortNumber : true
+										}}</span>
+								</div>
+								<div class="pflex-col-6 column right-content" style="width: 60%">
+									<span class="value">
+										{{ currency }}
+										{{
+										(taxesFlag ? contractsData?.bonusStaffWonGross : contractsData?.bonusStaffWon)
+										| shortNumber : true
+										}}
+										<span class="card-box-val-small">/{{
+											(taxesFlag ? contractsData?.residualStaffBonusGross : contractsData?.residualStaffBonus)
+
+											| shortNumber : true
+											}}</span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container">
+						<h3 translate>financial.overview.investmentPerformance</h3>
+						<div class="pflex-col-12 flexed">
+							<div class="pflex-col-6 column left-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.avgAvailability</span>
+									<i pTooltip="{{ 'financial.dashboard.tooltip.avgAvailability' | translate }}"
+										class="fas fa-question icon label-tooltip"></i>
+								</div>
+								<span class="value">{{ investmentPerformance.teamAvailability | number : '1.0-0' }}%</span>
+							</div>
+							<div class="pflex-col-6 column right-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.lossesByInjury</span>
+									<i pTooltip="{{ 'financial.dashboard.tooltip.lossesByInjury' | translate }}"
+										class="fas fa-question icon label-tooltip"></i>
+								</div>
+								<span class="value">{{ currency
+									}}{{
+									(taxesFlag ? investmentPerformance?.lossesGross : investmentPerformance?.losses)
+									| shortNumber : true
+									}}</span>
+							</div>
+						</div>
+						<div class="pflex-col-12 flexed" style="margin-top: 3em">
+							<div class="pflex-col-6 column left-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.teamRoi</span>
+									<i pTooltip="{{ 'financial.dashboard.tooltip.teamRoi' | translate }}"
+										class="fas fa-question icon label-tooltip"></i>
+								</div>
+								<span class="value">{{ currency
+									}}{{
+									(taxesFlag ? investmentPerformance?.teamRoiGross : investmentPerformance?.teamRoi)
+									| shortNumber : true
+									}}<span class="card-box-val-small">/{{
+										(taxesFlag ? investmentPerformance?.teamResidualRoiGross : investmentPerformance?.teamResidualRoi)
+
+										| shortNumber : true
+										}}</span></span>
+							</div>
+							<div class="pflex-col-6 column right-content">
+								<div class="card-box-label">
+									<span translate>financial.overview.capitalGain</span>
+									<i pTooltip="{{ 'financial.dashboard.tooltip.capitalGain' | translate }}"
+										class="fas fa-question icon label-tooltip"></i>
+								</div>
+								<span class="value" [style.color]="investmentPerformance?.teamCapitalGain >= 0 ? 'green' : 'red'">
+									{{ currency
+									}}{{
+									(taxesFlag ? investmentPerformance?.teamCapitalGainGross : investmentPerformance?.teamCapitalGain)
+									| shortNumber : true
+									}}
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="box-element">
+					<div *ngIf="!isLoading; else isLoadingTemplate" class="container"
+						style="display: flex; flex-direction: column; justify-content: space-between">
+						<h3 translate>financial.overview.typeOfContracts</h3>
+						<div class="pflex-col-12 flexed" style="justify-content: center;">
+							<p-chart *ngIf="contractTypesChartData" type="doughnut" [data]="contractTypesChartData"
+								[options]="contractTypesChartOptions">
+							</p-chart>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<ng-template #playerDashboard>
+		<iterpro-financial-dashboard-player [player]="selectedPlayer" [team]="team" [season]="selectedSeason"
+			[taxesFlag]="taxesFlag" [offlinePlayerData]="singlePlayerData">
+		</iterpro-financial-dashboard-player>
+	</ng-template>
+</div>
+
+<ng-template #isLoadingActionsTemplate>
+	<div class="header-actions" style="justify-content: flex-end">
+		<div class="header-buttons">
+			<p-skeleton width="200px" height="2rem"></p-skeleton>
+			<p-skeleton width="30px" height="2rem"></p-skeleton>
+			<p-skeleton width="20px" height="2rem"></p-skeleton>
+			<p-skeleton width="20px" height="2rem"></p-skeleton>
+			<p-skeleton width="200px" height="2rem"></p-skeleton>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #isLoadingTemplate>
+	<div class="container" style="height: 35vh">
+		<h3>
+			<p-skeleton width="100%" height="2rem"></p-skeleton>
+		</h3>
+		<div class="pflex-col-12" style="display: flex; justify-content: space-between">
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+		</div>
+		<div class="pflex-col-12" style="display: flex; justify-content: space-between">
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+			<div style="display: flex; flex-direction: column">
+				<span style="margin-bottom: 0.5em"><p-skeleton width="11rem" height="2vh"></p-skeleton></span>
+				<span><p-skeleton width="5rem" height="6vh"></p-skeleton></span>
+			</div>
+		</div>
+	</div>
+</ng-template>

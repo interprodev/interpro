@@ -1,0 +1,11 @@
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+.upload {
+  display: flex;
+  align-items: center;
+}
+.buttons > * {
+  margin: 0.5rem;
+}

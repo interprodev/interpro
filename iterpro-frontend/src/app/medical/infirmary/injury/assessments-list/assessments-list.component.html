@@ -1,0 +1,150 @@
+<ng-container>
+	<div class="pflex-w-full pflex-mb-2 pflex-flex pflex-align-items-center pflex-justify-content-between">
+		<h3>{{ 'assessments' | translate }}</h3>
+		<p-button
+			size="small"
+			*ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+			(click)="addNewAssessment()"
+			[label]="'buttons.addNew' | translate"
+		>
+		</p-button>
+	</div>
+
+	@if (assessments && assessments?.length > 0) {
+	<p-table styleClass="p-datatable-striped" [value]="assessments" dataKey="id">
+		<!-- HEADER --->
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th style="width: 3rem"></th>
+				<th translate>medical.infirmary.exam.date</th>
+				<th translate>tooltip.author</th>
+				<th translate>medical.infirmary.assessments.nextAssessment</th>
+				<th translate>medical.infirmary.assessments.available</th>
+				<th translate>medical.infirmary.assessments.hightPriority</th>
+				<th></th>
+			</tr>
+		</ng-template>
+		<!-- ROWs --->
+		<ng-template pTemplate="body" let-assessment let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td>
+					<p-button
+						size="small"
+						pRipple
+						[text]="true"
+						[pRowToggler]="assessment"
+						[rounded]="true"
+						[icon]="expanded ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'"
+					></p-button>
+				</td>
+				<td>{{ assessment.date | formatDateBySetting : 'HH:mm' }}</td>
+				<td>{{ assessment?.authorId | customerName : customers }}</td>
+				<td>{{ assessment.next ? (assessment.next | formatDateBySetting : 'HH:mm') : '-' }}</td>
+				<td>{{ assessment.available | translate }}</td>
+				<td><div *ngIf="assessment.highPriority" class="point"></div></td>
+				<td>
+					<div *ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'">
+						<i
+							[pTooltip]="'buttons.edit' | translate"
+							class="pflex-cursor-pointer fas fa-pencil-alt"
+							(click)="editAssessment(assessment)"
+						></i>
+						<i
+							*ngIf="injury.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+							[pTooltip]="'buttons.delete' | translate"
+							class="pflex-cursor-pointer pflex-ml-2 fas fa-trash"
+							(click)="deleteAssessment(assessment)"
+						></i>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+		<!-- ROW EXPANSION -->
+		<ng-template pTemplate="rowexpansion" let-assessment>
+			<tr class="tw-h-10">
+				<td colspan="7">
+					<div class="pflex-grid pflex-px-5">
+						<div class="pflex-col-12 md:pflex-col-6">
+							<table class="pflex-w-full fields-table">
+								<tr>
+									<th translate>medical.infirmary.assessments.rom</th>
+									<td translate>{{ assessment.rom || '-' }}</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.strength</th>
+									<td translate>{{ assessment.strength || '-' }}</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.stability</th>
+									<td translate>{{ assessment.stability || '-' }}</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.swelling</th>
+									<td translate>{{ assessment.swelling || '-' }}</td>
+								</tr>
+							</table>
+						</div>
+						<div class="pflex-col-12 md:pflex-col-6">
+							<table class="pflex-w-full fields-table">
+								<tr>
+									<th translate>medical.infirmary.assessments.pain</th>
+									<td>
+										<div class="label-range pflex-flex pflex-align-items-center pflex-justify-content-between pflex-w-full">
+											<div class="pflex-mx-4 pflex-w-7">
+												<input
+													class="slider range color-range-inverted"
+													type="range"
+													[min]="0"
+													[max]="10"
+													[value]="assessment.pain || 0"
+													[disabled]="true"
+												/>
+											</div>
+											<span>{{ assessment.pain || 0 }}/10</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.functionality</th>
+									<td>
+										<div class="label-range pflex-flex pflex-align-items-center pflex-justify-content-between pflex-w-full">
+											<div class="pflex-mx-4 pflex-w-7">
+												<input
+													class="slider range color-range-inverted"
+													type="range"
+													[min]="0"
+													[max]="100"
+													[value]="assessment.functionality || 0"
+													[disabled]="true"
+												/>
+											</div>
+											<span>{{ assessment.functionality || 0 }}/100</span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.expectation</th>
+									<td>
+										<span *ngIf="!assessment.further">{{
+											assessment.expectation ? (assessment.expectation | formatDateBySetting) : '-'
+										}}</span>
+										<span *ngIf="assessment.further" translate>medical.infirmary.assessments.further</span>
+									</td>
+								</tr>
+								<tr>
+									<th translate>medical.infirmary.assessments.notes</th>
+									<td>{{ assessment.notes || '-' }}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+	} @else {
+		<div>
+			<p>{{ 'alert.noInjuryAssessmentsFound' | translate }}</p>
+		</div>
+	}
+</ng-container>

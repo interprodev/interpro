@@ -1,0 +1,34 @@
+<ng-container *ngIf="!!question.translateLabel; else customLabel">
+  <div class="report-header align-items-center" pTooltip="{{ question.description | translate }}">
+    {{ question.translateLabel | translate }}
+  </div>
+</ng-container>
+<ng-template #customLabel>
+  <div class="report-header align-items-center" [pTooltip]="question.description">
+    {{ question.label }}
+  </div>
+</ng-template>
+
+<div class="column">
+  <p-dropdown
+    appendTo="body"
+    [style]="{ 'min-width': 'auto' }"
+    [options]="options"
+    [readonly]="!editable"
+    [(ngModel)]="value"
+    (onChange)="onChangeValue($event)"
+  >
+    <ng-template let-item pTemplate="selectedItem">
+      <ng-container [ngSwitch]="item.value">
+        <span *ngSwitchCase="'yes'" class="answer-yes">V</span>
+        <span *ngSwitchCase="'no'" class="answer-no">X</span>
+      </ng-container>
+    </ng-template>
+    <ng-template let-answer pTemplate="item">
+      <div [ngSwitch]="answer.value" class="ui-helper-clearfix" style="position: relative;height: 25px;">
+        <span *ngSwitchCase="'yes'" class="answer-yes">V</span>
+        <span *ngSwitchCase="'no'" class="answer-no">X</span>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>

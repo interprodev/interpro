@@ -1,0 +1,322 @@
+{
+	"name": "SessionsStats",
+	"plural": "SessionsStats",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getAdvancedData": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string"
+				},
+				{
+					"arg": "playerIds",
+					"type": "array"
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date"
+				},
+				{
+					"arg": "dateTo",
+					"type": "date"
+				},
+				{
+					"arg": "metrics",
+					"type": "array"
+				},
+				{
+					"arg": "groupingBy",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/advanced-data",
+				"verb": "get"
+			}
+		},
+		"periodCsv": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "activeMetrics",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "splits",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "timezoneOffset",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "res",
+					"type": "object",
+					"http": {
+						"source": "res"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/periodCsv",
+				"verb": "post"
+			}
+		},
+		"sessionsPeriodTotal": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "groups",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metricsGps",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "splits",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "modified",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "individual",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/sessionsPeriodTotal",
+				"verb": "post"
+			}
+		},
+		"sessionsPeriodTrend": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "groups",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metricsGps",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "splits",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "modified",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "individual",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/sessionsPeriodTrend",
+				"verb": "post"
+			}
+		},
+		"workloadAnalysisPeriod": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "modified",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "individual",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/workloadAnalysisPeriod",
+				"verb": "post"
+			}
+		}
+	}
+}

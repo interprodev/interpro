@@ -1,0 +1,10 @@
+.notification-container {
+	border-left: solid;
+	border-width: 5px;
+	letter-spacing: 0;
+	@apply tw-bg-shark-900 tw-opacity-85;
+}
+
+.notification-container:hover {
+	@apply tw-bg-shark-900 tw-opacity-95;
+}

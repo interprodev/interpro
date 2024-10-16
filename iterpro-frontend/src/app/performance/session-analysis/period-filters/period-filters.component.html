@@ -1,0 +1,131 @@
+<ng-container>
+	<h3 class="spacing greyed" translate>sidebar.period</h3>
+	<div class="calendar">
+		<p-calendar
+			class="calendar-width-215"
+			showButtonBar="true"
+			selectionMode="range"
+			[(ngModel)]="selectedDatePeriod"
+			(onSelect)="onChangePeriod($event)"
+			[maxDate]="today"
+			[clearButtonStyleClass]="'p-button-sm'"
+			[todayButtonStyleClass]="'p-button-sm'"
+		>
+			<ng-template pTemplate="date" let-date>
+				<div class="custom-date" [class.highlight]="dayHasSession(date.day)">
+					{{ date.day }}
+				</div>
+			</ng-template>
+		</p-calendar>
+	</div>
+
+	<ng-container>
+		<div class="sidebar-col">
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.counterDays</h3>
+				<span>{{ periodDays }}</span>
+			</div>
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.trainingCounter</h3>
+				<span>{{ periodTrainings }}</span>
+			</div>
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.gamesCounter</h3>
+				<span>{{ periodGames }}</span>
+			</div>
+		</div>
+	</ng-container>
+
+	<h3 class="spacing greyed" translate>sidebar.partecipants</h3>
+	<p-multiSelect
+		appendTo="body"
+		selectedItemsLabel="{0} selected"
+		maxSelectedLabels="1"
+		optionLabel="label"
+		dataKey="label"
+		[placeholder]="'dropdown.placeholder' | translate"
+		[options]="partecipants"
+		[(ngModel)]="selectedPlayersOptions"
+		(onChange)="onChangePlayers($event)"
+	>
+	</p-multiSelect>
+
+	<h3 class="greyed spacing" translate>sidebar.filter</h3>
+	<p-dropdown [style]="{ width: '100%' }" [options]="filtersOptions" [(ngModel)]="selectedFilter" (onChange)="onChangeFilter($event)">
+	</p-dropdown>
+
+	<h3 class="spacing greyed" translate>sidebar.sessiontype.title</h3>
+	<p-dropdown
+		[style]="{ width: '100%' }"
+		[options]="sessionOptions"
+		[(ngModel)]="selectedSessionType"
+		(onChange)="onChangeSessionType($event)"
+	>
+	</p-dropdown>
+
+	<h3 class="spacing greyed" translate>sidebar.split</h3>
+	<p-multiSelect
+		appendTo="body"
+		[style]="{ 'z-index': 'auto !important' }"
+		selectedItemsLabel="{0} selected"
+		maxSelectedLabels="2"
+		optionLabel="label"
+		[options]="splits"
+		[(ngModel)]="selectedSplits"
+		(onChange)="onChangeSplit($event)"
+	>
+	</p-multiSelect>
+
+	<ng-container>
+		<h3 class="spacing greyed" translate>sidebar.metrics</h3>
+		<p-multiSelect
+			[selectionLimit]="2"
+			appendTo="body"
+			[style]="{ 'z-index': 'auto !important' }"
+			[optionLabel]="'metricLabel'"
+			[options]="metrics"
+			[(ngModel)]="selectedMetrics"
+			(onChange)="onChangeMetrics($event)"
+		>
+		</p-multiSelect>
+	</ng-container>
+
+	<ng-container *ngIf="periodAnalysisState === PERIOD_VIEWS.Trend && canLoadAdvanced">
+		<div class="icon-heading">
+			<h3 class="spacing greyed" translate>sidebar.advanced</h3>
+			<div class="icon" *ngIf="!advancedFlags?.inProgress">
+				<i
+					class="fas fa-check fa-active"
+					*ngIf="!advancedFlags?.noData && !advancedFlags?.wrongSelection"
+					[pTooltip]="'alert.advancedAnalysisAvailable' | translate"
+				></i>
+				<i class="fas fa-times" *ngIf="advancedFlags?.noData" [pTooltip]="'alert.noAdvancedAnalysis' | translate"></i>
+				<i
+					class="fas fa-exclamation"
+					*ngIf="advancedFlags?.wrongSelection"
+					[pTooltip]="'alert.advancedAnalysisWrongSelection' | translate"
+				></i>
+			</div>
+		</div>
+
+		<ng-container *ngIf="!advancedFlags?.inProgress && !advancedFlags?.wrongSelection">
+			<p-dropdown
+				[options]="advancedOptions"
+				[tooltip]="moduleError | translate"
+				[readonly]="!canAccessToModule"
+				[placeholder]="'dropdown.placeholder' | translate"
+				[(ngModel)]="selectedAdvanced"
+				(ngModelChange)="onChangeAdvanced($event)"
+			>
+			</p-dropdown>
+		</ng-container>
+
+		<p-progressSpinner
+			*ngIf="advancedFlags?.inProgress"
+			[pTooltip]="'alert.advancedLoading' | translate"
+			[style]="{ width: '15px', height: '15px' }"
+			strokeWidth="6"
+		>
+		</p-progressSpinner>
+	</ng-container>
+</ng-container>

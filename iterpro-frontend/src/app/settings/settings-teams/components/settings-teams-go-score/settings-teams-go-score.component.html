@@ -1,0 +1,141 @@
+@if (isLoading || settingsStore.userHasPermission('readiness')) {
+	<div class="tw-flex tw-items-center tw-justify-between">
+		<iterpro-settings-header [title]="'preferences.goScore'"></iterpro-settings-header>
+		<iterpro-action-buttons
+			[editMode]="editMode"
+			[buttonTypes]="goscoreSettingsForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+			[loading]="isLoading"
+			(edit)="edit()"
+			(discard)="discard()"
+			(save)="save()"
+		></iterpro-action-buttons>
+	</div>
+	<div class="tw-mb-8 tw-mt-8"><iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown></div>
+}
+@if (!isLoading) {
+	@if (settingsStore.userHasPermission('readiness')) {
+		<div class="tw-mt-2 tw-flex tw-flex-col tw-gap-6">
+			@if (goscoreSettingsForm) {
+				<div class="tw-flex tw-items-center tw-justify-end tw-gap-3">
+					@if (goscoreSettingsForm.errors && goscoreSettingsForm.errors.totalGoWeightInvalid) {
+						<div>
+							<div class="tw-text-red-500" translate>goScoreSettings.errors</div>
+						</div>
+						<div class="iterpro-item-container tw-border-red-500">{{goscoreSettingsForm.errors.totalWeight}}</div>
+					}
+					@if (editMode) {
+						<div class="tw-flex tw-flex-col tw-items-center tw-relative">
+							<p-button
+								type="button"
+								[rounded]="true"
+								[size]="'small'"
+								[label]="'addGoSettingsRule' | translate"
+								(click)="dropdown.show()"
+							></p-button>
+							<p-dropdown
+								#dropdown
+								class="tw-invisible tw-absolute tw-top-5 tw-right-0"
+								appendTo="body"
+								filter="true"
+								[autoDisplayFirst]="false"
+								[options]="testItems"
+								(onChange)="addRule($event)"
+							>
+							</p-dropdown>
+						</div>
+					}
+				</div>
+				<!-- Wellness form -->
+				<ng-container
+					*ngTemplateOutlet="commonTemplate; context: { formGroup: goscoreSettingsForm.controls.wellnessForm }"
+				></ng-container>
+				<!-- Test forms -->
+				@for (element of goscoreSettingsForm.controls.testForms.controls; track element; let index = $index) {
+					<ng-container *ngTemplateOutlet="commonTemplate; context: { formGroup: element, index }"></ng-container>
+				}
+			}
+		</div>
+		<ng-template #commonTemplate let-element="formGroup" let-index="index">
+			<div [formGroup]="element" class="iterpro-item-container tw-p-4 tw-grid tw-grid-cols-12 tw-gap-x-4 tw-items-start tw-justify-between">
+				<div class="tw-col-span-2 tw-flex tw-justify-between tw-gap-2">
+					<div class="tw-flex tw-gap-2">
+						<p-inputSwitch class="small-input-switch" formControlName="enabled" (onChange)="toggleRuleSettings(element)"></p-inputSwitch>
+						<div class="tw-flex tw-flex-col tw-gap-1">
+							<h5>{{ element.get('metricName').value !== 'wellness' ? element.get('testName').value : 'Survey' }}</h5>
+							<div class="iterpro-text-color-900 tw-text-sm">{{ element.get('metricName').value }}</div>
+						</div>
+					</div>
+				</div>
+				<div class="tw-col-span-8 tw-flex tw-gap-2">
+					<ng-container formGroupName="weights">
+						@if (element.get('metricName').value === 'wellness') {
+							<p-table
+								[scrollable]="true"
+								[styleClass]="'p-datatable-gridlines'"
+								[value]="['sleep', 'stress', 'fatigue', 'soreness', 'mood']"
+							>
+								<ng-template pTemplate="header">
+									<tr class="tw-h-10">
+										<th></th>
+										<th>1</th>
+										<th>2</th>
+										<th>3</th>
+										<th>4</th>
+										<th>5</th>
+									</tr>
+								</ng-template>
+								<ng-template pTemplate="body" let-metric>
+									<tr class="tw-h-10">
+										<td>{{ 'wellness.' + metric | translate }}</td>
+										@for (control of element.get('weights.' + metric).controls; track control; let i = $index) {
+											<td>
+												<input type="number" pInputText [formControl]="control" />
+											</td>
+										}
+									</tr>
+								</ng-template>
+							</p-table>
+						} @else {
+							@for (control of element.get('weights.inner')['controls']; track control; let i = $index) {
+								<div class="tw-flex tw-items-center tw-gap-1">
+									<div [ngStyle]="flagArray[i] | backgroundColor" class="point"></div>
+									<input type="number" pInputText [formControl]="control" />
+								</div>
+							}
+						}
+					</ng-container>
+				</div>
+				<div class="tw-col-span-2 tw-grid tw-grid-cols-2" formGroupName="weights">
+					<div class="tw-cols-span-1 tw-flex tw-items-center tw-justify-end">
+						<div>
+							<input class="tw-w-16 tw-text-right" type="number" pInputText formControlName="go_weight" />
+							<iterpro-form-feedback
+								[groupName]="'weights'"
+								[field]="'go_weight'"
+								[label]="'value' | translate"
+							></iterpro-form-feedback>
+						</div>
+						<span>%</span>
+					</div>
+					<div class="tw-cols-span-1 tw-text-end">
+						@if (element.get('metricName').value !== 'wellness' && editMode) {
+							<iterpro-icon-button
+								[icon]="'fas fa-trash tw-text-red-500'"
+								(click)="removeRule(element, index)"
+								[tooltip]="'buttons.remove' | translate"
+							></iterpro-icon-button>
+						}
+					</div>
+				</div>
+			</div>
+		</ng-template>
+	} @else {
+		<h4 translate>noPermissions</h4>
+	}
+} @else {
+	<div class="tw-mt-8 tw-flex tw-flex-col tw-gap-6">
+		<iterpro-skeleton-table [cols]="3" [rows]="5"></iterpro-skeleton-table>
+		<iterpro-skeleton-table [cols]="3" [rows]="2"></iterpro-skeleton-table>
+		<iterpro-skeleton-table [cols]="3" [rows]="3"></iterpro-skeleton-table>
+	</div>
+}

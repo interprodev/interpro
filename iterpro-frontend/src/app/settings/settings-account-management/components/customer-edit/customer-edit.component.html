@@ -1,0 +1,71 @@
+@if (customerForm) {
+	<div class="tw-h-full tw-relative" [formGroup]="customerForm">
+		<div class="tw-flex tw-items-center tw-justify-between tw-py-8">
+			<iterpro-dialog-header [title]="header"></iterpro-dialog-header>
+			<iterpro-action-buttons [buttonTypes]="customer?.id ? (customerForm.dirty ? ['delete'] : ['discard', 'delete']) : (customerForm.dirty ? [] : ['discard'])"
+															[editMode]="true" [discardLabel]="'buttons.close'" [discardIcon]="null"
+															[deleteAskConfirmation]="true"
+															(discard)="onDiscard()" (delete)="onDelete()">
+			</iterpro-action-buttons>
+		</div>
+		<div class="tw-flex tw-flex-col tw-gap-2">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.firstName</div>
+				<div>
+					<input type="text" pInputText formControlName="firstName" />
+				</div>
+			</div>
+			@if (customerForm.controls.firstName.errors?.required) {
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'firstName'" [label]="'First Name' | translate"></iterpro-form-feedback>
+			}
+			@if (customerForm.controls.firstName.errors?.mustBeUnique) {
+				<iterpro-form-feedback [clickedCondition]="true" [field]="'firstName'" [type]="'custom'"
+															 [label]="('alert.nameAndSurnameAlreadyTaken' | translate)">
+
+				</iterpro-form-feedback>
+			}
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.lastName</div>
+				<div>
+					<input type="text" pInputText formControlName="lastName" />
+				</div>
+			</div>
+			@if (customerForm.controls.lastName.errors?.required) {
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'lastName'" [label]="'Last Name' | translate"></iterpro-form-feedback>
+			}
+			@if (customerForm.controls.lastName.errors?.mustBeUnique) {
+				<iterpro-form-feedback [clickedCondition]="true" [field]="'lastName'" [type]="'custom'"
+															 [label]="('alert.nameAndSurnameAlreadyTaken' | translate)">
+
+				</iterpro-form-feedback>
+			}
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.email</div>
+				<div>
+					<input type="email" pInputText formControlName="email" />
+				</div>
+			</div>
+			@if (customerForm.controls.email.errors?.required) {
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'email'" [label]="'Email' | translate"></iterpro-form-feedback>
+			}
+			@if (customerForm.controls.email.errors?.mustBeUnique) {
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'email'" [type]="'custom'"
+															 [label]="('alert.emailAlreadyTaken' | translate)">
+
+				</iterpro-form-feedback>
+			}
+			@if (currentUserAdmin) {
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>permissions.isUserAdmin</div>
+					<div>
+						<p-inputSwitch formControlName="admin"></p-inputSwitch>
+					</div>
+				</div>
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'admin'" [label]="'permissions.isUserAdmin' | translate"></iterpro-form-feedback>
+			}
+		</div>
+		@if (customerForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()" [confirmAskConfirmation]="true"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}

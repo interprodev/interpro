@@ -1,0 +1,219 @@
+@if (!editMode && !editable) {
+	<div class="tw-flex tw-justify-end tw-text-xs iterpro-text-color-900 tw-mb-2">you can't edit this report because it's assigned to another Scout</div>
+}
+<!-- Player Report Card Header -->
+<div class="tw-w-full tw-flex tw-justify-between tw-gap-2 tw-mb-2">
+	<!-- Report Actions-->
+	<div class="tw-flex tw-items-center tw-gap-4">
+
+		@if (!editMode && showRedirectIcon) {
+			<iterpro-icon-button
+				icon="fas fa-search"
+				(click)="redirectClicked.emit()"
+				[tooltip]="redirectTooltip"
+			></iterpro-icon-button>
+		}
+		@if (editMode && editable && deletable) {
+			<iterpro-icon-button icon="fas fa-trash" (click)="deleteClicked.emit()" [tooltip]="'buttons.delete' | translate"></iterpro-icon-button>
+		}
+	</div>
+	@if (globalHistory) {
+		<!-- Global Last Update -->
+		<iterpro-performance-report-history [lastUpdateAuthor]="globalHistory.author" [lastUpdateDate]="globalHistory.updatedAt" [authorOptions]="authorOptions"></iterpro-performance-report-history>
+	}
+</div>
+<div class="tw-grid tw-grid-cols-12 tw-gap-2">
+	<!-- SX Container -->
+	<div class="tw-col-span-3 tw-flex tw-flex-col tw-gap-4">
+		<div class="tw-bg-white tw-relative tw-rounded tw-w-full tw-overflow-hidden">
+			<!-- Provider Widget -->
+			<iterpro-player-provider-widget
+				[wyscoutId]="wyscoutId"
+				[instatId]="instatId"
+			/>
+			<!-- Player img -->
+			<iterpro-picture [photoUrl]="photoUrl" [additionalClass]="'tw-w-full'" class="tw-block" />
+			<!-- Player Info -->
+			<div class="tw-flex tw-p-1 tw-w-full tw-justify-between tw-items-center tw-absolute tw-bottom-0 tw-left-0 tw-bg-shark-900 tw-bg-opacity-80 tw-text-sm tw-font-bold">
+				@if (position) {
+					<span>{{ position + '.short' | translate }}</span>
+				}
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div class="tw-text-xs">{{ birthDate | date : 'yyyy' }}</div>
+					@if (nationality) {
+						<iterpro-player-flag [lang]="nationality" />
+					}
+				</div>
+			</div>
+		</div>
+		<!-- Tactic Board -->
+		<div class="tw-w-full tw-overflow-hidden">
+			<iterpro-tactic-board
+				[first]="position"
+				[sportType]="'football'"
+			/>
+		</div>
+	</div>
+	<!-- DX Container -->
+	<div class="tw-col-span-9 tw-pl-3 tw-flex tw-flex-col tw-gap-4">
+		<div class="tw-flex tw-flex-col tw-gap-1">
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.overview.displayName', value: displayName }"></ng-container>
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.overview.nationality', value: nationality, flag: true }"></ng-container>
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.overview.birth', value: birthDate | formatDateBySetting }"></ng-container>
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.overview.weight', value: weight }"></ng-container>
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.overview.height', value: height }"></ng-container>
+			<ng-container *ngTemplateOutlet="infoRow; context: { label: 'profile.position.foot', value: foot }"></ng-container>
+		</div>
+	</div>
+</div>
+<div class="tw-my-4">
+	<p-accordion [multiple]="true">
+		<!-- Template content -->
+		<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'" [selected]="true">
+			<ng-template pTemplate="header">
+				<div class="tw-w-full tw-flex tw-items-center tw-justify-between tw-gap-2">
+					<div>{{'scouting.game.reportText' | translate}}</div>
+					@if (reportDataHistory) {
+						<div class="tw-flex tw-justify-end">
+							<!-- ReportData Last Update -->
+							<iterpro-performance-report-history [lastUpdateAuthor]="reportDataHistory.author" [lastUpdateDate]="reportDataHistory.updatedAt" [authorOptions]="authorOptions"></iterpro-performance-report-history>
+						</div>
+					}
+				</div>
+			</ng-template>
+			<ng-content></ng-content>
+			@if (showSharedWith) {
+				<!-- NgContent for ShareWith ReportData -->
+				<ng-content select="[sharedWithReportData]"></ng-content>
+			}
+		</p-accordionTab>
+		<!-- Notes -->
+		<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'">
+			<ng-template pTemplate="header">
+				<div class="tw-w-full tw-flex tw-items-center tw-justify-between tw-gap-2">
+					<div>{{'squads.players.tabs.notes' | translate}}</div>
+					@if (notesHistory) {
+						<div class="tw-flex tw-justify-end">
+							<!-- Notes Last Update -->
+							<iterpro-performance-report-history [lastUpdateAuthor]="notesHistory.author" [lastUpdateDate]="notesHistory.updatedAt" [authorOptions]="authorOptions"></iterpro-performance-report-history>
+						</div>
+					}
+				</div>
+			</ng-template>
+			<div>
+				@if (editMode && editable) {
+					<editor
+						[initialValue]="'input-text.placeholder' | translate"
+						[inline]="false"
+						[ngModel]="notes"
+						[init]="tinyEditorInit"
+						modelEvents="change"
+						(ngModelChange)="reportNotesChanged.emit($event)"
+					>
+					</editor>
+				} @else {
+					<div class="readonlyEditorBox">
+						<span [innerHTML]="notes | marked"></span>
+					</div>
+				}
+				@if (showSharedWith) {
+					<!-- NgContent for ShareWith Notes -->
+					<ng-content select="[sharedWithNotes]"></ng-content>
+				}
+			</div>
+		</p-accordionTab>
+		<!-- Videos -->
+		<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'">
+			<ng-template pTemplate="header">
+				<div class="tw-w-full">
+					<iterpro-performance-report-attachments-header
+						[title]="'buttons.videos'"
+						[editable]="editable && editMode"
+						[isLoading]="isLoadingVideos"
+						(addClicked)="customVideosTemplate ? addVideoClicked.emit() : cloudUploadElVideo.forceInputChoose()"></iterpro-performance-report-attachments-header>
+				</div>
+			</ng-template>
+			<!-- Content -->
+			@if (!customVideosTemplate) {
+				<iterpro-performance-report-attachments
+					[clubId]="clubId"
+					[attachmentType]="'videos'"
+					[editable]="editable && editMode"
+					[showEditAttachment]="false"
+					[attachments]="videoAttachments"
+					[isLoading]="isLoadingVideos"
+					[showDeleteAttachment]="editable && editMode && showDeleteAttachment"
+					(deleteAttachment)="deleteAttachment.emit({attachment: $event, type: '_videos'})"
+				></iterpro-performance-report-attachments>
+			} @else {
+				<!-- NgContent for videos -->
+				<ng-content select="[videos]"></ng-content>
+			}
+		</p-accordionTab>
+		<!-- Documents -->
+		<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'">
+			<ng-template pTemplate="header">
+				<div class="tw-w-full">
+					<iterpro-performance-report-attachments-header
+						[title]="'medicalScreening.documents'"
+						[editable]="editable && editMode"
+						[isLoading]="isLoadingDocs"
+						(addClicked)="customDocumentClickEvent ? addDocumentClicked.emit() : cloudUploadElDoc.forceInputChoose()"></iterpro-performance-report-attachments-header>
+				</div>
+			</ng-template>
+			<iterpro-performance-report-attachments
+				[clubId]="clubId"
+				[attachmentType]="'documents'"
+				[editable]="editable && editMode"
+				[attachments]="docAttachments"
+				[isLoading]="isLoadingDocs"
+				[showEditAttachment]="editable && editMode && showEditAttachment"
+				[showDeleteAttachment]="editable && editMode && showDeleteAttachment"
+				[sharedWithOptions]="sharedWithOptions"
+				(deleteAttachment)="deleteAttachment.emit({attachment: $event, type: '_documents'})"
+				(editAttachment)="editDocumentClicked.emit()"
+			></iterpro-performance-report-attachments>
+		</p-accordionTab>
+	</p-accordion>
+</div>
+
+
+<ng-template #infoRow let-label="label" let-value="value" let-flag="flag">
+	<div class="tw-flex tw-items-center tw-rounded tw-bg-shark-950 tw-p-2 tw-text-sm">
+		<div class="tw-flex-[0.4]">
+			<span class="iterpro-text-color-900" translate>{{label}}</span>
+		</div>
+		<div class="tw-flex-[0.6] tw-flex tw-gap-2 tw-items-center">
+			@if (flag) {
+				<iterpro-player-flag [lang]="value" />
+				<span translate>nationalities.{{value}}</span>
+			} @else {
+				<span>{{value}}</span>
+			}
+
+		</div>
+	</div>
+</ng-template>
+
+<iterpro-cloud-upload
+	#cloudUploadElDoc
+	class="tw-hidden"
+	[maxFileSize]="2000000000"
+	(onStartEmitter)="isLoadingDocs = true"
+	(completedEmitter)="addAttachmentCompleted($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName, '_documents')"
+	[area]="false"
+	[spinner]="false"
+	accept="*"
+/>
+
+
+<iterpro-cloud-upload
+	#cloudUploadElVideo
+	class="tw-hidden"
+	[maxFileSize]="2000000000"
+	(onStartEmitter)="isLoadingVideos = true"
+	(completedEmitter)="addAttachmentCompleted($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName, '_videos')"
+	[area]="false"
+	[spinner]="false"
+	accept="video/*"
+/>

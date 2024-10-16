@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - develop
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    displayName: 'Install Node'
+    inputs:
+      versionSpec: '20.11'
+  - task: Npm@1
+    displayName: 'Install Dependecies'
+    inputs:
+      command: 'custom'
+      verbose: false
+      customCommand: 'install'
+  - task: Npm@1
+    displayName: 'Build For Staging'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'run build:staging'
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact'
+    inputs:
+      targetPath: '$(Pipeline.Workspace)/s/dist/iterpro-frontend'
+      artifact: 'app'
+      publishLocation: 'pipeline'

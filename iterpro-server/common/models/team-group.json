@@ -1,0 +1,31 @@
+{
+	"name": "TeamGroup",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"forceId": false,
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"players": {
+			"type": ["string"]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team"
+		},
+		"teamSeason": {
+			"type": "belongsTo",
+			"model": "TeamSeason"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

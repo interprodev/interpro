@@ -1,0 +1,533 @@
+{
+	"name": "Club",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"hidden": ["clubToken", "clubTokenExpireDate"],
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"crest": {
+			"type": "string"
+		},
+		"demo": {
+			"type": "boolean"
+		},
+		"foundation": {
+			"type": "date"
+		},
+		"nation": {
+			"type": "string"
+		},
+		"region": {
+			"type": "string"
+		},
+		"professionalStatus": {
+			"type": "string"
+		},
+		"currency": {
+			"type": "string",
+			"default": "EUR"
+		},
+		"taxes": {
+			"type": "number"
+		},
+		"vat": {
+			"type": "number"
+		},
+		"clubToken": {
+			"type": "object"
+		},
+		"clubTokenExpireDate": {
+			"type": "date"
+		},
+		"freemium": {
+			"type": "boolean",
+			"default": false
+		},
+		"freemiumUsers": {
+			"type": "number",
+			"default": 0
+		},
+		"directorApp": {
+			"type": "boolean",
+			"default": false
+		},
+		"nationalClub": {
+			"type": "boolean",
+			"default": false
+		},
+		"sportType": {
+			"type": "string",
+			"default": "football"
+		},
+		"scoutingSettings": {
+			"type": {
+				"scenario": "string",
+				"gameReport": "string",
+				"playerDescription": "string",
+				"survey": "string",
+				"tipssSettings": {
+					"enabled": "array",
+					"scale": "string",
+					"colorsMapping": "array"
+				},
+				"profileCreation": "string",
+				"editableSettings": "array",
+				"importLimit": "number",
+				"archiveLimit": "number",
+				"activeGameReportTemplateId": "string",
+				"activeGameReportTemplateVersion": "number"
+			},
+			"default": {
+				"scenario": "players",
+				"gameReport": "standard",
+				"playerDescription": "attributes",
+				"survey": "none",
+				"tipssSettings": {
+					"enabled": [],
+					"scale": null,
+					"colorsMapping": []
+				},
+				"profileCreation": "always",
+				"editableSettings": ["gameReport", "playerDescription", "tipssSettings", "profileCreation"],
+				"importLimit": "-1",
+				"archiveLimit": "-1",
+				"activeGameReportTemplateId": "null",
+				"activeGameReportTemplateVersion": null
+			}
+		},
+		"active": {
+			"type": "boolean",
+			"default": true
+		},
+		"atcCommercialNamesMapping": {
+			"type": "array",
+			"default": []
+		},
+		"landingPage": {
+			"type": "string"
+		},
+		"coachingApp": {
+			"type": "boolean",
+			"default": false
+		},
+		"b2cScouting": {
+			"type": "boolean",
+			"default": false
+		},
+		"paymentFrequency": {
+			"type": "string",
+			"default": "year"
+		},
+		"expiryDate": {
+			"type": "date"
+		},
+		"grassroots": {
+			"type": "boolean",
+			"default": false
+		},
+		"isChatEnabled": {
+			"type": "boolean",
+			"default": true
+		},
+		"type": {
+			"type": "string",
+			"default": "club",
+			"description": "Available current values: club (default), national, grassroots, agent. In future: multi, federation, league"
+		},
+		"customDashboardUrl": {
+			"type": "string",
+			"description": "Temp property for SAS dashboard iframe url. Will be replaced by a dedicated schema"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"teams": {
+			"type": "hasMany",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"customers": {
+			"type": "hasMany",
+			"model": "Customer",
+			"foreignKey": ""
+		},
+		"players": {
+			"type": "hasMany",
+			"model": "Player",
+			"foreignKey": ""
+		},
+		"playerScoutings": {
+			"type": "hasMany",
+			"model": "PlayerScouting",
+			"foreignKey": ""
+		},
+		"staff": {
+			"type": "hasMany",
+			"model": "Staff",
+			"foreignKey": ""
+		},
+		"agents": {
+			"type": "hasMany",
+			"model": "Agent",
+			"foreignKey": ""
+		},
+		"clubTransfers": {
+			"type": "hasMany",
+			"model": "ClubTransfer"
+		},
+		"clubSeasons": {
+			"type": "hasMany",
+			"model": "ClubSeason",
+			"foreignKey": ""
+		},
+		"customerPlayers": {
+			"type": "hasMany",
+			"model": "CustomerPlayer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getScoutingEventsForCalendar": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string"
+				},
+				{
+					"arg": "dates",
+					"type": "array"
+				},
+				{
+					"arg": "options",
+					"type": "object"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/scouting-events",
+				"verb": "get"
+			}
+		},
+		"getGameReportTemplates": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:clubId/scouting-game/custom-templates",
+				"verb": "get"
+			}
+		},
+		"getSingleGameReportTemplateVersion": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "templateKey",
+					"type": "string"
+				},
+				{
+					"arg": "version",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:clubId/scouting-game/custom-template-with-version",
+				"verb": "get"
+			}
+		},
+		"upsertGameReportTemplate": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "template",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:clubId/scouting-game/upsert-template",
+				"verb": "post"
+			}
+		},
+		"getPeopleForSquads": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"required": true,
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "mode",
+					"type": "string",
+					"default": "Player",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "page",
+					"type": "number",
+					"default": 0,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "sortBy",
+					"type": "string",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "order",
+					"type": "string",
+					"default": "ASC",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "season",
+					"type": "string",
+					"required": true,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "teams",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "textQuery",
+					"type": "string",
+					"default": "",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "statuses",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "positions",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "nationalities",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "birthYears",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "origins",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "contractTypes",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "contractExpiryYears",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "notarizationStatuses",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "feeRange",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "wageRange",
+					"type": "array",
+					"default": null,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "netValueFlag",
+					"type": "boolean",
+					"default": true,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "timezoneOffset",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/squads-people",
+				"verb": "get"
+			}
+		},
+		"addNewCustomer": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "customer",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/add-new-customer",
+				"verb": "post"
+			}
+		},
+		"getTransfersBalance": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "transferWindowId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					},
+					"required": false
+				},
+				{
+					"arg": "transferIds",
+					"type": "array",
+					"http": {
+						"source": "query"
+					},
+					"required": false
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/transfer-balance",
+				"verb": "get"
+			}
+		}
+	}
+}

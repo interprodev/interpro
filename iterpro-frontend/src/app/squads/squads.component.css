@@ -1,0 +1,285 @@
+.header {
+	/* min-height: 125px;
+	padding: 25px 0px; */
+	padding-bottom: 0 !important;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.header > * {
+	margin: 10px 0px;
+}
+.header-actions {
+	display: flex;
+	align-items: center;
+}
+.header h1 {
+	display: flex;
+	align-items: center;
+}
+.header h1 img {
+	width: 38px;
+	height: 38px;
+	margin-right: 0.6rem;
+	background-color: #fff;
+}
+.header button {
+	margin: 0.5rem;
+}
+.selector {
+	background-color: var(--color-bg-600);
+	border-radius: var(--iterpro-border-radius);
+}
+
+.selector > button {
+	background-color: transparent;
+}
+.header-buttons button:last-child {
+	margin-right: 0;
+	margin-left: 0;
+}
+.no-header,
+.row.no-header {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+.filters {
+	/* background-color: var(--color-bg-600); */
+	display: flex;
+	align-items: center;
+	padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+}
+.plus-button {
+	width: auto;
+	padding: 0 0.7rem;
+}
+@media only screen and (max-width: 500px) {
+	.header {
+		height: auto;
+		margin: 0.3rem 0;
+	}
+	.header > * {
+		width: 100%;
+		text-align: center;
+	}
+	.header h1 {
+		justify-content: center;
+	}
+	.header h1 img {
+		display: none;
+	}
+	.header-buttons button:last-child {
+		margin-right: 0.5rem;
+	}
+}
+
+.visible {
+	display: flex;
+}
+.hidden {
+	display: none;
+}
+
+.point {
+	background-color: var(--color-primary-500);
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+}
+.point.Green {
+	background-color: #3bf100;
+}
+.point.yellow {
+	background-color: #fcee21;
+}
+.point.lightgrey {
+	background-color: lightgrey;
+}
+.point.red {
+	background-color: #c1272d;
+}
+.radial-circle text {
+	fill: #80ca41;
+	text-anchor: middle;
+	font-size: 12;
+}
+.radial-circle circle {
+	fill: transparent;
+	stroke-width: 0.25em;
+}
+.bar {
+	width: 100%;
+	height: 15px;
+	margin: 7px 0px;
+	background-color: #dddddd;
+}
+.bar.gray {
+	background-color: #585c5d;
+}
+.bar.yellow {
+	background-color: #fcee21;
+}
+.bar.orange {
+	background-color: #ff931e;
+}
+.bar.red {
+	background-color: #c1272d;
+}
+.bar.lightgrey {
+	background-color: lightgrey;
+}
+
+.role-title {
+	margin-top: 3em;
+	margin-bottom: 0.2em;
+	padding: 0 0.4em 0 0.4em;
+	color: #fafafa;
+	font-size: 0.8rem;
+	/* background-color: var(--color-bg-700); */
+	display: flex;
+	justify-content: space-between;
+}
+
+.first {
+	margin-top: 0;
+}
+
+.role-title h2 {
+	font-weight: unset;
+	letter-spacing: unset;
+}
+
+.divider-section {
+	margin-top: 3em;
+	margin-bottom: 0.2em;
+	padding: 0 0.4em 0 0.4em;
+	color: #fafafa;
+	font-size: 0.8rem;
+	background-color: var(--color-bg-700);
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+.divider-section h2 {
+	font-weight: unset;
+	letter-spacing: unset;
+}
+
+.divider-section .far {
+	font-size: 2em;
+}
+
+.info-container {
+	font-size: 0.75em;
+	font-weight: normal;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin-top: 1em;
+}
+
+.archived {
+	font-size: 0.75em;
+	font-weight: normal;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	height: 30px;
+	padding: 0 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.archived > * {
+	width: 100%;
+}
+
+.icon-margined {
+	cursor: pointer;
+	margin-right: 1em;
+	/* width:unset;
+	height:unset;
+	margin: 0.3em;
+	border-radius: 5%;
+	padding: 0.3em 0.3em;
+	background-color:crimson;
+	float: right; */
+}
+
+.iconContainer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	bottom: 0;
+	position: absolute;
+	right: 0;
+}
+
+.flexed {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flag-icon {
+	font-size: initial;
+}
+
+.report-download {
+	position: relative;
+}
+
+.report-submenu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 5px;
+	background-color: var(--color-neutral-300);
+	z-index: 100;
+}
+.report-item {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	font-size: 0.9rem;
+	white-space: nowrap;
+}
+.report-item:hover {
+	background-color: #171717;
+}
+.report-item .fas {
+	margin-right: 0.5rem;
+}
+.disabled-btn {
+	opacity: 0.5;
+	cursor: default;
+}
+.bulk-errors {
+	background-color: #dc3545;
+	text-transform: uppercase;
+	padding: 0.4rem;
+	color: #fafafa;
+	border-radius: 2px;
+}
+
+.disabled-selected {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+.move-to-team-dropdown {
+	margin-top: 2.5em;
+	margin-bottom: 2em;
+	display: flex;
+}
+
+.new-player-dialog-dropdown {
+	margin-top: 0.5em;
+	margin-bottom: 1.5em;
+	max-width: 200px;
+}

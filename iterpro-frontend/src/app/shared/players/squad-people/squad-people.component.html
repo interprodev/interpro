@@ -1,0 +1,461 @@
+<!-- TABLE FILTERS TEMPLATE -->
+<iterpro-table-filter-template
+	*ngIf="showFilterTemplateSelection"
+	[ngClass]="{ 'pflex p-hidden': !showFilters || !filters }"
+	[tableId]="'admin_squads_table'"
+	[filters]="filters"
+	[visibility]="visibility"
+	(templateChanged)="handleFilterTemplateChanged($event)"/>
+
+<!-- FILTERS -->
+@if (showFilters && filters && options) {
+	<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded tw-mb-4">
+		<div class="tw-w-full tw-flex tw-justify-end">
+			<!-- Filters / Table Columns -->
+			<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+				<ng-template pTemplate="item" let-item>
+					<a class="p-menuitem-link tw-px-2 tw-py-1">
+						<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+						<i class="tw-ml-2" [class]="item.icon"></i>
+					</a>
+				</ng-template>
+			</p-tabMenu>
+		</div>
+		<div>
+			@switch (activeFilterTabType) {
+				@case (filtersTabTypes[0]) {
+					<div class="tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4">
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.team</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.teams"
+									[(ngModel)]="filters.team"
+									(onChange)="updateGenericFilters('team')"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.group</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.roles"
+									[(ngModel)]="filters.role"
+									(onChange)="updateRoleFilters()"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.season</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.seasons"
+									[(ngModel)]="filters.season"
+									(onChange)="updateGenericFilters('season')"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.federal.status</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.status"
+									[(ngModel)]="filters.status"
+									(onChange)="updateGenericFilters('status', true)"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.overview.birthYear</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.birthYears"
+									[(ngModel)]="filters.birthYear"
+									(onChange)="updateGenericFilters('birthYear')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.overview.nationality</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.nationalities"
+									[(ngModel)]="filters.nationality"
+									(onChange)="updateGenericFilters('nationality')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>admin.contracts.origin</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.origins"
+									[(ngModel)]="filters.origin"
+									(onChange)="updateGenericFilters('origin')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>profile.position</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.positions"
+									[(ngModel)]="filters.position"
+									(onChange)="updateGenericFilters('position')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>admin.contract.contractNotarizationStatus</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.contractNotarizationStatus"
+									[(ngModel)]="filters.contractNotarizationStatus"
+									(onChange)="updateGenericFilters('contractNotarizationStatus', true)"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>admin.contracts.contractType</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.contractTypes"
+									[(ngModel)]="filters.contractType"
+									(onChange)="updateGenericFilters('contractType')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>financial.overview.contractExpiry</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.contractExpiryYear"
+									[(ngModel)]="filters.contractExpiryYear"
+									(onChange)="updateGenericFilters('contractExpiryYear')"
+									placeholder="{{ 'multiselect.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.feeFrom</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.transferFees"
+									[(ngModel)]="filters.feeFrom"
+									(onChange)="updateGenericFilters('feeFrom')"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.feeTo</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.transferFees"
+									[(ngModel)]="filters.feeTo"
+									(onChange)="updateGenericFilters('feeTo')"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.wageFrom</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.transferWages"
+									[(ngModel)]="filters.wageFrom"
+									(onChange)="updateGenericFilters('wageFrom')"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.wageTo</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-dropdown
+									[options]="options.transferWages"
+									[(ngModel)]="filters.wageTo"
+									(onChange)="updateGenericFilters('wageTo')"
+									appendTo="body"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+								></p-dropdown>
+							</div>
+						</div>
+					</div>
+				}
+				@case (filtersTabTypes[1]) {
+					<div class="tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4">
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>players.registry</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.registry"
+									[(ngModel)]="visibility.registry"
+									(onChange)="updateFilters()"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="0"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>admin.squads.player.salary</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.salary"
+									[(ngModel)]="visibility.salary"
+									(onChange)="updateFilters()"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="0"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900 tw-capitalize" translate>asset</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.asset"
+									[(ngModel)]="visibility.asset"
+									(onChange)="updateFilters()"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="0"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" translate>forecast.amortization</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect
+									[options]="options.amortization"
+									[(ngModel)]="visibility.amortization"
+									(onChange)="updateFilters()"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="0"
+								>
+								</p-multiSelect>
+							</div>
+						</div>
+						<div class="tw-col-span-2">
+							<div class="tw-text-sm iterpro-text-color-900" pTooltip="{{ 'financial.taxes.values' | translate : taxes }}" translate>financial.dashboard.netCosts</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-inputSwitch class="small-input-switch" [(ngModel)]="filters.netValueFlag" (onChange)="updateGenericFilters('netValueFlag')"></p-inputSwitch>
+							</div>
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
+}
+
+
+<!-- PLAYERS TABLE -->
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+	@if (table && table.rows) {
+		<p-table
+			[columns]="table.headers"
+			[value]="table.rows"
+			[rowHover]="true"
+			selectionMode="single"
+			[(selection)]="selectedRows"
+			dataKey="id"
+			[scrollable]="true"
+			scrollHeight="65vh"
+			[paginator]="enableLazyLoading"
+			[rows]="enableLazyLoading ? lazyLoadingRows : totalRows"
+			[lazy]="enableLazyLoading"
+			[customSort]="!enableLazyLoading"
+			[totalRecords]="totalRows"
+			styleClass="p-datatable-sticky p-datatable-striped"
+			(onRowSelect)="clickRow($event.data)"
+			(sortFunction)="customSort($event)"
+			(onLazyLoad)="loadRecords($event)"
+		>
+			<ng-template pTemplate="header" let-columns>
+				<tr class="tw-h-10">
+					<th
+						*ngFor="let header of columns"
+						class="{{ header.header.class }}"
+						[pSortableColumn]="
+						header.header.sortable ? (enableLazyLoading ? header.header.sortableField : header.header.field) : false
+					"
+						[ngStyle]="{
+						minWidth: header.header.width ? header.header.width + 'px' : '200px',
+						width: header.header.width ? header.header.width + 'px' : '200px',
+						maxWidth: header.header.width && header.header.frozen ? header.header.width + 'px' : 'unset'
+					}"
+						[frozen]="header.header.frozen"
+						pFrozenColumn
+					>
+						<p-sortIcon
+							*ngIf="header.header.sortable"
+							[field]="enableLazyLoading ? header.header.sortableField : header.header.field"
+						></p-sortIcon>
+						<span pTooltip="{{ header.value }}">{{ header.value }}</span>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="columns">
+				<tr class="tw-h-10" (click)="clickRow(row.player)">
+					<td
+						*ngFor="let col of columns"
+						class="{{ row.fields[col.header.field].class }}"
+						[ngStyle]="{
+						minWidth: col.header.width ? col.header.width + 'px' : '200px',
+						width: col.header.width ? col.header.width + 'px' : '200px',
+						maxWidth: col.header.width && col.header.frozen ? col.header.width + 'px' : 'unset',
+						height: table.height
+					}"
+						[frozen]="col.header.frozen"
+						pFrozenColumn
+					>
+					<span
+						*ngIf="row.fields[col.header.field].type === 'select'"
+						style="text-align: center; padding: 10px"
+						(click)="togglePlayerSelection($event, row.player.id)"
+					>
+						<i class="fa-regular" [ngClass]="getPlayerSelectionClass(row.player.id)"></i>
+					</span>
+						<span *ngIf="row.fields[col.header.field].type === 'index'" style="text-align: center">
+						{{ rowIndex + 1 }}
+					</span>
+						<span
+							*ngIf="row.fields[col.header.field].type === 'text'"
+							[ngClass]="
+							col.header.field === 'GAIN_LOSS_PERC' || col.header.field === 'GAIN_LOSS'
+								? row.fields[col.header.field].raw >= 0
+									? 'green'
+									: 'red'
+								: ''
+						"
+						>
+						{{ row.fields[col.header.field].value }}
+					</span>
+						<iterpro-player-flag
+							*ngIf="row.fields[col.header.field].type === 'flag' && row.fields[col.header.field].value"
+							[lang]="row.fields[col.header.field].value"
+						/>
+						<div class="tw-flex tw-w-14" *ngIf="row.fields[col.header.field].type === 'image'">
+							<div class="tw-bg-white tw-rounded tw-overflow-hidden tw-relative">
+								<iterpro-player-provider-widget
+									[wyscoutId]="row.player?.wyscoutId"
+									[instatId]="row.player?.instatId" [size]="'small'" />
+								<iterpro-picture [photoUrl]="row.fields[col.header.field].value"></iterpro-picture>
+							</div>
+						</div>
+						<iterpro-documents-expiry-date-flag
+							*ngIf="row.fields[col.header.field].type === 'expiry'"
+							[expiryDate]="row.fields[col.header.field].value"
+							[documents]="row.player.documents"
+							[daysBeforeExpiry]="daysBeforeExpiry"
+						></iterpro-documents-expiry-date-flag>
+
+						<iterpro-documents-expiry-date-flag
+							*ngIf="row.fields[col.header.field].type === 'medicalRecord'"
+							[expiryDate]="row.fields[col.header.field].value"
+							[documents]="[row.player.medicalRecord]"
+							[daysBeforeExpiry]="daysBeforeExpiry"
+						></iterpro-documents-expiry-date-flag>
+
+						<ng-container *ngIf="row.fields[col.header.field].type === 'notarization'">
+							<div
+								*ngIf="row.fields[col.header.field].raw !== 'none'"
+								[ngClass]="['point', row.fields[col.header.field].raw ? 'GREEN' : 'RED']"
+								[pTooltip]="row.fields[col.header.field].value"
+							></div>
+						</ng-container>
+
+						<ng-container *ngIf="row.fields[col.header.field].type === 'archive'">
+							<i
+								*ngIf="!row.player.archived; else archivedPlayer"
+								pTooltip="{{ 'profile.archive' | translate }}"
+								class="fas fa-archive icon"
+								(click)="openArchive($event, row.player, filters.role)"
+							></i>
+							<ng-template #archivedPlayer>
+								<i
+									[pTooltip]="
+									('player.archivedFrom' | translate) +
+										(row.player.archivedDate | date) +
+									('profile.unarchive' | translate)"
+									class="fas fa-undo icon"
+									(click)="openArchive($event, row.player, filters.role)"
+								></i>
+							</ng-template>
+						</ng-container>
+						<ng-container *ngIf="row.fields[col.header.field].type === 'delete'">
+							<i
+								*ngIf="!row.player.deleted; else deletedPlayer"
+								pTooltip="{{ (filters.role === 'Player' ? 'profile.deletePlayer' : 'profile.deletePerson') | translate }}"
+								class="fas fa-trash icon"
+								(click)="openDelete($event, row.player, filters.role)"
+							></i>
+							<ng-template #deletedPlayer>
+								<i
+									pTooltip="{{ 'profile.undeletePlayer' | translate }}"
+									class="fas fa-undo icon"
+									(click)="openDelete($event, row.player, filters.role)"
+								></i>
+							</ng-template>
+						</ng-container>
+					</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="emptymessage">
+				<tr>
+					<td class="tw-pt-4" colspan="4" translate>alert.noRecordsFound</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<iterpro-skeleton-table [showProfilePic]="true" [cols]="7" [rows]="20"></iterpro-skeleton-table>
+	}
+</div>

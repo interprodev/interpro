@@ -1,0 +1,20 @@
+.filters-container {
+	width: 200px;
+}
+
+.chart {
+	height: 400px;
+	overflow: hidden;
+}
+
+h5 {
+	color: var(--color-neutral-900);
+	font-weight: unset;
+	font-size: 0.9em;
+}
+
+.error-message {
+	color: red;
+	font-size: 0.8rem;
+	margin-top: 3px;
+}

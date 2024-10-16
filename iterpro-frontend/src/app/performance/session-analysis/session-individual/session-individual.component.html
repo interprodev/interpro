@@ -1,0 +1,44 @@
+<div class="row row-spaced data-analysis-row">
+	<!-- SESSION PROFILE -->
+	<div class="col col-spaced col-left">
+		<div class="tw-p-4 tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900">
+			<iterpro-session-profile [radarChart]="radarChart"></iterpro-session-profile>
+		</div>
+
+		<!-- ADVANCED ANALYSIS -->
+		<div class="tw-p-4 tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900 tw-mt-2" *ngIf="canLoadAdvanced">
+			<iterpro-advanced-individual [individualALCL]="individualALCL" [advancedFlags]="advancedFlags">
+			</iterpro-advanced-individual>
+		</div>
+	</div>
+
+	<!-- SESSION SUMMARY -->
+	<div class="col col-spaced col-right tw-gap-2">
+		<div class="tw-p-4 tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900">
+			<iterpro-session-summary
+				[summaryMetrics]="summaryMetrics"
+				[viewFlags]="viewFlags"
+				(downloadPDF)="downloadReport()"
+				(toggleSidebar)="toggleSidebar($event)"
+			>
+			</iterpro-session-summary>
+		</div>
+
+	<!-- DRILLS BREAKDOWN -->
+		<div class="tw-p-4 tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900 tw-max-h-72 tw-overflow-auto">
+			<iterpro-drills-breakdown
+				[selectedSession]="selectedSession"
+				[chartData]="chartData"
+				[chartFlags]="chartFlags"
+				[viewFlags]="viewFlags"
+				(onCalendarClick)="goToCalendar()"
+				(onShowUploadDialog)="showUploadDialog()"
+				(onTogglePercentage)="togglePercentage($event)"
+				(onToggleLabels)="toggleLabels($event)"
+			>
+			</iterpro-drills-breakdown>
+	
+		</div>
+	</div>
+</div>
+

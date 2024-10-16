@@ -1,0 +1,37 @@
+<div class="content-padded">
+	<div style="height: 35vh; min-height: 300px; margin-bottom: 5em">
+		<div class="pflex-flex pflex-justify-content-between pflex-align-items-center pflex-h-full">
+			<i
+				*ngIf="window"
+				[ngStyle]="{
+					'pointer-events': previousWeekFlag() ? 'none' : 'auto',
+					color: previousWeekFlag() ? '#757575' : '#ddd'
+				}"
+				class="fas fa-2x fa-caret-left"
+				style="width: 5%; cursor: pointer"
+				(click)="getPreviousWeek()"
+			></i>
+			<p-chart
+				style="width: 90%; height: 100%"
+				*ngIf="dataBreakdown"
+				[data]="dataBreakdown"
+				[options]="optionsBreakdown"
+				type="bar"
+			></p-chart>
+			<i
+				*ngIf="window"
+				[ngStyle]="{ 'pointer-events': nextWeekFlag() ? 'none' : 'auto', color: nextWeekFlag() ? '#757575' : '#ddd' }"
+				class="fas fa-2x fa-caret-right"
+				style="width: 5%; cursor: pointer"
+				(click)="getNextWeek()"
+			></i>
+		</div>
+	</div>
+
+	<div class="pflex-mb-4">
+		<h4 class="pflex-text-center pflex-uppercase pflex-mb-2" *ngIf="dataComposition">
+			{{ 'workload.periodComposition' | translate }}
+		</h4>
+		<p-chart *ngIf="dataComposition" [data]="dataComposition" [options]="optionsComposition" type="bar" class="pflex-h-10rem pflex-block"></p-chart>
+	</div>
+</div>

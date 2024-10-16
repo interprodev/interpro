@@ -1,0 +1,18 @@
+<div class="side-tabs">
+	<div class="side-tabs-headers-container">
+		<div
+			class="side-tabs-headers"
+			*ngFor="let tab of tabs"
+			(click)="select(tab)"
+			[class.side-tab-active]="tab.active"
+			[class.side-tab-fixed]="tab.tabFixed"
+			[class.side-tab-disabled]="tab.tabDisabled"
+		>
+			{{ tab.tabTitle }}
+			<ng-template *ngIf="tab.active" [ngTemplateOutlet]="tab.tabActionTemplate"></ng-template>
+		</div>
+	</div>
+	<div class="side-tabs-contents">
+		<ng-content></ng-content>
+	</div>
+</div>

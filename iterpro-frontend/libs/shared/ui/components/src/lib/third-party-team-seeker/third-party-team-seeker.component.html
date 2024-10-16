@@ -1,0 +1,32 @@
+<ng-container *ngIf="!isLoading; else showCrestLoadingTemplate">
+  <ng-container *ngIf="editable; else readOnlyView">
+    <div class="main-container">
+      <img [src]="selectedTeam.crest && 'assets/img/default_crest.png'" class="crest" onError="this.src='assets/img/default_crest.png';"  alt="club crest"/>
+      <iterpro-autocomplete [(ngModel)]="selectedTeam" [suggestions]="teamsResult" (completeMethod)="autocompleteSearch($event)"
+                      (onKeyUp)="onKeyUp($event.target.value)"
+                      (onSelect)="onSelectTeam($event)" [minLength]='3' field="name" dropdownMode="current">
+        <ng-template let-selectedTeam pTemplate="item">
+          <div class="ui-helper-clearfix">
+            <img [src]="selectedTeam?.crest" class="crest" onError="this.src='assets/img/default_crest.png';" alt="club crest"/>
+            <div class="dropdownText">
+              {{ selectedTeam.name }}
+            </div>
+          </div>
+        </ng-template>
+      </iterpro-autocomplete>
+      <div *ngIf="tempInputValue?.length > 0 && tempInputValue.length < 3">{{'teams.search.hintcharacters' | translate}}</div>
+    </div>
+  </ng-container>
+  <ng-template #readOnlyView>
+    <img [src]="selectedTeam.crest ? selectedTeam.crest : 'assets/img/default_crest.png'" class="crest" onError="this.src='assets/img/default_crest.png';"  alt="club crest"/>
+    {{ teamName }}
+  </ng-template>
+</ng-container>
+
+<ng-template #showCrestLoadingTemplate>
+  <div class="crest">
+    <div style="width: 24px;">
+      <p-skeleton></p-skeleton>
+    </div>
+  </div>
+</ng-template>

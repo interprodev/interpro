@@ -1,0 +1,105 @@
+.scouting-calendar {
+	background-color: var(--color-bg-600);
+	padding: 24px;
+	font-size: 0.9rem;
+	margin-bottom: 24px;
+	border-radius: var(--iterpro-border-radius);
+}
+
+.report-scouting {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	z-index: 1000;
+}
+
+.calendar-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	align-items: center;
+}
+.calendar-header .filters {
+	font-size: 0.9rem;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+}
+.calendar-header .filters > * {
+	margin-right: 12px;
+	border-radius: var(--iterpro-border-radius);
+}
+.filter-label {
+	color: var(--color-neutral-900);
+	margin-bottom: 5px;
+}
+.recap-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: var(--color-bg-600);
+	margin-bottom: 12px;
+	padding: 6px 12px;
+	cursor: pointer;
+	border-radius: 2px;
+	width: 2.8rem;
+}
+.recap-icon {
+	align-self: center;
+}
+.back-to-calendar-container {
+	margin-bottom: 12px;
+}
+.player-picker,
+.date-picker {
+	background-color: var(--color-bg-600);
+	padding: 6px 12px;
+}
+.sub-header-button {
+	height: 30px;
+	border: 0px solid #000;
+	background-color: var(--color-bg-600);
+	border-radius: 2px;
+	font-size: 0.9rem;
+	transition: background-color 0.3s;
+}
+.report-button {
+	height: 100%;
+	padding-right: 0.5rem;
+}
+
+tr .cell-center {
+	text-align: center;
+}
+.report {
+	text-align: right;
+	display: block;
+	margin-bottom: 1rem;
+}
+
+.trigger-calendar {
+	width: 160px;
+	padding: 6px 12px;
+	padding-right: 30px;
+}
+
+.date-time-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	column-gap: 2rem;
+}
+
+.event-tooltip-table th {
+	border: 0px solid transparent !important;
+	text-align: left !important;
+	font-weight: normal !important;
+	color: #999 !important;
+	font-size: 0.8rem !important;
+	width: 35%;
+}
+
+.event-tooltip-table td {
+	border: 0px solid transparent !important;
+	width: 65%;
+}

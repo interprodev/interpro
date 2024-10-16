@@ -1,0 +1,797 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.userPreferences'" [title]="'notifications'"></iterpro-settings-header>
+	<div class="tw-flex tw-items-center tw-justify-end tw-gap-3">
+		@if (customer?.admin) {
+			@if (!editMode) {
+				<p-button
+					type="button"
+					[label]="'buttons.applyAll' | translate"
+					(click)="openApplyToTeamMenu()"
+					[size]="'small'"
+					[pTooltip]="('buttons.applyAllTo' | translate) + ' ' + ('Teams' | translate)"
+				>
+				</p-button>
+			}
+		}
+		<iterpro-action-buttons
+			[editMode]="editMode"
+			[buttonTypes]="notificationsForm?.dirty ? ['edit', 'save', 'discard'] : ['edit', 'discard']"
+			[loading]="isLoading"
+			(edit)="edit()"
+			(discard)="discard()"
+			(save)="save()"
+		></iterpro-action-buttons>
+	</div>
+</div>
+@if (!isLoading) {
+	<div class="tw-mt-8 tw-grid">
+		<p-accordion [multiple]="true">
+			<p-accordionTab [header]="'settings.general' | translate">
+				@if (editMode) {
+					<div class="tw-flex tw-justify-end tw-gap-2">
+						<div class="iterpro-text-color-900 tw-text-sm">
+							{{ 'buttons.activateAll' | translate }} / {{ 'buttons.deactivateAll' | translate }}
+						</div>
+						<p-inputSwitch
+							class="small-input-switch"
+							[ngModel]="notificationsForm.controls.general | notificationsAreAllChecked: generalToggles"
+							(onChange)="toggleSection(notificationsForm.controls.general, generalToggles, $event.checked)"
+						></p-inputSwitch>
+					</div>
+				}
+				<div class="tw-flex tw-flex-col tw-gap-2">
+					<!-- Injury Status -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								switchFormControlName: 'notificationInjury',
+								title: 'notifications.injury',
+								description: 'notifications.injury.legend',
+								permission: 'notificationInjury'
+							}
+						"
+					></ng-container>
+					<!-- Import Data -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								switchFormControlName: 'notificationImport',
+								title: 'notifications.import',
+								description: 'notifications.import.legend',
+								permission: 'notificationImport'
+							}
+						"
+					></ng-container>
+					<!-- Event Invitation -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								switchFormControlName: 'notificationEventInvitation',
+								title: 'notifications.notificationEventInvitation',
+								description: 'notifications.notificationEventInvitation.legend',
+								permission: 'notificationEventInvitation'
+							}
+						"
+					></ng-container>
+					<!-- Event Reminder -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								formGroupName: 'notificationEventReminder',
+								switchFormControlName: 'active',
+								showInput: true,
+								inputFormControlName: 'minutes',
+								showMultiselect: true,
+								multiselectFormControlName: 'formats',
+								options: eventFormats,
+								suffixLabel: ('minutesBefore' | translate),
+								title: 'notifications.notificationEventReminder',
+								description: 'notifications.notificationEventReminder.legend',
+								permission: 'notificationEventReminder'
+							}
+						"
+					></ng-container>
+					<!-- Video Sharing -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								switchFormControlName: 'notificationVideoSharing',
+								title: 'notifications.notificationVideoSharing',
+								description: 'notifications.notificationVideoSharing.legend',
+								permission: 'notificationVideoSharing'
+							}
+						"
+					></ng-container>
+					<!-- Video Comment -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.general,
+								showSwitch: true,
+								switchFormControlName: 'notificationVideoComment',
+								title: 'notifications.notificationVideoComment',
+								description: 'notifications.notificationVideoComment.legend',
+								permission: 'notificationVideoComment'
+							}
+						"
+					></ng-container>
+				</div>
+			</p-accordionTab>
+
+			@if (club.type !== 'agent') {
+				<p-accordionTab [header]="'settings.advanced' | translate">
+					@if (editMode) {
+						<div class="tw-flex tw-justify-end tw-gap-2">
+							<div class="iterpro-text-color-900 tw-text-sm">
+								{{ 'buttons.activateAll' | translate }} / {{ 'buttons.deactivateAll' | translate }}
+							</div>
+							<p-inputSwitch
+								class="small-input-switch"
+								[ngModel]="notificationsForm.controls.advanced | notificationsAreAllChecked: advancedToggles"
+								(onChange)="toggleSection(notificationsForm.controls.advanced, advancedToggles, $event.checked)"
+							></p-inputSwitch>
+						</div>
+					}
+					<div class="tw-flex tw-flex-col tw-gap-2">
+						<!-- Session -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showMultiselect: true,
+									options: workloadTargetOptions,
+									multiselectFormControlName: 'notificationWorkloadScore',
+									title: 'notifications.workloadScore',
+									description: 'notifications.workloadScore.legend',
+									permission: 'notificationWorkloadScore'
+								}
+							"
+						></ng-container>
+						<!-- Go Score -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showSwitch: true,
+									switchFormControlName: 'notificationReadiness',
+									title: 'notifications.readiness',
+									description: 'notifications.goScore.legend',
+									permission: 'notificationReadiness'
+								}
+							"
+						></ng-container>
+						<!-- Rehab -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showSwitch: true,
+									switchFormControlName: 'notificationRehab',
+									title: 'notifications.rehab',
+									description: 'notifications.rehab.legend',
+									permission: 'notificationRehab'
+								}
+							"
+						></ng-container>
+						<!-- Player Video Comment -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showSwitch: true,
+									switchFormControlName: 'notificationPlayerVideoComment',
+									title: 'notifications.playerVideoComment',
+									description: 'notifications.playerVideoComment.legend',
+									permission: 'notificationPlayerVideoComment'
+								}
+							"
+						></ng-container>
+						<!-- Ewma -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showSwitch: true,
+									switchFormControlName: 'notificationEwma',
+									title: 'notifications.load',
+									description: 'notifications.injuryRisk.legend',
+									permission: 'notificationEwma'
+								}
+							"
+						></ng-container>
+						<!-- Wellness Survey -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showSwitch: true,
+									switchFormControlName: 'mobileWellnessNotification',
+									showTimePicker: true,
+									timePickerFormControlName: 'botHourMessage',
+									title: 'settings.preferences.botHour',
+									description: 'notifications.app.legend',
+									permission: 'mobileWellnessNotification'
+								}
+							"
+						></ng-container>
+						<!-- Timezone for notifications -->
+						<ng-container
+							*ngTemplateOutlet="
+								actionTemplate;
+								context: {
+									form: notificationsForm.controls.advanced,
+									showDropdown: true,
+									dropdownFormControlName: 'botGmt',
+									title: 'settings.preferences.botGmt',
+									description: 'notifications.botGmt.legend',
+									options: gmtOptions,
+									permission: 'mobileWellnessNotification'
+								}
+							"
+						></ng-container>
+					</div>
+				</p-accordionTab>
+			}
+
+			<p-accordionTab [header]="'settings.administration' | translate">
+				@if (editMode) {
+					<div class="tw-flex tw-justify-end tw-gap-2">
+						<div class="iterpro-text-color-900 tw-text-sm">
+							{{ 'buttons.activateAll' | translate }} / {{ 'buttons.deactivateAll' | translate }}
+						</div>
+						<p-inputSwitch
+							class="small-input-switch"
+							[ngModel]="notificationsForm.controls.administration | notificationsAreAllChecked: administrationToggles"
+							(onChange)="
+								toggleSection(notificationsForm.controls.administration, administrationToggles, $event.checked)
+							"
+						></p-inputSwitch>
+					</div>
+				}
+				<div class="tw-flex tw-flex-col tw-gap-2">
+					<!-- Clinical Records / Medical Screenings -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showInput: true,
+								inputFormControlName: 'notificationClinicalRecords',
+								title: 'notifications.clinicalRecord',
+								description: 'notifications.clinicalRecord.legend',
+								suffixLabel: ('daysBefore' | translate),
+								permission: 'notificationClinicalRecords'
+							}
+						"
+					></ng-container>
+					<!-- Contract Expiration -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showInput: true,
+								inputFormControlName: 'notificationContractExpiration',
+								title: 'notifications.contractExpiration',
+								description: 'notifications.contractExpiration.legend',
+								suffixLabel: ('daysBefore' | translate),
+								permission: 'notificationContractExpiration'
+							}
+						"
+					></ng-container>
+					<!-- CostItem Expiration -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showInput: true,
+								inputFormControlName: 'notificationCostItemExpiration',
+								title: 'notifications.costItemExpiration',
+								description: 'notifications.costItemExpiration.legend',
+								suffixLabel: ('daysBefore' | translate),
+								permission: 'notificationCostItemExpiration'
+							}
+						"
+					></ng-container>
+					<!-- Document Expiration -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showInput: true,
+								inputFormControlName: 'notificationDocumentsDays',
+								title: 'notifications.documentExpiration',
+								description: 'notifications.documentExpiration.legend',
+								suffixLabel: ('daysBefore' | translate),
+								permission: 'notificationDocumentsDays'
+							}
+						"
+					></ng-container>
+					<!-- Player / Staff Changes -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationPlayerOperations',
+								title: 'notifications.playerOperations',
+								description: 'notifications.playerOperations.legend',
+								permission: 'notificationPlayerOperations'
+							}
+						"
+					></ng-container>
+					<!-- Transfer Status -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationTransfers',
+								title: 'notifications.transfers',
+								description: 'notifications.transfers.legend',
+								permission: 'notificationTransfers'
+							}
+						"
+					></ng-container>
+					<!-- Appereance Fee -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationAppearanceFee',
+								title: 'notifications.appearanceFee',
+								description: 'notifications.appearanceFee.legend',
+								permission: 'notificationAppearanceFee'
+							}
+						"
+					></ng-container>
+					<!-- Appereance Bonuses -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showMultiselect: true,
+								multiselectFormControlName: 'notificationAppearanceBonuses',
+								title: 'notifications.appearanceBonus',
+								description: 'notifications.appearanceBonus.legend',
+								options: notificationBonusPercentages,
+								permission: 'notificationAppearanceBonuses'
+							}
+						"
+					></ng-container>
+					<!-- Performance Fee -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationPerformanceFee',
+								title: 'notifications.performanceFee',
+								description: 'notifications.performanceFee.legend',
+								permission: 'notificationPerformanceFee'
+							}
+						"
+					></ng-container>
+					<!-- Performance Bonuses -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showMultiselect: true,
+								multiselectFormControlName: 'notificationPerformanceBonuses',
+								title: 'notifications.performanceBonus',
+								description: 'notifications.performanceBonus.legend',
+								permission: 'notificationPerformanceBonuses',
+								options: notificationBonusPercentages
+							}
+						"
+					></ng-container>
+					<!-- Standard Team Bonuses -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationStandardTeamBonuses',
+								title: 'notifications.standardTeamBonus',
+								description: 'notifications.standardTeamBonus.legend',
+								permission: 'notificationStandardTeamBonuses'
+							}
+						"
+					></ng-container>
+					<!-- Valorization -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationValorization',
+								title: 'notifications.valorization',
+								description: 'notifications.valorization.legend',
+								permission: 'notificationValorization'
+							}
+						"
+					></ng-container>
+					<!-- Bonus Paid Overdue -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationBonusPaidOverdue',
+								title: 'notifications.bonusPaidOverdue',
+								description: 'notifications.bonusPaidOverdue.legend',
+								permission: 'notificationBonusPaidOverdue'
+							}
+						"
+					></ng-container>
+					<!-- Club Bonus -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationClubBonus',
+								title: 'notifications.clubBonus',
+								description: 'notifications.clubBonus.legend',
+								permission: 'notificationClubBonus'
+							}
+						"
+					></ng-container>
+					<!-- Club Bonus Paid Overdue -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationClubBonusPaidOverdue',
+								title: 'notifications.clubBonusPaidOverdue',
+								description: 'notifications.clubBonusPaidOverdue.legend',
+								permission: 'notificationClubBonusPaidOverdue'
+							}
+						"
+					></ng-container>
+					<!-- Installments -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationInstallments',
+								title: 'notifications.installments',
+								description: 'notifications.installments.legend',
+								permission: 'notificationInstallments'
+							}
+						"
+					></ng-container>
+					<!-- Financial Capital Gain Loss -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showSwitch: true,
+								switchFormControlName: 'notificationFinancialCapitalGainLoss',
+								title: 'notifications.financialCapitalGainLoss',
+								description: 'notifications.financialCapitalGainLoss.legend',
+								permission: 'notificationFinancialCapitalGainLoss'
+							}
+						"
+					></ng-container>
+					<!-- Financial Losses By Injury -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showMultiselect: true,
+								multiselectFormControlName: 'notificationFinancialLossesByInjury',
+								title: 'notifications.financialLossesByInjury',
+								description: 'notifications.financialLossesByInjury.legend',
+								permission: 'notificationFinancialLossesByInjury',
+								options: notificationBonusPercentages
+							}
+						"
+					></ng-container>
+					<!-- Financial Roi -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.administration,
+								showMultiselect: true,
+								multiselectFormControlName: 'notificationFinancialRoi',
+								title: 'notifications.financialRoi',
+								description: 'notifications.financialRoi.legend',
+								permission: 'notificationFinancialRoi',
+								options: notificationBonusPercentages
+							}
+						"
+					></ng-container>
+				</div>
+			</p-accordionTab>
+
+			<p-accordionTab [header]="'settings.scouting' | translate">
+				@if (editMode) {
+					<div class="tw-flex tw-justify-end tw-gap-2">
+						<div class="iterpro-text-color-900 tw-text-sm">
+							{{ 'buttons.activateAll' | translate }} / {{ 'buttons.deactivateAll' | translate }}
+						</div>
+						<p-inputSwitch
+							class="small-input-switch"
+							[ngModel]="notificationsForm.controls.scouting | notificationsAreAllChecked: scoutingToggles"
+							(onChange)="toggleSection(notificationsForm.controls.scouting, scoutingToggles, $event.checked)"
+						></p-inputSwitch>
+					</div>
+				}
+				<div class="tw-flex tw-flex-col tw-gap-2">
+					<!-- Scouting -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.scouting,
+								showSwitch: true,
+								switchFormControlName: 'notificationScouting',
+								showDropdown: true,
+								dropdownFormControlName: 'notificationScoutingPlayers',
+								title: 'notifications.scoutingApp',
+								description: 'notifications.scoutingApp.legend',
+								permission: 'notificationScouting',
+								options: scoutingNotificationPlayersChoices
+							}
+						"
+					></ng-container>
+					<!-- Scouting Messages -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.scouting,
+								showSwitch: true,
+								switchFormControlName: 'notificationScoutingMessages',
+								showDropdown: true,
+								dropdownFormControlName: 'notificationScoutingMessagesPlayers',
+								title: 'notifications.scoutingAppMessages',
+								description: 'notifications.scoutingAppMessages.legend',
+								permission: 'notificationScoutingMessages',
+								options: scoutingNotificationPlayersChoices
+							}
+						"
+					></ng-container>
+					<!-- Game Report -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.scouting,
+								showSwitch: true,
+								switchFormControlName: 'notificationScoutingGameReport',
+								title: 'notifications.scoutingGameReport',
+								description: 'notifications.scoutingGameReport.legend',
+								permission: 'notificationScoutingGameReport'
+							}
+						"
+					></ng-container>
+					<!-- Scouting Game Invitation -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.scouting,
+								showSwitch: true,
+								switchFormControlName: 'notificationScoutingGameInvitation',
+								title: 'notifications.scoutingGameInvitation',
+								description: 'notifications.scoutingGameInvitation.legend',
+								permission: 'notificationScoutingGameInvitation'
+							}
+						"
+					></ng-container>
+					<!-- Scouting Game Reminder -->
+					<ng-container
+						*ngTemplateOutlet="
+							actionTemplate;
+							context: {
+								form: notificationsForm.controls.scouting,
+								showSwitch: true,
+								formGroupName: 'notificationScoutingGameReminder',
+								switchFormControlName: 'active',
+								showInput: true,
+								inputFormControlName: 'minutes',
+								title: 'notifications.notificationScoutingGameReminder',
+								description: 'notifications.notificationScoutingGameReminder.legend',
+								permission: 'notificationScoutingGameReminder',
+								suffixLabel: ('minutesBefore' | translate)
+							}
+						"
+					></ng-container>
+				</div>
+			</p-accordionTab>
+		</p-accordion>
+	</div>
+} @else {
+	<div class="tw-mt-8">
+		<iterpro-skeleton-accordion accordions="4"></iterpro-skeleton-accordion>
+	</div>
+}
+<ng-template
+	#actionTemplate
+	let-form="form"
+	let-formGroupName="formGroupName"
+	let-title="title"
+	let-description="description"
+	let-suffixLabel="suffixLabel"
+	let-showSwitch="showSwitch"
+	let-switchFormControlName="switchFormControlName"
+	let-showInput="showInput"
+	let-inputFormControlName="inputFormControlName"
+	let-showDropdown="showDropdown"
+	let-dropdownFormControlName="dropdownFormControlName"
+	let-showMultiselect="showMultiselect"
+	let-multiselectFormControlName="multiselectFormControlName"
+	let-options="options"
+	let-showTimePicker="showTimePicker"
+	let-timePickerFormControlName="timePickerFormControlName"
+	let-permission="permission"
+>
+	@if ((permission | notificationPermissionCheck: currentTeam : club : customer)?.visible) {
+		<div
+			class="iterpro-item-container tw-grid tw-grid-cols-12 tw-items-center"
+			[ngClass]="{
+				'tw-opacity-60':
+					(permission | notificationPermissionCheck: currentTeam : club : customer)?.enabled?.response === false
+			}"
+			[pTooltip]="(permission | notificationPermissionCheck: currentTeam : club : customer)?.enabled?.error | translate"
+			tooltipPosition="left"
+			[formGroup]="form"
+		>
+			@if (showSwitch) {
+				<div class="tw-col-span-1 tw-mr-2 tw-text-center">
+					@if (formGroupName) {
+						<div [formGroupName]="formGroupName">
+							<p-inputSwitch class="small-input-switch" [formControlName]="switchFormControlName"></p-inputSwitch>
+						</div>
+					} @else {
+						<div>
+							<p-inputSwitch class="small-input-switch" [formControlName]="switchFormControlName"></p-inputSwitch>
+						</div>
+					}
+				</div>
+			}
+			<div [class]="showSwitch ? 'tw-col-span-8' : 'tw-col-span-9'">
+				<h5>{{ title | translate }}</h5>
+				<span class="iterpro-text-color-900 tw-text-sm">{{ description | translate }}</span>
+			</div>
+
+			@if (showMultiselect || showDropdown || showInput || showTimePicker) {
+				<div class="tw-col-span-3 tw-flex tw-items-baseline tw-justify-end tw-gap-1 tw-p-2">
+					@if (showMultiselect) {
+						@if (formGroupName) {
+							<div [formGroupName]="formGroupName">
+								<p-multiSelect
+									[formControlName]="multiselectFormControlName"
+									[options]="options"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								>
+								</p-multiSelect>
+							</div>
+						} @else {
+							<div>
+								<p-multiSelect
+									[formControlName]="multiselectFormControlName"
+									[options]="options"
+									selectedItemsLabel="{0} selected"
+									maxSelectedLabels="1"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								>
+								</p-multiSelect>
+							</div>
+						}
+					}
+					@if (showDropdown) {
+						@if (formGroupName) {
+							<div [formGroupName]="formGroupName">
+								<p-dropdown
+									[formControlName]="dropdownFormControlName"
+									[options]="options"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								>
+								</p-dropdown>
+							</div>
+						} @else {
+							<div>
+								<p-dropdown
+									[formControlName]="dropdownFormControlName"
+									[options]="options"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								>
+								</p-dropdown>
+							</div>
+						}
+					}
+					@if (showInput) {
+						@if (formGroupName) {
+							<div class="tw-flex tw-items-baseline tw-gap-1" [formGroupName]="formGroupName">
+								<input
+									class="tw-w-8 tw-text-right tw-text-sm"
+									pInputText
+									type="number"
+									[formControlName]="inputFormControlName"
+								/>
+								@if (suffixLabel) {
+									<span class="iterpro-text-color-900 tw-text-sm">{{ suffixLabel }}</span>
+								}
+							</div>
+						} @else {
+							<div class="tw-flex tw-items-baseline tw-gap-1">
+								<input
+									class="tw-w-8 tw-text-right tw-text-sm"
+									pInputText
+									type="number"
+									[formControlName]="inputFormControlName"
+								/>
+								@if (suffixLabel) {
+									<span class="iterpro-text-color-900 tw-text-sm">{{ suffixLabel }}</span>
+								}
+							</div>
+						}
+					}
+					@if (showTimePicker) {
+						@if (formGroupName) {
+							<div [formGroupName]="formGroupName">
+								<iterpro-form-timepicker [controlName]="timePickerFormControlName"></iterpro-form-timepicker>
+							</div>
+						} @else {
+							<div>
+								<iterpro-form-timepicker [controlName]="timePickerFormControlName"></iterpro-form-timepicker>
+							</div>
+						}
+					}
+				</div>
+			}
+		</div>
+	}
+</ng-template>

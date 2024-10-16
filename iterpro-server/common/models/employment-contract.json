@@ -1,0 +1,91 @@
+{
+	"name": "EmploymentContract",
+	"plural": "EmploymentContracts",
+	"base": "Contract",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"dateFrom": {
+			"type": "date",
+			"required": true
+		},
+		"dateTo": {
+			"type": "date",
+			"required": true
+		},
+		"additionalClauses": {
+			"type": ["object"]
+		},
+		"benefits": {
+			"type": ["object"]
+		},
+		"options": {
+			"type": ["object"]
+		},
+		"commercialRights": {
+			"type": ["object"]
+		},
+		"termination": {
+			"type": ["object"]
+		},
+		"buyout": {
+			"type": ["object"]
+		},
+		"insurance": {
+			"type": "object"
+		},
+		"inward": {
+			"type": "string"
+		},
+		"outward": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"person": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "personId",
+				"discriminator": "personType"
+			},
+			"description": "Employment contract belongs to either a Player, a PlayerScouting or a Staff"
+		},
+		"agentContracts": {
+			"type": "hasMany",
+			"model": "AgentContract",
+			"property": "agentContracts",
+			"polymorphic": "contract"
+		},
+		"basicWages": {
+			"type": "hasMany",
+			"model": "BasicWage",
+			"property": "basicWages",
+			"polymorphic": "contract"
+		},
+		"privateWriting": {
+			"type": "hasMany",
+			"model": "BasicWage",
+			"property": "privateWriting",
+			"polymorphic": "contract"
+		},
+		"contributions": {
+			"type": "hasMany",
+			"model": "BasicWage",
+			"property": "contributions",
+			"polymorphic": "contract"
+		},
+		"renewContract": {
+			"type": "belongsTo",
+			"model": "EmploymentContract"
+		},
+		"transferContract": {
+			"type": "belongsTo",
+			"model": "TransferContract"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

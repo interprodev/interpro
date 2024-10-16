@@ -1,0 +1,53 @@
+@if (drillMetricForm) {
+	<div class="tw-min-h-full tw-relative">
+		<form [formGroup]="drillMetricForm">
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900">{{ metricLabel }}</div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="label" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.label.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (drillMetricForm.controls.label.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'label'" [label]="metricLabel"></iterpro-form-feedback>
+				}
+				@if (drillMetricForm.controls.label.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'label'" [type]="'custom'"
+																 [label]="('alert.labelMustBeUnique' | translate) + ': ' + drillMetricForm.controls.label.errors?.mustBeUniqueValue">
+
+					</iterpro-form-feedback>
+				}
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900">{{ metricValue }} <span>({{'preferences.metrics.forCsvExport' | translate}})</span></div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="value" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.value.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (drillMetricForm.controls.value.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [label]="metricValue"></iterpro-form-feedback>
+				}
+				@if (drillMetricForm.controls.value.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [type]="'custom'"
+																 [label]="('alert.csvValueMustBeUnique' | translate) + ': ' + drillMetricForm.controls.value.errors?.mustBeUniqueValue">
+
+					</iterpro-form-feedback>
+				}
+			</div>
+		</form>
+		@if (editMode && drillMetricForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}

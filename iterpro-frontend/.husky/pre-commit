@@ -1,0 +1,41 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# STEP 1 - LINTING 
+#
+
+# # ------- Config
+# npx nx run config:lint --quiet --cache
+
+# # ------- Shared UI Libs
+# npx nx run shared-ui-components:lint --quiet --cache
+# npx nx run shared-ui-drectives:lint --quiet --cache
+# npx nx run shared-ui-pipes:lint --quiet --cache
+# npx nx run shared-ui-primeng:lint --quiet --cache
+
+# # ------- Shared feature-components
+# npx nx run shared-feature-components:lint --quiet --cache
+
+# # DOMAINS
+
+# # ------- Chat
+# npx nx run chat-feature-inbox:lint --quiet --cache
+# npx nx run chat-shell:lint --quiet --cache
+# npx nx run chat-data-access:lint --quiet --cache
+
+# # ------- Login
+# npx nx run login-feature-form:lint --quiet --cache
+# npx nx run login-shell:lint --quiet --cache
+
+# # ------- Manager
+# # --> Drills
+# npx nx run manager-drills-data-access:lint --quiet --cache
+# npx nx run manager-drills-ui:lint --quiet --cache
+# npx nx run manager-drills-utils:lint --quiet --cache
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# STEP 2 - TESTS
+#
+
+# npm test

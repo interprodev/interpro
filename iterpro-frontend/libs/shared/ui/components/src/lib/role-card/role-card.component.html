@@ -1,0 +1,36 @@
+<div *ngIf="tactic && translate" [ngClass]="getClass()" (click)="onShowShortlist(role)">
+  
+  <svg width="130px" height="130px" viewBox="0 0 288 386" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="lineup-2">
+        <g id="Group">
+          <g id="lineup" fill="#252525" fill-rule="nonzero">
+            <path
+              d="M144,0 C223.529004,0 288,64.470996 288,144 C288,147.701393 287.860349,151.370168 287.586029,155.001345 L288,155 L288,308 L144,386 L0,308 L0,155 L0.413971063,155.001345 C0.139650853,151.370168 0,147.701393 0,144 C0,64.470996 64.470996,0 144,0 Z"
+              id="Combined-Shape"></path>
+          </g>
+          <path
+            d="M144,0.5 C65.0232808,0.5 1,64.5232808 1,143.5 C1,222.476719 65.0232808,286.5 144,286.5 C222.976719,286.5 287,222.476719 287,143.5 C287,64.5232808 222.976719,0.5 144,0.5 Z"
+            id="Combined-Shape-path" fill="#eee"></path>
+          <foreignObject style=" z-index:99; width:80%; height:100%; left:10%; top:25%">
+            <xhtml:p-inplace [active]="active" (onActivate)="stopClick($event)" [style.text-align]="'center'"
+              (iterproClickOutside)="changeRoleName()">
+              <xhtml:span style="font-size:70px;color:black;text-align:center" pInplaceDisplay>{{tactic.role}}
+              </xhtml:span>
+              <xhtml:span pInplaceContent>
+                <xhtml:input pInputText style="font-size:70px;color:black;text-align:center" type="text"
+                  (click)="stopClick($event)" [(ngModel)]="tactic.role" />
+              </xhtml:span>
+            </xhtml:p-inplace>
+          </foreignObject>
+        </g>
+      </g>
+    </g>
+    <foreignObject *ngIf="showBadge && getMappedPlayersNumber(tactic) > 0" class="foreignObject" width="100"
+      height="100" x="70%" y="0">
+      <xhtml:span class="inner-label">{{getMappedPlayersNumber(tactic)}}</xhtml:span>
+    </foreignObject>
+
+  </svg>
+</div>

@@ -1,0 +1,85 @@
+.default-table th {
+	font-family: 'Gotham';
+	text-align: left !important;
+}
+.default-table td {
+	font-size: 0.8rem;
+}
+/* .default-table td,
+.default-table th {
+	padding: 0.3rem 0.3rem 0.3rem 0;
+} */
+.default-table th,
+.default-table thead td {
+	text-transform: capitalize;
+}
+.default-table thead tr {
+	padding-bottom: 1rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid #fff !important;
+}
+/* .default-table thead th {
+	padding-bottom: 1rem;
+} */
+.summary-table th {
+	width: 16.66%;
+}
+.summary-table th + th,
+.summary-table td + td {
+	text-align: center;
+	width: 80px;
+}
+.teamView-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+	align-items: flex-start;
+}
+.teamview > * {
+	cursor: pointer;
+	font-style: normal;
+	margin-left: 10px;
+	font-size: 1.2em;
+}
+.disabled {
+	pointer-events: none;
+	color: #fafafa !important;
+	opacity: 0.3;
+}
+.question-label {
+	text-transform: uppercase;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.question-icon {
+	margin-top: 0.4em;
+	font-size: 1.2rem;
+}
+
+input {
+	text-align: center;
+	margin-left: 0.2em;
+	width: 30%;
+}
+
+
+.player-name {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 0.5em;
+}
+
+.score-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+tr:nth-child(2n) {
+	background: hsla(0, 0%, 39%, 0.14);
+}

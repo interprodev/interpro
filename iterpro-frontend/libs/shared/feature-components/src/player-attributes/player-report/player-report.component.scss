@@ -1,0 +1,46 @@
+.main-container {
+	.container {
+		display: flex;
+		column-gap: 1em;
+		row-gap: 2em;
+		.sx-container {
+			display: flex;
+			flex-direction: column;
+			row-gap: 1em;
+			flex: 1;
+			.player-name {
+				text-transform: uppercase;
+			}
+			.profile-picture {
+				width: 100%;
+				position: relative;
+				max-width: 180px;
+				max-height: 180px;
+				img {
+					width: 100%;
+					max-width: 180px;
+					max-height: 180px;
+				}
+				.player-pic {
+					box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+					opacity: 1;
+					display: block;
+					transition: 0.5s ease;
+					backface-visibility: hidden;
+				}
+			}
+			.scouting-info {
+				display: flex;
+				flex-direction: column;
+				row-gap: 1em;
+			}
+		}
+		.dx-container {
+			width: 100%;
+			.data-row {
+				display: flex;
+				justify-content: flex-start;
+			}
+		}
+	}
+}

@@ -1,0 +1,118 @@
+{
+	"name": "TacticsData",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"transition": {
+			"type": "string"
+		},
+		"organization": {
+			"type": "string"
+		},
+		"setPieces": {
+			"type": "string"
+		},
+		"tactic": {
+			"type": "string"
+		},
+		"transitionVideoUrl": {
+			"type": "string"
+		},
+		"transitionAlternateVideoUrl": {
+			"type": "string"
+		},
+		"transitionVideoTags": {
+			"type": "array"
+		},
+		"organizationVideoUrl": {
+			"type": "string"
+		},
+		"organizationAlternateVideoUrl": {
+			"type": "string"
+		},
+		"organizationVideoTags": {
+			"type": "array"
+		},
+		"setPiecesVideoUrl": {
+			"type": "string"
+		},
+		"setPiecesAlternateVideoUrl": {
+			"type": "string"
+		},
+		"setPiecesVideoTags": {
+			"type": "array"
+		},
+		"transitionComments": {
+			"type": [
+				{
+					"date": {
+						"type": "date"
+					},
+					"user": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"organizationComments": {
+			"type": [
+				{
+					"date": {
+						"type": "date"
+					},
+					"user": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"setPiecesComments": {
+			"type": [
+				{
+					"date": {
+						"type": "date"
+					},
+					"user": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"match": {
+			"type": "belongsTo",
+			"model": "Match",
+			"foreignKey": ""
+		},
+		"players": {
+			"type": "embedsMany",
+			"model": "TacticsPlayerData",
+			"property": "_players",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

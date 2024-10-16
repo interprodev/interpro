@@ -1,0 +1,8 @@
+p-panel {
+	.p-panel {
+		@apply tw-p-2;
+		&-header {
+			@apply tw-px-4 tw-py-2;
+		}
+	}
+}

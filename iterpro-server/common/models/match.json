@@ -1,0 +1,151 @@
+{
+	"name": "Match",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date",
+			"required": true
+		},
+		"opponent": {
+			"type": "string"
+		},
+		"home": {
+			"type": "boolean"
+		},
+		"result": {
+			"type": "string"
+		},
+		"resultFlag": {
+			"type": "boolean"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"teamStat": {
+			"type": "embedsOne",
+			"model": "TeamStat",
+			"property": "teamStat",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"teamSeason": {
+			"type": "belongsTo",
+			"model": "TeamSeason",
+			"foreignKey": ""
+		},
+		"offensive": {
+			"type": "embedsOne",
+			"model": "TacticsData",
+			"property": "offensive",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"defensive": {
+			"type": "embedsOne",
+			"model": "TacticsData",
+			"property": "defensive",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"playerStats": {
+			"type": "embedsMany",
+			"model": "PlayerStat",
+			"property": "playerStats",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"event": {
+			"type": "belongsTo",
+			"model": "Event",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"importPlayerStatsFromCSV": {
+			"accepts": [
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playersStats",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "username",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Match",
+				"root": true
+			},
+			"http": {
+				"path": "/import-players-stats",
+				"verb": "post"
+			}
+		},
+		"importTeamStatsFromCSV": {
+			"accepts": [
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamStats",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "username",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Match",
+				"root": true
+			},
+			"http": {
+				"path": "/import-team-stats",
+				"verb": "post"
+			}
+		}
+	}
+}

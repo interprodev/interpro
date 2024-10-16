@@ -1,0 +1,124 @@
+{
+	"name": "AzureStorage",
+	"plural": "AzureStorage",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getSasToken": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/sasToken",
+				"verb": "post"
+			}
+		},
+		"removeFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/removeFile",
+				"verb": "post"
+			}
+		},
+		"uploadRawFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "data",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/upload-file",
+				"verb": "post"
+			}
+		},
+		"downloadFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/downloadFile",
+				"verb": "post"
+			}
+		}
+	}
+}

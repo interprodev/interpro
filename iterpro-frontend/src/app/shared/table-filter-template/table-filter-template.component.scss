@@ -1,0 +1,14 @@
+.filters-container {
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
+	column-gap: 12px;
+	row-gap: 12px;
+	justify-content: flex-end;
+	margin-bottom: 12px;
+
+	.filter-group {
+		background-color: var(--color-bg-600);
+		border-radius: var(--iterpro-border-radius);
+	}
+}

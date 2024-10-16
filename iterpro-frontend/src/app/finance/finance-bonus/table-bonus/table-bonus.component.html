@@ -1,0 +1,843 @@
+<div class="main-container" *ngIf="!!clubSeason; else noClubSeason">
+	<div class="report">
+		<iterpro-report-download (downloadPDF)="downloadPDF()" (downloadCSV)="downloadCsv()"></iterpro-report-download>
+	</div>
+	<div class="tw-w-full tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-4">
+		<div class="header">
+			<div class="selector-container">
+				<h4 class="selector" [class.selected]="selectedView === 'player'" (click)="selectView('player')" translate>
+					players
+				</h4>
+				<span class="divisor">|</span>
+				<h4 class="selector" [class.selected]="selectedView === 'team'" (click)="selectView('team')" translate>
+					profile.team
+				</h4>
+			</div>
+		</div>
+		<div *ngIf="selectedView === 'player'" class="list">
+			<div class="overview">
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.appearanceFees<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.total)"
+							>{{ currency
+							}}{{
+								bonusComputed.appFee
+									? bonusComputed.appFee === 0
+										? bonusComputed.appFee
+										: (bonusComputed.appFee | shortNumber: true)
+									: 0
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.appearance<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalAppBonus)"
+							>{{ currency
+							}}{{
+								bonusComputed.appBonus === 0 ? bonusComputed.appBonus : (bonusComputed.appBonus | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalAppBonus)"
+							>/{{
+								bonusComputed.totalAppBonus === 0
+									? bonusComputed.totalAppBonus
+									: (bonusComputed.totalAppBonus | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.performanceFee<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.total)"
+							>{{ currency
+							}}{{
+								bonusComputed.perfFee
+									? bonusComputed.perfFee === 0
+										? bonusComputed.perfFee
+										: (bonusComputed.perfFee | shortNumber: true)
+									: 0
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.performance<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalPerfBonus)"
+							>{{ currency
+							}}{{
+								bonusComputed.perfBonus === 0 ? bonusComputed.perfBonus : (bonusComputed.perfBonus | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalPerfBonus)"
+							>/{{
+								bonusComputed.totalPerfBonus === 0
+									? bonusComputed.totalPerfBonus
+									: (bonusComputed.totalPerfBonus | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.standardTeam<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalStdBonus)"
+							>{{ currency
+							}}{{
+								bonusComputed.stdBonus === 0 ? bonusComputed.stdBonus : (bonusComputed.stdBonus | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalStdBonus)"
+							>/{{
+								bonusComputed.totalStdBonus === 0
+									? bonusComputed.totalStdBonus
+									: (bonusComputed.totalStdBonus | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.signing<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalSignBonus)"
+							>{{ currency
+							}}{{
+								bonusComputed.signBonus === 0 ? bonusComputed.signBonus : (bonusComputed.signBonus | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalSignBonus)"
+							>/{{
+								bonusComputed.totalSignBonus === 0
+									? bonusComputed.totalSignBonus
+									: (bonusComputed.totalSignBonus | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.custom<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalCustomBonus)"
+							>{{ currency
+							}}{{
+								bonusComputed.customBonus === 0
+									? bonusComputed.customBonus
+									: (bonusComputed.customBonus | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalCustomBonus)"
+							>/{{
+								bonusComputed.totalCustomBonus === 0
+									? bonusComputed.totalCustomBonus
+									: (bonusComputed.totalCustomBonus | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>admin.contracts.valorization<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalValorization)"
+							>{{ currency
+							}}{{
+								bonusComputed.valorization === 0
+									? bonusComputed.valorization
+									: (bonusComputed.valorization | shortNumber: true)
+							}}</span
+						><span *ngIf="!isNaN(bonusComputed.totalValorization)"
+							>/{{
+								bonusComputed.totalValorization === 0
+									? bonusComputed.totalValorization
+									: (bonusComputed.totalValorization | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+				<div class="section">
+					<h4 class="label" translate>sessionAnalysis.options.total<span>: </span></h4>
+					<span class="value"
+						><span *ngIf="!isNaN(bonusComputed.totalTotal)"
+							>{{ currency
+							}}{{ bonusComputed.total === 0 ? bonusComputed.total : (bonusComputed.total | shortNumber: true) }}</span
+						><span *ngIf="!isNaN(bonusComputed.totalTotal)"
+							>/{{
+								bonusComputed.totalTotal === 0
+									? bonusComputed.totalTotal
+									: (bonusComputed.totalTotal | shortNumber: true)
+							}}</span
+						></span
+					>
+				</div>
+
+				<ng-template #zero>
+					<span>{{ currency }}0</span>
+				</ng-template>
+			</div>
+			<div class="table-container" *blockUI="'loadingPlayer'">
+				<p-table
+					[columns]="peopleTableColumns"
+					[value]="filteredPeopleBonuses"
+					dataKey="id"
+					[scrollable]="true"
+					scrollHeight="45vh"
+					(sortFunction)="customSort($event)"
+					[customSort]="true"
+					styleClass="p-datatable-striped"
+				>
+					<ng-template pTemplate="caption">
+						<div class="headers-button">
+							<div class="filters-container">
+								<div class="filters">
+									<span class="table-caption-label" translate>profile.team</span>
+									<div class="iterpro-item-container">
+										<p-dropdown
+											[options]="teams"
+											optionLabel="name"
+											[(ngModel)]="selectedTeam"
+											(onChange)="onSelectTeam($event)"
+										>
+											<ng-template let-item pTemplate="item">
+												<span style="vertical-align: middle">{{ item.name }}</span>
+											</ng-template>
+										</p-dropdown>
+									</div>
+								</div>
+								<div class="filters">
+									<span class="table-caption-label" translate>profile.season</span>
+									<div class="iterpro-item-container">
+										<p-dropdown
+											*ngIf="!isEmpty(selectedTeam.teamSeasons)"
+											[options]="selectedTeam.teamSeasons"
+											optionLabel="name"
+											[(ngModel)]="selectedSeason"
+											(onChange)="onSelectSeason($event)"
+										>
+										</p-dropdown>
+									</div>
+								</div>
+								<div class="filters">
+									<span class="table-caption-label" translate>players.group</span>
+									<div class="iterpro-item-container">
+										<p-dropdown
+											[options]="profileOptions"
+											[(ngModel)]="profile"
+											(onChange)="onSelectProfile($event)"
+											appendTo="body"
+											[placeholder]="'dropdown.placeholder' | translate"
+										>
+											<ng-template let-item pTemplate="item">
+												<span>{{ item?.label | translate }}</span>
+											</ng-template>
+											<ng-template let-item pTemplate="selectedItem">
+												<span>{{ item?.label | translate }}</span>
+											</ng-template>
+										</p-dropdown>
+									</div>
+								</div>
+								<div class="filters">
+									<div class="iterpro-item-container">
+										<p-multiSelect
+											*ngIf="profile === 'Player'"
+											[style]="{ 'z-index': '99' }"
+											[options]="playerOptions"
+											[(ngModel)]="selectedPlayers"
+											(onChange)="onOptionSelected()"
+											selectedItemsLabel="{0} selected"
+											maxSelectedLabels="0"
+											[placeholder]="'dropdown.placeholder' | translate"
+										></p-multiSelect>
+										<p-multiSelect
+											*ngIf="profile === 'Agent'"
+											[style]="{ 'z-index': '99' }"
+											[options]="agentOptions"
+											[(ngModel)]="selectedAgents"
+											(onChange)="onOptionSelected()"
+											selectedItemsLabel="{0} selected"
+											maxSelectedLabels="0"
+											[placeholder]="'dropdown.placeholder' | translate"
+										></p-multiSelect>
+										<p-multiSelect
+											*ngIf="profile === 'Staff'"
+											[style]="{ 'z-index': '99' }"
+											[options]="staffOptions"
+											[(ngModel)]="selectedStaff"
+											(onChange)="onOptionSelected()"
+											selectedItemsLabel="{0} selected"
+											maxSelectedLabels="0"
+											[placeholder]="'dropdown.placeholder' | translate"
+										></p-multiSelect>
+									</div>
+								</div>
+								<div class="filters" *ngIf="showAdvancedFilters">
+									<span class="table-caption-label" translate>bonus.bonusType</span>
+									<div class="iterpro-item-container">
+										<p-multiSelect
+											[style]="{ 'z-index': '99' }"
+											[options]="bonusTypesOptions"
+											[(ngModel)]="selectedBonusTypes"
+											(onChange)="onOptionSelected()"
+											selectedItemsLabel="{0} selected"
+											maxSelectedLabels="0"
+											placeholder="{{ 'dropdown.placeholder' | translate }}"
+										></p-multiSelect>
+									</div>
+									<span class="table-caption-label" translate>bonus.contractType</span>
+									<div class="iterpro-item-container">
+										<p-multiSelect
+											[style]="{ 'z-index': '99' }"
+											[options]="contractTypesOptions"
+											[(ngModel)]="selectedContractTypes"
+											(onChange)="onOptionSelected()"
+											selectedItemsLabel="{0} selected"
+											maxSelectedLabels="0"
+											placeholder="{{ 'dropdown.placeholder' | translate }}"
+										></p-multiSelect>
+									</div>
+								</div>
+							</div>
+							<div class="filters">
+								<div class="table-caption-label" (click)="toggleFilters()">
+									<i
+										[class]="showAdvancedFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+										[pTooltip]="(showAdvancedFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+									>
+									</i>
+								</div>
+								<span
+									class="table-caption-label middle"
+									pTooltip="{{ 'financial.taxes.values' | translate: taxes }}"
+									translate
+									>financial.dashboard.netCosts</span
+								>
+								<p-inputSwitch
+									[disabled]="editMode"
+									[(ngModel)]="netValuesFlag"
+									(onChange)="switchPostTaxValues($event)"
+								>
+								</p-inputSwitch>
+								<span class="table-caption-label middle" translate>profile.showArchived</span>
+								<p-inputSwitch [disabled]="editMode" [(ngModel)]="archived" (onChange)="switchArchived($event)">
+								</p-inputSwitch>
+								@if (profile !== 'Agent') {
+									<span class="table-caption-label middle" translate>profile.toReceive</span>
+									<p-inputSwitch [disabled]="editMode" [(ngModel)]="toReceive" (onChange)="switchToReceive($event)">
+									</p-inputSwitch>
+								}
+							</div>
+						</div>
+					</ng-template>
+					<ng-template pTemplate="header" let-columns>
+						<tr class="tw-h-10">
+							<th
+								*ngFor="let col of columns"
+								[pSortableColumn]="col.sortable ? col.field : false"
+								[style.justify-content]="col.field === 'displayName' || col.field === 'agentName' ? 'left' : 'center'"
+								[ngStyle]="{ minWidth: col.width + 'px' }"
+							>
+								{{ col.header }}
+								<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+							</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="rowexpansion" let-rowData>
+						<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+							<td class="expanded-row" colspan="13">
+								<div class="expanded-row-container">
+									<div [innerHTML]="getConditionType(rowData.conditions[i], rowData)"></div>
+									<div [innerHTML]="getBonusTypeText(rowData, i + 1)"></div>
+								</div>
+							</td>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+						<tr class="tw-h-10">
+							<td
+								*ngFor="let col of columns"
+								[ngStyle]="{ minWidth: col.width + 'px' }"
+								[style.height]="'50px'"
+								[style.text-align]="col.field === 'displayName' ? 'left' : 'center'"
+							>
+								<span *ngIf="col.field === 'sortIcon' && rowData?.conditions?.length">
+									<a href="#" [pRowToggler]="rowData">
+										<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+									</a>
+								</span>
+								<span *ngIf="col.field === 'displayName'">
+									<ng-container *ngIf="profile === 'Player'">
+										<img
+											class="pt-pic"
+											[src]="rowData.personId | selectItemValue: playerOptions : 'id' : 'downloadUrl' | azureUrl"
+											onError="this.src='assets/img/default_icon.png';"
+											alt="player picture"
+										/>
+										<span>{{ rowData.personId | selectItemLabel: playerOptions : 'id' }}</span>
+									</ng-container>
+									<ng-container *ngIf="profile === 'Staff'">
+										<img
+											class="pt-pic"
+											[src]="rowData.personId | selectItemValue: staffOptions : 'id' : 'downloadUrl' | azureUrl"
+											onError="this.src='assets/img/default_icon.png';"
+											alt="player picture"
+										/>
+										<span>{{ rowData.personId | selectItemLabel: staffOptions : 'id' }}</span>
+									</ng-container>
+									<ng-container *ngIf="profile === 'Agent'">
+										<img
+											class="pt-pic"
+											[src]="rowData.agentId | selectItemValue: agentOptions : 'id' : 'downloadUrl' | azureUrl"
+											onError="this.src='assets/img/default_icon.png';"
+											alt="player picture"
+										/>
+										<span>{{ rowData.agentId | selectItemLabel: agentOptions : 'id' }}</span>
+									</ng-container>
+								</span>
+								<span *ngIf="col.field === 'assisted'">
+									<img
+										class="pt-pic"
+										[src]="rowData.personId | selectItemValue: playerOptions : 'id' : 'downloadUrl' | azureUrl"
+										onError="this.src='assets/img/default_icon.png';"
+										alt="player picture"
+									/>
+									<span>{{ rowData.personId | selectItemLabel: playerOptions : 'id' }}</span>
+								</span>
+								<span *ngIf="col.field === 'contractType'" style="width: 100%; justify-content: center">
+									{{ getContractLabel(rowData.transferType, rowData.contractType, rowData.contractId) | translate }}
+								</span>
+								<span *ngIf="col.field === 'personStatus'" style="width: 100%; justify-content: center">
+									@if ((profile === 'Agent' && !agentPlayerContracts) || agentPlayerContracts?.length === 0) {
+										<p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+									} @else {
+										{{ getPersonStatusLabel(rowData) }}
+									}
+								</span>
+								<ng-container *ngIf="col.field === 'club'">
+									<span *ngIf="profile === 'Player'" style="width: 100%; justify-content: center">
+										<ng-container *ngIf="!rowData?.contract?.club">{{ selectedTeam.name }}</ng-container>
+										<ng-container *ngIf="rowData?.contract?.club && clubNameService.clubNamesLoaded">{{
+											rowData.contract.club | selectItemLabel: clubNameService.cachedClubNames
+										}}</ng-container>
+									</span>
+									<span *ngIf="profile === 'Agent' || profile === 'Staff'">{{ selectedTeam.name }}</span>
+								</ng-container>
+								<span *ngIf="col.field === 'type'" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!!rowData.manualEvaluation"
+										class="fas fa-clipboard-list-check"
+										pTooltip="{{ 'bonus.manual' | translate }}"
+									></i>
+									{{ 'bonus.type.' + rowData.type | translate }}
+								</span>
+								<span *ngIf="col.field === 'percentage'" style="width: 100%; justify-content: center">
+									<p-progressBar
+										*ngIf="rowData.type !== 'appearanceFee' && rowData.type !== 'performanceFee'"
+										[class.progressbar-success]="toReceive"
+										[ngStyle]="{ height: '1.3em' }"
+										[showValue]="true"
+										[value]="isReachedProgressBar(rowData)"
+									>
+									</p-progressBar>
+									<span *ngIf="rowData.type === 'appearanceFee' || rowData.type === 'performanceFee'">
+										<span>
+											{{ getConditionText(rowData) }}:
+											{{ rowData.progress.count }}
+										</span>
+									</span>
+								</span>
+								<span *ngIf="col.field === 'amount'" style="width: 100%; justify-content: center">
+									<span *ngIf="rowData[col.field]">{{ currency }}</span
+									>{{ getAmount(rowData) | shortNumber: true }}
+								</span>
+								<span *ngIf="col.field === 'dueDate'" style="width: 100%; justify-content: center">
+									{{ rowData.dueDate | formatDateBySetting }}
+								</span>
+								<span *ngIf="col.field === 'reachable' && archived" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!editMode"
+										class="fas"
+										[ngClass]="getReachableIcon(rowData)"
+										[title]="getReachableText(rowData) | translate"
+									></i>
+									<p-checkbox
+										*ngIf="editMode"
+										[(ngModel)]="rowData.reachable"
+										binary="true"
+										[disabled]="alreadyReached(rowData)"
+										(onChange)="updateToSave(rowData)"
+									>
+									</p-checkbox>
+								</span>
+								<span *ngIf="col.field === 'reached'" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!editMode"
+										class="fas"
+										[ngClass]="getReachedIcon(rowData)"
+										[title]="
+											(getReachedText(rowData) | translate) +
+											': ' +
+											(rowData.reachedCustomerId | customerName: customers)
+										"
+									></i>
+									<p-checkbox
+										*ngIf="editMode"
+										[(ngModel)]="rowData.reached"
+										binary="true"
+										[disabled]="alreadyReached(rowData)"
+										(onChange)="updateReached(rowData, $event)"
+									>
+									</p-checkbox>
+								</span>
+								<span *ngIf="col.field === 'achievedDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.reachedCustomerId | customerName: customers">{{
+										rowData.achievedDate | formatDateBySetting
+									}}</span>
+									<p-calendar
+										appendTo="body"
+										*ngIf="editMode"
+										[disabled]="!rowData.reached || rowData.confirmed || rowData.paid"
+										[(ngModel)]="rowData.achievedDate"
+										[showClear]="true"
+										[maxDate]="today"
+										(onSelect)="updateToSave(rowData)"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"
+									></p-calendar>
+								</span>
+								<span *ngIf="col.field === 'confirmed'" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!editMode"
+										class="fas"
+										[ngClass]="getConfirmedIcon(rowData)"
+										[title]="
+											(getConfirmedText(rowData) | translate) +
+											': ' +
+											(rowData.confirmedCustomerId | customerName: customers)
+										"
+									></i>
+									<p-checkbox
+										*ngIf="editMode"
+										[(ngModel)]="rowData.confirmed"
+										binary="true"
+										[disabled]="!rowData.reached || alreadyPaid(rowData)"
+										(onChange)="updateConfirmed(rowData, $event)"
+									></p-checkbox>
+								</span>
+								<span *ngIf="col.field === 'confirmedDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.confirmedCustomerId | customerName: customers">{{
+										rowData.confirmedDate | formatDateBySetting
+									}}</span>
+									<p-calendar
+										appendTo="body"
+										*ngIf="editMode"
+										[disabled]="!rowData.reached || alreadyPaid(rowData)"
+										[(ngModel)]="rowData.confirmedDate"
+										[minDate]="rowData.achievedDate"
+										[showClear]="true"
+										[maxDate]="today"
+										(onSelect)="updateToSave(rowData)"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"
+									></p-calendar>
+								</span>
+								<span *ngIf="col.field === 'paid'" style="width: 100%; justify-content: center">
+									<span *ngIf="!toReceive; else toReceive">
+										<i
+											*ngIf="!editMode"
+											class="fas"
+											[ngClass]="getPaidIcon(rowData)"
+											[title]="
+												(getPaidText(rowData) | translate) + ': ' + (rowData.paidCustomerId | customerName: customers)
+											"
+										></i>
+										<p-checkbox
+											*ngIf="editMode"
+											[(ngModel)]="rowData.paid"
+											binary="true"
+											[disabled]="!rowData.reached || alreadyPaid(rowData)"
+											(onChange)="updatePaid(rowData, $event)"
+										></p-checkbox>
+									</span>
+									<ng-template #toReceive>
+										<i
+											*ngIf="!editMode"
+											class="fas"
+											[ngClass]="getPaidIcon(rowData)"
+											[title]="getReceivedText(rowData) | translate"
+										></i>
+										<p-checkbox
+											*ngIf="editMode"
+											[(ngModel)]="rowData.paid"
+											binary="true"
+											[disabled]="!rowData.reached || alreadyPaid(rowData)"
+											(onChange)="updatePaid(rowData, $event)"
+										></p-checkbox>
+									</ng-template>
+								</span>
+								<span *ngIf="col.field === 'paidDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.paidCustomerId | customerName: customers">{{
+										rowData.paidDate | formatDateBySetting
+									}}</span>
+									<p-calendar
+										appendTo="body"
+										*ngIf="editMode"
+										[disabled]="!rowData.reached || alreadyPaid(rowData)"
+										[(ngModel)]="rowData.paidDate"
+										[showClear]="true"
+										[minDate]="isValidDate(rowData.confirmedDate) ? rowData.confirmedDate : null"
+										[maxDate]="today"
+										(onSelect)="updateToSave(rowData)"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"
+									></p-calendar>
+								</span>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+		<div *ngIf="selectedView === 'team'" class="list">
+			<div class="table-container" *blockUI="'loadingTeam'">
+				<p-table
+					[columns]="teamTableColumns"
+					[value]="teamBonuses"
+					dataKey="id"
+					[scrollable]="true"
+					scrollHeight="45vh"
+					styleClass="p-datatable-striped"
+				>
+					<ng-template pTemplate="caption">
+						<div class="headers-button">
+							<div class="headers-start">
+								<i
+									class="fas fa-futbol"
+									[ngClass]="teamViewType === 'match' ? 'selected' : 'notSelected'"
+									(click)="changeTeamViewType('match')"
+									[title]="'bonus.team.matchIcon' | translate"
+								></i>
+								<i
+									class="fas fa-trophy"
+									[ngClass]="teamViewType === 'other' ? 'selected' : 'notSelected'"
+									(click)="changeTeamViewType('other')"
+									[title]="'bonus.team.performanceIcon' | translate"
+								></i>
+							</div>
+							<div>
+								<p-button
+									[icon]="'fas fa-plus'"
+									[size]="'small'"
+									[label]="'buttons.addNew' | translate"
+									(onClick)="openTeamBonusDialog()"
+								></p-button>
+							</div>
+						</div>
+					</ng-template>
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th
+								*ngFor="let col of teamTableColumns"
+								[pSortableColumn]="col.sortable ? col.field : false"
+								[ngStyle]="{ width: col.width + 'px', justifyContent: col.field === 'actions' ? 'flex-end' : 'center' }"
+							>
+								{{ col.header }}
+								<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+							</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowData let-rowIndex let-columns="columns" let-expanded="expanded">
+						<tr class="tw-h-10">
+							<td *ngFor="let col of columns" [ngStyle]="{ width: col.width + 'px' }">
+								<span *ngIf="col.field === 'sortIcon'">
+									<a href="#" [pRowToggler]="rowData">
+										<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+									</a>
+								</span>
+								<span *ngIf="col.field === 'amount'" style="width: 100%; justify-content: center">
+									<span *ngIf="rowData[col.field]">{{ currency }}</span
+									>{{ rowData[col.field] | shortNumber: true }}
+								</span>
+								<span *ngIf="col.field === 'people'" style="width: 100%; justify-content: center">
+									{{ rowData[col.field]?.length }}
+								</span>
+								<span *ngIf="col.field === 'each'" style="width: 100%; justify-content: center">
+									<span *ngIf="rowData.amount !== 0 && rowData.people.length > 0"
+										>{{ currency }}{{ rowData.amount / rowData.people?.length | shortNumber: true }}</span
+									>
+								</span>
+								<span *ngIf="col.field === 'dueDate'" style="width: 100%; justify-content: center">
+									{{ rowData[col.field] | formatDateBySetting }}
+								</span>
+								<span *ngIf="col.field === 'reached'" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!editMode"
+										class="fas"
+										[ngClass]="getReachedIcon(rowData)"
+										[title]="
+											(getReachedText(rowData) | translate) +
+											': ' +
+											(rowData.reachedCustomerId | customerName: customers)
+										"
+									></i>
+									<p-checkbox
+										*ngIf="editMode"
+										[(ngModel)]="rowData.reached"
+										binary="true"
+										[disabled]="alreadyReached(rowData)"
+										(onChange)="updateReached(rowData, $event)"
+									>
+									</p-checkbox>
+								</span>
+								<span *ngIf="col.field === 'achievedDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.reachedCustomerId | customerName: customers">{{
+										rowData.achievedDate | formatDateBySetting
+									}}</span>
+								</span>
+								<span *ngIf="col.field === 'confirmed'" style="width: 100%; justify-content: center">
+									<i
+										*ngIf="!editMode"
+										class="fas"
+										[ngClass]="getConfirmedIcon(rowData)"
+										[title]="
+											(getConfirmedText(rowData) | translate) +
+											': ' +
+											(rowData.confirmedCustomerId | customerName: customers)
+										"
+									></i>
+									<p-checkbox
+										*ngIf="editMode"
+										[(ngModel)]="rowData.confirmed"
+										binary="true"
+										[disabled]="!rowData.reached || alreadyPaid(rowData)"
+										(onChange)="updateConfirmed(rowData, $event)"
+									></p-checkbox>
+								</span>
+								<span *ngIf="col.field === 'confirmedDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.confirmedCustomerId | customerName: customers">{{
+										rowData.confirmedDate | formatDateBySetting
+									}}</span>
+								</span>
+								<span *ngIf="col.field === 'paid'" style="width: 100%; justify-content: center">
+									<span *ngIf="!toReceive; else toReceive">
+										<i
+											*ngIf="!editMode"
+											class="fas"
+											[ngClass]="getPaidIcon(rowData)"
+											[title]="
+												(getPaidText(rowData) | translate) + ': ' + (rowData.paidCustomerId | customerName: customers)
+											"
+										></i>
+										<p-checkbox
+											*ngIf="editMode"
+											[(ngModel)]="rowData.paid"
+											binary="true"
+											[disabled]="rowData.reached || alreadyPaid(rowData)"
+											(onChange)="updatePaid(rowData, $event)"
+										></p-checkbox>
+									</span>
+									<ng-template #toReceive>
+										<i
+											*ngIf="!editMode"
+											class="fas"
+											[ngClass]="getPaidIcon(rowData)"
+											[title]="getReceivedText(rowData) | translate"
+										></i>
+										<p-checkbox
+											*ngIf="editMode"
+											[(ngModel)]="rowData.paid"
+											binary="true"
+											[disabled]="!rowData.reached || alreadyPaid(rowData)"
+											(onChange)="updatePaid(rowData, $event)"
+										></p-checkbox>
+									</ng-template>
+								</span>
+								<span *ngIf="col.field === 'paidDate'" style="width: 100%; justify-content: center">
+									<span *ngIf="!editMode" [pTooltip]="rowData.paidCustomerId | customerName: customers">{{
+										rowData.paidDate | formatDateBySetting
+									}}</span>
+								</span>
+								<span
+									*ngIf="col.field === 'actions'"
+									class="action-container"
+									style="width: 100%; justify-content: flex-end"
+								>
+									<i
+										class="fas fa-pencil-alt"
+										[pTooltip]="'buttons.edit' | translate"
+										style="cursor: pointer; margin-right: 0.5em"
+										(click)="editTeamBonus(rowData)"
+									></i>
+									<i
+										class="fas fa-trash"
+										[pTooltip]="'buttons.delete' | translate"
+										style="cursor: pointer"
+										(click)="deleteTeamBonus(rowData)"
+									></i>
+								</span>
+							</td>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="rowexpansion" let-rowData>
+						<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+							<td *ngIf="teamViewType === 'match'" class="expansion-row match-detail" colspan="12">
+								{{ getMatchInfoText(condition) }}
+							</td>
+							<td *ngIf="teamViewType === 'other' && rowData.type === 'performance'" class="expansion-row" colspan="12">
+								<div class="expanded-row-container">
+									<div class="expanded-row-bar">
+										<p-progressBar
+											[class.progressbar-success]="toReceive"
+											[ngStyle]="{ height: '1.3em' }"
+											[showValue]="true"
+											[value]="isReachedConditionProgressBarTeam(condition)"
+										>
+										</p-progressBar>
+									</div>
+									<div class="expanded-row-string">
+										<span
+											class="expanded-row-label"
+											[innerHTML]="getConditionType(rowData.conditions[i], rowData)"
+										></span>
+									</div>
+								</div>
+							</td>
+							<td
+								*ngIf="teamViewType === 'other' && rowData.type === 'generic'"
+								class="expansion-row"
+								colspan="12"
+								[ngStyle]="{ width: teamTableColumns[0].width }"
+							>
+								{{ condition.action }}
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+	</div>
+
+	<iterpro-team-bonus-builder
+		*ngIf="teamBonusOnEdit"
+		[visible]="!!teamBonusOnEdit"
+		[bonus]="teamBonusOnEdit"
+		[players]="players"
+		[team]="selectedTeam"
+		[staff]="staff"
+		[edit]="editMode"
+		[matches]="matches"
+		[seasons]="selectedTeam.teamSeasons"
+		(discardEmitter)="onTeamBonusDialogDiscarded()"
+		(saveEmitter)="onTeamBonusDialogSave($event)"
+	>
+	</iterpro-team-bonus-builder>
+</div>
+
+<ng-template #noClubSeason>
+	<div class="row no-club-season">
+		<div>
+			<div class="text-center" translate>information.clubSeason.notAvailable</div>
+			<p-button
+				size="small"
+				label="{{ 'home.clubSettings' | translate }}"
+				routerLink="/settings/club-preferences/seasons"
+			></p-button>
+		</div>
+	</div>
+</ng-template>

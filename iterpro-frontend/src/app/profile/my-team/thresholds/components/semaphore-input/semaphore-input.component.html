@@ -1,0 +1,21 @@
+<div class="centered" *ngIf="absMode; else notAbsMode">
+	<input
+		*ngIf="index < model?.absIntervals?.length"
+		pInputText
+		[(ngModel)]="(model.absIntervals)[index]"
+		class="semaphore-input"
+		type="number"
+	/>
+</div>
+<ng-template #notAbsMode>
+	<div class="centered">
+		<input
+			*ngIf="index < model?.intervals?.length"
+			pInputText
+			[(ngModel)]="(model?.intervals)[index]"
+			class="semaphore-input"
+			type="number"
+		/>
+		<span>%</span>
+	</div>
+</ng-template>

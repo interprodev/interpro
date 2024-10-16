@@ -1,0 +1,89 @@
+<p-dialog [visible]="true" [responsive]="true" [showHeader]="true" [closable]="false" [closeOnEscape]="true"
+	[draggable]="false" [resizable]="false" modal="modal" [style]="{ width: '88vw' }">
+	<p-header *ngIf="category === '_thresholds'; else notGpsHeader">GPS</p-header>
+	<ng-template #notGpsHeader>
+		<p-header>
+			<span>{{ dialogModel?.name }} - {{ dialogModel?.metric }}</span>
+			<i class="fas fa-signal icon toggle-icon abs-icon" [class.abs-mode-icon]="!dialogAbsMode"
+				(click)="setDialogAbsMode(true)" pTooltip="{{ 'thresholds.absoluteValues' | translate }}"></i>
+			<i class="fas fa-percentage icon toggle-icon" [class.abs-mode-icon]="dialogAbsMode"
+				(click)="setDialogAbsMode(false)" pTooltip="{{ 'thresholds.percentageValues' | translate }}"></i>
+		</p-header>
+	</ng-template>
+	<ng-container *ngIf="!!dialogModel">
+		<div class="ui-g interval-container">
+			<div class="ui-g-12 interval-section" [ngClass]="isSemaphore(1) ? 'selected' : null" (click)="selectInterval(1)">
+				<h5 translate>thresholds.interval.type1</h5>
+				<div class="ui-g-12 interval-row">
+					<div class="red" style="width: 30%"></div>
+					<span *ngIf="isSemaphore(1)" class="inline">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="0" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="yellow" style="width: 30%"></div>
+					<span *ngIf="isSemaphore(1)" class="inline">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="1" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="green" style="width: 30%"></div>
+				</div>
+				<div class="ui-g-12 interval-row" style="padding-top: 0">
+					<span class="val" style="margin-left: auto; width: 15%">
+						<iterpro-semaphore-threshold-input *ngIf="isSemaphore(1)" [category]="category" [model]="dialogModel" />
+					</span>
+				</div>
+			</div>
+			<div class="ui-g-12 interval-section" [ngClass]="isSemaphore(2) ? 'selected' : null" (click)="selectInterval(2)">
+				<h5 translate>thresholds.interval.type2</h5>
+				<div class="ui-g-12 interval-row">
+					<div class="green" style="width: 30%"></div>
+					<span *ngIf="isSemaphore(2)" class="inline">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="0" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="yellow" style="width: 30%"></div>
+					<span *ngIf="isSemaphore(2)" class="inline">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="1" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="red" style="width: 30%"></div>
+				</div>
+				<div class="ui-g-12 interval-row" style="padding-top: 0">
+					<span class="val" style="width: 15%">
+						<iterpro-semaphore-threshold-input *ngIf="isSemaphore(2)" [category]="category" [model]="dialogModel" />
+					</span>
+				</div>
+			</div>
+			<div class="ui-g-12 interval-section" [ngClass]="isSemaphore(3) ? 'selected' : null" (click)="selectInterval(3)">
+				<h5 translate>thresholds.interval.type3</h5>
+				<div class="ui-g-12 interval-row">
+					<div class="red" style="width: 18%"></div>
+					<span *ngIf="isSemaphore(3)" class="inline in3">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="0" [absMode]="dialogAbsMode">
+						</iterpro-semaphore-input>
+					</span>
+					<div class="yellow" style="width: 18%"></div>
+					<span *ngIf="isSemaphore(3)" class="inline in3">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="1" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="green" style="width: 18%"></div>
+					<span *ngIf="isSemaphore(3)" class="inline in3">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="2" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="yellow" style="width: 18%"></div>
+					<span *ngIf="isSemaphore(3)" class="inline in3">
+						<iterpro-semaphore-input [model]="dialogModel" [index]="3" [absMode]="dialogAbsMode" />
+					</span>
+					<div class="red" style="width: 18%"></div>
+				</div>
+				<div class="ui-g-12 interval-row" style="justify-content: center; padding-top: 0">
+					<span class="inline in3 val">
+						<iterpro-semaphore-threshold-input *ngIf="isSemaphore(3)" [category]="category" [model]="dialogModel" />
+					</span>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" icon="fas fa-check" (click)="save()"
+			[label]="'buttons.save' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-primary" [outlined]="true" icon="fas fa-times" (click)="discard.emit()"
+			[label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>

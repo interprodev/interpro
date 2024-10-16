@@ -1,0 +1,220 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>assessment</h1>
+		</header>
+
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4" *blockUI="'containerAssessment'">
+			<div class="tw-col-span-12 lg:tw-col-span-9" *ngIf="viewIsSurvey()">
+				<div class="tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-5">
+					<iterpro-wellness-survey
+						*ngIf="selectedType === 'wellness' && teamView === false && getSelectedPlayer()"
+						[player]="getSelectedPlayer()"
+						[currentDay]="currentDay"
+						(saveEmitter)="confirmEdit($event)"
+						(deleteEmitter)="confirmDelete($event)"
+					>
+					</iterpro-wellness-survey>
+
+					<iterpro-wellness-teamview
+						*ngIf="selectedType === 'wellness' && teamView === true"
+						[playersItem]="players"
+						[currentDate]="currentDay"
+						(saveEmitter)="confirmEditWellnessTeam($event)"
+						(incompleteWellnessEmitter)="incompleteWellness($event)"
+						(csvUploadEmitter)="csvUploaded()"
+						(deleteEmitter)="confirmDeleteWellnessTeam($event)"
+						(csvDownloadEmitter)="downloadCsvWellness()"
+					>
+					</iterpro-wellness-teamview>
+
+					<iterpro-rpe-survey
+						*ngIf="selectedType === 'rpe' && teamView === false && selectedSessionPlayerData"
+						[session]="selectedSessionPlayerData"
+						(saveEmitter)="confirmEditRPE($event)"
+						(deleteEmitter)="confirmDeleteRPE($event)"
+					>
+					</iterpro-rpe-survey>
+
+					<iterpro-rpe-teamview
+						*ngIf="selectedType === 'rpe' && teamView === true"
+						[sessions]="sessionPlayers"
+						[selectedSession]="selectedSession"
+						(saveEmitter)="confirmEditRPETeam($event)"
+						(csvUploadEmitter)="csvUploaded()"
+						(deleteEmitter)="confirmDeleteRPETeam($event)"
+						(csvDownloadEmitter)="downloadCsvRpe($event)"
+					>
+					</iterpro-rpe-teamview>
+				</div>
+			</div>
+
+			<div class="tw-col-span-12 lg:tw-col-span-9" *ngIf="viewIsTest()">
+				<iterpro-test
+					*ngIf="selectedTest"
+					[test]="selectedTest"
+					[instanceId]="instanceIdParam"
+					[newGeneric]="newTest"
+					(updateEmitter)="loadPinnedAndTests($event)"
+					(destroyEvent)="loadPinnedAndTests(null)"
+					(discardAdd)="onDiscardAdd()"
+					(csvUploadEmitter)="csvUploaded()"
+					[medical]="false"
+					(tabIndexEmitter)="tabIndex($event)"
+				></iterpro-test>
+			</div>
+
+			<div class="tw-col-span-12 lg:tw-col-span-3">
+				<p-tabView class="side" (onChange)="handleTabChange($event)" [activeIndex]="currentViewState">
+					<p-tabPanel
+						header="{{ 'sidebar.surveys' | translate }}"
+						[disabled]="!hasPermissions('surveys') || (editService.editMode && viewIsTest())"
+					>
+						<h3 class="spacing greyed" translate>sidebar.type</h3>
+						<p-dropdown
+							[options]="surveyTypes"
+							[(ngModel)]="tempSelectedType"
+							[style]="{ width: '100%' }"
+							(onChange)="handleSurveyChange($event)"
+						></p-dropdown>
+
+						<div *ngIf="selectedType === 'wellness'">
+							<h3 class="spacing greyed" translate>sidebar.date</h3>
+							<p-calendar
+								showButtonBar="true"
+								[(ngModel)]="currentDay"
+								[maxDate]="today"
+								(onSelect)="handleDateSelect($event)"
+								[style]="{ width: '100%' }"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+
+							<div *ngIf="teamView !== true">
+								<h3 class="spacing greyed" translate>sidebar.player</h3>
+								<iterpro-player-dropdown
+									[style]="{ width: '100%', display: 'flex', 'align-items': 'center' }"
+									[options]="players"
+									[playerId]="selectedPlayer?.id"
+									(playerIdChanged)="handleWellnessSelect($event)"
+								>
+								</iterpro-player-dropdown>
+							</div>
+						</div>
+
+						<div *ngIf="selectedType === 'rpe'">
+							<h3 class="spacing greyed" translate>profile.season</h3>
+							<iterpro-change-season />
+
+							<h3 class="spacing greyed" translate>sidebar.session</h3>
+							<p-dropdown
+								[options]="sessions"
+								(ngModelChange)="handleSessionSelect($event)"
+								[ngModel]="selectedSession"
+								[style]="{ width: '100%' }"
+							></p-dropdown>
+
+							<div *ngIf="teamView !== true">
+								<h3 class="spacing greyed" translate>sidebar.player</h3>
+								<p-dropdown
+									[options]="sessionPlayers"
+									optionLabel="playerName"
+									[(ngModel)]="selectedSessionPlayerData"
+									[style]="{ width: '100%' }"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									(onChange)="handlePlayerSelect($event.value)"
+								>
+								</p-dropdown>
+							</div>
+						</div>
+
+						<br />
+						<p-toggleButton
+							[(ngModel)]="teamView"
+							onLabel="{{ 'buttons.goToSurvey' | translate }}"
+							class="tw-font-bold"
+							offLabel="{{ 'buttons.teamView' | translate }}"
+						></p-toggleButton>
+					</p-tabPanel>
+
+					<p-tabPanel
+						header="{{ 'sidebar.tests' | translate }}"
+						[disabled]="!hasPermissions('tests') || (editService.editMode && viewIsSurvey())"
+					>
+						<div class="listbox">
+							<div class="spacing add-test">
+								<h3 class="greyed" translate>sidebar.testList</h3>
+								<div style="display: flex; align-items: baseline">
+									<p-multiSelect
+										[disabled]="editService.editMode"
+										[styleClass]="'p-multiselect-icon-only p-multiselect-icon-only-white'"
+										[tooltip]="'multiselect.filterByPurpose' | translate"
+										[tooltipPosition]="'bottom'"
+										[dropdownIcon]="'fas fa-filter'"
+										[options]="purposeList"
+										maxSelectedLabels="1"
+										selectedItemsLabel="{0} selected"
+										optionLabel="label"
+										optionValue="value"
+										(onChange)="handlePurposeChange($event)"
+									>
+									</p-multiSelect>
+									<i
+										*ngIf="receivedTabIndex === 0"
+										class="fas fa-plus"
+										(click)="addNewTest()"
+										disabled="editService.editMode"
+										pTooltip="{{ 'test.buttons.addNewTest' | translate }}"
+									></i>
+								</div>
+							</div>
+						</div>
+						<div class="listbox">
+							<!-- <p-multiSelect maxSelectedLabels="1000" [options]="purposeList" [disabled]="editService.editMode" [style]="{'width':'100%'}"  placeholder="{{'multiselect.placeholderPurpose' | translate}}" (onChange)="handlePurposeChange($event)"></p-multiSelect> -->
+							<p-listbox
+								[listStyle]="{ 'max-height': '70vh', 'min-width': '200px' }"
+								[options]="filteredTests"
+								class="tests"
+								[disabled]="editService.editMode"
+								[style]="{ width: '100%' }"
+								[(ngModel)]="selectedTest"
+								optionLabel="label"
+								[filter]="true"
+								(onChange)="selectTest($event.value)"
+							>
+								<ng-template let-filteredTest let-i="index" pTemplate="item">
+									<div class="test-list">
+										<span>{{ filteredTest.label }}</span>
+										<div (click)="savePin($event, filteredTest)">
+											<div *ngIf="isTestPinned(filteredTest)" class="hide-solid-pin">
+												<i
+													class="fas fa-thumbtack"
+													pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+													tooltipPosition="bottom"
+												></i>
+											</div>
+											<div *ngIf="isTestPinned(filteredTest)" class="unpinned">
+												<i
+													class="fal fa-thumbtack"
+													pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+													tooltipPosition="bottom"
+												></i>
+											</div>
+											<div *ngIf="!isTestPinned(filteredTest)" class="pin">
+												<i
+													class="fas fa-thumbtack"
+													pTooltip=" {{ 'test.list.star.pin.icon' | translate }} "
+													tooltipPosition="bottom"
+												></i>
+											</div>
+										</div>
+									</div>
+								</ng-template>
+							</p-listbox>
+						</div>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+</div>

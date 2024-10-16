@@ -1,0 +1,31 @@
+{
+	"name": "TransferWindow",
+	"base": "Model",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"name": {
+			"type": "string"
+		},
+		"start": {
+			"type": "date"
+		},
+		"end": {
+			"type": "date"
+		},
+		"budget": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

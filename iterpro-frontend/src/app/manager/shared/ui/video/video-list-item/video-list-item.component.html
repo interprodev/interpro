@@ -1,0 +1,41 @@
+<div
+	class="tw-bg-shark-1000 tw-rounded tw-cursor-pointer tw-overflow-hidden hover:tw-opacity-85"
+	(click)="play()"
+	iterproLazyLoadImages
+	[lazyOptions]="{ rootMargin: '0px 600px', threshold: 0 }"
+	[tag]="'img'"
+>
+	<img class="tw-w-full" [attr.data-lazy]="item._thumb?.downloadUrl | azureUrl" alt="video thumbnail" />
+	<div [class]="paddingBase + ' tw-flex tw-flex-col tw-gap-4 tw-text-[0.8rem]'">
+		<div class="tw-uppercase tw-text-[0.9rem] tw-whitespace-nowrap tw-overflow-hidden tw-font-bold">{{ item.title }}</div>
+		<div class="tw-text-[0.7rem] tw-whitespace-nowrap tw-overflow-hidden">
+			{{ item.subtitle || '-' }}
+			<span *ngIf="!!item.tacticType && item.category === 'GAMES'">
+				({{ 'sidebar.' + item.tacticType | translate }})
+			</span>
+		</div>
+		<div class="tw-flex tw-gap-2 tw-text-[0.7rem]">
+			<span translate>
+				videogallery.item.comments
+				<b>{{ item.notesThreads.length }}</b>
+			</span>
+			<span>•</span>
+			<span translate>
+				videogallery.item.tags
+				<b>{{ item.tags.length }}</b>
+			</span>
+			<span>•</span>
+			<span translate>
+				videogallery.item.duration
+				<b>{{ item.duration | durationLabel }}</b>
+			</span>
+		</div>
+		<div class="tw-flex tw-gap-4 tw-mt-2 tw-items-center">
+			<iterpro-picture [photoUrl]="item.authorId | customerField : customers : 'downloadUrl'" class="tw-block tw-bg-white tw-rounded tw-overflow-hidden tw-w-[2.5rem] tw-h-[2.5rem]"></iterpro-picture>
+			<div class="tw-flex tw-gap-2">
+				<div>{{ item.authorId | customerName : customers }}</div>
+				<div>{{ item.creationDate | formatDateBySetting: 'HH:mm' }}</div>
+			</div>
+		</div>
+	</div>
+</div>

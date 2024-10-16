@@ -1,0 +1,13 @@
+<div
+	class="tw-flex tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-transition-all hover:tw-bg-shark-900"
+	[pTooltip]="item.label | translate"
+	[ngClass]="isBackground ? 'tw-p-2' : 'tw-h-12 tw-w-12 tw-p-2'"
+	(click)="addImgItem(item.url)"
+>
+	<img
+		class="tw-h-full tw-max-w-full"
+		[ngClass]="{ 'tw-w-16': isBackground }"
+		[src]="CDN_URL + item.url"
+		[alt]="item.label | translate"
+	/>
+</div>

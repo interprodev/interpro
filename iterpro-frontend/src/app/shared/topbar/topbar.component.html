@@ -1,0 +1,37 @@
+<div class="tw-relative">
+	<iterpro-expiring-bar />
+
+	<div
+		class="tw-relative tw-flex tw-items-center tw-justify-between tw-border-b-2 tw-border-shark-800 tw-bg-shark-950 tw-px-6 tw-shadow-lg lg:tw-static tw-h-20"
+	>
+		<div class="tw-flex tw-items-center tw-justify-start">
+			<div
+				alt="iterpro logo"
+				class="tw-cursor-pointer tw-bg-[url('/assets/img/logo/logo-text-all-white.svg')] hover:tw-bg-[url('/assets/img/logo/logo-text.svg')] tw-h-14 tw-w-14 tw-bg-center tw-bg-no-repeat"
+				[routerLink]="landingPage$ | async"
+			></div>
+			<!-- Divider -->
+			<div class="tw-w-0.5 tw-h-6 tw-bg-shark-800 tw-mx-4"></div>
+			<iterpro-change-team />
+		</div>
+
+		<a
+			pRipple
+			class="tw-block tw-cursor-pointer tw-text-shark-200 lg:tw-hidden"
+			pStyleClass="@next"
+			enterFromClass="tw-hidden"
+			leaveToClass="tw-hidden"
+			[hideOnOutsideClick]="true"
+		>
+			<i class="fas fa-bars tw-text-4xl"></i>
+		</a>
+
+		<div class="tw-flex tw-items-center tw-justify-center">
+			<iterpro-navbar />
+		</div>
+
+		<div class="tw-flex tw-items-center tw-justify-end">
+			<iterpro-icons-bar />
+		</div>
+	</div>
+</div>

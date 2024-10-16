@@ -1,0 +1,58 @@
+
+.overlay {
+  background: rgba(0, 0, 0, 0.75);
+  opacity: 0;
+  -webkit-transition: opacity 0.25s ease;
+  transition: .5s ease;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-picture {
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 1px 1px 40px #00000073;
+  background: white;
+}
+
+.profile-picture img {
+  width: 100%;
+}
+.profile-picture:hover .overlay {
+  opacity: 1;
+}
+
+h3 {
+  text-transform: uppercase;
+}
+.position-dd {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+.position-dd:last-child {
+  margin-bottom: 0;
+}
+.position-dd > span {
+  width: 30px;
+  line-height: 21px;
+}
+.position-dd > div {
+  flex-grow: 1;
+}
+.position-role {
+  margin-top: 6px;
+}
+.roles-list {
+  list-style-type: disc;
+  padding-left: 3em;
+}
+.pos-table {
+  border-spacing: 0 1rem;
+}

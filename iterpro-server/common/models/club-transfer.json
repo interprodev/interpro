@@ -1,0 +1,143 @@
+{
+	"name": "ClubTransfer",
+	"plural": "clubTransfers",
+	"base": "PersistedModel",
+	"description": "A transfer of a player to a club, personType can be Player or PlayerScouting",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"currentStatus": {
+			"type": "string",
+			"required": true
+		},
+		"closed": {
+			"type": "boolean",
+			"default": false
+		},
+		"isPurchase": {
+			"type": "boolean",
+			"required": true
+		},
+		"offer": {
+			"type": "number"
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": ""
+		},
+		"transferWindow": {
+			"type": "belongsTo",
+			"model": "TransferWindow",
+			"foreignKey": ""
+		},
+		"clubSeason": {
+			"type": "belongsTo",
+			"model": "ClubSeason",
+			"foreignKey": ""
+		},
+		"player": {
+			"type": "hasOne",
+			"model": "PlayerTransfer",
+			"foreignKey": "clubTransferId"
+		},
+		"originalPerson": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "personId",
+				"discriminator": "personType"
+			}
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"buyPlayer": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "targetTeamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerData",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/buy",
+				"verb": "post"
+			}
+		},
+		"sellPlayer": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "club",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "amount",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "personStatus",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/sell",
+				"verb": "post"
+			}
+		}
+	}
+}

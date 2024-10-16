@@ -1,0 +1,31 @@
+<div class="pflex-flex pflex-justify-content-between pflex-gap-4">
+
+	<!-- Container -->
+	<div class="pflex-flex pflex-flex-column pflex-justify-content-center pflex-align-items-center" *ngFor="let app of apps; let i = index">
+
+
+		<img class="device" [src]="app.image" alt="App Image" width="150" />
+		<h3 class="title">{{ app.name }}</h3>
+
+		<!-- Buttons -->
+		<div class="pflex-flex pflex-flex-column pflex-justify-content-center pflex-align-items-center pflex-gap-4">
+			<a [href]="app.playStoreLink" target="_blank">
+				<img alt="Google Play" width="130" [src]="'assets/img/store-badges/google-play-badge.png'" />
+			</a>
+			<a [href]="app.appStoreLink" target="_blank">
+				<img alt="App Store" width="130" [src]="'assets/img/store-badges/apple-store-badge.png'"/>
+			</a>
+
+			<p-button
+				type="button"
+				icon="fas fa-question-circle"
+				iconPos="right"
+				[size]="'small'"
+				styleClass="p-button-primary"
+				[label]="'home.userguide' | translate"
+				(onClick)="openGuide(app.guideLink)"
+			></p-button>
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,130 @@
+.comment-container {
+	display: flex;
+	align-items: flex-start;
+	padding: 14px;
+	border-bottom: 2px solid var(--color-primary-400);
+	@apply tw-bg-shark-900 tw-bg-opacity-85 tw-rounded;
+}
+.comment-body {
+	flex-grow: 1;
+}
+.comment-input-zone {
+	display: flex;
+}
+.comment-input-zone > i {
+	width: 32px;
+	height: 32px;
+	margin-right: 5px;
+	flex-shrink: 0;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.2s ease-in;
+	cursor: pointer;
+	color: #ccc;
+	font-size: 16px;
+	font-weight: normal;
+}
+.comment-input-zone > i:hover {
+	background-color: #000;
+	color: #fff;
+}
+.comment-input-textarea .icon-button {
+	margin-top: 12px;
+	text-transform: uppercase;
+}
+.comment-input-zone > .comment-input-textarea {
+	flex-grow: 1;
+}
+.comment-body textarea.p-inputtext.comment-edit {
+	padding: 0.5rem;
+	min-height: 70px;
+}
+.hidden-file {
+	display: none;
+}
+.comment-dialog {
+	padding: 5px;
+}
+.comment-dialog header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin: 10px 0 18px 0;
+}
+.comment-dialog header .fas {
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+}
+.comment-dialog h3 {
+	font-size: 18px;
+	font-weight: bold;
+	letter-spacing: 0.2px;
+	margin: 0;
+}
+.input-attachments {
+	background-color: #333333ad;
+	padding: 12px;
+	border-radius: 3px;
+	max-height: 200px;
+	overflow-y: auto;
+	margin-top: 12px;
+}
+.single-attachment {
+	margin-top: 0px;
+}
+.single-attachment + .single-attachment {
+	margin-top: 12px;
+}
+.add-attachment {
+	background-color: transparent;
+	height: auto;
+	width: auto;
+	padding: 0;
+	font-size: 12px;
+	line-height: 12px;
+	font-weight: normal;
+	letter-spacing: 0;
+	text-transform: none;
+	margin-top: 8px;
+	cursor: pointer;
+}
+.add-attachment:hover {
+	text-decoration: underline;
+}
+.add-attachment.add-disabled {
+	opacity: 0.2;
+}
+.upload-button {
+	margin-top: 12px;
+	margin-bottom: 5px;
+	width: 100%;
+}
+.upload-button[disabled] {
+	opacity: 0.2;
+}
+.upload-spinner {
+	margin: 12px 0;
+	text-align: center;
+}
+.customer-pic-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-right: 0.5rem;
+}
+.customer-pic {
+	width: 40px;
+	height: 40px;
+	flex-shrink: 0;
+	margin-bottom: 1rem;
+	border-radius: 4px;
+}
+.attachment-icon {
+	display: flex;
+	flex-direction: row-reverse;
+	margin-top: 7px;
+	margin-right: 2px;
+}

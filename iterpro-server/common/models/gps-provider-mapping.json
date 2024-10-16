@@ -1,0 +1,62 @@
+{
+	"name": "GpsProviderMapping",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"rawMetrics": {
+			"type": ["object"]
+		},
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"splitNameColumn": {
+			"type": "string"
+		},
+		"dateColumn": {
+			"type": "string"
+		},
+		"dateColumnFormat": {
+			"type": "number"
+		},
+		"startTimeColumn": {
+			"type": "string"
+		},
+		"startTimeColumnFormat": {
+			"type": "number"
+		},
+		"endTimeColumn": {
+			"type": "string"
+		},
+		"endTimeColumnFormat": {
+			"type": "number"
+		},
+		"playerNameColumn": {
+			"type": "string"
+		},
+		"durationColumn": {
+			"type": "string"
+		},
+		"durationColumnFormat": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"metricsMappings": {
+			"type": "embedsMany",
+			"model": "GpsMetricMapping",
+			"property": "_gpsMetricsMapping",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

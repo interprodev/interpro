@@ -1,0 +1,122 @@
+<div class="content">
+	<div class="row container row-center">
+		<div class="col-3 infoPlayer">
+			<h4 style="padding-left: 1em; margin: 0">{{ player?.displayName }}</h4>
+			<img style="background-color: white; margin: 1em" class="pic" [src]="getPlayerPic()  | azureUrl"
+				onError="this.src='assets/img/default_icon.png';" />
+		</div>
+		<div class="col-3">
+			<table class="player-table" cellpadding="0" cellspacing="0">
+				<tr>
+					<th translate>profile.overview.nationality</th>
+					<td>
+						<span *ngIf="player && player.nationality">{{ 'nationalities.' + player?.nationality | translate }}</span>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.age</th>
+					<td>{{ age }}</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.height</th>
+					<td>{{ player?.height || '-' }}</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.weight</th>
+					<td>{{ player?.weight || '-' }}</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-3">
+			<table class="player-table" cellpadding="0" cellspacing="0">
+				<tr>
+					<th translate>profile.positon.jerseyNumber</th>
+					<td translate>{{ player?.jersey }}</td>
+				</tr>
+				<tr>
+					<th translate>profile.position.{{ getLimb() }}</th>
+					<td translate>
+						<span *ngIf="player">{{ getPlayerFoot(player.foot) }}</span>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.positon.inTeamFrom</th>
+					<td>{{ playerData?.dateFrom | formatDateBySetting }}</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.contractUntil</th>
+					<td>{{ playerData?.dateTo | formatDateBySetting }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-3 container">
+			<h3 translate>admin.dashboard.finance</h3>
+			<div class="row row-center" style="margin-bottom: 0.5em">
+				<div class="label" translate>admin.dashboard.availability</div>
+				<div class="value">{{ playerData?.availability | number : '1.0-0' }}%</div>
+			</div>
+			<p-progressBar *ngIf="playerData" [ngClass]="getBackgroundColor(availability)" [showValue]="false"
+				[value]="availability"></p-progressBar>
+			<div class="row row-center" style="margin-top: 1em; margin-bottom: 0.5em">
+				<div class="label" translate>admin.dashboard.productivity</div>
+				<div class="value">{{ playerData?.performanceReliability | number : '1.0-0' }}%</div>
+			</div>
+			<p-progressBar *ngIf="playerData" [ngClass]="getBackgroundColor(performanceReliability)" [showValue]="false"
+				[value]="performanceReliability"></p-progressBar>
+			<div class="row row-center" style="margin-top: 1em">
+				<div class="col-2">
+					<div class="label" translate>admin.dashboard.salary</div>
+					<div class="value">{{ currency }}{{ playerData?.salary | shortNumber : true }}</div>
+					<!-- <span class="value-label" translate>financial.overview.millions</span> -->
+				</div>
+				<div class="col-2">
+					<div class="label" translate>admin.dashboard.value</div>
+					<div class="value">{{ currency }}{{ playerData?.marketValue | shortNumber : true }}</div>
+					<!-- <span class="value-label" translate>financial.overview.millions</span> -->
+				</div>
+			</div>
+		</div>
+		<div class="col-3 container">
+			<h3 translate>admin.dashboard.technical</h3>
+			<div style="width: 12vw; margin-top: 1em; margin-bottom: 1em; margin-left: 25%">
+				<iterpro-tactic-board [first]="player.position" [second]="player.position2" [third]="player.position3" [sportType]="'football'" />
+			</div>
+			<div class="row row-center" style="margin-top: 1em">
+				<div class="col-3">
+					<div class="label" translate>admin.dashboard.seasonApps</div>
+					<div class="value" style="font-size: vw">{{ playerData?.apps }}</div>
+				</div>
+				<div class="col-3">
+					<div class="label" translate>admin.dashboard.minutesPlayed</div>
+					<div class="value" style="font-size: 2vw">{{ playerData?.minutesPlayed }}</div>
+				</div>
+				<div class="col-3">
+					<div class="label" translate pTooltip="{{ 'admin.dashboard.heavyGoal.tooltip' | translate }}">
+						admin.dashboard.heavyGoal
+					</div>
+					<div class="value" style="font-size: 2vw">{{ playerData?.heavyGoal }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-3 container column">
+			<h3 translate>admin.dashboard.medical</h3>
+			<div style="margin-bottom: 2em; display: flex; align-items: center; justify-content: space-between">
+				<div>
+					<span class="label" style="margin-right: 1em" translate>admin.dashboard.currentStatus</span>
+					<i *ngIf="playerData" style="margin-right: 1em" class="{{ getIcon(playerData?.healthStatusReadiness) }}"
+						pTooltip="{{ getHealthTooltip(playerData?.healthStatusReadiness) }}"></i>
+					<span class="value" style="font-size: 1.2em">{{ playerData?.healthStatus }}</span>
+				</div>
+				<div>
+					<span class="label" style="margin-right: 1em" translate>admin.dashboard.totalInjuries</span>
+					<span class="value" style="font-size: 1.2em">{{ playerData?.injuriesNumber }}</span>
+				</div>
+			</div>
+			<p-chart *ngIf="data" [data]="data" [options]="options" type="doughnut"
+				style="margin: auto; width: 50%"></p-chart>
+		</div>
+	</div>
+</div>

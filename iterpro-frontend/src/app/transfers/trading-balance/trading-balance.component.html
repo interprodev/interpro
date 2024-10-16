@@ -1,0 +1,112 @@
+<div class="main">
+	<div class="pflex-w-full">
+		<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-flex pflex-gap-4 pflex-w-full pflex-justify-content-between pflex-mb-4">
+			<!-- Transfer Window Selector -->
+			<iterpro-transfers-window-selection
+				[clubSeasons]="clubSeasons"
+				[transferWindow]="transferWindow"
+				(changeTransferWindow)="chooseTransferWindowByClubSeason($event)"
+			/>
+			<!-- Budget Container logic -->
+			<iterpro-trading-balance-window-budget
+				[currency]="currency$ | async"
+				[transferWindow]="transferWindow"
+				[transfersBreakdown]="breakdown"
+				(saveBudget)="onTransferWindowBudgetUpdate($event)"
+			/>
+		</div>
+
+		<!-- Recap & Doughnut Chart -->
+		<div class="pflex-flex pflex-w-full pflex-gap-4 content pflex-mb-4">
+			<div class="pflex-flex pflex-flex-column pflex-flex-1">
+				<h4 class="pflex-mb-4 pflex-underline">{{ 'admin.transfers.trading.sales' | translate }}</h4>
+				<iterpro-trading-balance-breakdown-board [breakdown]="salesBreakdown" [isPurchase]="false" [currency]="currency$ | async" />
+			</div>
+			<div class="pflex-flex pflex-flex-column pflex-flex-1">
+				<h4 class="pflex-mb-4 pflex-underline">{{ 'admin.transfers.trading.balance' | translate }}</h4>
+				<iterpro-trading-balance-chart [salesBreakdown]="salesBreakdown" [purchasesBreakdown]="purchasesBreakdown" />
+			</div>
+			<div class="pflex-flex pflex-flex-column pflex-flex-1">
+				<h4 class="pflex-mb-4 pflex-underline">{{ 'transfers.purchase' | translate }}</h4>
+				<iterpro-trading-balance-breakdown-board [breakdown]="purchasesBreakdown" [isPurchase]="true" [currency]="currency$ | async" />
+			</div>
+		</div>
+
+		<!-- Breakdown Bar Charts -->
+		<div class="pflex-flex pflex-gap-4">
+			<!-- Sales -->
+			<div class="pflex-flex pflex-flex-column pflex-flex-1 pflex-p-4 content">
+				<div class="pflex-flex pflex-justify-content-between pflex-align-items-center pflex-mb-4">
+					<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+						<label class="pflex-text-sm pflex-opacity-70">{{ 'transfers.players' | translate }}</label>
+
+						<!-- Players Selection -->
+						<p-multiSelect
+							[options]="salesPlayers"
+							[(ngModel)]="selectedSalesPlayers"
+							[placeholder]="'multiselect.placeholder' | translate"
+							optionLabel="displayName"
+							selectedItemsLabel="{0} selected"
+							maxSelectedLabels="1"
+							(onChange)="onPlayerSaleSelect($event)"
+						/>
+					</div>
+
+					<!-- Sale Statuses Selection -->
+					<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+						<label class="pflex-text-sm pflex-opacity-70">{{ 'transfers.stages' | translate }}</label>
+						<p-multiSelect
+							[dropdownIcon]="'fas fa-filter'"
+							[options]="salesStatuses"
+							[(ngModel)]="selectedSaleStatuses"
+							[styleClass]="'p-multiselect-icon-only'"
+							(onChange)="onSaleStatusSelect($event)"
+							maxSelectedLabels="1"
+							selectedItemsLabel="{0} selected"
+						/>
+					</div>
+				</div>
+
+				<!-- Sale Breakdown Chart -->
+				<iterpro-trading-balance-breakdown-chart [breakdown]="salesBreakdown" />
+			</div>
+
+			<!-- Purchases -->
+			<div class="pflex-flex pflex-flex-column pflex-flex-1 pflex-p-4 content">
+				<div class="pflex-flex pflex-justify-content-between pflex-align-items-center pflex-mb-4">
+					<!-- Players Selection -->
+					<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+						<label class="pflex-text-sm pflex-opacity-70">{{ 'transfers.players' | translate }}</label>
+						<p-multiSelect
+							[options]="purchasesPlayers"
+							[(ngModel)]="selectedPurchasesPlayers"
+							[placeholder]="'multiselect.placeholder' | translate"
+							optionLabel="displayName"
+							dataKey="id"
+							selectedItemsLabel="{0} selected"
+							maxSelectedLabels="1"
+							(onChange)="onPlayerPurchaseSelect($event)"
+						/>
+					</div>
+
+					<!-- Purchase Statuses Selection -->
+					<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+						<label class="pflex-text-sm pflex-opacity-70">{{ 'transfers.stages' | translate }}</label>
+						<p-multiSelect
+							[dropdownIcon]="'fas fa-filter'"
+							[options]="purchaseStatuses"
+							[(ngModel)]="selectedPurchaseStatuses"
+							[styleClass]="'p-multiselect-icon-only'"
+							(onChange)="onPurchaseStatusSelect($event)"
+							maxSelectedLabels="1"
+							selectedItemsLabel="{0} selected"
+						/>
+					</div>
+				</div>
+
+				<!-- Purchase Breakdown Chart -->
+				<iterpro-trading-balance-breakdown-chart [breakdown]="purchasesBreakdown" />
+			</div>
+		</div>
+	</div>
+</div>

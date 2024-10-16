@@ -1,0 +1,31 @@
+@if (drillStatistics && drillStatistics?.size) {
+	<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+		<p-table
+			[value]="statsMap | keyvalue"
+			[scrollable]="true"
+			[rowHover]="true"
+			styleClass="p-datatable-striped"
+		>
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th pFrozenColumn [ngStyle]="{ minWidth: '200px' }"></th>
+					<th *ngFor="let header of headers" [ngStyle]="{ minWidth: '200px' }">
+						{{ header.label }}
+					</th>
+				</tr>
+			</ng-template>
+
+			<ng-template pTemplate="body" let-playerStat>
+				<tr class="tw-h-10">
+					<th pFrozenColumn [ngStyle]="{ minWidth: '200px' }">{{ playerStat.key }}</th>
+					<td
+						*ngFor="let value of playerStat.value"
+						[ngStyle]="{ minWidth: '200px' }"
+					>
+						<span class="value">{{ value }}</span>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+}

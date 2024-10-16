@@ -1,0 +1,543 @@
+<div class="content-padded" [class.view-mode]="!editFlag">
+	<div class="flexed">
+		<h4 translate>
+			medical.infirmary.details.createdBy<span *ngIf="injury">: {{ injury?.createdBy }}</span>
+		</h4>
+		<div class="action-container">
+			<i
+				*ngIf="injury?.eventId && !editFlag"
+				class="fas fa-calendar"
+				[pTooltip]="'dialog.redirectTo' | translate: { value: ('dialog.file.sectionParent.event' | translate) }"
+				style="cursor: pointer"
+				(click)="goToPlanning()"
+			></i>
+			<iterpro-report-download
+				*ngIf="!editFlag && injury"
+				class="download"
+				(downloadPDF)="getReport()"
+				(downloadCSV)="downloadCsv()"
+			></iterpro-report-download>
+
+			<i
+				class="fas fa-pencil"
+				*ngIf="!editFlag && injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+				(click)="onEditTrigger()"
+				pTooltip="{{ 'buttons.edit' | translate }}"
+			></i>
+			<i
+				class="fas fa-trash"
+				*ngIf="!editFlag && injury"
+				(click)="confirmDelete()"
+				pTooltip="{{ 'buttons.delete' | translate }}"
+			></i>
+			<i class="fas fa-save" *ngIf="editFlag" (click)="confirmEdit()" pTooltip="{{ 'buttons.save' | translate }}"></i>
+			<i
+				class="fas fa-close"
+				*ngIf="editFlag"
+				(click)="onDiscardTrigger()"
+				pTooltip="{{ 'buttons.discard' | translate }}"
+			></i>
+			<i
+				class="fas fa-medkit"
+				style="cursor: pointer; float: right"
+				href="#"
+				[routerLink]="getPreventionLink(injury)"
+				pTooltip="{{ 'event.medicalRecords.redirect' | translate }}"
+			></i>
+		</div>
+	</div>
+	<div class="clear"></div>
+
+	<div class="row">
+		<div class="first-col">
+			<table class="fields-table inj-det-table">
+				<tr>
+					<th translate>medical.infirmary.details.issue</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="
+								injury.id || injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag
+							"
+							[options]="issue"
+							[(ngModel)]="injury.issue"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						>
+						</p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.injuryDate</th>
+					<td [class.custom-elem-disabled]="isNotEditable(injury)" *ngIf="isNotEditable(injury)">
+						{{ injury?.date | formatDateBySetting: 'HH:mm' }}
+					</td>
+					<td *ngIf="injury && editFlag" style="display: flex">
+						<p-calendar
+							appendTo="body"
+							showButtonBar="true"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[(ngModel)]="injury.date"
+							[maxDate]="today"
+							(onSelect)="changeInjuryDate($event)"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						>
+						</p-calendar>
+						<iterpro-timepicker
+							style="margin-left: 1em"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[ngModel]="getTime()"
+							(timeChanged)="onTimeChanged($event)"
+						></iterpro-timepicker>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>videogallery.form.label.event</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[showClear]="editFlag"
+							[filter]="true"
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="eventsItems"
+							[(ngModel)]="injury.eventId"
+							(onChange)="onEventSelected($event)"
+							(onClear)="onClear()"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.admissionDate</th>
+					<td [class.custom-elem-disabled]="isNotEditable(injury)" *ngIf="isNotEditable(injury)">
+						{{ injury?.admissionDate | formatDateBySetting }}
+					</td>
+					<td *ngIf="injury && editFlag">
+						<p-calendar
+							appendTo="body"
+							showButtonBar="true"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[(ngModel)]="injury.admissionDate"
+							[maxDate]="today"
+							[minDate]="injury.date"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						>
+						</p-calendar>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>OSIICS</th>
+					<td *ngIf="injury" [class.custom-elem-disabled]="isNotEditable(injury)">
+						<span
+							[style.cursor]="'pointer'"
+							[style.pointer-events]="editFlag ? 'auto' : 'none'"
+							(click)="showOSICSDialog()"
+						>
+							{{ (injury.osics | osics: osiicsList) || 'Select OSIICS field' }}
+						</span>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.system</th>
+					<td *ngIf="injury">
+						<p-multiSelect
+							appendTo="body"
+							maxSelectedLabels="1"
+							[style]="{ width: '100%', 'z-index': 'auto !important' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="system"
+							[(ngModel)]="injury.system"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						>
+						</p-multiSelect>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.location</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="locationOptions"
+							[(ngModel)]="injury.location"
+							(onChange)="onChangeLocation($event)"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.anatomicalDetails</th>
+					<td *ngIf="injury">
+						<p-multiSelect
+							appendTo="body"
+							maxSelectedLabels="1"
+							[style]="{ width: '100%', 'z-index': 'auto !important' }"
+							[disabled]="!editFlag"
+							[options]="anatomicalDetails"
+							[(ngModel)]="injury.anatomicalDetails"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+							[virtualScroll]="true"
+							virtualScrollItemSize="30"
+						>
+						</p-multiSelect>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.type</th>
+					<td *ngIf="injury">
+						<p-multiSelect
+							appendTo="body"
+							maxSelectedLabels="1"
+							[style]="{ width: '100%', 'z-index': 'auto !important' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="typeOptions"
+							[(ngModel)]="injury.type"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						>
+						</p-multiSelect>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.reInjury</th>
+					<td *ngIf="injury">
+						<p-inputSwitch [(ngModel)]="injury.reinjury" [disabled]="true"></p-inputSwitch>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.category</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="category"
+							[(ngModel)]="injury.category"
+							[showClear]="true"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						>
+						</p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.contact</th>
+					<td *ngIf="injury">
+						<p-inputSwitch
+							[(ngModel)]="injury.contact"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+						>
+						</p-inputSwitch>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.mechanism</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="mechanism"
+							[(ngModel)]="injury.mechanism"
+							[showClear]="true"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.occurrence</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="occurrence"
+							[(ngModel)]="injury.occurrence"
+							[showClear]="true"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.severity</th>
+					<td *ngIf="injury">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[options]="severity"
+							[(ngModel)]="injury.severity"
+							[showClear]="true"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+						>
+						</p-dropdown>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.diagnosis</th>
+					<td *ngIf="injury">
+						<editor
+							*ngIf="
+								injury.currentStatus !== 'medical.infirmary.details.statusList.healed' && editFlag;
+								else readOnlyEditor
+							"
+							ngModel
+							[initialValue]="'input-text.placeholder' | translate"
+							[inline]="false"
+							[(ngModel)]="injury.diagnosis"
+							[init]="tinyEditorInit"
+						>
+						</editor>
+						<ng-template #readOnlyEditor>
+							<span [innerHTML]="injury.diagnosis | marked"></span>
+						</ng-template>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.notes</th>
+					<td *ngIf="injury">
+						<editor
+							*ngIf="
+								injury.currentStatus !== 'medical.infirmary.details.statusList.healed' && editFlag;
+								else readOnlyEditor
+							"
+							ngModel
+							[initialValue]="'input-text.placeholder' | translate"
+							[inline]="false"
+							[(ngModel)]="injury.notes"
+							[init]="tinyEditorInit"
+						>
+						</editor>
+						<ng-template #readOnlyEditor>
+							<span [innerHTML]="injury.notes | marked"></span>
+						</ng-template>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="second-col">
+			<table class="fields-table inj-det-table">
+				<tr>
+					<th translate>medical.infirmary.details.currentStatus</th>
+					<td *ngIf="injury" [pTooltip]="currentStatus + '.tooltip' | translate" tooltipPosition="bottom">
+						<p-dropdown
+							[style]="{ width: '100%' }"
+							[disabled]="!editFlag"
+							[placeholder]="editFlag ? ('dropdown.placeholder' | translate) : null"
+							[options]="statusList"
+							[(ngModel)]="injury.currentStatus"
+							(onChange)="onHandleStatusChange($event)"
+						>
+							<ng-template let-status pTemplate="selectedItem">
+								<div class="ui-helper-clearfix" style="display: flex; align-items: center; height: 20px">
+									<div style="font-size: 1em; width: 150px">{{ status.value | translate }}</div>
+									<div [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+								</div>
+							</ng-template>
+							<ng-template let-status pTemplate="item">
+								<div class="ui-helper-clearfix" style="display: flex; align-items: center; height: 20px">
+									<div style="font-size: 1em; width: 150px">{{ status.value | translate }}</div>
+									<div [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+								</div>
+							</ng-template>
+						</p-dropdown>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'">
+					<th translate>medical.infirmary.details.daysCurrentStatus</th>
+					<td *ngIf="injury && injury.statusHistory && injury.statusHistory.length > 0">
+						{{ today | amDifference: (injury?.statusHistory)[injury.statusHistory.length - 1].date : 'days' }}
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.expectedReturn</th>
+					<td [class.custom-elem-disabled]="isNotEditable(injury)" *ngIf="injury && !editFlag">
+						<span *ngIf="isNotEditable(injury)">{{ injury?.expectedReturn | formatDateBySetting }}</span>
+					</td>
+					<td *ngIf="injury && editFlag">
+						<p-calendar
+							appendTo="body"
+							showButtonBar="true"
+							[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							[(ngModel)]="injury.expectedReturn"
+							[minDate]="today"
+							(onSelect)="getDurations()"
+							(onClearClick)="onClearDate($event)"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						>
+						</p-calendar>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus === 'medical.infirmary.details.statusList.healed'">
+					<th class="disabled" translate>medical.infirmary.details.endDate</th>
+					<td class="disabled" *ngIf="injury && !editFlag">{{ injury?.endDate | formatDateBySetting }}</td>
+					<td *ngIf="injury && editFlag">
+						<p-calendar
+							appendTo="body"
+							showButtonBar="true"
+							[inputId]="'disabled'"
+							[disabled]="!editFlag"
+							[(ngModel)]="injury.endDate"
+							[maxDate]="today"
+							[minDate]="injury.date"
+							(onSelect)="getDurations()"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'">
+					<th translate>medical.infirmary.details.daysFromInjury</th>
+					<td>
+						<span *ngIf="injury && daysFromInjury">{{ daysFromInjury }}</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus === 'medical.infirmary.details.statusList.healed'">
+					<th translate>medical.infirmary.details.duration</th>
+					<td>
+						<span *ngIf="injury && injuryDuration">{{ injuryDuration }}</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'">
+					<th translate>medical.infirmary.details.daysFromReturn</th>
+					<td *ngIf="injury">
+						<span *ngIf="daysFromReturn">{{ daysFromReturn }}</span>
+					</td>
+				</tr>
+
+				<tr *ngIf="injury && injury.currentStatus === 'medical.infirmary.details.statusList.healed'">
+					<th translate>medical.infirmary.details.daysFromEndDate</th>
+					<td>
+						<span *ngIf="injury && daysFromEnd">{{ daysFromEnd }}</span>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.surgery</th>
+					<td *ngIf="injury">
+						<div class="flexed" style="justify-content: flex-start">
+							<p-inputSwitch
+								[(ngModel)]="injury.surgery"
+								[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+							>
+							</p-inputSwitch>
+							<span *ngIf="injury.surgery && injury.surgery === true" class="flexed" style="width: 100%">
+								<span style="margin-left: 1em; color: #bbbbbb" translate>medical.infirmary.assessments.notes</span>
+								<input
+									pInputText
+									[(ngModel)]="injury.surgeryNotes"
+									[disabled]="injury.currentStatus === 'medical.infirmary.details.statusList.healed' || !editFlag"
+									style="margin-left: 1em"
+								/>
+							</span>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<th translate>medical.infirmary.details.treatmentInstructions</th>
+					<td *ngIf="injury">
+						<editor
+							*ngIf="
+								injury.currentStatus !== 'medical.infirmary.details.statusList.healed' && editFlag;
+								else readOnlyEditor
+							"
+							ngModel
+							[initialValue]="'input-text.placeholder' | translate"
+							[inline]="false"
+							[(ngModel)]="injury.treatInstruction"
+							[init]="tinyEditorInit"
+						>
+						</editor>
+						<ng-template #readOnlyEditor>
+							<span [innerHTML]="injury.treatInstruction | marked"></span>
+						</ng-template>
+					</td>
+				</tr>
+			</table>
+
+			<div *ngIf="injury" style="width: 100%">
+				<p-panel
+					[header]="'medical.infirmary.details.history' | translate"
+					[toggleable]="true"
+					[collapsed]="true"
+					styleClass="tw-p-2 tw-bg-shark-950 tw-bg-opacity-95"
+				>
+					<p-table
+						*ngIf="injury.statusHistory && injury.statusHistory.length > 0"
+						[value]="injury.statusHistory"
+						styleClass="p-datatable-striped tw-mt-2"
+					>
+						<ng-template pTemplate="header">
+							<tr class="tw-h-10">
+								<th class="panelHistoryTh">
+									<span translate>medical.infirmary.details.history.headers.date</span>
+								</th>
+								<th class="panelHistoryTh">
+									<span translate>medical.infirmary.details.history.headers.phase</span>
+								</th>
+								<th class="panelHistoryTh">
+									<span translate>medical.infirmary.details.history.headers.author</span>
+								</th>
+								<th class="panelHistoryTh">
+									<span translate>medical.infirmary.details.history.headers.duration</span>
+								</th>
+							</tr>
+						</ng-template>
+						<ng-template let-status let-rowIndex="rowIndex" pTemplate="body">
+							<tr class="tw-h-10">
+								<td class="tw-text-sm">
+									<span class="tw-text-nowrap">{{ status.date | date: 'dd-MM-yyyy' }}</span>
+								</td>
+								<td class="tw-text-sm">
+									<div class="tw-flex tw-items-center">
+										<span [ngStyle]="getBackgroundColor(status.phase)" class="iterpro-point"></span>
+										<span translate style="margin-left: 6px">{{ status.phase }}</span>
+									</div>
+								</td>
+								<td class="tw-text-sm">
+									<span>{{ status.author }}</span>
+								</td>
+								<td class="tw-text-sm">
+									<span *ngIf="durationArr">{{ durationArr[rowIndex] }}</span>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</p-panel>
+			</div>
+
+			<div class="body-chart">
+				<iterpro-body-chart #bodyChart [injuries]="[injury]" [hidePast]="false"></iterpro-body-chart>
+			</div>
+		</div>
+	</div>
+</div>
+
+<iterpro-osiics-dialog
+	[visible]="displayOSIICS"
+	[osics]="osiicsList"
+	[preselected]="injury?.osics"
+	(save)="onSaveOsiics($event)"
+	(discard)="onDiscardOsiics()"
+>
+</iterpro-osiics-dialog>

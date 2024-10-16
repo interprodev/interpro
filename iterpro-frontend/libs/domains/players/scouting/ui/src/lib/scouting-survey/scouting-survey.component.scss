@@ -1,0 +1,22 @@
+.column {
+  display: flex;
+  flex-direction: column;
+}
+.report-header {
+  padding-bottom: 0.5rem;
+  font-weight: bold;
+  color: #bbb;
+}
+.margins-05rem {
+  margin: 0.5rem;
+}
+.align-items-center {
+  align-items: center;
+  width: 100%;
+}
+.answer-yes {
+  color: #009900;
+}
+.answer-no {
+  color: #dd0000;
+}

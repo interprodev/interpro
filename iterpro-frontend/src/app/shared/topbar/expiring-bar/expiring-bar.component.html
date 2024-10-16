@@ -1,0 +1,9 @@
+@if (expiring$ | async) {
+	<div class="tw-bg-red-banner tw-flex tw-h-10 tw-items-center tw-justify-center tw-text-sm">
+		@if ((expiringDays$ | async) > 0) {
+			<span>{{ 'topbar.expiringAccount' | translate: { value: (expiringDays$ | async) } }}</span>
+		} @else {
+			<span>{{ 'topbar.expiredAccount' | translate }}</span>
+		}
+	</div>
+}

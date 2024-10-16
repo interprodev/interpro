@@ -1,0 +1,31 @@
+.csv-upload-download {
+	position: relative;
+}
+.csv-handler {
+	cursor: pointer;
+}
+.csv-submenu {
+	position: absolute;
+	top: 100%;
+	margin-top: 8px;
+	right: 0;
+	background-color: var(--color-neutral-300);
+	z-index: 100;
+	white-space: nowrap;
+	overflow: hidden;
+	border-radius: 8px;
+	box-shadow: 0 1px 8px rgba(255, 255, 255, 0.11);
+}
+.csv-item {
+	display: flex;
+	align-items: center;
+	padding: 0.7rem;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+.csv-item:hover {
+	background-color: #171717;
+}
+.csv-item .fas {
+	margin-right: 0.5rem;
+}

@@ -1,0 +1,53 @@
+<p-table [value]="rawMetricForm.controls" [scrollable]="true" [scrollHeight]="'40vh'" [styleClass]="'p-datatable-gridlines'">
+	<ng-template pTemplate="header">
+		<tr class="tw-h-10">
+			<th translate>thirdParties.csvColumnName</th>
+			<th translate>thirdParties.customLabel</th>
+			<th translate>thirdParties.type</th>
+			<th translate>thirdParties.format</th>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-form>
+		<tr class="tw-h-10">
+			<td class="tw-w-4/12">{{form.controls.name.value}}</td>
+			<td class="tw-w-4/12">
+				<input [formControl]="form.controls.label"> <!-- DO NOT put pInputText directive because cause crashing -->
+				<iterpro-form-feedback [control]="form.controls.label" [clickedCondition]="saveClicked" [label]="'thirdParties.customLabel' | translate"></iterpro-form-feedback>
+			</td>
+			<td class="tw-w-1/12">
+				<p-dropdown appendTo="body"
+										showClear="true"
+										filter="true"
+										[formControl]="form.controls.type"
+										[options]="rawMetricsTypesOptions" [style]="{ width: '100%' }"
+										[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+										[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+				</p-dropdown>
+				<iterpro-form-feedback [control]="form.controls.type" [clickedCondition]="saveClicked" [label]="'thirdParties.type' | translate"></iterpro-form-feedback>
+			</td>
+			<td class="tw-w-1/12">
+				@if (form.controls.type.value === 'duration') {
+					<p-dropdown appendTo="body"
+											showClear="true"
+											filter="true"
+											[formControl]="form.controls.format"
+											[options]="rawMetricsFormatDurationOptions" [style]="{ width: '100%' }"
+											[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+											[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+					</p-dropdown>
+					<iterpro-form-feedback [control]="form.controls.format" [clickedCondition]="saveClicked" [label]="'thirdParties.format' | translate"></iterpro-form-feedback>
+				} @else if (form.controls.type.value === 'date') {
+					<p-dropdown appendTo="body"
+											showClear="true"
+											filter="true"
+											[formControl]="form.controls.format"
+											[options]="rawMetricsFormatDateOptions" [style]="{ width: '100%' }"
+											[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+											[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+					</p-dropdown>
+					<iterpro-form-feedback [control]="form.controls.format" [clickedCondition]="saveClicked" [label]="'thirdParties.format' | translate"></iterpro-form-feedback>
+				}
+			</td>
+		</tr>
+	</ng-template>
+</p-table>

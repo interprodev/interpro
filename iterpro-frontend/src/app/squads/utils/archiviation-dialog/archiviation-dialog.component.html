@@ -1,0 +1,69 @@
+<p-dialog [visible]="true" [showHeader]="true" [closable]="false" [closeOnEscape]="true"
+	[draggable]="false" [resizable]="false" modal="modal" [style]="{ width: '700px' }">
+	<p-header *ngIf="element">{{ ((element.displayName ? element.displayName : 	(element.firstName + ' ' + element.lastName)) | capitalize) }}</p-header>
+
+	<div *ngIf="element">
+		<div translate>
+			{{ personType === 'Player' ? 'profile.archive.selectMotivationPlayer' : 'profile.archive.selectMotivationStaff' }}
+		</div>
+		<div class="ui-g" style="margin: 10px 0">
+			<div class="pflex-col-12" *ngIf="personType === 'Player'">
+				<span translate>profile.status.stillOwned<span *ngIf="team"> {{ team.name | capitalize }}</span></span>
+			</div>
+			<div class="pflex-col-12" *ngIf="personType === 'Player'">
+				<p-radioButton name="currentStatus" value="onLoan" label="{{ 'profile.status.onLoan' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="archiveOpt4"></p-radioButton>
+				<!-- <div class="flexed" style="margin-top: 1em;font-size: 0.85rem;" *ngIf="element.currentStatus === 'onLoan'">
+					<div class="flexed" style="width:30%">
+						<span style="margin-right:0.8em;" translate>profile.archive.team</span>
+						<input pInputText type="text" [(ngModel)]="teamDialog" />
+					</div>
+				</div> -->
+			</div>
+			<div class="pflex-col-12" *ngIf="personType === 'Player'">
+				<p-radioButton name="currentStatus" value="disciplinary" label="{{ 'profile.status.disciplinary' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="opt2"></p-radioButton>
+			</div>
+			<div class="pflex-col-12" *ngIf="personType === 'Player'">
+				<p-radioButton name="currentStatus" value="notCalled" label="{{ 'profile.status.notCalled' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="archiveOpt5"></p-radioButton>
+			</div>
+
+			<div class="pflex-col-12" *ngIf="personType === 'Player'"><span translate>profile.status.conveyance</span></div>
+			<div class="pflex-col-12" *ngIf="personType === 'Player'">
+				<p-radioButton name="currentStatus" value="sold" label="{{ 'profile.status.sold' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="archiveOpt3"></p-radioButton>
+				<!-- <div class="flexed" style="margin-top: 1em;font-size: 0.85rem;" *ngIf="element.currentStatus === 'sold'">
+					<div class="flexed" style="width:40%">
+						<span style="margin-right:0.8em;" translate>profile.archive.team</span><input pInputText type="text"
+							[(ngModel)]="teamDialog" />
+					</div>
+				</div> -->
+			</div>
+			<div class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="expired" label="{{ 'profile.status.expired' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="opt1"></p-radioButton>
+			</div>
+			<div class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="termination" label="{{ 'profile.status.termination' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="op7"></p-radioButton>
+			</div>
+			<div *ngIf="personType" class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="released" label="{{ 'profile.status.released' | translate }}"
+					[(ngModel)]="element.currentStatus" inputId="opt6"></p-radioButton>
+			</div>
+		</div>
+		<div class="flexed" style="justify-content: flex-start; margin-bottom: 1em">
+			<span style="margin-right: 1em" translate>profile.status.dateArchiviation</span>
+			<p-calendar showButtonBar="true" appendTo="body" [(ngModel)]="element.archivedDate"
+				[maxDate]="today"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+		</div>
+		<span translate>profile.archive.warning</span>
+	</div>
+	<p-footer *ngIf="element">
+		<p-button size="small" styleClass="p-button-primary" icon="fas fa-check" (click)="save(element)" label="{{ 'buttons.save' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" icon="fas fa-times" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

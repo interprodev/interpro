@@ -1,0 +1,84 @@
+<a
+	pRipple
+	class="tw-transition-duration-150 tw-flex tw-h-20 tw-w-20 tw-cursor-pointer tw-items-center tw-rounded-full tw-p-4 tw-px-12 tw-font-medium tw-transition-colors lg:tw-px-4 lg:tw-py-2"
+	pStyleClass="@next"
+	enterFromClass="tw-hidden"
+	enterActiveClass="pflex-scalein"
+	leaveToClass="tw-hidden"
+	leaveActiveClass="pflex-fadeout"
+	[hideOnOutsideClick]="true"
+>
+	<iterpro-picture [photoUrl]="customer?.downloadUrl" [additionalClass]="'tw-rounded-full'" />
+
+	<div class="tw-block lg:tw-hidden">
+		<div class="tw-text-900 tw-font-medium tw-text-sm">
+			{{customer?.firstName }} {{ customer?.lastName }}
+		</div>
+		<!-- <span class="text-600 font-medium text-sm">Marketing Specialist</span> -->
+	</div>
+</a>
+<div
+	class="tw-top-100 tw-static tw-z-50 tw-hidden tw-w-2 tw-origin-top tw-rounded tw-pl-3 tw-shadow-none lg:tw-absolute lg:tw-right-0 lg:tw-pl-0 lg:tw-shadow-lg"
+>
+	<ul
+		class="tw-m-0 tw-w-full tw-origin-top tw-cursor-pointer tw-list-none tw-bg-shark-950 tw-border-solid tw-border-0.3 tw-border-shark-900 tw-rounded tw-px-12 tw-py-4 tw-shadow-none lg:tw-absolute lg:tw-right-0 lg:tw-w-60 lg:tw-px-0 lg:tw-py-0 lg:tw-shadow-lg"
+	>
+		<li>
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-h-full tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+				href="#"
+				[routerLink]="'/settings'"
+				[routerLinkActive]="'selected'"
+			>
+				<i class="fas fa-cog tw-mr-2"></i>
+				<span class="tw-font-medium tw-text-sm">{{ 'club.settings' | translate }}</span>
+			</a>
+		</li>
+		<li class="tw-relative">
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+				(click)="openDownloadApps()"
+			>
+				<i class="fas fa-mobile-iphone tw-mr-2"></i>
+				<span class="tw-font-medium tw-text-sm">{{ 'home.mobileApps' | translate }}</span>
+			</a>
+		</li>
+
+		<li class="tw-relative">
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+				href="https://www.iubenda.com/terms-and-conditions/53739842"
+				target="_blank"
+			>
+				<i class="fas fa-hands-helping tw-mr-2"></i>
+				<span class="tw-font-medium tw-text-sm">{{ 'home.terms' | translate }}</span>
+			</a>
+		</li>
+
+		<li class="tw-relative">
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+				href="https://www.iubenda.com/privacy-policy/53739842"
+				target="_blank"
+			>
+				<i class="fas fa-unlock-alt tw-mr-2"></i>
+				<span class="tw-font-medium tw-text-sm">{{ 'home.privacy' | translate }}</span>
+			</a>
+		</li>
+
+		<li class="tw-relative">
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+				(click)="logout()"
+			>
+				<i class="fas fa-sign-out-alt tw-mr-2"></i>
+				<span class="tw-font-medium tw-text-sm" >{{ 'home.logout' | translate }}</span>
+			</a>
+		</li>
+	</ul>
+</div>

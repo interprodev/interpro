@@ -1,0 +1,79 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4">
+	<div class="tw-col-span-2" *ngIf="periodDates && periodDates?.length > 0">
+		<div class="tw-text-sm iterpro-text-color-900" translate>calendar.placeholder</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-calendar
+				class="calendar-width-215"
+				showButtonBar="true"
+				[(ngModel)]="periodDates"
+				(ngModelChange)="periodChangedEmitter.emit($event)"
+				selectionMode="range"
+				[clearButtonStyleClass]="'p-button-sm'"
+				[todayButtonStyleClass]="'p-button-sm'"
+			></p-calendar>
+		</div>
+	</div>
+	<div class="tw-col-span-2" *ngFor="let state of filtersState">
+		<div class="tw-text-sm iterpro-text-color-900">{{ state.filter?.label | translate }}</div>
+		<div [ngSwitch]="state.filter?.type">
+			<ng-container class="iterpro-item-container tw-mt-1" *ngSwitchCase="'multi'">
+				<ng-container *ngTemplateOutlet="multiselectTemplate"></ng-container>
+			</ng-container>
+			<ng-container class="iterpro-item-container tw-mt-1" *ngSwitchCase="'player'">
+				<ng-container *ngTemplateOutlet="multiselectTemplate"></ng-container>
+			</ng-container>
+			<ng-container class="iterpro-item-container tw-mt-1" *ngSwitchCase="'datetime'">
+				<ng-container *ngTemplateOutlet="multiselectTemplate"></ng-container>
+			</ng-container>
+			<ng-container class="iterpro-item-container tw-mt-1" *ngSwitchCase="'age'">
+				<ng-container *ngTemplateOutlet="multiselectTemplate"></ng-container>
+			</ng-container>
+			<div class="tw-flex tw-flex-col tw-mt-1" *ngSwitchCase="'range'">
+				<div class="iterpro-item-container" *ngIf="state.selection.items && state.selection.items.length > 1">
+					{{ state.selection.items[0] }}-{{ state.selection.items[1] }}
+				</div>
+				<div class="tw-p-4">
+					<p-slider
+						[(ngModel)]="state.selection.items"
+						[min]="state.config?.min || 0"
+						[max]="state.config?.max || 100"
+						[range]="true"
+						(onChange)="emitFilterResult()"
+					></p-slider>
+				</div>
+			</div>
+			<div class="iterpro-item-container tw-mt-1" *ngSwitchDefault>
+				<p-dropdown
+					[options]="state.options"
+					[(ngModel)]="state.selection.items"
+					(onChange)="emitFilterResult()"
+					appendTo="body"
+					[style]="{ width: '100px', 'min-width': '100px' }"
+					[placeholder]="'dropdown.placeholder' | translate"
+				>
+				</p-dropdown>
+			</div>
+			<ng-template #multiselectTemplate>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-multiSelect
+						[options]="state.options"
+						[(ngModel)]="state.selection.items"
+						(onChange)="emitFilterResult()"
+						[placeholder]="'dropdown.placeholder' | translate"
+						selectedItemsLabel="{0} selected"
+						maxSelectedLabels="1"
+					>
+					</p-multiSelect>
+				</div>
+			</ng-template>
+		</div>
+	</div>
+	@if (!hideReset) {
+		<div class="tw-col-span-2">
+			<p-button type="button"
+								[outlined]="true"
+								[size]="'small'"
+								[label]="'RESET' | translate" (click)="resetFilters()"></p-button>
+		</div>
+	}
+</div>

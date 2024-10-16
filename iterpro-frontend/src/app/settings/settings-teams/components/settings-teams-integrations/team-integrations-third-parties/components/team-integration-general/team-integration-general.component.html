@@ -1,0 +1,97 @@
+<div class="tw-flex tw-justify-between tw-mb-8 tw-gap-2" [formGroup]="generalForm">
+	<div class="tw-flex tw-flex-col tw-gap-2">
+		<!-- CSV SEPARATOR -->
+		@if (team.device === 'Dynamic') {
+			<h5 translate class="tw-uppercase">preferences.device.separator</h5>
+			<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>datasources.gps</div>
+				<div>
+					<p-dropdown
+						appendTo="body"
+						formControlName="sepGps"
+						[options]="separatorOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+					></p-dropdown>
+				</div>
+			</div>
+			<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'sepGps'" [label]="'datasources.gps' | translate"></iterpro-form-feedback>
+		}
+		@if (team.providerTeam !== 'Wyscout') {
+			<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900 tw-mb-2" translate>datasources.teamStats</div>
+				<div>
+					<p-dropdown
+						appendTo="body"
+						formControlName="sepTeam"
+						[options]="separatorOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+					></p-dropdown>
+				</div>
+			</div>
+			<div class="tw-my-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'sepTeam'" [label]="'datasources.teamStats' | translate"></iterpro-form-feedback>
+			</div>
+			<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>datasources.playerStats</div>
+				<div>
+					<p-dropdown
+						appendTo="body"
+						formControlName="sepPlayer"
+						[options]="separatorOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+					></p-dropdown>
+				</div>
+			</div>
+			<div class="tw-my-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'sepPlayer'" [label]="'datasources.playerStats' | translate"></iterpro-form-feedback>
+			</div>
+		}
+	</div>
+	<!-- CSV MAIN SPLIT NAMES -->
+	<div class="tw-flex tw-flex-col">
+		<h5 translate class="tw-uppercase tw-mb-2">preferences.device.split</h5>
+		<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+			<div class="tw-text-sm iterpro-text-color-900 tw-flex-1" translate>preferences.device.splits.training</div>
+			<div>
+				<input type="text" class="tw-text-sm" pInputText formControlName="mainSplitName" />
+			</div>
+		</div>
+		<div class="tw-my-1">
+			<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'mainSplitName'" [label]="'preferences.device.splits.training' | translate"></iterpro-form-feedback>
+		</div>
+		<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+			<div class="tw-text-sm iterpro-text-color-900 tw-flex-1" translate>preferences.device.splits.game</div>
+			<div>
+				<input type="text" class="tw-text-sm" pInputText formControlName="mainGameName" />
+			</div>
+		</div>
+		<div class="tw-my-1">
+			<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'mainGameName'" [label]="'preferences.device.splits.game' | translate"></iterpro-form-feedback>
+		</div>
+	</div>
+	<!-- CSV TIMEZONE -->
+	<div>
+		<h5 translate class="tw-uppercase tw-mb-2">preferences.device.timezone</h5>
+		<div class="tw-flex tw-items-center tw-gap-2 iterpro-item-container">
+			<div class="tw-text-sm iterpro-text-color-900" translate>preferences.device.timezone</div>
+			<div>
+				<p-dropdown
+					appendTo="body"
+					formControlName="localTimezone"
+					[options]="timezoneOptions"
+					[filter]="true"
+					[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+				></p-dropdown>
+			</div>
+		</div>
+		<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'localTimezone'" [label]="'localTimezone' | translate"></iterpro-form-feedback>
+	</div>
+</div>
+

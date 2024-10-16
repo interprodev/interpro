@@ -1,0 +1,13 @@
+{
+	"name": "domains-players-scouting-event-store-line-up",
+	"$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/players/scouting/event/store-line-up/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:scouting-event", "type:store"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
+}

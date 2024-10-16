@@ -1,0 +1,41 @@
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-relative">
+	<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+		<iterpro-report-download (downloadPDF)="downloadReport()" />
+		<i
+			class="fas fa-percentage tw-cursor-pointer"
+			[ngClass]="{ 'fa-border': percentage }"
+			pTooltip="{{ 'matchAnalysis.percentage' | translate }}"
+			(click)="onTogglePercent()"
+		></i>
+		<i
+			class="fas fa-sort-amount-up tw-cursor-pointer"
+			[ngClass]="{ 'fa-border': order }"
+			pTooltip="{{ 'sessionAnalysis.order' | translate }}"
+			(click)="onToggleOrder()"
+		></i>
+		<i
+			class="fas fa-tag tw-cursor-pointer"
+			[ngClass]="{ 'fa-border': datalabels }"
+			pTooltip="{{ 'sessionAnalysis.labels' | translate }}"
+			(click)="onToggleLabels()"
+		></i>
+		<i
+			*ngIf="sidebarOpen"
+			class="fas fa-expand tw-cursor-pointer"
+			(click)="onToggleSidebar()"
+			pTooltip="{{ 'button.expand' | translate }}"
+		></i>
+		<i
+			*ngIf="!sidebarOpen"
+			class="fas fa-compress tw-cursor-pointer"
+			(click)="onToggleSidebar()"
+			pTooltip="{{ 'button.collapse' | translate }}"
+		></i>
+	</div>
+
+	<!-- Chart -->
+	<h3 class="tw-text-center">{{ 'matchAnalysis.playerGameComparison' | translate }}</h3>
+	<div class="tw-h-[400px]">
+		<p-chart *ngIf="data" type="bar" height="200" [data]="data" [options]="options"></p-chart>
+	</div>
+</div>

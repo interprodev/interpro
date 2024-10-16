@@ -1,0 +1,14 @@
+<span class="csv-upload-download">
+	<fa-icon
+		class="tw-cursor-pointer"
+		[icon]="faCsv"
+		(click)="setOpen(!isOpen)"
+		(iterproClickOutside)="setOpen(false)"
+		[pTooltip]="(downloadLabel | translate) + ' / ' + (uploadLabel | translate)"
+	/>
+	<div class="csv-submenu" [ngStyle]="{ display: isOpen ? 'block' : 'none' }">
+		<div *ngFor="let item of items" class="csv-item" (click)="itemClick(item)">
+			<span class="fas {{ item.icon }}"></span><span>{{ item.label }}</span>
+		</div>
+	</div>
+</span>

@@ -1,0 +1,127 @@
+{
+	"baseURLv2": "https://apirest.wyscout.com/v2",
+	"baseURL": "https://apirest.wyscout.com/v3",
+	"identifier": "wyscout",
+	"name": "Wyscout",
+	"fields": {
+		"id": "wyscoutId",
+		"shortId": "wyId",
+		"teamId": "wyscoutTeamId",
+		"competitionId": "wyscoutCompetitionId",
+		"seasonId": "wyscoutSeasonId",
+		"currentTeamId": "currentWyscoutTeamId",
+		"secondaryTeamId": "wyscoutSecondaryTeamId",
+		"alternateShortId": "wyd",
+		"synced": "wyscoutSynced"
+	},
+	"playerPositions": [
+		{
+			"code2": "GK",
+			"label": "goalkeeper"
+		},
+		{
+			"code2": "LB",
+			"label": "defender"
+		},
+		{
+			"code2": "CBL",
+			"label": "defender"
+		},
+		{
+			"code2": "CBC",
+			"label": "defender"
+		},
+		{
+			"code2": "CBR",
+			"label": "defender"
+		},
+		{
+			"code2": "RB",
+			"label": "defender"
+		},
+		{
+			"code2": "LWB",
+			"label": "midfielder"
+		},
+		{
+			"code2": "DLM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "DCM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "DRM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "RWB",
+			"label": "midfielder"
+		},
+		{
+			"code2": "LM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "LCM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "CM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "RCM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "RM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "LW",
+			"label": "midfielder"
+		},
+		{
+			"code2": "RAM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "CAM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "LAM",
+			"label": "midfielder"
+		},
+		{
+			"code2": "RW",
+			"label": "midfielder"
+		},
+		{
+			"code2": "LF",
+			"label": "striker"
+		},
+		{
+			"code2": "S",
+			"label": "striker"
+		},
+		{
+			"code2": "RF",
+			"label": "striker"
+		},
+		{
+			"code2": "FW",
+			"label": "striker"
+		},
+		{
+			"code2": "MD",
+			"label": "midfielder"
+		},
+		{
+			"code2": "DF",
+			"label": "defender"
+		}
+	]
+}

@@ -1,0 +1,1154 @@
+{
+	"name": "Coaching",
+	"plural": "Coaching",
+	"base": "Model",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"changePassword": {
+			"accepts": [
+				{
+					"arg": "oldPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "newPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/change-password",
+				"verb": "post"
+			}
+		},
+		"resetPassword": {
+			"accepts": [
+				{
+					"arg": "email",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/reset-password",
+				"verb": "post"
+			}
+		},
+		"getClub": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/club",
+				"verb": "get"
+			}
+		},
+		"getPositionsCoordinates": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/positions-coordinates",
+				"verb": "get"
+			}
+		},
+		"getMinimumVersion": {
+			"accepts": [],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/min-version",
+				"verb": "get"
+			}
+		},
+		"getMatchLineup": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/match-lineup",
+				"verb": "get"
+			}
+		},
+		"getTeamEvents": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/events",
+				"verb": "get"
+			}
+		},
+		"getEventDetails": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/events/:eventId",
+				"verb": "get"
+			}
+		},
+		"getEventPlayerReport": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/events/:eventId/player-report/:playerId",
+				"verb": "get"
+			}
+		},
+		"getTeamPlayers": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/players",
+				"verb": "get"
+			}
+		},
+		"getTeamStatsCached": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/stats",
+				"verb": "get"
+			}
+		},
+		"login": {
+			"accepts": [
+				{
+					"arg": "email",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "password",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/login",
+				"verb": "post"
+			}
+		},
+		"logout": {
+			"accepts": [
+				{
+					"arg": "deviceId",
+					"type": "string"
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/logout",
+				"verb": "post"
+			}
+		},
+		"getPlayers": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/players",
+				"verb": "get"
+			}
+		},
+		"getSinglePlayer": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/players/:id",
+				"verb": "get"
+			}
+		},
+		"getPlayerInjuries": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/players/:id/injuries",
+				"verb": "get"
+			}
+		},
+		"getPlayerStats": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/players/:id/stats",
+				"verb": "get"
+			}
+		},
+		"getStaffs": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/staffs",
+				"verb": "get"
+			}
+		},
+		"getFixturesInfo": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/fixtures",
+				"verb": "get"
+			}
+		},
+		"getMatchStats": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:teamId/fixtures/:eventId/match-stats",
+				"verb": "get"
+			}
+		},
+		"getSeasonInfo": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/season",
+				"verb": "get"
+			}
+		},
+		"getVideos": {
+			"accepts": [
+				{
+					"arg": "categories",
+					"type": "array",
+					"required": false
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos",
+				"verb": "get"
+			}
+		},
+		"getTactics": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/tactics",
+				"verb": "get"
+			}
+		},
+		"getNotifications": {
+			"accepts": [
+				{
+					"arg": "start",
+					"type": "number",
+					"required": false
+				},
+				{
+					"arg": "limit",
+					"type": "number",
+					"required": false
+				},
+				{
+					"arg": "read",
+					"type": "boolean",
+					"required": false
+				},
+				{
+					"arg": "teamIds",
+					"type": "array",
+					"required": false
+				},
+				{
+					"arg": "startDate",
+					"type": "date",
+					"required": false
+				},
+				{
+					"arg": "endDate",
+					"type": "date",
+					"required": false
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications",
+				"verb": "get"
+			}
+		},
+		"getNotificationsBadge": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications/badge",
+				"verb": "get"
+			}
+		},
+		"setNotification": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications/:id",
+				"verb": "patch"
+			}
+		},
+		"setAllNotifications": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications",
+				"verb": "patch"
+			}
+		},
+		"getComments": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments",
+				"verb": "get"
+			}
+		},
+		"createComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments",
+				"verb": "post"
+			}
+		},
+		"updateComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId",
+				"verb": "put"
+			}
+		},
+		"deleteComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId",
+				"verb": "delete"
+			}
+		},
+		"getReplies": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId/replies",
+				"verb": "get"
+			}
+		},
+		"createReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId/replies",
+				"verb": "post"
+			}
+		},
+		"updateReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId/replies/:replyId",
+				"verb": "put"
+			}
+		},
+		"deleteReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/videos/:videoId/comments/:commentId/replies/:replyId",
+				"verb": "delete"
+			}
+		},
+		"invalidateFixturesCache": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/fixtures/flush",
+				"verb": "post"
+			}
+		},
+		"invalidateSeasonCache": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/season/flush",
+				"verb": "post"
+			}
+		},
+		"getTeamReadiness": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "date",
+					"type": "DateString",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/readiness",
+				"verb": "get"
+			}
+		},
+		"getPlayerReadiness": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "date",
+					"type": "DateString",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/players/:id/readiness",
+				"verb": "get"
+			}
+		},
+		"getNotificationSettings": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/notification-settings",
+				"verb": "get"
+			}
+		},
+		"updateNotificationSettings": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/notification-settings",
+				"verb": "put"
+			}
+		},
+		"getMe": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/me",
+				"verb": "get"
+			}
+		},
+		"updateMe": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/me",
+				"verb": "put"
+			}
+		},
+		"getChatPlayers": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/chat-players",
+				"verb": "get"
+			}
+		},
+		"getChatStaffs": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/chat-staffs",
+				"verb": "get"
+			}
+		},
+		"getTeamTestMetrics": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/teams/:id/test-metrics",
+				"verb": "get"
+			}
+		},
+		"getPlayerFitnessProfile": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "testIds",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "metrics",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns fitness profile for a player",
+			"http": {
+				"path": "/players/:id/fitness",
+				"verb": "get"
+			}
+		},
+		"getPlayerRobustness": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/players/:id/robustness",
+				"verb": "get"
+			}
+		}
+	}
+}

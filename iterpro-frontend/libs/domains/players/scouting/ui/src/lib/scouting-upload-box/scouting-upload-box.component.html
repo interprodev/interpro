@@ -1,0 +1,37 @@
+<div class="iterpro-text-color-900 tw-text-xs tw-font-bold">
+	{{ label }}
+</div>
+<div class="buttons">
+	<ng-container *ngIf="!!attachment; else empty">
+		<i class="fas fa-info-circle tw-text-xs" [pTooltip]="attachment.name" aria-hidden="true"></i>
+		<div *ngIf="isSupportedMediaForPreview()">
+<!--			<iterpro-icon-modal-preview [url]="attachment.downloadUrl | azureUrl" [name]="attachment.name" />-->
+		</div>
+		<i *ngIf="attachment.downloadUrl | azureUrl"
+			 class="fas fa-download"
+			 [pTooltip]="'dialog.file.link' | translate"
+			 (click)="onDownloadAttachment(attachment)"
+		></i>
+	</ng-container>
+	<ng-template #empty>
+		<span *ngIf="!editable">-/-</span>
+	</ng-template>
+	<ng-container *ngIf="editable">
+		<span class="upload" *ngIf="!attachment; else deletable">
+			<iterpro-cloud-upload
+				[hidden]="isUploading"
+				[icon]="true"
+				[style]="{ width: 'auto' }"
+				(onStartEmitter)="startUploadAttachment()"
+				(completedEmitter)="addAttachment($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+				[area]="false"
+				[spinner]="false"
+				[accept]="accept"
+			/>
+			<p-progressSpinner *ngIf="isUploading" [style]="{ width: '20px', height: '20px' }"></p-progressSpinner>
+		</span>
+		<ng-template #deletable>
+			<span> <i class="button-icon fas fa-trash iterpro-clickable-icon" (click)="deleteAttachment()" [pTooltip]="'buttons.delete' | translate"></i></span>
+		</ng-template>
+	</ng-container>
+</div>

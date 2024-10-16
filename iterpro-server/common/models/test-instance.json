@@ -1,0 +1,80 @@
+{
+	"name": "TestInstance",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"date": {
+			"type": "date",
+			"required": true
+		},
+		"lastUpdateDate": {
+			"type": "date"
+		},
+		"lastUpdateAuthor": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"event": {
+			"type": "belongsTo",
+			"model": "Event",
+			"foreignKey": "eventId"
+		},
+		"test": {
+			"type": "belongsTo",
+			"model": "Test",
+			"foreignKey": ""
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"testResults": {
+			"type": "embedsMany",
+			"model": "TestResult",
+			"property": "_testResults",
+			"options": {
+				"persistent": true,
+				"forceId": true,
+				"validate": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {
+		"deleteTestInstance": {
+			"accepts": [
+				{
+					"arg": "testInstanceId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/deleteTestInstance",
+				"verb": "post"
+			}
+		}
+	}
+}

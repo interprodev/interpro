@@ -1,0 +1,24 @@
+p-table {
+	tr {
+		&:nth-child(2n) {
+			background-color: hsla(0, 0%, 39%, 0.24) !important;
+		}
+
+		td,
+		th {
+			padding: 0.25rem 0.5rem;
+		}
+
+		td {
+			color: var(--color-neutral-900) !important;
+			font-size: 0.9rem;
+		}
+
+		th {
+			text-align: left;
+			color: var(--iterpro-text-color-white);
+			font-weight: 400;
+			font-size: 0.9rem;
+		}
+	}
+}

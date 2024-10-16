@@ -1,0 +1,411 @@
+{
+	"_meta": {
+		"sources": ["loopback/common/models", "loopback/server/models", "../common/models", "./models"],
+		"mixins": [
+			"loopback/server/mixins",
+			"loopback/common/mixins",
+			"../node_modules/loopback-cascade-delete-mixin",
+			"../node_modules/loopback-ds-timestamp-mixin",
+			"../common/mixins",
+			"./mixins"
+		]
+	},
+	"User": {
+		"dataSource": "iterproMongo"
+	},
+	"AccessToken": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ACL": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"RoleMapping": {
+		"dataSource": "iterproMongo",
+		"public": true,
+		"options": {
+			"strictObjectIDCoercion": true
+		}
+	},
+	"Role": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"CustomerApi": {
+		"dataSource": "iterproMongo",
+		"public": false
+	},
+	"Customer": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"CustomerPlayer": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"EntityChangelog": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Team": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Player": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"SessionImportData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"SessionPlayerData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Drill": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Test": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Wellness": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TeamStat": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"PlayerStat": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Match": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TacticsData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Tactics": {
+		"dataSource": "iterproMongo",
+		"public": false
+	},
+	"Threshold": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"ThresholdAutoGenSetting": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"GOScore": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Event": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Injury": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"injuryAssessment": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"InjuryExam": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"InjuryTreatment": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"DrillInstance": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"TestInstance": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TeamGroup": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"CustomerTeamSettings": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Attachment": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TestResult": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Notification": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TacticsPlayerData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"PlayerApp": {
+		"dataSource": null,
+		"public": true
+	},
+	"SessionsStats": {
+		"dataSource": null,
+		"public": true
+	},
+	"ComparePlayersStats": {
+		"dataSource": null,
+		"public": true
+	},
+	"ProfilePlayers": {
+		"dataSource": null,
+		"public": true
+	},
+	"Robustness": {
+		"dataSource": null,
+		"public": true
+	},
+	"PlanningView": {
+		"dataSource": null,
+		"public": true
+	},
+	"Utils": {
+		"dataSource": null,
+		"public": true
+	},
+	"Readiness": {
+		"dataSource": null,
+		"public": true
+	},
+	"TeamSeason": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerMatchStat": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"ChronicInjury": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"AzureStorage": {
+		"dataSource": null,
+		"public": true
+	},
+	"Storage": {
+		"dataSource": null,
+		"public": true
+	},
+	"Wyscout": {
+		"dataSource": null,
+		"public": true
+	},
+	"Instat": {
+		"dataSource": null,
+		"public": true
+	},
+	"Thirdparty": {
+		"dataSource": null,
+		"public": true
+	},
+	"Fieldwiz": {
+		"dataSource": null,
+		"public": true
+	},
+	"DirectorV2": {
+		"dataSource": null,
+		"public": true
+	},
+	"GpsProviderMapping": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"TeamProviderMapping": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"PlayerProviderMapping": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"GpsMetricMapping": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"PlayerScouting": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Club": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Staff": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ClubTransfer": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ClubSeason": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerValue": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Person": {
+		"dataSource": "iterproMongo",
+		"public": false
+	},
+	"Agent": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TransferWindow": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PreventionExam": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ScoutingLineup": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"VideoAsset": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerDescriptionEntry": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerAttributesEntry": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerNotification": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerGameReport": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerTrainingReport": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ScoutingGame": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerCalculatedData": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ScoutingLineupPlayerData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"ScoutingGameReport": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"ScoutingLineupRoleData": {
+		"dataSource": "transient",
+		"public": true
+	},
+	"Coaching": {
+		"dataSource": null,
+		"public": true
+	},
+	"Chat": {
+		"dataSource": null,
+		"public": true
+	},
+	"MedicalTreatment": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PlayerCostItem": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"PersonCostItem": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"TeamTableFilterTemplate": {
+		"dataSource": "iterproMongo",
+		"public": true
+	},
+	"Contract": {
+		"dataSource": "iterproLegal",
+		"public": false
+	},
+	"AgentContract": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"EmploymentContract": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"TransferContract": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"ContractOption": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"Bonus": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"BasicWage": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"TransferClause": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"LoanOption": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"TeamBonus": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"ContractOptionCondition": {
+		"dataSource": "iterproLegal",
+		"public": true
+	},
+	"PlayerTransfer": {
+		"dataSource": "iterproMongo",
+		"public": true
+	}
+}

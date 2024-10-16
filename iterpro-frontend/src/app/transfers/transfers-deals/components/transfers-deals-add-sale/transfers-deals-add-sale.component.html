@@ -1,0 +1,30 @@
+<ng-container>
+	<div class="pflex-flex pflex-align-items-center">
+		<p-dropdown
+			[filter]="true"
+			[group]="true"
+			[options]="teamPlayerOptions"
+			[(ngModel)]="selectedPlayer"
+			[placeholder]="'dropdown.placeholderPlayer' | translate"
+		>
+			<ng-template let-group pTemplate="group">
+				<h3 class="pflex-uppercase pflex-text-lg pflex-my-2">
+					{{ group.label }}
+				</h3>
+			</ng-template>
+			<ng-template let-player pTemplate="item">
+				<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+					<iterpro-picture
+						class="pflex-block pflex-border-round-sm pflex-w-2rem pflex-h-2rem pflex-overflow-hidden"
+						[photoUrl]="player.downloadUrl"
+					/>
+					<span class="pflex-text-base">{{ player.label }}</span>
+				</div>
+			</ng-template>
+		</p-dropdown>
+
+		<p-button [size]="'small'" [disabled]="!selectedPlayer" (click)="addDeal()">
+			{{ 'addDeal' | translate }}
+		</p-button>
+	</div>
+</ng-container>

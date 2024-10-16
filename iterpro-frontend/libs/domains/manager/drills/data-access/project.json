@@ -1,0 +1,14 @@
+{
+	"name": "manager-drills-data-access",
+	"$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/manager/drills/data-access/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:drills", "type:ui"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

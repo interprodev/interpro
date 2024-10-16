@@ -1,0 +1,14 @@
+@if (basicForm) {
+	<div class="tw-h-full tw-relative">
+		<form [formGroup]="basicForm">
+			<div class="tw-text-sm iterpro-text-color-900">{{label}}</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<input type="text" pInputText formControlName="value" />
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [label]="label"></iterpro-form-feedback>
+			</div>
+		</form>
+		@if (editMode && basicForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}

@@ -1,0 +1,512 @@
+<div [ngClass]="test ? 'content-with-test' : 'content-empty'" [class.view-mode]="!editService.editMode">
+	<p-tabView class="colView-nobg mainMenuInner" [activeIndex]="indexTab" (onChange)="setTabIndex($event)">
+		<p-tabPanel header="{{ 'protocol' | translate }}" [disabled]="editService.editMode">
+			<div class="tab-section">
+				<div class="tw-flex tw-w-full tw-justify-end tw-items-center tw-gap-4" *ngIf="!isPresetTest()">
+					@if (!editService.editMode) {
+						<i class="fas fa-pencil" (click)="onEdit()" pTooltip="{{ 'buttons.edit' | translate }}"></i>
+						<i
+							class="fas fa-trash"
+							(click)="confirmDelete()"
+							pTooltip="{{ 'buttons.delete' | translate }}"
+						></i>
+					} @else {
+						<i
+							class="fas fa-save"
+							type="submit"
+							(click)="onSubmit()"
+							form="genericForm"
+							pTooltip="{{ 'buttons.save' | translate }}"
+						></i>
+						<i
+							class="fas fa-close"
+							type="reset"
+							(click)="onDiscard()"
+							pTooltip="{{ 'buttons.discard' | translate }}"
+						></i>
+						<p-button size="small" type="submit" styleClass="p-button-primary" form="genericForm" [label]="'buttons.save' | translate" (onClick)="onSubmit()"></p-button>
+					}
+					<!-- <button class="info" pButton type="button" *ngIf="!editService.editMode" (click)="onEdit()"
+						label="{{ 'buttons.edit' | translate }}"></button>
+					<button class="info" pButton type="submit" (click)="onSubmit()" form="genericForm"
+						*ngIf="editService.editMode" label="{{ 'buttons.save' | translate }}"></button>
+					<button class="info" pButton type="reset" *ngIf="editService.editMode" (click)="onDiscard()"
+						label="{{ 'buttons.discard' | translate }}"></button> -->
+				</div>
+				<div class="clear"></div>
+				<div>
+					<form id="genericForm" [formGroup]="genericForm">
+						<div class="row row-spaced">
+							<div class="col col-spaced col-2 tw-bg-shark-950 tw-rounded" style="margin-top: 12px">
+								<table class="fields-table" *ngIf="test">
+									<tr>
+										<th translate>name</th>
+										<td style="justify-content: left">
+											<input formControlName="name" type="text" pInputText style="width: 100%" />
+										</td>
+									</tr>
+									<tr>
+										<th translate>medicalTest</th>
+										<td style="justify-content: left">
+											<p-inputSwitch formControlName="medical"></p-inputSwitch>
+										</td>
+									</tr>
+									<tr>
+										<th translate>purpose</th>
+										<td class="ms-no-model">
+											<p-multiSelect
+												appendTo="body"
+												maxSelectedLabels="1000"
+												formControlName="purpose"
+												[options]="purposeList"
+												[style]="{ width: '100%' }"
+												selectedItemsLabel="{0} selected"
+												placeholder="{{ 'multiselect.placeholder' | translate }}"
+											>
+											</p-multiSelect>
+										</td>
+									</tr>
+									<tr>
+										<th style="vertical-align: top" translate>equipment</th>
+										<td style="justify-content: left">
+											<textarea
+												formControlName="equipment"
+												style="color: white"
+												autoResize="false"
+												rows="5"
+												cols="30"
+												pInputTextarea
+												class="p-inputtext p-component"
+											></textarea>
+										</td>
+									</tr>
+									<tr>
+										<th style="vertical-align: top" translate>protocol</th>
+										<td style="justify-content: left">
+											<editor
+												*ngIf="editService.editMode; else readOnlyEditor"
+												formControlName="protocol"
+												[initialValue]="'input-text.placeholder' | translate"
+												[inline]="false"
+												[disabled]="!editService.editMode"
+												[init]="tinyEditorInit"
+											>
+											</editor>
+											<ng-template #readOnlyEditor>
+												<div class="readonlyEditorBox">
+													<span [innerHTML]="genericForm.get('protocol')?.value | marked"></span>
+												</div>
+											</ng-template>
+										</td>
+									</tr>
+								</table>
+
+								<table class="fields-table custom-fields-table" *ngIf="test?.teamId !== 'GLOBAL' && editService.editMode">
+									<thead>
+										<tr>
+											<td class="new-custom-header" translate>test.userFields</td>
+										</tr>
+									</thead>
+									<tr class="tr-top" style="text-align: left">
+										<td>
+											<div class="player-name-field-row">
+												<input
+													type="text"
+													pInputText
+													formControlName="playerNameField"
+													placeholder="{{ 'test.playerField' | translate }}"
+												/>
+											</div>
+											<div formArrayName="userFields">
+												<div *ngFor="let field of genericForm.get('userFields').controls; let i = index" [formGroupName]="i">
+													<!-- <h1>{{field.value.value}}</h1> -->
+													<div class="new-custom-row">
+														<input type="text" pInputText formControlName="value" placeholder="{{ 'test.typeField' | translate }}" />
+														<span class="custom-row-type">
+															<p-dropdown
+																appendTo="body"
+																[options]="types"
+																formControlName="type"
+																placeholder="{{ 'dropdown.placeholder' | translate }}"
+															>
+															</p-dropdown>
+														</span>
+														<span class="custom-row-icons">
+															<i class="fas fa-trash" (click)="deleteCustomFieldAt(i)" pTooltip="{{ 'buttons.delete' | translate }}"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="new-custom-footer">
+												<p-button size="small" styleClass="p-button-contrast"
+													style="width: 50%"
+													(click)="addCustomField()"
+													label="{{ 'test.buttons.addNewField' | translate }}"
+												></p-button>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col col-spaced col-2">
+								<iterpro-fileuploader
+									*ngIf="!isPresetTest()"
+									[attachments]="testAttachments"
+									(uploadError)="uploadError($event)"
+									(update)="updateAttachmentList($event)"
+									(delete)="deleteAttachmentAt($event)"
+									(reorder)="reorderAttachmentList($event)"
+								/>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</p-tabPanel>
+		<p-tabPanel
+			[disabled]="editService.editMode || newGeneric"
+			header="{{ 'records' | translate }}"
+			[class.with-attachments]="test && test.id && instance && hasNoCustomFields()"
+		>
+			<div class="tw-h-full">
+				<div class="tw-flex tw-gap-4 tw-justify-between tw-items-center tw-mb-4">
+					<!-- Sx Container -->
+					@if (instancesOptions?.length > 0) {
+						@if (test && test.id) {
+							<div>
+								<div class="tw-text-sm iterpro-text-color-900" translate>test.buttons.pickYourRecord</div>
+								<div class="iterpro-item-container tw-mt-1">
+									<p-dropdown
+										[ngModel]="instance"
+										[options]="instancesOptions"
+										[readonly]="editInstance || (test && test.id && addInstanceTrigger)"
+										(onChange)="handleInstanceSelect($event)"
+										[placeholder]="'dropdown.placeholder' | translate"
+										[dropdownIcon]="editInstance || (test && test.id && addInstanceTrigger) ? 'none' : 'fa-solid fa-chevron-down'"
+									></p-dropdown>
+								</div>
+							</div>
+						}
+					}
+					<!-- Dx Container -->
+					@if (test && test?.id) {
+						<div class="tw-flex tw-items-center">
+							<div class="tw-flex tw-items-center tw-gap-4">
+								@if (addInstanceTrigger) {
+									<p-button size="small" [outlined]="true" [label]="'buttons.discard' | translate" (onClick)="triggerAddInstance()"></p-button>
+									<div class="iterpro-item-container">
+										<p-calendar
+											[disabled]="editInstance"
+											[(ngModel)]="dateInstance"
+											styleClass="dataAnalysisCalendar"
+											placeholder="{{ 'calendar.placeholder' | translate }}"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"
+										></p-calendar>
+									</div>
+									<div class="iterpro-item-container">
+										<iterpro-timepicker
+											[disabled]="false"
+											[ngModel]="getTime(dateInstance)"
+											(timeChanged)="onDateInstanceTimeChanged($event)"
+										></iterpro-timepicker>
+									</div>
+									<p-button size="small" [label]="'create' | translate" (onClick)="handleDateSelect()"></p-button>
+								} @else {
+									<p-button size="small" [label]="'test.buttons.addNewRecord' | translate" (onClick)="triggerAddInstance()"></p-button>
+								}
+							</div>
+						</div>
+					}
+				</div>
+
+				<div *ngIf="test && instance && hasNoCustomFields()">
+					<div class="tw-flex tw-w-full tw-justify-end tw-items-center tw-gap-4">
+						<i class="fas fa-pencil" *ngIf="!editInstance" (click)="editTestInstance()" pTooltip="{{ 'buttons.edit' | translate }}"></i>
+						<i class="fas fa-save" *ngIf="editInstance" (click)="saveTestInstance()" pTooltip="{{ 'buttons.save' | translate }}"></i>
+						<i class="fas fa-trash" *ngIf="!editInstance" (click)="deleteTestInstance()" pTooltip="{{ 'buttons.delete' | translate }}"></i>
+						<i class="fas fa-close" *ngIf="editInstance" (click)="onAbortClick()" pTooltip="{{ 'buttons.discard' | translate }}"></i>
+					</div>
+					<div class="test-clear"></div>
+					<p-table
+						*ngIf="testResultMap && instance?._testResults?.length > 0"
+						styleClass="p-datatable-striped"
+						[value]="instance._testResults"
+						[scrollable]="true"
+						[columns]="getCustomFieldsValues()"
+						scrollHeight="570px"
+					>
+						<ng-template pTemplate="header" let-columns>
+							<tr class="tw-h-10">
+								<td style="width: 15%; height: 84px" pFrozenColumn translate>general.player</td>
+								<td *ngFor="let col of columns">
+									<span [ngClass]="'normalColumn'">{{ col }}</span>
+								</td>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData let-columns="columns">
+							<tr class="tw-h-10">
+								<td style="width: 15%; height: 32px" pFrozenColumn>{{ rowData.player?.displayName }}</td>
+								<td *ngFor="let col of columns" style="width: 80px; height: 32px; vertical-align: bottom">
+									<input
+										*ngIf="rowData.player && rowData.player.displayName"
+										[disabled]="!editInstance || isFormulaField(col)"
+										[(ngModel)]="testResultMap[rowData.player.displayName][col]"
+										title="{{ testResultMap[rowData.player.displayName][col] }}"
+										style="text-align: center; padding: 0; margin: 0; font-size: 0.9rem"
+										type="{{ getType(col) }}"
+										pInputText
+										(blur)="recalculateFields(rowData)"
+									/>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+
+				<div *ngIf="test && test.customFields && test.customFields.length > 0">
+					<div *ngIf="test && instance" class="table-container">
+						<div class="tw-flex tw-w-full tw-justify-end tw-items-center tw-gap-4">
+							<span style="color: var(--color-neutral-900); font-size: 0.8rem" translate
+								>lastUpdate<span>{{ instance.lastUpdateAuthor }} {{ instance.lastUpdateDate | date: 'HH:mm' }}</span></span
+							>
+							<i
+								class="fas fa-search"
+								pTooltip="{{ 'test.openTestAnalysis' | translate }}"
+								href="#"
+								[routerLink]="getTestComparisonLink(test, instance)"
+							></i>
+							<input
+								type="file"
+								#inputjson
+								accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+								#file
+								style="display: none"
+								(change)="fileChanged($event)"
+							/>
+							<i class="fas fa-file-excel" (click)="downloadCsv()" pTooltip="{{ 'surveys.csvDownload' | translate }}"></i>
+							<i class="fas fa-upload" (click)="file.click()" *ngIf="editInstance" pTooltip="{{ 'surveys.csvUpload' | translate }}"></i>
+							<i class="fas fa-pencil" *ngIf="!editInstance" (click)="editTestInstance()" pTooltip="{{ 'buttons.edit' | translate }}"></i>
+							<i class="fas fa-save" *ngIf="editInstance" (click)="saveTestInstance()" pTooltip="{{ 'buttons.save' | translate }}"></i>
+							<i
+								class="fas fa-trash"
+								*ngIf="!editInstance"
+								(click)="confirmDeleteInstance()"
+								pTooltip="{{ 'buttons.delete' | translate }}"
+							></i>
+							<i class="fas fa-close" *ngIf="editInstance" (click)="onAbortClick()" pTooltip="{{ 'buttons.discard' | translate }}"></i>
+						</div>
+
+						<div class="test-clear"></div>
+						<p-table
+							*ngIf="testResultMap"
+							styleClass="p-datatable-striped"
+							[value]="instance._testResults"
+							[columns]="getCustomFieldsValues()"
+							[scrollable]="true"
+							scrollHeight="600px"
+						>
+							<ng-template pTemplate="header" let-columns>
+								<tr class="tw-h-10">
+									<th pFrozenColumn style="width: 250px; min-width: 250px" translate>general.player</th>
+									<th *ngFor="let col of columns" style="width: 200px; min-width: 200px">
+										<span
+											pTooltip="{{ getTooltipForTestColumn(col) }}"
+											[ngClass]="isGoScoreInherent(col) ? 'testGoScoreColumn' : 'normalColumn'"
+										>
+											{{ col }}
+										</span>
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-columns="columns">
+								<tr class="tw-h-10">
+									<td [pTooltip]="rowData?.player?.displayName" pFrozenColumn style="width: 250px; min-width: 250px">
+										{{ rowData.player?.displayName }}
+									</td>
+									<td *ngFor="let col of columns; let i = index" style="width: 200px; min-width: 200px">
+										<div class="group">
+											<ng-container *ngIf="rowData.player && rowData.player.displayName">
+												<ng-container *ngIf="!editInstance || isFormulaField(col); else editTemplate">
+													<span
+														style="width: 100%"
+														*ngIf="getType(col, i) === 'number'"
+														title="{{ testResultMap[rowData.player.displayName][col] | number: '1.0-2' : language }}"
+														>{{ testResultMap[rowData.player.displayName][col] | number: '1.0-2' : language }}</span
+													>
+													<span style="width: 100%" *ngIf="getType(col, i) !== 'number'" title="{{ testResultMap[rowData.player.displayName][col] }}">{{
+														testResultMap[rowData.player.displayName][col]
+													}}</span>
+												</ng-container>
+											</ng-container>
+											<ng-template #editTemplate>
+												<input
+													*ngIf="getType(col, i) !== 'number'"
+													[(ngModel)]="testResultMap[rowData.player.displayName][col]"
+													title="{{ testResultMap[rowData.player.displayName][col] }}"
+													style="padding: 1px; margin: 1px; font-size: 0.9rem"
+													type="{{ getType(col, i) }}"
+													(blur)="recalculateFields(rowData)"
+												/>
+												<input
+													*ngIf="getType(col, i) === 'number'"
+													[ngModel]="testResultMap[rowData.player.displayName][col]"
+													(ngModelChange)="testResultMap[rowData.player.displayName][col] = $event"
+													title="{{ testResultMap[rowData.player.displayName][col] }}"
+													style="padding: 1px; margin: 1px; font-size: 0.9rem"
+													type="number"
+													(blur)="recalculateFields(rowData)"
+												/>
+											</ng-template>
+											<div
+												[style.visibility]="getColor(rowData, col) && testResultMap[rowData.player.displayName][col] ? 'visible' : 'hidden'"
+												[pTooltip]="rowData.results[i]?.tooltip"
+												class="to-point-point point"
+												[style.background-color]="getColor(rowData, col)"
+											></div>
+										</div>
+									</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				</div>
+			</div>
+			<div *ngIf="test && test.id && instance && hasNoCustomFields()" class="tab-section section-attachments">
+				<p-card>
+					<div class="row records">
+						<h3 translate style="margin-bottom: 1em">test.attachments</h3>
+						<p-table
+							styleClass="assessmentTable p-datatable-striped"
+							*ngIf="instance"
+							[value]="instance._attachments"
+							[rows]="20"
+							[scrollable]="true"
+							scrollHeight="200px"
+							dataKey="date"
+						>
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th style="width: 20%" translate>test.attachments.date</th>
+									<th style="width: 20%" translate>test.attachments.hour</th>
+									<th style="width: 30%" translate>test.attachments.externalUrl</th>
+									<th style="width: 20%" translate>test.attachments.attachment</th>
+									<th style="width: 10%; justify-content: center">
+										<i
+											*ngIf="instance && editService.editMode"
+											(click)="addAttachment()"
+											aria-hidden="true"
+											class="fas fa-plus"
+											style="cursor: pointer"
+											pTooltip="Add attachment"
+										></i>
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+								<tr class="tw-h-10">
+									<td style="width: 20%">
+										<p-calendar
+											showButtonBar="true"
+											appendTo="body"
+											[disabled]="!editService.editMode || selectedAttachment?.id !== rowData.id"
+											[(ngModel)]="rowData.date"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"
+										></p-calendar>
+									</td>
+									<td style="width: 20%">
+										<span *ngIf="!editService.editMode || selectedAttachment?.id !== rowData.id">{{ rowData.date | date: 'HH:mm' }}</span>
+										<div class="inline">
+											<iterpro-timepicker
+												*ngIf="editService.editMode && selectedAttachment?.id === rowData.id"
+												[ngModel]="getTime(rowData.date)"
+												[disabled]="false"
+												(timeChanged)="onDateInstanceTimeChanged($event)"
+											></iterpro-timepicker>
+										</div>
+									</td>
+									<td style="width: 30%">
+										<input
+											[disabled]="!editService.editMode || selectedAttachment?.id !== rowData.id"
+											[(ngModel)]="rowData.externalUrl"
+											pInputText
+											title="{{ rowData.externalUrl }}"
+										/>
+									</td>
+									<td style="width: 20%">
+										<span *ngIf="!editService.editMode || selectedAttachment?.id !== rowData.id" (click)="downloadFile(rowData)">{{
+											rowData?.name
+										}}</span>
+										<span
+											(click)="inputExam.forceInputChoose()"
+											*ngIf="editService.editMode && selectedAttachment?.id === rowData.id && rowData.downloadUrl"
+											>{{ rowData?.downloadUrl }}</span
+										>
+										<i
+											class="fas fa-upload"
+											style="padding-left: 1em; color: #dddddd; cursor: pointer"
+											(click)="inputExam.forceInputChoose()"
+											*ngIf="editService.editMode && selectedAttachment?.id === rowData.id && !rowData.downloadUrl"
+										></i>
+										<!--<input type="file" #inputExam style="display: none" (change)="onUpload(rowData,$event)">-->
+										<iterpro-cloud-upload #inputExam class="hidden" (completedEmitter)="onUpload($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)" [spinner]="true" accept="*"
+											[sizeError]="sizeError"></iterpro-cloud-upload>
+									</td>
+									<td style="width: 10%; justify-content: center">
+										<div class="treat-actions">
+											<iterpro-icon-modal-preview [url]="rowData.downloadUrl | azureUrl" [name]="rowData.name" />
+											<i
+												*ngIf="!editService.editMode"
+												class="fas fa-pencil-alt"
+												style="cursor: pointer"
+												(click)="editAttachment(rowData)"
+											></i>
+											<i
+												*ngIf="editService.editMode && selectedAttachment?.id === rowData.id"
+												class="fas fa-save"
+												style="cursor: pointer"
+												(click)="saveAttachment(rowData)"
+											></i>
+											<i *ngIf="!editService.editMode" class="fas fa-trash" style="cursor: pointer" (click)="deleteAttachment(rowData)"></i>
+											<i
+												*ngIf="editService.editMode && selectedAttachment?.id === rowData.id"
+												class="fas fa-times"
+												style="cursor: pointer"
+												(click)="discardAttachment(rowData, rowIndex)"
+											></i>
+										</div>
+									</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage">
+								<tr>
+									<td translate>alert.noRecordsFound</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				</p-card>
+			</div>
+		</p-tabPanel>
+	</p-tabView>
+</div>
+
+<p-dialog
+	[(visible)]="confirmDeleteFlag"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div>
+		<span translate>confirm.eventRelated</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="deleteTestInstance(true)" label="{{ 'yes' | translate }}"></p-button>
+		<p-button size="small"  (click)="deleteTestInstance(false)" label="{{ 'no' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

@@ -1,0 +1,163 @@
+<div class="main" style="margin-top: 2em">
+	<!--Handling of displayed message to user when no team season found or no club season found-->
+	<div *ngIf="isEmpty(seasons) || isEmpty(clubSeasons)" class="row container"
+		style="min-height: 250px; background-color: var(--color-bg-600); padding: 1em; min-width: 300px">
+		<div style="width: 100%; align-items: center; display: flex; justify-content: center">
+			<div class="text-center">{{ getMessageForNoTeamSeasons() }}</div>
+			&nbsp;
+			<i href="#" style="cursor: pointer; float: right; display: flex; justify-content: center"
+				[routerLink]="['/settings/club-preferences/seasons']">{{ 'redirect.to.clubsettings.text' | translate }}
+			</i>
+		</div>
+	</div>
+
+	<div *ngIf="!isEmpty(seasons) && !isEmpty(clubSeasons)">
+		<header *ngIf="selectedTransferPlayer" class="tw-flex tw-items-center tw-justify-between">
+			<!-- Player Dropdown -->
+			<iterpro-search-dropdown [selectedPerson]="selectedTransferPlayer" (selectPerson)="onSelectFromDropdown($event)" [people]="searchDropdownElements" />
+			<div class="tw-flex tw-items-center tw-gap-4">
+				<p-button size="small" styleClass="p-button-contrast" *ngIf="!editService.editMode" (click)="onBack()" [label]="'back.to.dealsBoard' | translate"></p-button>
+				<p-button size="small" styleClass="p-button-primary" *ngIf="!selectedClubTransfer.isPurchase" (click)="onTransferAction('sell')"
+									[disabled]="selectedClubTransfer.closed" [label]="'sell' | translate">
+				</p-button>
+				<p-button size="small" styleClass="p-button-primary" *ngIf="selectedClubTransfer.isPurchase" (click)="onTransferAction('buy')"
+									[disabled]="selectedClubTransfer.closed" [label]="'buy' | translate">
+				</p-button>
+				<p-button size="small"  styleClass="p-button-danger" *ngIf="selectedClubTransfer.isPurchase !== null" (click)="onTransferAction('delete')" [label]="'buttons.delete' | translate">
+				</p-button>
+				<p-button size="small" styleClass="p-button-contrast" *ngIf="getEditButtonVisibility()" (click)="onEdit()" [label]="'buttons.edit' | translate"></p-button>
+				<ng-container *ngIf="getDiscardButtonVisibility()">
+					<p-button size="small" styleClass="p-button-primary" (click)="confirmEdit()" [label]="'buttons.save' | translate"></p-button>
+					<p-button size="small" styleClass="p-button-contrast" [outlined]="true" (click)="onDiscard()" [label]="'buttons.discard' | translate"></p-button>
+				</ng-container>
+				<span *ngIf="activeIndex === squadPersonIndexEnums.Legal" class="legal-buttons"></span>
+			</div>
+		</header>
+
+		<!-- Player Details When Player is Selected -->
+		<iterpro-squads-person *ngIf="selectedTransferPlayer" [person]="selectedTransferPlayer"
+			[personType]="'PlayerTransfer'" [players]="teamPlayers" [club]="club"
+			[isPurchase]="selectedClubTransfer.isPurchase" [agents]="agents" [editMode]="editService.editMode"
+			[clubSeasons]="clubSeasons" [isNew]="isNew" [activeIndex]="activeIndex" [deal]="selectedClubTransfer"
+			[deletedTransferContract]="deletedTransferContract" (tabChangeEmitter)="onTabChange($event)"
+			(contractsChangedEmitter)="getTransfers()"></iterpro-squads-person>
+
+		<div [style.display]="!selectedTransferPlayer ? '' : 'none'" class="row" style="padding-top: 1em">
+			<p-tabView class="mainMenu">
+				<p-tabPanel class="info selected" [header]="'transfers.dealsBoard' | translate">
+					<iterpro-transfers-deals [selectedKanban]="selectedKanban" [clubTransfers]="clubTransfers" [teams]="teams"
+						[sales]="sales" [purchases]="purchases" [clubSeasons]="clubSeasons" [scoutings]="scoutingPlayers"
+						[transfersBreakdown]="transfersBreakdown" [transferWindow]="transferWindow"
+						[alreadyImportedPlayers]="alreadyImportedPlayers" (windowChanged)="handleTransferWindowSelection($event)"
+						(selectedEmitter)="onSelect($event)" (dropEmitter)="onDropEmitter($event)" (addDealEmitter)="onAddDeal()"
+						(selectedKanbanEmitter)="onSelectedKanban($event)" />
+				</p-tabPanel>
+
+				<!-- Trading Balance Tab -->
+				<p-tabPanel class="info" [header]="'transfers.tradingBalance' | translate">
+					<iterpro-trading-balance [clubTransfers]="clubTransfers" [transfersBreakdown]="transfersBreakdown"
+						[clubSeasons]="clubSeasons" [transferWindow]="transferWindow"
+						(windowUpdate)="handleTransferWindowSelection($event)" />
+				</p-tabPanel>
+
+				<!-- Trading Compare Tab -->
+				<p-tabPanel class="info" [header]="'transfers.compare' | translate">
+					<iterpro-trading-compare [clubTransfers]="clubTransfers" [clubSeasons]="clubSeasons"
+						[transferWindow]="transferWindow" [sportType]="sportType"
+						(windowUpdate)="handleTransferWindowSelection($event)" />
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+	</div>
+</div>
+
+<p-dialog *ngIf="changePlayerStatusDialogVisibility" [visible]="changePlayerStatusDialogVisibility" [responsive]="true"
+	[showHeader]="true" [closable]="false" [closeOnEscape]="true" [draggable]="false" [resizable]="false"
+	[blockScroll]="true" modal="modal" [style]="{ width: '700px', height: '500px' }">
+	<p-header>{{ selectedTransferPlayer?.displayName | capitalize }}</p-header>
+
+	<div class="spinner" *ngIf="isUpdatingPlayerStatus; else modalContent">
+		<p-progressSpinner [style]="{ width: '100px', height: '100px' }"></p-progressSpinner>
+	</div>
+	<ng-template #modalContent>
+		<div *ngIf="selectedTransferPlayer" [ngSwitch]="transferActionModal?.action">
+			<div *ngSwitchCase="'sell'">
+				<div *ngIf="transferActionModal?.outward; else noOutward">
+					<div translate>profile.active.selectSellInfo</div>
+					<div class="pflex-col-12">
+						<p-radioButton name="currentStatus" value="onLoan" [label]="'profile.status.onLoan' | translate"
+							[(ngModel)]="transferActionModal.outward.personStatus" inputId="archiveOpt4"></p-radioButton>
+						<div class="flexed" style="margin-top: 1em; font-size: 0.85rem"
+							*ngIf="transferActionModal.outward.personStatus === 'onLoan'">
+							<div class="flexed" style="flex: 1">
+								<span style="margin-right: 0.8em" translate>profile.archive.team</span>
+								<ng-container *ngTemplateOutlet="thirdPartySearch"></ng-container>
+							</div>
+						</div>
+					</div>
+					<div class="pflex-col-12">
+						<p-radioButton name="currentStatus" value="sell" [label]="'sell' | translate"
+							[(ngModel)]="transferActionModal.outward.personStatus" inputId="archiveOpt3"></p-radioButton>
+						<div class="flexed" style="margin-top: 1em; font-size: 0.85rem"
+							*ngIf="transferActionModal.outward.personStatus === 'sell'">
+							<div class="flexed" style="flex: 0.6">
+								<span style="margin-right: 0.8em" translate>profile.archive.team</span>
+								<ng-container *ngTemplateOutlet="thirdPartySearch"></ng-container>
+							</div>
+							<div class="flexed" style="flex: 0.4">
+								<span style="margin-right: 0.8em; margin-left: 1em" translate>profile.archive.amount</span>
+								<span>{{
+									transferActionModal?.employmentContract?.currency ? transferActionModal.employmentContract.currency :
+									currency
+									}}</span>
+								<input pInputText type="number" [(ngModel)]="transferActionModal.outward.amount" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<ng-template #noOutward>
+					<div>No sale contract found!</div>
+				</ng-template>
+			</div>
+			<div *ngSwitchCase="'buy'">
+				<div translate>profile.active.selectBuyInfo</div>
+				<div class="ui-g" style="margin: 10px 0">
+					<div class="pflex-col-12">
+						<p-dropdown appendTo="body" [options]="transferTeams" [(ngModel)]="selectedTransferTeam"
+							[placeholder]="'dropdown.teamPlaceholder' | translate"></p-dropdown>
+					</div>
+				</div>
+			</div>
+			<div *ngSwitchCase="'delete'">
+				<div translate>profile.active.selectDeleteInfo</div>
+			</div>
+		</div>
+	</ng-template>
+	<p-footer *ngIf="!isUpdatingPlayerStatus">
+		<ng-container *ngIf="transferActionModal.action === 'buy' || transferActionModal.action === 'delete'">
+			<ng-container *ngTemplateOutlet="footerButtons"></ng-container>
+		</ng-container>
+		<ng-container *ngIf="transferActionModal.action === 'sell'">
+			<ng-container *ngIf="transferActionModal.outward; else sellPlayerFooter">
+				<ng-container *ngTemplateOutlet="footerButtons"></ng-container>
+			</ng-container>
+		</ng-container>
+	</p-footer>
+</p-dialog>
+
+<ng-template #footerButtons>
+	<p-button size="small" styleClass="p-button-primary" icon="fas fa-check" (click)="confirmDialog(transferActionModal.action)"
+		[label]="'buttons.save' | translate"
+		[disabled]="transferActionModal.action === 'buy' && !selectedTransferTeam"></p-button>
+	<p-button size="small" [outlined]="true" icon="fas fa-times" (click)="closeDialog()"
+		[label]="'buttons.discard' | translate"></p-button>
+</ng-template>
+<ng-template #sellPlayerFooter>
+	<p-button size="small" (click)="closeDialog()" label="OK"></p-button>
+</ng-template>
+
+<ng-template #thirdPartySearch>
+	<p-autoComplete [style]="{ width: '100%' }" [(ngModel)]="selectedClub" [suggestions]="thirdPartyClubs"
+		(completeMethod)="searchClub($event)" (onSelect)="selectClub($event)" field="label"
+		dropdownMode="current"></p-autoComplete>
+</ng-template>

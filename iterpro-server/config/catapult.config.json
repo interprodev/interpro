@@ -1,0 +1,20 @@
+{
+	"baseURL": "https://connect-eu.catapultsports.com/api/v6",
+	"omittingFields": [
+		"athlete_id",
+		"athlete_jersey",
+		"athlete_name",
+		"athlete_weight",
+		"date",
+		"date_id",
+		"date_name",
+		"day_name",
+		"duration",
+		"is_demo_data",
+		"is_injected",
+		"month_name",
+		"period_name",
+		"position_name",
+		"team_name"
+	]
+}

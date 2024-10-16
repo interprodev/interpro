@@ -1,0 +1,16 @@
+<div class="gps-container file-uploader-container">
+	<div class="file-uploader text-center">
+		<div>
+			<p class="p-placeholder" translate>dropdown.placeholder</p>
+			<div class="top">
+				<p-calendar appendTo="body" showButtonBar="true" [(ngModel)]="date" [maxDate]="today"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"> </p-calendar>
+			</div>
+		</div>
+
+		<div class="top">
+			<p-button size="small" *ngIf="!sessionsForTable" (click)="onSelect()" [label]="'search' | translate"></p-button>
+		</div>
+	</div>
+</div>

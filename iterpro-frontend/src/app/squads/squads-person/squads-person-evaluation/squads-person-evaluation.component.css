@@ -1,0 +1,147 @@
+.profile-content {
+	position: relative;
+}
+.report-download {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+.section {
+	width: 100%;
+}
+
+.rowProfile {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.col-left-profile {
+	width: 14%;
+	padding-right: 2rem;
+	flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	flex-grow: 1;
+	display: flex;
+	margin-left: 1em;
+	justify-content: space-between;
+}
+
+h3 {
+	text-transform: uppercase;
+}
+
+.profile-picture {
+	width: 100%;
+	margin-top: 1em;
+	overflow: hidden;
+	position: relative;
+}
+
+.player-pic {
+	width: 100%;
+	box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+	opacity: 1;
+	display: block;
+	transition: 0.5s ease;
+	backface-visibility: hidden;
+	background-color: white;
+}
+
+.data-col {
+	padding: 0 1rem;
+}
+
+.profile-data-column {
+	width: 50%;
+}
+
+.value {
+	width: 30%;
+}
+
+.career {
+	width: 100%;
+}
+
+.transfer {
+	width: 65%;
+}
+
+.soccer-card {
+	width: 18px;
+	height: 25px;
+	margin-left: 0.2em;
+	margin-right: 0.2em;
+	border-radius: 5%;
+}
+
+.red {
+	background-color: red;
+}
+.yellow {
+	background-color: yellow;
+}
+.double-yellow {
+	background: linear-gradient(to right bottom, yellow 50%, red 50%);
+}
+
+.fas {
+	font-size: 1.3rem;
+	color: #fafafa;
+}
+
+.cards-container {
+	display: flex;
+	justify-content: center;
+}
+
+.caption {
+	display: flex;
+	justify-content: space-between;
+}
+
+.label-container {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.caption-label {
+	font-weight: normal;
+	color: #bbbbbb;
+}
+
+.headers-button {
+	margin-bottom: 1em;
+	display: flex;
+	align-items: center;
+}
+
+.headers-button > * {
+	display: flex;
+	align-items: center;
+}
+
+.headers-start {
+	justify-self: flex-start;
+}
+
+.selected {
+	color: #fafafa;
+}
+
+.notSelected {
+	color: #757575;
+}
+
+.content {
+	background-color: rgba(100, 100, 100, 0.9);
+	padding: 1em;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+}

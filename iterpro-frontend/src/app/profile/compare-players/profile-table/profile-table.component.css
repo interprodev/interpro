@@ -1,0 +1,29 @@
+.player-table {
+  width: 100%;
+  border-spacing: 0 3px;
+}
+.player-table .left td {
+  text-align: right
+}
+.player-table th,
+.player-table td {
+  font-size: 0.9rem;
+  padding: 0.3rem 1rem;
+  margin: 1rem;
+}
+.player-table tr:first-child {
+  font-weight: bold;
+}
+.player-table th {
+  color: #bbbbbb;
+  font-weight: normal;
+}
+.player-table td {
+  color: #fff;
+}
+.player-table tr > *:first-child {
+  text-align: left !important;
+}
+.player-table tr > *:last-child {
+  text-align: right;
+}

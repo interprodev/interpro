@@ -1,0 +1,19 @@
+<div *ngIf="attachment" class="attachment">
+  <div class="attachment-title">{{ attachment.name }}</div>
+
+  <div *ngIf="attachment.type === 'image'" class="attachment-image no-caption">
+    <iterpro-img-modal-preview
+      [thumb]="preview ? trustedUrl : (attachment.url | azureUrl)"
+      [full]="preview ? trustedUrl : (attachment.url | azureUrl)" />
+  </div>
+
+  <div *ngIf="(attachment.type === 'file' || attachment.type === 'video') && attachment.url" class="attachment-file">
+    <i class="fas fa-download" (click)="downloadFile(attachment)"></i>
+
+    <span class="attachment-icon" *ngIf="!preview && (hasExt('pdf') || hasExt('mp4'))">
+      <iterpro-icon-modal-preview [url]="attachment.url | azureUrl" [extension]="extension" />
+    </span>
+
+    <span>{{ attachment.name }}</span>
+  </div>
+</div>

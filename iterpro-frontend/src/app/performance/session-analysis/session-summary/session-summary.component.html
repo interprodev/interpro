@@ -1,0 +1,77 @@
+<div>
+	<div class="tw-w-full tw-flex tw-justify-between tw-items-center tw-mb-4">
+		<h3 translate>sessionAnalysis.sessionSummary</h3>
+		<div class="tw-flex tw-gap-4 tw-items-center">
+			<!-- THRESHOLDS -->
+			<i
+				class="fas fa-sliders-h tw-cursor-pointer"
+				[ngClass]="{ 'fa-active': showThresholds }"
+				[pTooltip]="'profile.tabs.thresholds' | translate"
+				(click)="onThresholdsClick()"
+			>
+			</i>
+			<!-- QUESTION -->
+			<i class="fas fa-question tw-cursor-pointer" [ngClass]="{ 'fa-active': showHelper }" (click)="toggleHelper($event)"></i>
+			<!-- REPORT -->
+			<iterpro-report-download (downloadPDF)="onReportClick()" />
+			<!-- SIDEBAR -->
+			<i
+				[class]="viewFlags?.sidebar ? 'fas fa-expand tw-cursor-pointer' : 'fas fa-compress fa-active tw-cursor-pointer'"
+				[pTooltip]="viewFlags?.sidebar ? ('button.expand' | translate) : ('button.collapse' | translate)"
+				(click)="onSidebarClick()"
+			>
+			</i>
+		</div>
+	</div>
+
+	<div class="tw-w-full">
+		<p-table styleClass="p-datatable-striped p-datatable-sticky" [value]="summaryMetrics" [scrollHeight]="'280px'">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-8">
+					<th translate>sidebar.metrics</th>
+					<th translate>value</th>
+					<th>{{ (showThresholds ? 'threshold' : 'game') | translate }}%</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-metric let-index="rowIndex">
+				<tr class="tw-h-8">
+					<td class="tw-text-xs" [style.width]="'20rem'">
+						<span [pTooltip]="metric.name">{{ metric.name }}:</span>
+					</td>
+					<td class="tw-text-xs" [style.width]="'10rem'">
+						<span>{{ metric.value | number: '1.1-1' }}</span>
+					</td>
+					<td class="tw-text-sm">
+						<div class="tw-h-5 tw-overflow-hidden tw-relative tw-rounded-xl tw-flex tw-bg-shark-900 tw-border-solid tw-border-0.3 tw-border-shark-800">
+							<div
+								class="metric-bar-inner"
+								[ngStyle]="{
+									'background-color': showThresholds ? metric.colorMetric : '#1a5080',
+									width: metric.norm ? metric.norm * 100 + '%' : '0%'
+								}"
+							></div>
+							<div class="tw-absolute tw-w-full tw-l-0 tw-r-0 tw-t-0 tw-b-0 tw-flex tw-items-center tw-justify-center" [ngStyle]="{ color: metric.colorMetric === 'yellow' ? 'black' : 'white' }">
+								{{ metric.norm ? (metric.norm | percent: '1.0-0') : '-' }}
+							</div>
+						</div>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</div>
+
+<!-- OVERLAY PANEL -->
+<p-overlayPanel
+	#opSessionSummary
+	(onHide)="this.showHelper = false"
+	(onShow)="this.showHelper = true"
+	[style]="{ 'background-color': '#585c5d' }"
+	appendTo="body"
+>
+	<div style="padding: 1em; max-width: 600px">
+		<h4 style="margin-bottom: 0.5em" translate>sessionAnalysis.individual.legend</h4>
+		<div style="margin-bottom: 0.5em"><span translate>sessionAnalysis.individual.legend1</span></div>
+		<div><span translate>sessionAnalysis.individual.legend2</span></div>
+	</div>
+</p-overlayPanel>

@@ -1,0 +1,60 @@
+@if (!isLoading) {
+	<div class="content list-wrapper" (window:resize)="onResize($event)">
+		<div class="list-arrow list-arrow-left" (click)="moveLeft()">
+			<i class="fas fa-caret-left"></i>
+		</div>
+		<div class="list-arrow list-arrow-right" (click)="moveRight()">
+			<i class="fas fa-caret-right"></i>
+		</div>
+		<ul class="vertical-list" #container>
+			<li *ngFor="let match of matches" [class.current-match]="isCurrent(match)">
+				<div class="item-container" [style.border-bottom-color]="getBorderColor(match)" (click)="onClick(match)">
+					<div class="match-title">
+					<span translate
+					>dashboard.list.match <span>{{ match.gameweek }}</span
+					><span> ({{ match.side | translate }})</span></span
+					>
+					</div>
+					<div class="tw-flex tw-items-center">
+						<div class="tw-flex tw-flex-col tw-items-center tw-w-32">
+							<div class="match-crest"><img src="{{match.side === 'home' ? myTeamImg : match.crest }}"/></div>
+							<div class="match-label tw-mt-6">{{ match.matchInfo.label.split('- ')[0] }}</div>
+						</div>
+						<div class="match-result tw-mb-6">{{ match.result }}</div>
+						<div class="tw-flex tw-flex-col tw-items-center tw-w-32">
+							<div class="match-crest"><img src="{{match.side === 'away' ? myTeamImg : match.crest }}"/></div>
+							<div class="match-label tw-mt-6">{{ match.matchInfo.label.split('- ')[1].split(', ')[0] }}</div>
+						</div>	
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+} @else {
+	<div class="content list-wrapper">
+		<div class="list-arrow list-arrow-left">
+			<i class="fas fa-caret-left"></i>
+		</div>
+		<div class="list-arrow list-arrow-right">
+			<i class="fas fa-caret-right"></i>
+		</div>
+		<ul class="vertical-list" #container>
+			<li *ngFor="let match of 9 | arrayFromNumber">
+				<div class="item-container">
+					<div class="match-title">
+						<p-skeleton width="70px" height="10px"></p-skeleton>
+					</div>
+					<div class="match-crest">
+						<p-skeleton height="100px" width="100px"></p-skeleton>
+					</div>
+					<div class="match-label">
+						<p-skeleton width="90px" height="10px"></p-skeleton>
+					</div>
+					<div class="match-result">
+						<p-skeleton width="40px" height="10px"></p-skeleton>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+}

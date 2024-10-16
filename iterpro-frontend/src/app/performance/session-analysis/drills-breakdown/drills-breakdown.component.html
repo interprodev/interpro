@@ -1,0 +1,39 @@
+<ng-container>
+	<div class="tw-w-full tw-flex tw-gap-4 tw-justify-center tw-items-center" [class.tw-justify-between]="!!chartData">
+		<h3 translate>sessionAnalysis.drillsBreakdown</h3>
+		<div class="tw-flex tw-gap-4 tw-justify-end tw-items-center">
+			<ng-container *ngIf="chartData">
+				<!-- FOLDER -->
+				<i class="fas fa-folder-open tw-cursor-pointer"
+					 *ngIf="selectedSession"
+					 [ngClass]="{ 'fa-active': viewFlags?.uploadDialog }"
+					 (click)="showUploadDialog()"
+					 [pTooltip]="selectedSession?._attachments?.length > 0 ?
+            (('dialog.file.showDialog' | translate) + ' (' + selectedSession?._attachments?.length + ')') :
+            ('dialog.file.noFileAttached' | translate)">
+				</i>
+				<!-- LABELS -->
+				<i class="fas fa-tag tw-cursor-pointer"
+					 [ngClass]="{ 'fa-active': chartFlags?.labels }"
+					 [pTooltip]="'sessionAnalysis.labels' | translate"
+					 (click)="toggleLabels()">
+				</i>
+				<!-- PERCENTAGE -->
+				<i class="fas fa-percentage tw-cursor-pointer"
+					 [ngClass]="{ 'fa-active': chartFlags?.percent }"
+					 [pTooltip]="'sessionAnalysis.percentage' | translate"
+					 (click)="togglePercentage()">
+				</i>
+				<!-- CALENDAR ICON -->
+				<i class="fas fa-calendar-day tw-cursor-pointer"
+					 [pTooltip]="'profile.tabs.openPlanning' | translate"
+					 href="#"
+					 (click)="goToCalendar()">
+				</i>
+			</ng-container>
+		</div>
+	</div>
+	<!-- CHART -->
+	<p-chart *ngIf="chartData" [data]="chartData.data" [options]="chartData.options" type="bar"></p-chart>
+</ng-container>
+

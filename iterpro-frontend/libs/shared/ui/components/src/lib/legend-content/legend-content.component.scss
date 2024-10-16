@@ -1,0 +1,26 @@
+
+.legend-row {
+  padding: 0.5em 0;
+  display: flex;
+  column-gap: 12px;
+  align-items: center;
+
+  i {
+    font-size: 1.5rem;
+  }
+
+  .circle {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: 3px solid;
+    display: inline-block;
+  }
+
+  .legend-left {
+    min-width: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  
+}

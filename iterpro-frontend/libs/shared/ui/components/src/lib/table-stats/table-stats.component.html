@@ -1,0 +1,38 @@
+<p-table [scrollable]="true" [value]="rows"
+				 [styleClass]="'p-datatable-striped'"
+				 [scrollHeight]="'50vh'"
+				 [rowHover]="true">
+	<ng-template pTemplate="header">
+		<tr class="tw-h-10">
+			<ng-container
+				*ngTemplateOutlet="headersTemplate || defaultHeaderTemplate; context: { $implicit: headers }"
+			></ng-container>
+		</tr>
+	</ng-template>
+
+	<ng-template pTemplate="body" let-row>
+		<tr class="tw-h-10">
+			<ng-container *ngTemplateOutlet="rowsTemplate || defaultRowTemplate; context: { $implicit: row }"></ng-container>
+		</tr>
+	</ng-template>
+
+	<ng-template pTemplate="emptymessage">
+		<tr class="tw-h-10">
+			<td class="tw-pt-4" colspan="4">{{ 'alert.noRecordsFound' | translate }}</td>
+		</tr>
+	</ng-template>
+</p-table>
+
+<!-- Default HEADER template -->
+<ng-template #defaultHeaderTemplate let-headers>
+	<th *ngFor="let header of headers">
+		{{ header }}
+	</th>
+</ng-template>
+
+<!-- Default ROW template -->
+<ng-template #defaultRowTemplate let-row>
+	<td *ngFor="let field of row; let i = index">
+		{{ field }}
+	</td>
+</ng-template>

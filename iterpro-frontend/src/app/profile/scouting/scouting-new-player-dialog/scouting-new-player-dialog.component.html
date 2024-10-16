@@ -1,0 +1,36 @@
+<p-dialog
+	[visible]="visible"
+	[showHeader]="false"
+	[closeOnEscape]="true"
+	[focusOnShow]="true"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+	[style]="{ width: '50vw' }"
+>
+	<div>
+		<p-header>
+			<h4 translate>scouting.newplayer.title</h4>
+		</p-header>
+		<div style="display:flex;flex-direction:column;margin-top:1em">
+			<div class="text" translate>profile.overview.name</div>
+			<div>
+				<input style="font-weight:bold" [(ngModel)]="name" type="text" name="name" pInputText />
+			</div>
+			<div class="text" translate>profile.overview.surname</div>
+			<div>
+				<input style="font-weight:bold" [(ngModel)]="surname" type="text" name="surname" pInputText />
+			</div>
+		</div>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			(click)="onConfirm()"
+			[disabled]="name.length === 0 || surname.length === 0"
+			label="{{ 'buttons.confirm' | translate }}"
+		></p-button>
+		<p-button size="small" [outlined]="true" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

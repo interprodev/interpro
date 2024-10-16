@@ -1,0 +1,9 @@
+<div class="tw-p-2 tw-flex tw-items-center tw-gap-2 tw-bg-shark-900">
+	<p-checkbox [disabled]="!editable" [ngModel]="selected" binary="true" (onChange)="staffSelect.emit()"></p-checkbox>
+	<iterpro-picture [photoUrl]="photoUrl"
+									 [baseClass]="'tw-w-[24px] tw-h-[24px]'"
+									 class="tw-block tw-bg-white tw-rounded-sm tw-overflow-hidden"
+									 [class.tw-grayscale]="!selected" [class.tw-opacity-50]="!selected"
+	></iterpro-picture>
+	<div>{{displayName}}</div>
+</div>

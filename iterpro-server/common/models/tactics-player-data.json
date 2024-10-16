@@ -1,0 +1,85 @@
+{
+	"name": "TacticsPlayerData",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"organization": {
+			"type": "string"
+		},
+		"transition": {
+			"type": "string"
+		},
+		"playerId": {
+			"type": "string"
+		},
+		"orderingIndex": {
+			"type": "number"
+		},
+		"organizationVideoUrl": {
+			"type": "string"
+		},
+		"organizationAlternateVideoUrl": {
+			"type": "string"
+		},
+		"organizationVideoTags": {
+			"type": "array"
+		},
+		"transitionVideoUrl": {
+			"type": "string"
+		},
+		"transitionAlternateVideoUrl": {
+			"type": "string"
+		},
+		"transitionVideoTags": {
+			"type": "array"
+		},
+		"transitionComments": {
+			"type": [
+				{
+					"date": {
+						"type": "date"
+					},
+					"user": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"organizationComments": {
+			"type": [
+				{
+					"date": {
+						"type": "date"
+					},
+					"user": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"tacticsData": {
+			"type": "belongsTo",
+			"model": "TacticsData",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

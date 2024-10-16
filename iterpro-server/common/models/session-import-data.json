@@ -1,0 +1,42 @@
+{
+	"name": "SessionImportData",
+	"plural": "sessions",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true,
+		"remoting": {
+			"sharedMethods": {
+				"*": false,
+				"deleteSessionImport": true,
+				"getMainSessionsPlayerData": true,
+				"singleSessionDataAnalysis": true,
+				"importFromCsv": true,
+				"periodSessionDataAnalysis": true
+			}
+		}
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"nameSession": {
+			"type": "string"
+		},
+		"date": {
+			"type": "date"
+		},
+		"identifier": {
+			"type": "string"
+		},
+		"gdType": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

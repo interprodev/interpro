@@ -1,0 +1,24 @@
+<vg-player (onPlayerReady)="onPlayerReady($event)">
+	<vg-overlay-play *ngIf="videoLoaded"></vg-overlay-play>
+	<vg-buffering></vg-buffering>
+
+	<vg-scrub-bar>
+		<vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+		<vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+	</vg-scrub-bar>
+
+	<vg-controls [vgAutohide]="true">
+		<vg-play-pause></vg-play-pause>
+
+		<vg-scrub-bar style="pointer-events: none"></vg-scrub-bar>
+
+		<vg-mute></vg-mute>
+		<vg-volume></vg-volume>
+
+		<vg-fullscreen></vg-fullscreen>
+	</vg-controls>
+	<video [vgMedia]="$any(media)" #media preload="true" crossorigin>
+		<source [src]="videoUrl" />
+		Sorry, your browser doesn't support HTML5 <code>video</code>.
+	</video>
+</vg-player>

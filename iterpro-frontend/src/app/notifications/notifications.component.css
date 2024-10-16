@@ -1,0 +1,5 @@
+.content {
+	margin-top: 1em;
+	padding: 2em;
+	@apply tw-bg-shark-950;
+}

@@ -1,0 +1,44 @@
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg">
+	<div class="tw-w-full tw-flex tw-gap-4 tw-justify-end tw-items-center">
+		<i
+			class="fas fa-band-aid tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': injuryFlag === true }"
+			pTooltip="{{ 'readinessPeriod.injury' | translate }}"
+			(click)="onToggleInjury()"
+		></i>
+		<i
+			class="fas fa-tag tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': datalabelsFlag === true }"
+			pTooltip="{{ 'sessionAnalysis.labels' | translate }}"
+			(click)="onToggleLabels()"
+		></i>
+	</div>
+	<p-chart *ngIf="data" type="bar" [height]="'400px'" [data]="data" [options]="options"></p-chart>
+</div>
+
+<!-- TABLE STATS -->
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+	<iterpro-table-stats [headers]="headers" [rows]="rows">
+		<ng-template #headersTemplate let-headers>
+			<th
+				*ngFor="let header of headers; let i = index"
+				[ngStyle]="{ minWidth: '200px', width: '200px', maxWidth: '200px' }"
+				pFrozenColumn
+				[frozen]="i === 0"
+			>
+				{{ header }}
+			</th>
+		</ng-template>
+
+		<ng-template #rowsTemplate let-row>
+			<td
+				*ngFor="let field of row; let i = index"
+				pFrozenColumn
+				[frozen]="i === 0"
+				[pTooltip]="i !== 0 && headers[i] + ': ' + field"
+			>
+				{{ field }}
+			</td>
+		</ng-template>
+	</iterpro-table-stats>
+</div>

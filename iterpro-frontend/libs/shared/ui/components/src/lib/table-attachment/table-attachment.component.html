@@ -1,0 +1,49 @@
+<ng-container>
+	<div class="pflex-mr-1">
+
+		<iterpro-icon-modal-preview
+			*ngIf="attachment"
+			[url]="filePreview ? filePreview : (attachment.downloadUrl | azureUrl)"
+			[name]="attachment.name"
+		/>
+
+		<i *ngIf="attachment && attachment.downloadUrl && !editable"
+			class="fas fa-download iterpro-clickable-icon pflex-ml-2"
+			[pTooltip]="'dialog.file.link' | translate"
+			(click)="downloadFile(attachment)"
+		></i>
+
+		<ng-container *ngIf="editable">
+			<i
+				class="fas fa-upload iterpro-clickable-icon pflex-ml-2"
+				[pTooltip]="'fileUploader.chooseLabel' | translate"
+				(click)="forceInputChoose()"
+			></i>
+			<i
+				*ngIf="deletable && attachment"
+				class="fas fa-trash iterpro-clickable-icon pflex-ml-2"
+				[pTooltip]="'buttons.deleteAttachment' | translate"
+				(click)="delete(attachment)"
+			></i>
+		</ng-container>
+
+	</div>
+
+</ng-container>
+
+<p-fileUpload
+	#fileinput
+	class="pflex-hidden"
+	[auto]="false"
+	[customUpload]="false"
+	name="files[]"
+	mode="basic"
+	invalidFileSizeMessageSummary="{0}: Invalid file size, "
+	invalidFileSizeMessageDetail="maximum upload size is {0}."
+	[maxFileSize]="maxFileSize"
+	[style]="{ width: '100%' }"
+	[accept]="accept"
+	[disabled]="!editable"
+	(onSelect)="select($event)"
+	(onError)="genericError($event)"
+></p-fileUpload>

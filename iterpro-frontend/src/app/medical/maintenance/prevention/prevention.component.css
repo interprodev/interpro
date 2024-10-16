@@ -1,0 +1,173 @@
+
+.bordered-red {
+	width: unset;
+	height: unset;
+	border-radius: 5%;
+	padding: 0.1em 0.1em;
+	color: crimson;
+	float: right;
+}
+
+.bordered-yellow {
+	width: unset;
+	height: unset;
+	border-radius: 5%;
+	color: yellow;
+	float: right;
+}
+
+.fixed-grid {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin: 0 -1rem;
+	/* max-height: 700px; */
+	/* overflow: auto; */
+}
+
+.visible {
+	display: flex;
+}
+.hidden {
+	display: none;
+}
+.radial-circle text {
+	fill: #80ca41;
+	text-anchor: middle;
+	font-size: 12;
+}
+.radial-circle circle {
+	fill: transparent;
+	stroke-width: 0.25em;
+}
+.bar {
+	width: 100%;
+	height: 15px;
+	margin: 7px 0px;
+	background-color: #dddddd;
+}
+.bar.gray {
+	background-color: #585c5d;
+}
+.bar.yellow {
+	background-color: #fcee21;
+}
+.bar.orange {
+	background-color: #ff931e;
+}
+.bar.red {
+	background-color: #c1272d;
+}
+.bar.lightgrey {
+	background-color: lightgrey;
+}
+
+.role-title {
+	margin-top: 3em;
+	margin-bottom: 0.2em;
+	padding: 0 0.4em 0 0.4em;
+	color: #fafafa;
+	font-size: 0.8rem;
+	/* background-color: #161616; */
+	display: flex;
+	justify-content: space-between;
+}
+
+.first {
+	margin-top: 0;
+}
+
+.role-title h2 {
+	font-weight: unset;
+	letter-spacing: unset;
+}
+
+.flag-icon {
+	font-size: initial;
+}
+
+.green {
+	color: green;
+}
+
+.header {
+	min-height: 125px;
+}
+
+.filters {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 12px;
+}
+.filter {
+	padding: 12px;
+	width: 25%;
+}
+.filter > * {
+	width: 100%;
+}
+.filter-label {
+	font-size: 14px;
+	color: var(--color-neutral-900);
+}
+.filter-input {
+	/*
+  background-color: rgba(0, 0, 0, 0.42);
+  padding: 3px 4px 7px 4px;
+  */
+	margin-top: 4px;
+}
+.filter-value {
+	font-size: 14px;
+	margin: 4px 0 10px;
+}
+.header-buttons .icon-last {
+	/* margin-right: 10px; */
+}
+injury-icon {
+	margin: 0.3em;
+}
+
+.content {
+	background-color: var(--color-bg-800);
+	padding: 1em;
+	font-size: 1.2em;
+	/* width: 200px; */
+}
+
+.event-buttons > button {
+	margin-left: 0.5rem !important;
+}
+
+button {
+	margin-left: 1em;
+}
+
+.filter-container {
+	display: flex;
+	flex-direction: column;
+}
+.maximize {
+	width: 100%;
+}
+
+.filter-bg {
+	width: 10vw;
+}
+.filter-group {
+	display: flex;
+	flex-direction: row;
+	background-color: var(--color-bg-600);
+	margin-bottom: 1rem;
+	border-radius: var(--iterpro-border-radius)
+}
+.flex-grow-one {
+	flex-grow: 1;
+}
+.flex-grow-two {
+	flex-grow: 2;
+}
+.align-right {
+	text-align: right;
+	margin-bottom: 2rem;
+}

@@ -1,0 +1,174 @@
+<div class="role-header" translate>roles.categories.{{ role }}s</div>
+<table class="players-table" *ngIf="(players | playersStatsFilterByPosition : role : sportType) as filteredPlayers">
+	<tbody>
+		@if (hasMultipleGameSets) {
+			<!-- Volleyball, Basketball, IceHockey, American Football -->
+			<tr [class.even-row]="index % 2 !== 0" *ngFor="let player of filteredPlayers; let index = index">
+			@if (!player.playerStats?.playerId && !displayEmptyPlayers) {
+				<td class="td-smaller" colspan="10"></td>
+			} @else {
+				<td class="td-smaller" style="width: 6%">
+					@if (selectable) {
+						<p-checkbox *ngIf="editable && !player.forceDisabled"
+												[(ngModel)]="player.playerStats.enabled" binary="true"
+												[disabled]="player.isDisabledForGame" (onChange)="setEnabledPlayer($event, player)">
+						</p-checkbox>
+					}
+				</td>
+				<td class="td-smaller" style="width: 8%;"
+						[ngStyle]="{ color: player.playerStats.enabled ? '#fafafa' : '#757575' }">
+					{{ player?.jerseyNumber }}
+				</td>
+				<td class="td-smaller" style="width: 43%" [ngStyle]="{ color: player.playerStats.enabled ? '#fafafa' : '#757575' }">
+					@if (!player.playerStats?.playerId) {
+						<input
+							[(ngModel)]="player.playerStats.playerName"
+							[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+							type="text"
+							pInputText
+						/>
+					} @else {
+						{{ player.playerStats.playerName }}
+					}
+					<span class="injuryOccurred">
+							<i *ngIf="player.isPlayerInjuredHere" class="fas fa-bone-break"></i>
+					</span>
+				</td>
+				<td class="td-smaller" style="text-align: center; width: 5%">
+					<div style="display:flex; justify-content:center">
+						<p-checkbox [(ngModel)]="player.playerStats.startingRoster" [disabled]="!editable || !player.playerStats.enabled || player.forceDisabled || maxPlayersOnFieldForVolley(player.playerStats)" binary="true">
+						</p-checkbox>
+					</div>
+				</td>
+				<td class="td-smaller" style="width: 8%">
+					<div style="display: flex; justify-content: center">
+						<input
+							[(ngModel)]="player.playerStats.minutesPlayed"
+							[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+							type="number"
+							min="0"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+						/>
+					</div>
+				</td>
+				<td *ngFor="let set of sets; let i = index" class="td-smaller" style="width: 8%">
+					<div style="display: flex; justify-content: center">
+						<input
+							[(ngModel)]="player.playerStats[set]"
+							[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+							type="number"
+							min="0"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+						/>
+					</div>
+				</td>
+			}
+			</tr>
+		} @else if (hasTwoGameSets) {
+			<!-- Football, Rugby -->
+			<tr [class.even-row]="index % 2 !== 0" *ngFor="let player of filteredPlayers; let index = index">
+				@if (!player.playerStats?.playerId && !displayEmptyPlayers) {
+					<td class="td-smaller" colspan="10"></td>
+				} @else {
+					<td class="td-smaller" style="width:6%">
+						@if (selectable) {
+							<p-checkbox [(ngModel)]="player.playerStats.enabled" binary="true"
+													[disabled]="!editable || player.forceDisabled && !player.playerStats?.playerId" (onChange)="setEnabledPlayer($event, player)">
+							</p-checkbox>
+						}
+					</td>
+					<td class="td-smaller" style="width:8%">
+						<iterpro-picture [photoUrl]="player.downloadUrl" [baseClass]="'tw-w-[24px] tw-h-[24px]'" class="tw-block tw-bg-white tw-rounded-sm tw-overflow-hidden  tw-text-center"></iterpro-picture>
+					</td>
+					<td class="td-smaller" style="width:30%">
+						@if (!player.playerStats?.playerId) {
+							<input
+								[(ngModel)]="player.playerStats.playerName"
+								[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+								type="text"
+								pInputText
+							/>
+						} @else {
+							{{ player.playerStats.playerName }}
+						}
+					</td>
+					<td class="td-smaller" style="width:9%">
+						<div class="centered-cell">
+							<input
+								[(ngModel)]="player.playerStats.minutesPlayed"
+								[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+								type="number"
+								min="0"
+								step="1"
+								oninput="validity.valid||(value='');"
+								pInputText
+							/>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:9%">
+						<div class="centered-cell">
+							<input
+								[(ngModel)]="player.playerStats.substituteInMinute"
+								[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+								type="number"
+								min="0"
+								step="1"
+								oninput="validity.valid||(value='');"
+								pInputText
+							/>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:9%">
+						<div class="centered-cell">
+							<input
+								[(ngModel)]="player.playerStats.substituteOutMinute"
+								[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+								type="number"
+								min="0"
+								step="1"
+								oninput="validity.valid||(value='');"
+								pInputText
+							/>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:5%">
+						<div class="centered-cell">
+							<p-checkbox [(ngModel)]="player.playerStats.yellowCard"
+													[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled" [binary]="true"></p-checkbox>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:5%">
+						<div class="centered-cell">
+							<p-checkbox [(ngModel)]="player.playerStats.doubleYellowCard"
+													[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled" [binary]="true"></p-checkbox>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:5%">
+						<div class="centered-cell">
+							<p-checkbox [(ngModel)]="player.playerStats.redCard"
+													[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled" [binary]="true"></p-checkbox>
+						</div>
+					</td>
+					<td class="td-smaller" style="width:9%">
+						<div class="centered-cell">
+							<input
+								class="tw-text-center"
+								[(ngModel)]="player.playerStats.score"
+								[disabled]="!editable || !player.playerStats.enabled || player.forceDisabled"
+								type="number"
+								min="0"
+								step="1"
+								oninput="validity.valid||(value='');"
+								pInputText
+							/>
+						</div>
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>

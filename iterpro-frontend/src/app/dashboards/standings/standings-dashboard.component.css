@@ -1,0 +1,22 @@
+.col-leaderboard {
+	width: 50%;
+	position: relative;
+}
+.download-report {
+	position: absolute;
+	z-index: 2;
+	right: 20px;
+	top: 15px;
+}
+
+.col-details {
+	width: 50%;
+	position: relative;
+}
+.col-details .download-report {
+	right: 35px;
+}
+
+.match-list {
+	margin: 2rem 0;
+}

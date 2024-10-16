@@ -1,0 +1,31 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>import.data</h1>
+		</header>
+
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+			<div class="tw-col-span-10">
+				<div>
+					<iterpro-import-dashboard *ngIf="selectedViewState === 0" />
+					<iterpro-import-wizard *ngIf="selectedViewState !== 0" [team]="currentTeam" [provider]="provider" />
+				</div>
+			</div>
+
+			<div class="tw-col-span-2 tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+				<div>
+					<p-button size="small" styleClass="tw-w-full tw-mt-2 tw-overflow-hidden" (click)="onClickDashboard()" [label]="'import.imported' | translate"></p-button>
+					<h3 class="spacing" translate>import.dataSource</h3>
+					<p-listbox
+						[listStyle]="{ 'max-height': '500px' }"
+						[options]="inputs"
+						[(ngModel)]="selectedInput"
+						(onChange)="selectInput($event)"
+						[style]="{ width: '100%', 'max-height': '300px', 'min-width': '0px' }"
+					>
+					</p-listbox>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

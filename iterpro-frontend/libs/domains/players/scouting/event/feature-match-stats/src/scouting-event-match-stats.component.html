@@ -1,0 +1,61 @@
+<div class="content">
+	<div class="icons-container">
+		<i
+			[class]="isLeftPanelMaximized ? 'fas fa-compress iterpro-clickable-icon' : 'fas fa-expand iterpro-clickable-icon'"
+			(click)="toggleLeftPanelMaximize.emit()"
+			[pTooltip]="isLeftPanelMaximized ? ('button.collapse' | translate) : ('button.expand' | translate)"
+		></i>
+	</div>
+	<div
+		style="display: flex; align-items: center; width: 100%; justify-content: center"
+		*ngIf="!hasProviderStatsAvailable"
+	>
+		<div style="text-align: center; background: red; max-width: 400px; border-radius: 25px; padding: 3px 6px">
+			<span>{{ 'alert.statsFromThirdPartyProviderNotAvailable' | translate: { value: matchProvider } }}</span>
+		</div>
+	</div>
+	<div class="info-container">
+		<span class="info-date" *ngIf="locale">{{ game.start | date: 'fullDate':'':locale | capitalize }} </span>
+		<span class="info-competition"> {{ competitionName }}</span>
+	</div>
+	<div class="res-container">
+		<div class="res-home">
+			<div class="crest">
+				<img src="{{ homeTeamCrest }}" onError="this.src='assets/img/default_crest.png';" alt="club crest" />
+			</div>
+			<div class="goals">
+				<p>{{ homeScorersDisplay }}</p>
+			</div>
+		</div>
+
+		<div class="res-results-container">
+			<div class="res-results">{{ homeTeamData?.score }}</div>
+			<div class="res-results">{{ awayTeamData?.score }}</div>
+		</div>
+
+		<div class="res-away">
+			<div class="crest">
+				<img src="{{ awayTeamCrest }}" onError="this.src='assets/img/default_crest.png';" alt="club crest" />
+			</div>
+			<div class="goals">
+				<p>{{ awayScorersDisplay }}</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="stats-container">
+		<div *ngFor="let stat of parsedStats">
+			<p class="stats-title">{{ stat.label | translate }}</p>
+			<div class="bars">
+				<div class="bar-display bar-display-left">
+					<div [style.width]="stat.homePercentage + '%'"></div>
+				</div>
+				<div class="bar-value">{{ stat.home || '-' }}</div>
+				<div class="bar-value">{{ stat.away || '-' }}</div>
+				<div class="bar-display">
+					<div [style.width]="stat.homePercentage + '%'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

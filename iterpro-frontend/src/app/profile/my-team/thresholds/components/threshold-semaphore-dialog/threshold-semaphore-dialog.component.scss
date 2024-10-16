@@ -1,0 +1,97 @@
+.toggle-icon {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	cursor: pointer;
+	opacity: 1;
+}
+.abs-icon {
+	right: 40px;
+	font-size: 12px;
+	top: 14px;
+}
+.abs-mode-icon {
+	opacity: 0.4;
+}
+
+.interval-container {
+	margin-bottom: 10px;
+	justify-content: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.interval-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 0.8em;
+}
+
+.interval-section {
+	width: 90%;
+	border: solid 1px #444;
+	border-radius: 3px;
+	margin-bottom: 1em;
+	padding: 1em;
+	transform: perspective(1px) translateZ(0);
+	transition-property: transform;
+	transition-duration: 0.3s;
+}
+
+.interval-section:hover {
+	background-color: var(--color-neutral-300);
+	transform: scale(1.05);
+}
+
+.selected {
+	background-color: var(--color-neutral-500);
+	transform: scale(1.05);
+}
+
+.selected:hover {
+	background-color: var(--color-neutral-500);
+}
+
+.red {
+	background-color: red;
+	height: 12px;
+	border: 2px solid transparent;
+	border-radius: 3px;
+}
+
+.yellow {
+	background-color: yellow;
+	height: 12px;
+	border: 2px solid transparent;
+	border-radius: 3px;
+}
+
+.green {
+	background-color: green;
+	height: 12px;
+	border: 2px solid transparent;
+	border-radius: 3px;
+}
+
+.inline {
+	display: flex;
+	width: 30%;
+	justify-content: center;
+	align-items: center;
+}
+
+.in3 {
+	width: 15%;
+}
+
+.val {
+	font-weight: bold;
+	font-size: 0.8em;
+}
+
+.icon {
+	cursor: pointer;
+	margin-left: 10px;
+}

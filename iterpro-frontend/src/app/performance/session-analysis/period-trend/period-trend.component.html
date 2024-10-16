@@ -1,0 +1,27 @@
+<ng-container *ngIf="selectedPlayers.length > 0">
+	<div class="tw-w-full tw-flex tw-gap-4 tw-justify-end tw-items-center">
+		<!-- LABELS -->
+		<i
+			class="fas fa-tag tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': chartFlags?.labels }"
+			[pTooltip]="'sessionAnalysis.labels' | translate"
+			(click)="toggleLabels()"
+		>
+		</i>
+		<!-- PDF REPORT -->
+		<iterpro-report-download (downloadPDF)="downloadPDF()" (downloadCSV)="downloadCSV()" />
+		<!-- SIDEBAR -->
+		<i
+			[class]="viewFlags?.sidebar ? 'fas fa-expand tw-cursor-pointer' : 'fas fa-compress fa-active cursor'"
+			[pTooltip]="viewFlags?.sidebar ? ('button.expand' | translate) : ('button.collapse' | translate)"
+			(click)="toggleSidebar()"
+		>
+		</i>
+	</div>
+
+	<!-- CHART -->
+	<iterpro-session-analysis-chart
+		[viewFlags]="viewFlags"
+		[chartData]="selectedAdvanced ? advancedChartData : chartData"
+	></iterpro-session-analysis-chart>
+</ng-container>

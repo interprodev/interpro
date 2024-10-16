@@ -1,0 +1,137 @@
+<div [class]="'tw-grid tw-gap-4 tw-grid-cols-' + cols" [formGroup]="form" *ngIf="config">
+
+	<!-- THEME -->
+	<div *ngIf="form.contains('theme')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900"> {{ 'drills.theme' | translate }}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.themes"
+				[formControlName]="'theme'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- TECHNICAL GOAL -->
+	<div *ngIf="form.contains('technicalGoal')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900"> {{ 'drills.technicalGoal' | translate }}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.technicalGoals"
+				[formControlName]="'technicalGoal'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+			</div>
+	</div>
+
+	<!-- TACTICAL -->
+	<div *ngIf="form.contains('tacticalGoal')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900"> {{ 'drills.tacticalGoals' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.tacticalGoals"
+				[formControlName]="'tacticalGoal'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- PHYSICAL -->
+	<div *ngIf="form.contains('physicalGoal')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ 'drills.physicalGoal' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.physicalGoals"
+				[formControlName]="'physicalGoal'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- GOAL -->
+	<div *ngIf="form.contains('goal')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ 'drills.goal' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.goals"
+				[formControlName]="'goal'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- DURATION -->
+	<div *ngIf="form.contains('duration')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ 'drills.duration' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillFiltersListMapping.durationList"
+				[formControlName]="'duration'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- NUMBER OF PLAYERS -->
+	<div *ngIf="form.contains('numberOfPlayers')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{'drills.nPlayers' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillFiltersListMapping.numberOfPlayerList"
+				[formControlName]="'numberOfPlayers'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				placeholder="{{ 'multiselect.placeholder' | translate }}"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- PITCH SIZE -->
+	<div *ngIf="form.contains('pitchSize')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ 'drills.pitchSize' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillFiltersListMapping.pitchSizeList"
+				[formControlName]="'pitchSize'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+
+	<!-- AGE GROUP -->
+	<div *ngIf="form.contains('ageGroup')" class="tw-col-span-2">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ 'drills.ageGroup' | translate}}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="drillsMapping.ageGroups"
+				[formControlName]="'ageGroup'"
+				[maxSelectedLabels]="1"
+				[selectedItemsLabel]="'{0} selected'"
+				[placeholder]="'multiselect.placeholder' | translate"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,320 @@
+<div class="profile-content">
+	<span class="report-download">
+		<iterpro-report-download (downloadPDF)="getReport()" />
+	</span>
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3>{{ player.displayName }}</h3>
+					<div class="tw-bg-white tw-rounded tw-overflow-hidden tw-relative tw-mt-4">
+						<iterpro-player-provider-widget [wyscoutId]="player?.wyscoutId" [instatId]="player?.instatId" />
+						<iterpro-picture [photoUrl]="player.downloadUrl" class="tw-block tw-w-full" />
+					</div>
+				</div>
+
+				<div class="col-right-profile-thre">
+					<div class="value">
+						<h3 style="display: flex; justify-content: space-between; align-items: center">
+							<span translate>admin.evaluation.marketValue</span>
+							<span #target style="position: relative">
+								<i class="fas fa-info-circle" (click)="op.toggle($event)"></i>
+							</span>
+						</h3>
+						<p-overlayPanel #op appendTo="body" [dismissable]="true" [style]="{ 'z-index': '1' }">
+							<div class="content">
+								<h4 style="margin-bottom: 0.8em" translate>evaluation.header</h4>
+								<div class="column">
+									<span style="margin-bottom: 0.5em" translate>evaluation.intro</span>
+									<span style="margin-bottom: 0.5em" translate>evaluation.add</span>
+									<ul style="font-size: 1em">
+										<li><b translate>admin.evaluation.clubValue</b>: <span translate>evaluation.club</span></li>
+										<li>
+											<b translate>admin.evaluation.transfermarkt</b>: <span translate>evaluation.transfermarkt</span>
+										</li>
+										<li><b translate>admin.evaluation.ciesValue</b>: <span translate>evaluation.cies</span></li>
+										<li><b translate>admin.evaluation.agentValue</b>: <span translate>evaluation.agent</span></li>
+									</ul>
+								</div>
+							</div>
+						</p-overlayPanel>
+						<table class="fields-table" style="width: 100%; margin-top: 1em">
+							<tr>
+								<th style="width: 70%">
+									<p-radioButton [disabled]="!editMode" name="value" value="clubValue" [(ngModel)]="player.valueField"
+										(onClick)="extractPastValues(player)"></p-radioButton>
+									<span style="margin-left: 1em" [style.font-weight]="isSelected('clubValue')"
+										translate>admin.evaluation.clubValue</span>
+								</th>
+								<td style="width: 30%; flex-shrink: 0">
+									<div class="p-inputgroup" style="align-items: center; justify-content: space-between">
+										<span style="cursor: pointer" [style.font-weight]="isSelected('clubValue')"
+											(click)="openEditDialog('_pastClubValues')">{{ currency }}{{ player.clubValue | number : '' :
+											'it-IT' }}</span>
+										<i *ngIf="editMode" class="fas fa-plus" style="margin-left: 0.5em; font-size: 1rem"
+											(click)="openInsertDialog('_pastClubValues')"></i>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th style="width: 70%">
+									<p-radioButton [disabled]="!editMode" name="value" value="transfermarktValue"
+										[(ngModel)]="player.valueField" (onClick)="extractPastValues(player)"></p-radioButton>
+									<span style="margin-left: 1em" [style.font-weight]="isSelected('transfermarktValue')"
+										translate>admin.evaluation.transfermarkt</span>
+								</th>
+								<td style="width: 30%; flex-shrink: 0">
+									<div class="p-inputgroup" style="align-items: center; justify-content: space-between">
+										<span style="cursor: pointer" [style.font-weight]="isSelected('transfermarktValue')"
+											(click)="openEditDialog('_pastTransfermarktValues')">{{ currency }}{{ player.transfermarktValue |
+											number : '' : 'it-IT' }}</span>
+										<i *ngIf="editMode" class="fas fa-plus" style="margin-left: 0.5em; font-size: 1rem"
+											(click)="openInsertDialog('_pastTransfermarktValues')"></i>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th style="width: 70%">
+									<p-radioButton [disabled]="!editMode" name="value" value="value" [(ngModel)]="player.valueField"
+										(onClick)="extractPastValues(player)"></p-radioButton>
+									<span style="margin-left: 1em" [style.font-weight]="isSelected('value')"
+										translate>admin.evaluation.ciesValue</span>
+								</th>
+								<td style="width: 30%; flex-shrink: 0">
+									<div class="p-inputgroup" style="align-items: center; justify-content: space-between">
+										<span style="cursor: pointer" [style.font-weight]="isSelected('value')"
+											(click)="openEditDialog('_pastValues')">{{ currency }}{{ player.value | number : '' : 'it-IT'
+											}}</span>
+										<i *ngIf="editMode" class="fas fa-plus" style="margin-left: 0.5em; font-size: 1rem"
+											(click)="openInsertDialog('_pastValues')"></i>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th style="width: 70%">
+									<p-radioButton [disabled]="!editMode" name="value" value="agentValue" [(ngModel)]="player.valueField"
+										(onClick)="extractPastValues(player)"></p-radioButton>
+									<span style="margin-left: 1em" [style.font-weight]="isSelected('agentValue')"
+										translate>admin.evaluation.agentValue</span>
+								</th>
+								<td style="width: 30%; flex-shrink: 0">
+									<div class="p-inputgroup" style="align-items: center; justify-content: space-between">
+										<span style="cursor: pointer" [style.font-weight]="isSelected('agentValue')"
+											(click)="openEditDialog('_pastAgentValues')">{{ currency }}{{ player.agentValue | number : '' :
+											'it-IT' }}</span>
+										<i *ngIf="editMode" class="fas fa-plus" style="margin-left: 0.5em; font-size: 1rem"
+											(click)="openInsertDialog('_pastAgentValues')"></i>
+									</div>
+								</td>
+							</tr>
+						</table>
+
+						<span style="float: right; color: #bbb; margin-top: 1em" translate>lastUpdate<span>{{ pastValues[pastValues.length - 1]?.date
+								| formatDateBySetting }}</span></span>
+					</div>
+					<div class="transfer">
+						<div class="caption">
+							<div class="headers-button">
+								<div class="headers-start" style="cursor: pointer">
+									<h4 [ngClass]="!showMarketTrend ? 'selected' : 'notSelected'" style="text-transform: uppercase"
+										(click)="toggleMarketTrend()" translate>
+										admin-evaluation.transfers
+									</h4>
+									<span>&nbsp; / &nbsp; </span>
+									<h4 [ngClass]="showMarketTrend ? 'selected' : 'notSelected'" style="text-transform: uppercase"
+										(click)="toggleMarketTrend()" translate>
+										admin.evaluation.marketTrend
+									</h4>
+								</div>
+							</div>
+						</div>
+						<p-table *ngIf="evaluation && !showMarketTrend" [value]="transfers" [scrollable]="true" scrollHeight="150px"
+										 styleClass="p-datatable-striped"
+							[style]="{ 'z-index': '0' }">
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th style="width: 20%" translate>admin.evaluation.date</th>
+									<th style="width: 20%" translate>admin.evaluation.from</th>
+									<th style="width: 20%" translate>admin.evaluation.to</th>
+									<th style="width: 20%" translate>admin.evaluation.type</th>
+									<th style="width: 20%" translate>admin.evaluation.value</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+								<tr class="tw-h-10">
+									<td style="width: 20%">{{ rowData.startDate | formatDateBySetting }}</td>
+									<td style="width: 20%">{{ rowData.fromTeamName }}</td>
+									<td style="width: 20%">{{ rowData.toTeamName }}</td>
+									<td style="width: 20%">{{ rowData.type }}</td>
+									<td style="width: 20%">{{ rowData.value }}</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage">
+								<tr>
+									<td>No transfers data found</td>
+								</tr>
+							</ng-template>
+						</p-table>
+						<div class="container" style="max-height: 200px">
+							<p-chart *ngIf="showMarketTrend" [data]="data" [options]="options" type="line"></p-chart>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="rowProfile" style="margin-top: 2em">
+				<div class="career">
+					<p-table styleClass="p-datatable-striped" #dt *ngIf="evaluation" [value]="career" [scrollable]="true" scrollHeight="300px">
+						<ng-template pTemplate="caption">
+							<div class="caption">
+								<h3 translate>admin.evaluation.career</h3>
+								<div class="label-container" style="display: flex; align-items: center">
+									<span class="caption-label" style="margin-right: 1em">Club</span>
+									<p-inputSwitch [(ngModel)]="compType" (onChange)="switchCompType($event, dt)"></p-inputSwitch>
+									<span class="caption-label" style="margin-left: 1em">National</span>
+								</div>
+							</div>
+						</ng-template>
+						<ng-template pTemplate="header" let-col="columns">
+							<tr class="tw-h-10">
+								<th style="width: 16%" translate>admin.evaluation.season</th>
+								<th style="width: 20%">
+									<p-multiSelect *ngIf="transFlag && competitions.length > 0" appendTo="body" [options]="competitions"
+										placeholder="{{ 'admin.evaluation.competitions' | translate }}" [displaySelectedLabel]="false"
+										(onChange)="dt.filter($event.value, 'competition.name', 'in')"></p-multiSelect>
+								</th>
+								<th translate style="width: 8%">admin.evaluation.club</th>
+								<th translate style="text-align: center; width: 7%">
+									<i class="fas fa-tshirt" pTooltip="{{ 'admin.evaluation.jersey' | translate }}"></i>
+								</th>
+								<ng-container *ngIf="sportType === 'football'">
+									<th translate style="text-align: center; width: 7%">admin.evaluation.apps</th>
+									<th translate style="text-align: center; width: 7%">
+										<i class="fas fa-futbol" pTooltip="{{ 'admin.evaluation.goals' | translate }}"></i>
+									</th>
+									<th translate style="text-align: center; width: 7%">
+										<i class="fas fa-whistle" pTooltip="{{ 'admin.evaluation.penalties' | translate }}"></i>
+									</th>
+									<th translate style="text-align: center; width: 7%">
+										<i class="fas fa-clock" pTooltip="{{ 'admin.evaluation.minutesPlayed' | translate }}"></i>
+									</th>
+									<th translate style="text-align: center; width: 7%">
+										<i class="fas fa-arrow-up" pTooltip="{{ 'admin.evaluation.substituteIn' | translate }}"></i>
+									</th>
+									<th translate style="text-align: center; width: 7%">
+										<i class="fas fa-arrow-down" pTooltip="{{ 'admin.evaluation.substituteOut' | translate }}"></i>
+									</th>
+									<th style="width: 7%">
+										<div class="cards-container">
+											<div class="soccer-card yellow" pTooltip="{{ 'event.game.yellow' | translate }}"></div>
+											<div class="soccer-card red" pTooltip="{{ 'event.game.yellow' | translate }}"></div>
+										</div>
+									</th>
+								</ng-container>
+
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+							<tr class="tw-h-10">
+								<td style="width: 16%">{{ rowData.season?.name }}</td>
+								<td style="width: 20%">{{ rowData.competition?.name }}</td>
+								<td style="width: 8%" title="{{ rowData.team?.officialName }}">
+									{{ rowData.team?.officialName }}
+								</td>
+								<td style="text-align: center; width: 7%">{{ rowData.shirtNumber }}</td>
+								<ng-container *ngIf="sportType === 'football'">
+									<td style="text-align: center; width: 7%">{{ rowData.appearances }}</td>
+									<td style="text-align: center; width: 7%">{{ rowData.goal }}</td>
+									<td style="text-align: center; width: 7%">{{ rowData.penalties }}</td>
+									<td style="text-align: center; width: 7%">{{ rowData.minutesPlayed }}</td>
+									<td style="text-align: center; width: 7%">{{ rowData.substituteIn }}</td>
+									<td style="text-align: center; width: 7%">{{ rowData.substituteOut }}</td>
+									<td style="text-align: center; width: 7%">
+										{{ rowData.yellowCard }} - {{ rowData.redCards }}
+									</td>
+								</ng-container>
+
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="emptymessage">
+							<tr>
+								<td>No career data found</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-dialog *ngIf="valueToAdd" [(visible)]="insertDialog" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" modal="modal" [style]="{ width: '450px' }">
+	<p-header>{{ 'evaluation.addNewValue' | translate }}</p-header>
+	<form #formValue="ngForm" id="formValue" (ngSubmit)="save(valueToAdd)">
+		<div style="display: flex; flex-direction: column">
+			<div style="display: flex; justify-content: space-between; margin-bottom: 2em">
+				<span style="margin-right: 1em; color: var(--color-neutral-900); width: 30%" translate>general.date</span>
+				<p-calendar [(ngModel)]="valueToAdd.date" [maxDate]="today" name="date" appendTo="body" required
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+			</div>
+			<div style="display: flex; justify-content: space-between">
+				<span style="margin-right: 1em; color: var(--color-neutral-900); width: 30%"
+					translate>admin.evaluation.value</span>
+				<span style="width: 70%; display: flex; justify-content: flex-end">
+					{{ currency }}
+					<input style="width: 200px" [(ngModel)]="valueToAdd.value" name="value" type="text" pInputText iterproMask
+						required />
+				</span>
+			</div>
+		</div>
+	</form>
+	<p-footer>
+		<button pButton size="small" type="submit" form="formValue" class="info" label="{{ 'add' | translate }}"></button>
+		<p-button size="small" styleClass="p-button-contrast" type="button" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog *ngIf="valuesToEdit" [(visible)]="editDialog" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" [style]="{ 'max-width': '500px' }" modal="modal">
+	<p-header>{{ 'evaluation.editValues' | translate }}</p-header>
+	<div style="display: flex; flex-direction: column">
+		<p-table styleClass="p-datatable-striped" [value]="valuesToEdit">
+			<ng-template pTemplate="header">
+				<tr>
+					<th style="width: 45%" translate>general.date</th>
+					<th style="width: 45%" translate>admin.evaluation.value</th>
+					<th style="width: 10%"></th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10">
+					<td style="width: 45%">
+						<p-calendar appendTo="body" [disabled]="!editMode" [(ngModel)]="rowData.date" [maxDate]="today" name="date"
+							required
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+					</td>
+					<td style="width: 45%">
+						<span style="display: flex; align-items: baseline">{{ currency
+							}}<input [disabled]="!editMode" [(ngModel)]="rowData.value" name="value" type="text" pInputText iterproMask
+								required /></span>
+					</td>
+					<td style="width: 10%">
+						<i *ngIf="editMode" class="fas fa-trash" (click)="delete(rowIndex)"></i>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" *ngIf="editMode"  (click)="saveValues(valuesToEdit)"
+			label="{{ 'buttons.save' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" *ngIf="editMode" type="button" (click)="discardValues()"
+			label="{{ 'buttons.discard' | translate }}"></p-button>
+		<p-button size="small" *ngIf="!editMode" type="button" (click)="discardValues()"
+			label="{{ 'buttons.close' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

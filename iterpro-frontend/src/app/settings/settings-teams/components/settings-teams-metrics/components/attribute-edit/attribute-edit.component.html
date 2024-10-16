@@ -1,0 +1,78 @@
+@if (attributeForm) {
+	<div class="tw-min-h-full tw-relative">
+		<form [formGroup]="attributeForm">
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900">{{attributeLabel}}</div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="label" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.label.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (attributeForm.controls.label.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'label'" [label]="attributeLabel"></iterpro-form-feedback>
+				}
+				@if (attributeForm.controls.label.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="true" [field]="'label'" [type]="'custom'"
+																 [label]="('alert.labelMustBeUnique' | translate)  + ': '
+																			  + (attributeForm.controls.label.errors?.uniqueValues | uniqueValuesError : [attributesCategoriesOptions])">
+
+					</iterpro-form-feedback>
+				}
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900">{{attributeValue}} <span>({{'preferences.metrics.forCsvExport' | translate}})</span></div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="value" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.value.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (attributeForm.controls.value.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [label]="attributeValue | translate"></iterpro-form-feedback>
+				}
+				@if (attributeForm.controls.value.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="true" [field]="'value'" [type]="'custom'"
+																 [label]="('alert.csvValueMustBeUnique' | translate) + ': '
+																			  + (attributeForm.controls.value.errors?.uniqueValues | uniqueValuesError : [attributesCategoriesOptions])">
+
+					</iterpro-form-feedback>
+				}
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>category</div>
+					<div>
+						<p-dropdown
+							appendTo="body"
+							formControlName="category"
+							[options]="attributesCategoriesOptions"
+							[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+							[placeholder]="'dropdown.placeholder' | translate"
+						></p-dropdown>
+					</div>
+				</div>
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'category'" [label]="'category' | translate"></iterpro-form-feedback>
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-start iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>Description</div>
+					<div>
+						<textarea pInputTextarea type="text" pInputText formControlName="description" rows="3" [autoResize]="true" [placeholder]="'input-text.placeholder' | translate" class="tw-bg-neutral-800"></textarea>
+					</div>
+				</div>
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'description'" [label]="'Description' | translate"></iterpro-form-feedback>
+			</div>
+		</form>
+		@if (editMode && attributeForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}

@@ -1,0 +1,28 @@
+.container {
+	padding: 12px;
+	min-width: 500px;
+	.actions-container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 12px;
+		column-gap: 12px;
+		label {
+			text-transform: capitalize;
+			color: #bbb;
+			padding-left: unset;
+			padding-top: unset;
+		}
+	}
+	.items-container,
+	.icons {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		column-gap: 12px;
+	}
+}
+
+.favorite {
+	color: var(--color-primary-500);
+}

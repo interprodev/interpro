@@ -1,0 +1,10 @@
+<div class="tw-p-2">
+	<p-chart
+		class="tw-mt-4 tw-block"
+		*ngIf="dataChart"
+		[data]="dataChart"
+		[options]="optionsChart"
+		[height]="'400px'"
+		type="bar"
+	></p-chart>
+</div>

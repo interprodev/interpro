@@ -1,0 +1,57 @@
+<div class="tw-flex tw-flex-wrap tw-gap-2">
+	<!-- Cursor Default Mode -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.editor.cursor' | translate"
+		(click)="activateCursor()"
+	>
+		<fa-icon
+			[icon]="icons.faArrowPointer"
+			[ngClass]="canvasMode === canvasModes.Default ? 'tw-text-primary-500' : 'tw-text-white'"
+			class="tw-cursor-pointer tw-text-2xl tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+	<!-- Draw Full Line -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.editor.draw' | translate"
+		(click)="activateDrawing()"
+	>
+		<fa-icon
+			[icon]="icons.faPenLine"
+			[ngClass]="canvasMode === canvasModes.Draw ? 'tw-text-primary-500' : 'tw-text-white'"
+			class="tw-cursor-pointer tw-text-2xl tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+	<!-- Draw Dashed Line -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.editor.drawDashed' | translate"
+		(click)="activateDrawing(true)"
+	>
+		<!-- Pen Line Dashed -->
+		<svg viewBox="0 0 576 512" class="tw-h-6">
+			<path
+				[ngClass]="canvasMode === canvasModes.DrawDashed ? 'tw-fill-primary-500' : 'tw-fill-white'"
+				class="group-hover:tw-fill-primary-500"
+				d="M453.299 19.3L492.7 58.7C517.7 83.7 517.7 124.2 492.7 149.2L444.299 197.6L314.299 67.7L362.7 19.3C387.7 -5.70001 428.2 -5.70001 453.2 19.3H453.299ZM58.5996 323.5L291.7 90.3L421.7 220.3L188.499 453.4C178.099 463.8 165.199 471.4 151.099 475.6L30.7996 511C22.3996 513.5 13.2996 511.2 7.09959 504.9C0.89959 498.6 -1.50041 489.7 0.999591 481.2L36.3996 360.9C40.5996 346.8 48.1996 333.9 58.5996 323.5ZM420 464H552C565.3 464 576 474.7 576 488C576 501.3 565.3 512 552 512L420 511C420 511 420 511 420 488C420 464 420 464 420 464Z"
+			/>
+			<path
+				[ngClass]="canvasMode === canvasModes.DrawDashed ? 'tw-fill-primary-500' : 'tw-fill-white'"
+				class="group-hover:tw-fill-primary-500"
+				d="M246.5 464H393.5C393.5 464 393.5 471 393.5 488C393.5 511 393.5 511 393.5 511L246.5 512C246.5 512 246.5 511.5 246.5 489.5C246.5 464.5 246.5 464 246.5 464Z"
+			/>
+		</svg>
+	</div>
+	<!-- Text -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.elements.textbox' | translate"
+		(click)="addText()"
+	>
+		<fa-icon
+			[icon]="icons.faText"
+			class="tw-cursor-pointer tw-text-2xl tw-text-white tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+</div>

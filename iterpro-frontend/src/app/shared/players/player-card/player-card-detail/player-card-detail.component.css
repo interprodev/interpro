@@ -1,0 +1,33 @@
+.semaphore {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 1.1rem;
+	height: 1.1rem;
+	margin-left: 0.5rem;
+  font-weight: bold;
+}
+
+.greenLevel {
+	background-color: #009900;
+}
+.yellowLevel {
+	background-color: #ffee00;
+	color: #000000;
+}
+.redLevel {
+	background-color: #dd0000;
+}
+
+.tipss {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.label {
+	color: #bbb;
+}
+.value {
+	margin-left: 0.5rem;
+}

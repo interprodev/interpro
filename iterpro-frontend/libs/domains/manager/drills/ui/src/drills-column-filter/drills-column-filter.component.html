@@ -1,0 +1,28 @@
+<div class="pflex-flex pflex-mb-4 pfelx-flex-wrap pflex-gap-4" [formGroup]="form" *ngIf="form">
+	<div *ngIf="form.contains('drillDetail')">
+		<label class="pflex-block pflex-mb-2 pflex-capitalize pflex-text-500">{{ 'drills.details' | translate }}</label>
+		<p-multiSelect
+			[options]="detailOptions"
+			[formControlName]="'drillDetail'"
+			optionLabel="label"
+			optionValue="value"
+			[maxSelectedLabels]="1"
+			[selectedItemsLabel]="'{0} selected'"
+			[placeholder]="'multiselect.placeholder' | translate"
+		>
+		</p-multiSelect>
+	</div>
+	<div *ngIf="form.contains('drillTarget')">
+		<label class="pflex-block pflex-mb-2 pflex-capitalize pflex-text-500">{{ 'drills.targets' | translate}}</label>
+		<p-multiSelect
+			[options]="targetOptions"
+			[formControlName]="'drillTarget'"
+			optionLabel="label"
+			optionValue="value"
+			[maxSelectedLabels]="1"
+			[selectedItemsLabel]="'{0} selected'"
+			[placeholder]="'multiselect.placeholder' | translate"
+		>
+		</p-multiSelect>
+	</div>
+</div>

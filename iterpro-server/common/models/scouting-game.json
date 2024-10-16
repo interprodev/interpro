@@ -1,0 +1,159 @@
+{
+	"name": "ScoutingGame",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"title": {
+			"type": "string"
+		},
+		"assignedTo": {
+			"type": "array"
+		},
+		"thirdPartyProvider": {
+			"type": "string",
+			"default": "Wyscout"
+		},
+		"thirdPartyProviderCompetitionId": {
+			"type": "number"
+		},
+		"thirdPartyProviderMatchId": {
+			"type": "number"
+		},
+		"thirdPartyProviderHomeTeamId": {
+			"type": "number"
+		},
+		"thirdPartyProviderAwayTeamId": {
+			"type": "number"
+		},
+		"timezone": {
+			"type": "string"
+		},
+		"start": {
+			"type": "date",
+			"required": true
+		},
+		"startTime": {
+			"type": "string"
+		},
+		"endTime": {
+			"type": "string"
+		},
+		"homeTeam": {
+			"type": "string"
+		},
+		"awayTeam": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"result": {
+			"type": "string"
+		},
+		"author": {
+			"type": "string"
+		},
+		"completed": {
+			"type": "boolean"
+		},
+		"history": {
+			"type": "array"
+		},
+		"sent": {
+			"type": "boolean",
+			"default": false
+		},
+		"gameReportsTemplateId": {
+			"type": "string"
+		},
+		"gameReportsTemplateVersion": {
+			"type": "number"
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": ""
+		},
+		"gameReports": {
+			"type": "hasMany",
+			"model": "ScoutingGameReport",
+			"foreignKey": ""
+		},
+		"_playerMatchStats": {
+			"type": "embedsMany",
+			"model": "PlayerMatchStat",
+			"property": "playerMatchStats",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {
+		"sendEmail": {
+			"accepts": [
+				{
+					"arg": "reportId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "customerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/sendEmail",
+				"verb": "post"
+			}
+		}
+	},
+	"indexes": {
+		"teamId_1_start_1": {
+			"keys": {
+				"teamId": 1,
+				"start": 1
+			}
+		},
+		"teamId_1_start_-1": {
+			"keys": {
+				"teamId": 1,
+				"start": -1
+			}
+		}
+	}
+}

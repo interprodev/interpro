@@ -1,0 +1,936 @@
+{
+	"name": "Event",
+	"base": "PersistedModel",
+	"idInjection": false,
+	"options": {
+		"validateUpsert": true
+	},
+	"forceId": false,
+	"properties": {
+		"csvGps": {
+			"type": "string"
+		},
+		"csvPlayer": {
+			"type": "string"
+		},
+		"csvTeam": {
+			"type": "string"
+		},
+		"wyscoutSynced": {
+			"type": "boolean",
+			"default": false
+		},
+		"instatSynced": {
+			"type": "boolean",
+			"default": false
+		},
+		"title": {
+			"type": "string",
+			"required": true
+		},
+		"wyscoutId": {
+			"type": "number"
+		},
+		"instatId": {
+			"type": "number"
+		},
+		"allDay": {
+			"type": "boolean"
+		},
+		"start": {
+			"type": "date",
+			"required": true
+		},
+		"end": {
+			"type": "date"
+		},
+		"author": {
+			"type": "string"
+		},
+		"duration": {
+			"type": "number"
+		},
+		"description": {
+			"type": "string"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"format": {
+			"type": "string"
+		},
+		"subformat": {
+			"type": "any"
+		},
+		"subformatDetails": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"where": {
+			"type": "string"
+		},
+		"result": {
+			"type": "string"
+		},
+		"resultFlag": {
+			"type": "boolean"
+		},
+		"workload": {
+			"type": "number"
+		},
+		"intensity": {
+			"type": "number"
+		},
+		"theme": {
+			"type": "string"
+		},
+		"subtheme": {
+			"type": "string"
+		},
+		"home": {
+			"type": "boolean"
+		},
+		"teamReport": {
+			"type": {
+				"notes": "string",
+				"documents": "array",
+				"notesHistory": "array",
+				"notesShareWithPlayers": "boolean"
+			},
+			"default": {
+				"notes": "",
+				"documents": [],
+				"notesHistory": [],
+				"notesShareWithPlayers": false
+			},
+			"description": "Used for Game/Training Events, to store the Team Report. documents DEPRECATED, to be delete"
+		},
+		"friendly": {
+			"type": "boolean"
+		},
+		"destination": {
+			"type": "string"
+		},
+		"recoveryStrategy": {
+			"type": "array"
+		},
+		"nutritionalPre": {
+			"type": "array"
+		},
+		"nutritionalDuring": {
+			"type": "array"
+		},
+		"nutritionalPost": {
+			"type": "array"
+		},
+		"opponent": {
+			"type": "string"
+		},
+		"opponentImageUrl": {
+			"type": "string"
+		},
+		"opponentWyscoutId": {
+			"type": "number"
+		},
+		"opponentInstatId": {
+			"type": "number"
+		},
+		"gpsSessionLoaded": {
+			"type": "boolean",
+			"default": false
+		},
+		"playersSessionLoaded": {
+			"type": "boolean",
+			"default": false
+		},
+		"lastUpdateDate": {
+			"type": "date"
+		},
+		"lastUpdateAuthor": {
+			"type": "string"
+		},
+		"individual": {
+			"type": "boolean",
+			"default": false
+		},
+		"testModel": {
+			"type": "string"
+		},
+		"medicalType": {
+			"type": "string"
+		},
+		"injuryId": {
+			"type": "string",
+			"description": "Used in Event Viewer for discriminating how to retrieve Medical Exams: if nullish, from the Player; if not, from the Injury. Will become deprecated once we disembed exams from Injury and Player"
+		},
+		"clubGameHomeTeam": {
+			"type": "string"
+		},
+		"clubGameAwayTeam": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"video": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"property": "_video",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"drillsExecuted": {
+			"type": "embedsMany",
+			"model": "DrillInstance",
+			"property": "_drillsExecuted",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"playerMatchStats": {
+			"type": "embedsMany",
+			"model": "PlayerMatchStat",
+			"property": "_playerMatchStats",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"opponentPlayerMatchStats": {
+			"type": "embedsMany",
+			"model": "PlayerMatchStat",
+			"property": "_opponentPlayerMatchStats",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"teamSeason": {
+			"type": "belongsTo",
+			"model": "TeamSeason",
+			"foreignKey": ""
+		},
+		"drills": {
+			"type": "embedsMany",
+			"model": "DrillInstance",
+			"property": "_drills",
+			"options": {
+				"persistent": true,
+				"forceId": false,
+				"validate": false
+			}
+		},
+		"players": {
+			"type": "referencesMany",
+			"model": "Player",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"staff": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"match": {
+			"type": "hasOne",
+			"model": "Match",
+			"foreignKey": "eventId"
+		},
+		"testInstance": {
+			"type": "hasOne",
+			"model": "TestInstance"
+		},
+		"sessionPlayers": {
+			"type": "embedsMany",
+			"model": "SessionPlayerData",
+			"property": "_sessionPlayers",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sessionImport": {
+			"type": "embedsOne",
+			"model": "SessionImportData",
+			"property": "_sessionImport",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"medicalTreatments": {
+			"type": "hasMany",
+			"model": "MedicalTreatment"
+		},
+		"gameReports": {
+			"type": "hasMany",
+			"model": "PlayerGameReport",
+			"foreignKey": ""
+		},
+		"trainingReports": {
+			"type": "hasMany",
+			"model": "PlayerTrainingReport",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"eventsForAttendance": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "durationField",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/eventsForAttendance",
+				"verb": "post"
+			}
+		},
+		"findEventsForMedicalStats": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "from",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "to",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "[Event]",
+				"root": true
+			},
+			"http": {
+				"path": "/findEventsForMedicalStats",
+				"verb": "post"
+			}
+		},
+		"findEventsWithFilterAndMetrics": {
+			"accepts": [
+				{
+					"arg": "filter",
+					"type": "object"
+				},
+				{
+					"arg": "metrics",
+					"type": "array"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "[Event]",
+				"root": true
+			},
+			"http": {
+				"path": "/findEventsWithFilterAndMetrics",
+				"verb": "post"
+			}
+		},
+		"getEventsOnlySessionImport": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metrics",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "drills",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "startDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "endDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/getSessionsImport",
+				"verb": "post"
+			}
+		},
+		"getEventWithSessionPlayerData": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string"
+				},
+				{
+					"arg": "mainGameSplit",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Event",
+				"root": true
+			},
+			"http": {
+				"path": "/getEventWithSessionPlayerData",
+				"verb": "get"
+			}
+		},
+		"importGPSEvent": {
+			"accepts": [
+				{
+					"arg": "sessions",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "userString",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "userId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/importGPSEvent",
+				"verb": "post"
+			}
+		},
+		"recalculateDefaultMetrics": {
+			"accepts": [
+				{
+					"arg": "eventIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/recalculateDefaultMetrics",
+				"verb": "post"
+			}
+		},
+		"resetGPSDataForEvents": {
+			"accepts": [
+				{
+					"arg": "eventIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/resetGPSDataForEvents",
+				"verb": "post"
+			}
+		},
+		"resetGPSDataForSingleEvent": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/resetGPSDataForSingleEvent",
+				"verb": "post"
+			}
+		},
+		"saveEvent": {
+			"accepts": [
+				{
+					"arg": "event",
+					"type": "Event",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "notify",
+					"type": "boolean",
+					"default": false,
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/saveEvent",
+				"verb": "post"
+			}
+		},
+		"saveEventMatch": {
+			"accepts": [
+				{
+					"arg": "event",
+					"type": "Event",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "notify",
+					"type": "boolean",
+					"default": false,
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/saveMatch",
+				"verb": "post"
+			}
+		},
+		"saveEventTraining": {
+			"accepts": [
+				{
+					"arg": "event",
+					"type": "Event",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "notify",
+					"type": "boolean",
+					"default": false,
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/saveTraining",
+				"verb": "post"
+			}
+		},
+		"saveEventAssessment": {
+			"accepts": [
+				{
+					"arg": "event",
+					"type": "Event",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/saveAssessment",
+				"verb": "post"
+			}
+		},
+		"saveEventRpe": {
+			"accepts": [
+				{
+					"arg": "event",
+					"type": "Event",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/saveEventRpe",
+				"verb": "post"
+			}
+		},
+		"createManyEvents": {
+			"accepts": [
+				{
+					"arg": "events",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/createManyEvents",
+				"verb": "post"
+			}
+		},
+		"deleteEvent": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/deleteEvent",
+				"verb": "post"
+			}
+		},
+		"setSessionPlayerDirtyStatus": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string"
+				},
+				{
+					"arg": "sessionId",
+					"type": "string"
+				},
+				{
+					"arg": "dirty",
+					"type": "boolean"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/setSessionPlayerDirtyStatus",
+				"verb": "post"
+			}
+		},
+		"singleSessionDataAnalysis": {
+			"accepts": [
+				{
+					"arg": "metrics",
+					"type": "array"
+				},
+				{
+					"arg": "eventId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/singleSession",
+				"verb": "post"
+			}
+		},
+		"syncDateRangeEvents": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamSeasonIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "start",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "end",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/syncDateRangeEvents",
+				"verb": "post"
+			}
+		},
+		"syncEvent": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/syncEvent",
+				"verb": "post"
+			}
+		},
+		"syncPeriod": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "from",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "to",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/syncPeriod",
+				"verb": "post"
+			}
+		},
+		"uploadCsvDataMatch": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "csvData",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/uploadCsvDataMatch",
+				"verb": "post"
+			}
+		},
+		"changeNotify": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/change-notify",
+				"verb": "post"
+			}
+		}
+	}
+}

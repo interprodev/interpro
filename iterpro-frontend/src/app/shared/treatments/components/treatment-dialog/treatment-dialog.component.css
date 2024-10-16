@@ -1,0 +1,37 @@
+.textAreaInjury {
+	@apply tw-p-2 tw-w-full tw-min-h-[50px] tw-bg-shark-1000 tw-rounded-lg;
+}
+
+th {
+	width: 30%;
+}
+
+td {
+	width: 70%;
+}
+
+.half-width-th {
+	width: 15%;
+}
+
+.half-width-td {
+	width: 35%;
+}
+
+.button-icon {
+	margin-left: 1vw;
+	cursor: pointer;
+}
+.navigator {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-top: 1em;
+}
+.disabledNavigation {
+	pointer-events: none;
+	opacity: 0.6;
+}
+.upload {
+	display: flex;
+}

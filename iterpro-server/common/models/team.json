@@ -1,0 +1,1012 @@
+{
+	"name": "Team",
+	"plural": "teams",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": [
+				"thirdPartyCredentials.gpexePassword",
+				"thirdPartyCredentials.gpexeUsername",
+				"thirdPartyCredentials.statsportAccessKey",
+				"thirdPartyCredentials.statsportSecretKey",
+				"thirdPartyCredentials.sonraThirdPartyId",
+				"thirdPartyCredentials.catapultBaseUrl",
+				"thirdPartyCredentials.catapultLongLivedToken",
+				"thirdPartyCredentials.catapultUsername",
+				"thirdPartyCredentials.catapultPassword",
+				"thirdPartyCredentials.catapultClientId",
+				"thirdPartyCredentials.catapultClientSecret",
+				"thirdPartyCredentials.fieldwizBaseUrl",
+				"thirdPartyCredentials.fieldwizUsername",
+				"thirdPartyCredentials.fieldwizPassword",
+				"thirdPartyCredentials.fieldwizClientId",
+				"thirdPartyCredentials.fieldwizClientSecret",
+				"thirdPartyCredentials.wimuUsername",
+				"thirdPartyCredentials.wimuPassword",
+				"contractExportCredentials.endpointUrl",
+				"contractExportCredentials.authenticationType",
+				"contractExportCredentials.username",
+				"contractExportCredentials.password"
+			]
+		}
+	},
+	"hidden": ["activeModules"],
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"urlImage": {
+			"type": "string"
+		},
+		"mappingPreset": {
+			"type": "string"
+		},
+		"mappingPresetTeam": {
+			"type": "string"
+		},
+		"mappingPresetPlayer": {
+			"type": "string"
+		},
+		"device": {
+			"type": "string"
+		},
+		"accountType": {
+			"type": "string"
+		},
+		"providerTeam": {
+			"type": "string"
+		},
+		"providerPlayer": {
+			"type": "string"
+		},
+		"sepGps": {
+			"type": "string",
+			"default": ";"
+		},
+		"sepTeam": {
+			"type": "string",
+			"default": ";"
+		},
+		"sepPlayer": {
+			"type": "string",
+			"default": ";"
+		},
+		"mainSplitName": {
+			"type": "string",
+			"default": "session"
+		},
+		"mainGameName": {
+			"type": "string",
+			"default": "game"
+		},
+		"localTimezone": {
+			"type": "string"
+		},
+		"mobileWellnessNotification": {
+			"type": "boolean",
+			"default": true
+		},
+		"botHourMessage": {
+			"type": "string",
+			"default": "09:00"
+		},
+		"botGmt": {
+			"type": "number",
+			"default": 0
+		},
+		"goSettings": {
+			"type": "Object"
+		},
+		"crest": {
+			"type": "string"
+		},
+		"wyscoutId": {
+			"type": "number"
+		},
+		"instatId": {
+			"type": "number"
+		},
+		"gpexeId": {
+			"type": "number"
+		},
+		"catapultId": {
+			"type": "any"
+		},
+		"fieldwizId": {
+			"type": "any"
+		},
+		"statsportId": {
+			"type": "any"
+		},
+		"sonraId": {
+			"type": "any"
+		},
+		"wimuId": {
+			"type": "string"
+		},
+		"videoExternalPlatform": {
+			"type": "boolean"
+		},
+		"wyscoutCompetitionId": {
+			"type": "number"
+		},
+		"instatCompetitionId": {
+			"type": "number"
+		},
+		"wyscoutStandingTeamsFilter": {
+			"type": "array"
+		},
+		"instatStandingTeamsFilter": {
+			"type": "array"
+		},
+		"wyscoutAreas": {
+			"type": "array"
+		},
+		"instatAreas": {
+			"type": "array"
+		},
+		"thirdPartyCredentials": {
+			"type": "object"
+		},
+		"contractExportCredentials": {
+			"type": "object"
+		},
+		"customersLimit": {
+			"type": "number"
+		},
+		"metricsTests": {
+			"type": "array",
+			"min": 5,
+			"max": 15
+		},
+		"treatmentMetrics": {
+			"type": "array"
+		},
+		"drillTacticalGoals": {
+			"type": [
+				{
+					"value": "string",
+					"label": "string",
+					"custom": "boolean",
+					"active": "boolean"
+				}
+			]
+		},
+		"drillTechnicalGoals": {
+			"type": [
+				{
+					"value": "string",
+					"label": "string",
+					"custom": "boolean",
+					"active": "boolean"
+				}
+			]
+		},
+		"drillPhysicalGoals": {
+			"type": [
+				{
+					"value": "string",
+					"label": "string",
+					"custom": "boolean",
+					"active": "boolean"
+				}
+			]
+		},
+		"drillThemes": {
+			"type": [
+				{
+					"value": "string",
+					"label": "string",
+					"custom": "boolean",
+					"active": "boolean"
+				}
+			]
+		},
+		"enabledModules": {
+			"type": "array"
+		},
+		"playerApp": {
+			"type": "boolean",
+			"default": false
+		},
+		"playerAppLimit": {
+			"type": "number",
+			"min": 0,
+			"default": 30
+		},
+		"gender": {
+			"type": "string",
+			"default": "male"
+		},
+		"altScouting": {
+			"type": "boolean",
+			"default": false
+		},
+		"pinnedTreatments": {
+			"type": "array"
+		},
+		"landingPage": {
+			"type": "string"
+		},
+		"activePlayersLimit": {
+			"type": "number"
+		},
+		"archivedPlayersLimit": {
+			"type": "number"
+		},
+		"playerAttributes": {
+			"type": [
+				{
+					"value": "string",
+					"label": "string",
+					"custom": "boolean",
+					"active": "boolean",
+					"category": "string",
+					"description": "string"
+				}
+			]
+		},
+		"gameReportSettings": {
+			"type": {
+				"activeGameReportTemplateId": "string",
+				"activeGameReportTemplateVersion": "number"
+			}
+		},
+		"trainingReportSettings": {
+			"type": {
+				"activeTrainingReportTemplateId": "string",
+				"activeTrainingReportTemplateVersion": "number"
+			}
+		}
+	},
+	"validations": [],
+	"relations": {
+		"videoAssets": {
+			"type": "hasMany",
+			"model": "VideoAsset",
+			"foreignKey": ""
+		},
+		"playersScouting": {
+			"type": "hasMany",
+			"model": "PlayerScouting",
+			"foreignKey": ""
+		},
+		"players": {
+			"type": "hasMany",
+			"model": "Player",
+			"foreignKey": ""
+		},
+		"staff": {
+			"type": "hasMany",
+			"model": "Staff",
+			"foreignKey": ""
+		},
+		"sessionImportData": {
+			"type": "hasMany",
+			"model": "SessionImportData",
+			"foreignKey": ""
+		},
+		"drills": {
+			"type": "hasMany",
+			"model": "Drill",
+			"foreignKey": ""
+		},
+		"tests": {
+			"type": "hasMany",
+			"model": "Test",
+			"foreignKey": ""
+		},
+		"examinations": {
+			"type": "hasMany",
+			"model": "Examination",
+			"foreignKey": ""
+		},
+		"match": {
+			"type": "hasMany",
+			"model": "Match",
+			"foreignKey": ""
+		},
+		"events": {
+			"type": "hasMany",
+			"model": "Event",
+			"foreignKey": ""
+		},
+		"teamGroups": {
+			"type": "hasMany",
+			"model": "TeamGroup"
+		},
+		"thresholdsTeam": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsTeam",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"teamSeasons": {
+			"type": "hasMany",
+			"model": "TeamSeason",
+			"foreignKey": ""
+		},
+		"gpsProviderMapping": {
+			"type": "embedsOne",
+			"model": "GpsProviderMapping",
+			"property": "gpsProviderMapping",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"teamProviderMapping": {
+			"type": "embedsOne",
+			"model": "TeamProviderMapping",
+			"property": "teamProviderMapping",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"playerProviderMapping": {
+			"type": "embedsOne",
+			"model": "PlayerProviderMapping",
+			"property": "playerProviderMapping",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"presetTestAttachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_presetTestAttachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"scoutingScenarios": {
+			"type": "hasMany",
+			"model": "ScoutingLineup",
+			"foreignKey": ""
+		},
+		"scoutingGames": {
+			"type": "hasMany",
+			"model": "ScoutingGame",
+			"foreignKey": ""
+		},
+		"changelog": {
+			"type": "hasMany",
+			"model": "EntityChangelog",
+			"polymorphic": "entity"
+		},
+		"tableFilterTemplates": {
+			"type": "hasMany",
+			"model": "TeamTableFilterTemplate",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getEnabledModules": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/enabled-modules",
+				"verb": "get"
+			}
+		},
+		"getPlayersLimits": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/players-limit",
+				"verb": "get"
+			}
+		},
+		"getObservedScouting": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/observed-scouting",
+				"verb": "get"
+			}
+		},
+		"getGamesWithReports": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "dates",
+					"type": "array"
+				},
+				{
+					"arg": "options",
+					"type": "object"
+				},
+				{
+					"arg": "timezoneOffset",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/games-reports",
+				"verb": "get"
+			}
+		},
+		"getGamesWithReportsCSV": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "dates",
+					"type": "array"
+				},
+				{
+					"arg": "options",
+					"type": "object"
+				},
+				{
+					"arg": "timezoneOffset",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/games-reports-csv",
+				"verb": "get"
+			}
+		},
+		"getTeamAttachments": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/attachments",
+				"verb": "get"
+			}
+		},
+		"getEventVideos": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "categories",
+					"type": "array",
+					"required": false,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/event-videos",
+				"verb": "get"
+			}
+		},
+		"getFinancialOverview": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "minutesField",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "numberOfMatches",
+					"type": "number",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns financial overview for a team",
+			"http": {
+				"path": "/:id/financial-overview",
+				"verb": "get"
+			}
+		},
+		"getFinancialAnalysis": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "minutesField",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "numberOfMatches",
+					"type": "number",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns financial analysis data for a team",
+			"http": {
+				"path": "/:id/financial-analysis",
+				"verb": "get"
+			}
+		},
+		"getCashFlow": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "national",
+					"type": "boolean",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "international",
+					"type": "boolean",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "achieved",
+					"type": "boolean",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns financial cash flow data for a team",
+			"http": {
+				"path": "/:id/cash-flow",
+				"verb": "get"
+			}
+		},
+		"getPlayerForCompare": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns data for a compare players",
+			"http": {
+				"path": "/:id/compare-players",
+				"verb": "get"
+			}
+		},
+		"getAllDrillCanvases": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/drill-canvases",
+				"verb": "get"
+			}
+		},
+		"getSingleDrillCanvas": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "canvasId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/drill-canvases/:canvasId",
+				"verb": "get"
+			}
+		},
+		"createDrillCanvas": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "canvas",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/drill-canvases",
+				"verb": "post"
+			}
+		},
+		"updateDrillCanvas": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "canvas",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/drill-canvases",
+				"verb": "put"
+			}
+		},
+		"deleteDrillCanvas": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "canvasId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/drill-canvases/:canvasId",
+				"verb": "delete"
+			}
+		},
+		"getGameReportTemplates": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-game/custom-templates",
+				"verb": "get"
+			}
+		},
+		"getSingleGameReportTemplateVersion": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "templateKey",
+					"type": "string"
+				},
+				{
+					"arg": "version",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-game/custom-template-with-version",
+				"verb": "get"
+			}
+		},
+		"upsertGameReportTemplate": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "template",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-game/upsert-template",
+				"verb": "post"
+			}
+		},
+		"getTrainingReportTemplates": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-training/custom-templates",
+				"verb": "get"
+			}
+		},
+		"getSingleTrainingReportTemplateVersion": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "templateKey",
+					"type": "string"
+				},
+				{
+					"arg": "version",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-training/custom-template-with-version",
+				"verb": "get"
+			}
+		},
+		"upsertTrainingReportTemplate": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "template",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:teamId/player-training/upsert-template",
+				"verb": "post"
+			}
+		}
+	}
+}

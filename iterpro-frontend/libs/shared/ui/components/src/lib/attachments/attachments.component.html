@@ -1,0 +1,13 @@
+@if (attachments && attachments.length > 0) {
+	<div class="tw-flex tw-flex-col tw-gap-4 tw-mt-2">
+		@for (attachment of attachments; track attachment) {
+			<iterpro-attachment-item [attachment]="attachment"
+															 [showEditButton]="showEditButton"
+															 [showDeleteButton]="showDeleteButton"
+															 [sharedWithTooltip]="sharedWithOptions ? ([attachment?.sharedPlayerIds, attachment?.sharedStaffIds] | sharedWithTooltip : sharedWithOptions) : null"
+															 (editClicked)="editAttachmentClicked.emit(attachment)"></iterpro-attachment-item>
+		}
+	</div>
+} @else {
+	<p class="tw-p-2 tw-text-shark-300">{{ 'alert.noRecordsFound' | translate }}</p>
+}

@@ -1,0 +1,200 @@
+<ng-container *ngIf="isDialog;else content">
+	<ng-container *ngIf="!oneForRowMode; else onlyOneTemplate">
+		<p-dialog [header]="'home.fileRepository' | translate" [(visible)]="visible" [showHeader]="true" [closable]="false"
+			[closeOnEscape]="true" [draggable]="false" [resizable]="false" [modal]="true"
+			[style]="{ width: '90%', height: '100%' }">
+			<ng-container *ngTemplateOutlet="content"></ng-container>
+			<p-footer>
+				<div class="tw-flex tw-items-center tw-gap-4" *ngIf="editMode">
+					<p-button type="button"
+						class="tw-block" styleClass="p-button-primary" [size]="'small'" [label]="'buttons.save' | translate"
+						(onClick)="onSave()" [disabled]="cannotSave()"></p-button>
+					<p-button type="button"
+						class="tw-block" [size]="'small'" [label]="'buttons.discard' | translate"
+						(onClick)="onDiscard()"></p-button>
+				</div>
+				<p-button *ngIf="!editMode" type="button"
+					class="tw-block" [size]="'small'" [label]="'buttons.close' | translate"
+					(onClick)="onDiscard()"></p-button>
+			</p-footer>
+		</p-dialog>
+	</ng-container>
+</ng-container>
+
+<ng-template #content>
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4" *ngIf="isFileRepository">
+		<div class="tw-col-span-2">
+			<div class="tw-text-sm iterpro-text-color-900" translate>dialog.file.date</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-calendar class="calendar-width-215" appendTo="body" [showButtonBar]="true"
+										(ngModelChange)="filterChange($event, 'datePeriod')" [(ngModel)]="filters.datePeriod"
+										selectionMode="range"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<div class="tw-text-sm iterpro-text-color-900" translate>dialog.file.uploadedBy</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect appendTo="body" [options]="filters.authorsOptions" [(ngModel)]="filters.selectedAuthorIds"
+											 (onChange)="filterChange($event.value, 'selectedAuthorIds')" [maxSelectedLabels]="1"
+											 selectedItemsLabel="{0} selected" [dropdownIcon]="'fa-solid fa-chevron-down'"
+											 [placeholder]="'multiselect.placeholder' | translate">
+				</p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<div class="tw-text-sm iterpro-text-color-900" translate>dialog.file.type</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect appendTo="body" [options]="filters.fileTypesOptions"  [(ngModel)]="filters.selectedFileTypes"
+											 (onChange)="filterChange($event.value, 'selectedFileTypes')" [maxSelectedLabels]="1"
+											 selectedItemsLabel="{0} selected" [dropdownIcon]="'fa-solid fa-chevron-down'"
+											 [placeholder]="'multiselect.placeholder' | translate">
+				</p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<div class="tw-text-sm iterpro-text-color-900" translate>dialog.file.section</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect appendTo="body" [options]="filters.sectionOptions" [(ngModel)]="filters.selectedSections"
+											 (onChange)="filterChange($event.value, 'selectedSections')" [maxSelectedLabels]="1"
+											 selectedItemsLabel="{0} selected" [dropdownIcon]="'fa-solid fa-chevron-down'"
+											 [placeholder]="'multiselect.placeholder' | translate">
+				</p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2 tw-flex tw-items-end">
+			<p-button type="button" [size]="'small'" [label]="'buttons.resetFilters' | translate" (onClick)="resetFilters()"></p-button>
+		</div>
+	</div>
+	<div class="container">
+		<ng-container *ngIf="!isLoading; else showTableLoading">
+			<p-table [scrollable]="true" [paginator]="attachments?.length > 50" [rows]="50" scrollHeight="60vh" styleClass="p-datatable-striped" [rowHover]="true" [value]="attachments | tableValues : filters">
+				<ng-template pTemplate="caption" *ngIf="editMode">
+					<div class="tw-flex tw-justify-end tw-items-center tw-pb-4">
+						<p-button type="button"  [icon]="'fas fa-plus'" [size]="'small'" [label]="'buttons.addNew' | translate"
+							(onClick)="add(prefilledPlayerIds)"></p-button>
+					</div>
+				</ng-template>
+				<ng-template pTemplate="header">
+					<tr class="tw-h-10">
+						<th>
+							<div class="header-with-search-container">
+								<span translate>dialog.file.name</span>
+								<p-columnFilter [field]="'name'" matchMode="contains" [showMenu]="false">
+									<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+										<input pInputText type="text" [ngModel]="value" (ngModelChange)="filter($event)" class="p-inputtext"
+											[placeholder]="'Search' | translate" />
+									</ng-template>
+								</p-columnFilter>
+							</div>
+						</th>
+						<th style="width: 10%" [pSortableColumn]="'date'" translate>dialog.file.date</th>
+						<th style="width: 10%" [pSortableColumn]="'authorId'" translate>dialog.file.uploadedBy
+						</th>
+						<th style="width: 5%" translate>dialog.file.type</th>
+						<th style="width: 15%" translate>dialog.file.sharedWith</th>
+						<th style="width: 5%" [pSortableColumn]="'section'" translate *ngIf="isFileRepository">
+							dialog.file.section
+						</th>
+						<th style="width: 5%; text-align: center" *ngIf="isFileRepository" translate>
+							diary.goToWeek</th>
+						<th style="width: 5%" translate>dialog.file.url</th>
+						<th style="width: 10%" translate>dialog.file.link</th>
+						<th style="width: 5%" translate *ngIf="editMode">dialog.file.actions</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+					<tr class="tw-h-10">
+						<td style="width: 20%" [pTooltip]="rowData.name">
+							<input type="text" [(ngModel)]="rowData.name" [disabled]="!editMode" />
+						</td>
+						<td style="width: 10%">{{ rowData.date | formatDateBySetting : 'HH:mm' }}</td>
+						<td style="width: 10%">
+							<span *ngIf="rowData.authorId">{{ rowData.authorId | customerName : customers }}</span>
+						</td>
+						<td style="width: 5%">
+							<span *ngIf="rowData.name">{{ rowData.name | fileType }}</span>
+						</td>
+						<td style="width: 15%">
+							<p-multiSelect appendTo="body" [options]="sharedWithOptions" [showToggleAll]="editMode" [group]="true"
+								[(ngModel)]="rowData.sharedWith" [maxSelectedLabels]="1" selectedItemsLabel="{0} selected"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null">
+							</p-multiSelect>
+						</td>
+						<td style="width: 5%" *ngIf="isFileRepository">
+							<ng-container *ngIf="rowData?.redirects?.length > 1">
+								<iterpro-icon-button [icon]="'fas fa-search'"
+									[tooltip]="rowData?.redirects | sectionTooltip"></iterpro-icon-button>
+							</ng-container>
+							<ng-container *ngIf="rowData?.redirects?.length === 1">
+								<span translate>{{ rowData.redirects[0]?.label }}</span>
+							</ng-container>
+						</td>
+						<td style="width: 5%; text-align: center" *ngIf="isFileRepository">
+							<iterpro-icon-button class="tw-pl-2 tw-pr-2" *ngFor="let redirect of rowData.redirects"
+								[icon]="'fas fa-eye'" (click)="redirectTo(redirect.redirectUrl)"
+								[tooltip]="'dialog.file.redirectTo' | translate : { value: (redirect.label | translate) }">
+							</iterpro-icon-button>
+						</td>
+						<td style="width: 25%" [pTooltip]="rowData.externalUrl">
+							<input type="text" [(ngModel)]="rowData.externalUrl" [disabled]="!editMode" />
+						</td>
+						<ng-container
+							*ngTemplateOutlet="uploadTemplate; context: { rowData: rowData, rowIndex: rowIndex }"></ng-container>
+					</tr>
+				</ng-template>
+			</p-table>
+		</ng-container>
+		<ng-template #showTableLoading>
+			<p-table [value]="(isFileRepository ? 20 : 3) | arrayFromNumber" responsiveLayout="scroll">
+				<ng-template pTemplate="header">
+					<tr>
+						<th *ngFor="let col of 7 | arrayFromNumber" style="height: 46px">
+							<p-skeleton width="120px"></p-skeleton>
+						</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body">
+					<tr>
+						<td *ngFor="let col of 7 | arrayFromNumber"><p-skeleton></p-skeleton></td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</ng-template>
+	</div>
+</ng-template>
+
+<ng-template #onlyOneTemplate>
+	<ng-container *ngIf="attachments">
+		<ng-container *ngTemplateOutlet="uploadTemplate; context: { rowData: attachments[0], rowIndex: 0 }"></ng-container>
+	</ng-container>
+</ng-template>
+
+<!-- Upload template -->
+<ng-template #uploadTemplate let-rowData="rowData" let-rowIndex="rowIndex">
+	<td style="width: 10%; text-align: center">
+		<iterpro-icon-button [icon]="'fas fa-download'" [disabled]="!(rowData.downloadUrl | azureUrl)"
+			(click)="downloadFile(rowData)" [tooltip]="'dialog.file.link' | translate">
+		</iterpro-icon-button>
+		<span class="tw-pl-2">
+			<iterpro-icon-modal-preview [url]="rowData.downloadUrl | azureUrl" [name]="rowData.name" />
+		</span>
+	</td>
+	<td style="text-align: right; width: 5%" *ngIf="editMode">
+		<p-progressSpinner *ngIf="inwardTag && inwardTag.uploading"
+			[style]="{ width: '16px', height: '16px', marginRight: '1em' }"></p-progressSpinner>
+		<iterpro-icon-button *ngIf="editMode && inwardTag && !inwardTag.uploading" [icon]="'fas fa-file-import'"
+			[tooltip]="'fileUploader.chooseLabel' | translate" (click)="inwardTag.forceInputChoose()">
+		</iterpro-icon-button>
+		<iterpro-icon-button class="tw-pl-2"
+			*ngIf="!oneForRowMode ? editMode : (editMode && rowData.downloadUrl | azureUrl)" [icon]="'fas fa-trash'"
+			[tooltip]="'buttons.deleteAttachment' | translate" (click)="delete(rowData.downloadUrl, rowIndex)">
+		</iterpro-icon-button>
+	</td>
+
+	<!-- Cloud Upload -->
+	<iterpro-cloud-upload #inwardTag class="hidden" (completedEmitter)="onUpload($event, rowIndex)" [spinner]="true"
+		accept="*" />
+</ng-template>

@@ -1,0 +1,56 @@
+{
+	"name": "Threshold",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"value": {
+			"type": "number",
+			"required": false
+		},
+		"hidden": {
+			"type": "boolean",
+			"default": false
+		},
+		"semaphoreType": {
+			"type": "string"
+		},
+		"intervals": {
+			"type": "array"
+		},
+		"last30Value": {
+			"type": "number",
+			"required": false
+		},
+		"seasonValue": {
+			"type": "number",
+			"required": false
+		},
+		"bestValue": {
+			"type": "number",
+			"required": false
+		},
+		"customValue": {
+			"type": "number",
+			"required": false
+		},
+		"format": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

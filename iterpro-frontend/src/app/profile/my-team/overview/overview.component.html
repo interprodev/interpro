@@ -1,0 +1,479 @@
+<div class="pflex-grid pflex-mt-2">
+	<div class="pflex-col-12 md:pflex-col-2 pflex-flex md:pflex-flex-column pflex-gap-3 md:pflex-px-4">
+		<div class="tw-w-48 tw-flex tw-flex-col tw-justify-left tw-gap-4">
+			<div>
+				<div class="pflex-mb-3">
+					<h3>{{ player.displayName }}</h3>
+				</div>
+				<div class="profile-picture tw-rounded">
+					<iterpro-player-provider-widget [wyscoutId]="player?.wyscoutId" [instatId]="player?.instatId" />
+
+					<iterpro-picture [photoUrl]="player.downloadUrl" class="tw-block" />
+
+					<div *ngIf="editMode && player.downloadUrl" class="overlay">
+						<i class="fas fa-trash" style="cursor: pointer" (click)="deleteImage()"></i>
+					</div>
+				</div>
+				<div *ngIf="editMode" class="pflex-mt-3">
+					<iterpro-cloud-upload
+						[crop]="true"
+						(completedEmitter)="onUpload($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+						[spinner]="true"
+						[maxFileSize]="1000000"
+						accept="image/*"
+					/>
+				</div>
+			</div>
+			<div>
+				<iterpro-tactic-board
+					[first]="player.position"
+					[second]="player.position2"
+					[third]="player.position3"
+					[sportType]="sportType"
+					[selected]="hoverPosition"
+				/>
+			</div>
+		</div>
+	</div>
+	<div class="pflex-col-10 pflex-grid pflex-align-content-start">
+		<div class="pflex-col-12 md:pflex-col-6 pflex-pb-0">
+			<h3 class="pflex-mb-2" translate>profile.overview</h3>
+			<table class="fields-table pflex-w-full">
+				<tr>
+					<th translate>profile.overview.displayName</th>
+					<td style="width: 60%">
+						<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="player.displayName" />
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.name</th>
+					<td><input pInputText [disabled]="true" type="text" [(ngModel)]="player.name" /></td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.surname</th>
+					<td><input pInputText [disabled]="true" type="text" [(ngModel)]="player.lastName" /></td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.gender</th>
+					<td>
+						<span>{{ player.gender | translate }}</span>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.nationality</th>
+					<td>
+						<iterpro-player-flag [lang]="player.nationality" />
+						<span *ngIf="player.nationality" class="tw-ml-2" translate>nationalities.{{ player.nationality }}</span>
+					</td>
+				</tr>
+				<tr *ngIf="player.altNationality">
+					<th translate>profile.overview.altNationality</th>
+					<td>
+						<iterpro-player-flag [lang]="player.nationality" />
+						<span *ngIf="player.nationality" class="tw-ml-2" translate>nationalities.{{ player.nationality }}</span>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.birth</th>
+					<td>
+						<p-inputMask
+							[disabled]="true"
+							[mask]="dateMask"
+							[placeholder]="dateFormat"
+							[slotChar]="dateFormat"
+							(onComplete)="updatePlayer()"
+							[(ngModel)]="birthDate"
+						></p-inputMask>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.weight</th>
+					<td><input pInputText [disabled]="!editMode" type="number" [(ngModel)]="player.weight" /></td>
+				</tr>
+				<tr>
+					<th translate>profile.overview.height</th>
+					<td><input pInputText [disabled]="!editMode" type="number" [(ngModel)]="player.height" /></td>
+				</tr>
+				<tr>
+					<th translate>profile.position.{{ getLimb() }}</th>
+					<td>
+						<span *ngIf="!editMode">{{ player.foot | translate | capitalize }}</span>
+						<p-dropdown
+							*ngIf="editMode"
+							[readonly]="!editMode"
+							[options]="preferredFoot"
+							[(ngModel)]="player.foot"
+							[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+							[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+						>
+							<ng-template let-foot pTemplate="item"> {{ foot?.label | translate }} </ng-template>
+							<ng-template let-foot pTemplate="selectedItem"> {{ foot?.label | translate }} </ng-template>
+						</p-dropdown>
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.position.shoeSize</th>
+					<td><input pInputText [disabled]="!editMode" type="number" [(ngModel)]="player.shoeSize" /></td>
+				</tr>
+				<tr>
+					<th translate>profile.positon.jerseyNumber</th>
+					<td>
+						<input pInputText [disabled]="!editMode" type="number" [(ngModel)]="player.jersey" />
+					</td>
+				</tr>
+				<tr>
+					<th translate>profile.position.captain</th>
+					<td>
+						<p-inputSwitch [disabled]="!editMode" [(ngModel)]="player.captain"></p-inputSwitch>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="pflex-col-12 md:pflex-col-6 pflex-pb-0">
+			<div>
+				<div class="pflex-flex pflex-justify-content-between pflex-align-items-center">
+					<h3 class="pflex-mb-2" translate>profile.position</h3>
+					<iterpro-icon-button
+						*ngIf="sportType === 'football'"
+						[tooltip]="'bodychart.showLegend' | translate"
+						[icon]="'fas fa-question icon'"
+						(click)="op.toggle($event)"
+					></iterpro-icon-button>
+				</div>
+				<table class="fields-table pos-table pflex-w-full">
+					<tr>
+						<th>
+							<div translate>profile.position.firstPosition</div>
+							<div *ngIf="sportType === 'football'" class="label-role" translate>profile.role</div>
+						</th>
+						<td style="width: 60%">
+							<div class="position-dd">
+								<div>
+									<div>
+										<span *ngIf="!editMode"> {{ player.position | translate }} </span>
+										<p-dropdown
+											*ngIf="editMode"
+											appendTo="body"
+											[readonly]="!editMode"
+											[options]="positions1"
+											[(ngModel)]="player.position"
+											(onChange)="onSelectPosition1($event)"
+											(onClick)="hover('')"
+											(onBlur)="hover('')"
+											[showClear]="true"
+											[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+											[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+										>
+											<ng-template let-position pTemplate="item">
+												<div (mouseenter)="hover(position)" (mouseleave)="hover('')">
+													{{ position.label | translate }}
+												</div>
+											</ng-template>
+										</p-dropdown>
+									</div>
+									<div *ngIf="sportType === 'football' && player.position" class="position-role">
+										<div>
+											<p-multiSelect
+												appendTo="body"
+												*ngIf="editMode"
+												[disabled]="!editMode"
+												maxSelectedLabels="0"
+												[options]="roles1"
+												[(ngModel)]="player.role1"
+												[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+											>
+											</p-multiSelect>
+
+											<ul class="roles-list">
+												<li *ngFor="let role of player.role1" translate>profile.roles.{{ role }}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div translate>profile.position.secondPosition</div>
+							<div *ngIf="sportType === 'football'" class="label-role" translate>profile.role</div>
+						</th>
+						<td>
+							<div class="position-dd">
+								<div>
+									<div>
+										<span *ngIf="!editMode"> {{ player.position2 | translate }} </span>
+										<p-dropdown
+											*ngIf="editMode"
+											appendTo="body"
+											[readonly]="!editMode"
+											[options]="positions2"
+											[(ngModel)]="player.position2"
+											(onChange)="onSelectPosition2($event)"
+											(onClick)="hover('')"
+											(onBlur)="hover('')"
+											[showClear]="true"
+											[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+											[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+										>
+											<ng-template let-position pTemplate="item">
+												<div (mouseenter)="hover(position)" (mouseleave)="hover('')">
+													{{ position.label | translate }}
+												</div>
+											</ng-template>
+										</p-dropdown>
+									</div>
+									<div *ngIf="sportType === 'football' && player.position2" class="position-role">
+										<div>
+											<p-multiSelect
+												appendTo="body"
+												*ngIf="editMode"
+												[style]="{ width: '100%' }"
+												[disabled]="!editMode"
+												maxSelectedLabels="0"
+												[options]="roles2"
+												[(ngModel)]="player.role2"
+												[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+											>
+											</p-multiSelect>
+											<ul class="roles-list">
+												<li *ngFor="let role of player.role2" translate>profile.roles.{{ role }}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div translate>profile.position.thirdPosition</div>
+							<div *ngIf="sportType === 'football'" class="label-role" translate>profile.role</div>
+						</th>
+						<td>
+							<div class="position-dd">
+								<div>
+									<div>
+										<span *ngIf="!editMode"> {{ player.position3 | translate }} </span>
+										<p-dropdown
+											*ngIf="editMode"
+											appendTo="body"
+											[readonly]="!editMode"
+											[options]="positions3"
+											[(ngModel)]="player.position3"
+											(onChange)="onSelectPosition3($event)"
+											(onClick)="hover('')"
+											(onBlur)="hover('')"
+											[showClear]="true"
+											[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+											[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+										>
+											<ng-template let-position pTemplate="item">
+												<div (mouseenter)="hover(position)" (mouseleave)="hover('')">
+													{{ position.label | translate }}
+												</div>
+											</ng-template>
+										</p-dropdown>
+									</div>
+									<div *ngIf="sportType === 'football' && player.position3" class="position-role">
+										<div>
+											<p-multiSelect
+												appendTo="body"
+												*ngIf="editMode"
+												[style]="{ width: '100%' }"
+												[disabled]="!editMode"
+												maxSelectedLabels="0"
+												[options]="roles3"
+												[(ngModel)]="player.role3"
+												[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+											>
+											</p-multiSelect>
+											<ul class="roles-list">
+												<li *ngFor="let role of player.role3" translate>profile.roles.{{ role }}</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div *ngIf="sportType === 'football'">
+				<div class="pflex-flex pflex-justify-content-between pflex-align-items-center pflex-mt-4">
+					<h3 class="pflex-mb-2" translate>profile.position.preferredMoves</h3>
+					<iterpro-icon-button
+						[tooltip]="'bodychart.showLegend' | translate"
+						[icon]="'fas fa-question icon'"
+						(click)="op1.toggle($event)"
+					></iterpro-icon-button>
+				</div>
+				<table class="fields-table pflex-w-full">
+					<tr>
+						<th translate>profile.position.preferredMoves.movementOnBall</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="movOnBall"
+								[(ngModel)]="player.movOnBall"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+
+					<tr>
+						<th translate>profile.position.preferredMoves.movementOffBall</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="movOffBall"
+								[(ngModel)]="player.movOffBall"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+
+					<tr>
+						<th translate>profile.position.preferredMoves.passing</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="passing"
+								[(ngModel)]="player.passing"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+
+					<tr>
+						<th translate>profile.position.preferredMoves.finishing</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="finishing"
+								[(ngModel)]="player.finishing"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+
+					<tr>
+						<th translate>profile.position.preferredMoves.defending</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="defending"
+								[(ngModel)]="player.defending"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+
+					<tr>
+						<th translate>profile.position.preferredMoves.technique</th>
+						<td>
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="technique"
+								[(ngModel)]="player.technique"
+								[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="editMode ? ('multiselect.placeholder' | translate) : null"
+							>
+								<ng-template let-item pTemplate="item">
+									<ng-container *ngTemplateOutlet="movementTemplate; context: { item }"></ng-container>
+								</ng-template>
+							</p-multiSelect>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="pflex-col-12 pflex-pt-0 pflex-mt-4">
+			<div>
+				<h5 class="pflex-mb-2" translate>profile.additionalInformation</h5>
+			</div>
+			<div>
+				<editor
+					*ngIf="editMode; else readOnlyEditor"
+					ngModel
+					[initialValue]="'input-text.placeholder' | translate"
+					[inline]="false"
+					[(ngModel)]="player.additionalInfo"
+					[init]="tinyEditorInit"
+				>
+				</editor>
+				<ng-template #readOnlyEditor>
+					<div class="readonlyEditorBox">
+						<span [innerHTML]="player.additionalInfo | marked"></span>
+					</div>
+				</ng-template>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-overlayPanel #op [style]="{ 'background-color': '#585c5d' }" appendTo="body">
+	<div style="padding: 1em; max-width: 50vw; max-height: 50vh; overflow: auto">
+		<h3 style="margin-bottom: 0.5em" translate>profile.position</h3>
+		<ul>
+			<li *ngFor="let pos of positionLegendItems" class="panel-li">
+				<p style="font-weight: bold; font-size: 1.1em">{{ pos.label | translate }}</p>
+				<span>{{ pos.tooltip | translate }}</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>
+
+<p-overlayPanel #op1 [style]="{ 'background-color': '#585c5d' }" appendTo="body">
+	<div style="padding: 1em; max-width: 50vw; max-height: 50vh; overflow: auto">
+		<h3 style="margin-bottom: 0.5em" translate>profile.position.preferredMoves</h3>
+		<ul>
+			<li *ngFor="let pos of preferredLegendItems" class="panel-li">
+				<p style="font-weight: bold; font-size: 1.1em">{{ pos.label | translate }}</p>
+				<span>{{ pos.tooltip | translate }}</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>
+
+<ng-template #movementTemplate let-item="item">
+	<div class="pflex-w-15rem pflex-white-space-normal">
+		<span class="pflex-text-xs" [pTooltip]="item.tooltip | translate">{{ item.label | translate }}</span
+		>:
+		<span class="pflex-text-xs">{{ item.tooltip | translate }}</span>
+	</div>
+</ng-template>

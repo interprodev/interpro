@@ -1,0 +1,30 @@
+.sidebar-col {
+  display: flex;
+
+  div {
+    flex: 1;
+  }
+}
+
+.label--small {
+  font-size: .9rem;
+}
+
+.video-button {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.icon-heading {
+  display: flex;
+  align-items: center;
+
+  h3,
+  p-progressSpinner {
+    display: inline;
+  }
+
+  .icon {
+    margin: 0.5rem 0 0 0.5rem;
+  }
+}

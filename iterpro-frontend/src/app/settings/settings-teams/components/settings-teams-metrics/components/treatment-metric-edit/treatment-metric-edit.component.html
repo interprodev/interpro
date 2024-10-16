@@ -1,0 +1,137 @@
+@if (treatmentMetricForm) {
+	<div class="tw-min-h-full tw-relative">
+		<form [formGroup]="treatmentMetricForm">
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>preferences.treatments.label</div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="label" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.label.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (treatmentMetricForm.controls.label.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'label'" [label]="'labelAttribute' | translate"></iterpro-form-feedback>
+				}
+				@if (treatmentMetricForm.controls.label.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="true" [field]="'label'" [type]="'custom'"
+																 [label]="('alert.labelMustBeUnique' | translate) + ': '
+																			  + (treatmentMetricForm.controls.label.errors?.uniqueValues | uniqueValuesError : [treatmentTypesOptions, treatmentCategoriesOptions])">
+
+					</iterpro-form-feedback>
+				}
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900"><span>{{'preferences.treatments.value' | translate}}</span><span> ({{'preferences.metrics.forCsvExport' | translate}})</span></div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="tw-flex-1">
+							<input type="text" pInputText formControlName="value" />
+						</div>
+						<i
+							class="fa fa-question-circle"
+							[pTooltip]="'preferences.metrics.value.desc' | translate"
+						></i>
+					</div>
+				</div>
+				@if (treatmentMetricForm.controls.value.errors?.required) {
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [label]="'preferences.treatments.value' | translate"></iterpro-form-feedback>
+				}
+				@if (treatmentMetricForm.controls.value.errors?.mustBeUnique) {
+					<iterpro-form-feedback [clickedCondition]="true" [field]="'value'" [type]="'custom'"
+																 [label]="('alert.csvValueMustBeUnique' | translate) + ': '
+																			  + (treatmentMetricForm.controls.value.errors?.uniqueValues | uniqueValuesError : [treatmentTypesOptions, treatmentCategoriesOptions])">
+
+					</iterpro-form-feedback>
+				}
+
+				<div class="tw-grid tw-grid-cols-1 tw-gap-x-2 tw-items-center" [class.tw-grid-cols-2]="treatmentMetricForm.controls.type.value === 'physiotherapy'">
+					<div>
+						<div class="iterpro-item-container">
+							<div class="tw-text-sm iterpro-text-color-900 tw-mb-1" translate>medical.infirmary.details.type</div>
+							<p-dropdown
+								appendTo="body"
+								formControlName="type"
+								[options]="treatmentTypesOptions"
+								[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								[placeholder]="'dropdown.placeholder' | translate"
+							></p-dropdown>
+						</div>
+						<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'type'" [label]="'medical.infirmary.details.type' | translate"></iterpro-form-feedback>
+					</div>
+					@if (treatmentMetricForm.controls.type.value === 'physiotherapy') {
+						<div>
+							<div class="iterpro-item-container">
+								<div class="tw-text-sm iterpro-text-color-900 tw-mb-1" translate>category</div>
+								<p-dropdown
+									appendTo="body"
+									formControlName="category"
+									[options]="treatmentCategoriesOptions"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+									[placeholder]="'dropdown.placeholder' | translate"
+								></p-dropdown>
+							</div>
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'category'" [label]="'category' | translate"></iterpro-form-feedback>
+						</div>
+					}
+				</div>
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-start iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>protocol</div>
+					<div>
+						<textarea pInputTextarea type="text" pInputText formControlName="description" rows="3" [autoResize]="true" [placeholder]="'input-text.placeholder' | translate" class="tw-bg-neutral-800"></textarea>
+					</div>
+				</div>
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'description'" [label]="'protocol' | translate"></iterpro-form-feedback>
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>buttons.video</div>
+					<div>
+						<ng-container *ngTemplateOutlet="attachmentUploadTemplate; context: { controlName: 'video', label: 'buttons.video', accept: 'video/*' }"></ng-container>
+					</div>
+				</div>
+
+				<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+					<div class="tw-text-sm iterpro-text-color-900" translate>tooltip.attachment</div>
+					<div>
+						<ng-container *ngTemplateOutlet="attachmentUploadTemplate; context: { controlName: 'doc', label: 'tooltip.attachment' }"></ng-container>
+					</div>
+				</div>
+			</div>
+		</form>
+		@if (editMode && treatmentMetricForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}
+
+<ng-template let-controlName="controlName" let-label="label" let-accept="accept" #attachmentUploadTemplate [formGroup]="treatmentMetricForm">
+	@if (!editMode || treatmentMetricForm.controls[controlName].value) {
+		<iterpro-icon-modal-preview
+			[url]="treatmentMetricForm.controls[controlName].value.downloadUrl | azureUrl"
+			[name]="treatmentMetricForm.controls[controlName].value.name"
+		/>
+		{{ treatmentMetricForm.controls[controlName].value.name }}
+		@if (editMode) {
+			<iterpro-icon-button [icon]="'fas fa-trash'" [tooltip]="'buttons.delete' | translate" (click)="deleteAttachment(controlName)"></iterpro-icon-button>
+		}
+		<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="controlName" [label]="label | translate"></iterpro-form-feedback>
+	} @else {
+		<div class="tw-flex">
+			<iterpro-cloud-upload
+				[style]="{ width: 'auto', fontSize: '0.85rem', fontWeight: '900' }"
+				(onStartEmitter)="startUploadAttachment(controlName)"
+				(completedEmitter)="addAttachment(controlName, $event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+				[area]="false"
+				[spinner]="false"
+				[accept]="accept"
+			/>
+			@if (attachmentUploadStatus[controlName]) {
+				<p-progressSpinner [style]="{ width: '20px', height: '20px', 'margin-left': '5px', 'margin-top': '5px' }"></p-progressSpinner>
+			}
+		</div>
+	}
+</ng-template>

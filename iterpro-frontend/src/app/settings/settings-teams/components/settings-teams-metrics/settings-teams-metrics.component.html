@@ -1,0 +1,222 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [title]="'preferences.metrics'"></iterpro-settings-header>
+	<div class="tw-flex tw-justify-end tw-items-center tw-gap-3 tw-mb-4">
+		@if (currentCustomer?.admin) {
+			@if (!editMode) {
+				<p-button
+					type="button"
+					[label]="'buttons.applyAll' | translate"
+					(click)="openApplyToTeamMenu(undefined, undefined, true, true)"
+					[size]="'small'"
+					[loading]="isLoading"
+					[pTooltip]="('buttons.applyAllTo' | translate) + ' ' + ('Teams' | translate)">
+				</p-button>
+				<p-button
+					type="button"
+					[icon]="'fas fa-history'"
+					[label]="'contract.openHistory' | translate"
+					(click)="openEntityChangelogDialog()"
+					[size]="'small'"
+					[loading]="isLoading"
+					[pTooltip]="'contract.openHistory' | translate">
+				</p-button>
+			}
+		}
+		<iterpro-action-buttons [editMode]="editMode"
+														[buttonTypes]="teamMetricsForm?.dirty ? ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+														[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+	</div>
+</div>
+<div class="tw-mb-8 tw-mt-8"><iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown></div>
+@if (!isLoading) {
+	<p-tabMenu [model]="menuItems" [activeItem]="activeMenu">
+		<ng-template pTemplate="item" let-item>
+			<a class="p-menuitem-link">
+				@if (item.id === 'yourMetrics') {
+					<span class="p-menuitem-text">
+						{{ item.label | translate }}
+						@if (teamMetricsForm.controls.metricsPerformance.invalid || teamMetricsForm.controls.metricsTeamTactical.invalid || teamMetricsForm.controls.metricsIndividualTactical.invalid) {
+							<i class="fas fa-exclamation-triangle tw-text-red-500"></i>
+						}
+					</span>
+				}
+				@if (item.id === 'globalTeamMetrics') {
+					<span class="p-menuitem-text">
+						{{ item.label | translate }}
+						@if (teamMetricsForm.controls.drillThemes.invalid || teamMetricsForm.controls.drillTacticalGoals.invalid || teamMetricsForm.controls.drillPhysicalGoals.invalid
+						|| teamMetricsForm.controls.drillTechnicalGoals.invalid || teamMetricsForm.controls.playerAttributes.invalid || teamMetricsForm.controls.metricsTests.invalid || teamMetricsForm.controls.treatmentMetrics.invalid) {
+							<i class="fas fa-exclamation-triangle tw-text-red-500"></i>
+						}
+					</span>
+				}
+			</a>
+		</ng-template>
+ 	</p-tabMenu>
+	<div class="tw-mt-2 tw-p-2" [formGroup]="teamMetricsForm">
+		<p-accordion [multiple]="true" [class.tw-hidden]="activeMenu !== menuItems[0]">
+			@for (groupItem of customerTeamMetricGroup; track groupItem; let i = $index) {
+				<div class="tw-mb-4">
+					<div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+						<h4 translate class="tw-uppercase">{{groupItem.sectionTitle}}</h4>
+						@if (!editMode && groupItem?.applyTo && currentCustomer?.admin && (!groupItem.applyTo.userPermission || settingsStore.userHasPermission(groupItem.applyTo.userPermission))) {
+							<p-button
+								type="button"
+								[label]="'buttons.applyTo' | translate"
+								(click)="openApplyToCustomerMenu(groupItem.applyTo.selectedTypes, groupItem.sectionTitle)"
+								[size]="'small'"
+								[pTooltip]="(groupItem.sectionTitle | translate) + ': ' + ('buttons.applyTo' | translate) + ' ' + ('Users' | translate)"
+								tooltipPosition="bottom">
+							</p-button>
+						}
+					</div>
+					@for (item of groupItem.items; track item) {
+						<p-accordionTab [disabled]="item?.teamPermission && !settingsStore.teamHasPermission(item.teamPermission)">
+							<ng-template pTemplate="header">
+								<div class="tw-flex tw-items-center tw-gap-2">
+									<span class="p-accordion-header-text">{{item.title | translate}}</span>
+									@if (teamMetricsForm.controls[item.value].invalid) {
+										<div class="tw-text-red-500" translate>import.error</div>
+										<i class="fas fa-exclamation tw-text-red-500"></i>
+									}
+								</div>
+							</ng-template>
+							<div *ngTemplateOutlet="itemTemplate; context: { item }"></div>
+						</p-accordionTab>
+					}
+				</div>
+			}
+		</p-accordion>
+		<p-accordion [multiple]="true" [class.tw-hidden]="activeMenu !== menuItems[1]">
+			@for (groupItem of teamMetricGroup; track groupItem; let i = $index) {
+				<div class="tw-mb-4">
+					<div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+						<h4 translate class="tw-uppercase">{{groupItem.sectionTitle}}</h4>
+						@if (!editMode && groupItem?.applyTo && currentCustomer?.admin && (!groupItem.applyTo.userPermission || settingsStore.userHasPermission(groupItem.applyTo.userPermission))) {
+							<p-button
+								type="button"
+								[label]="'buttons.applyTo' | translate"
+								(click)="openApplyToTeamMenu(groupItem.sectionTitle, groupItem.applyTo.selectedTypes)"
+								[size]="'small'"
+								[pTooltip]="(groupItem.sectionTitle | translate) + ': ' + ('buttons.applyTo' | translate) + ' ' + ('Teams' | translate)"
+								tooltipPosition="bottom">
+							</p-button>
+						}
+					</div>
+					@for (item of groupItem.items; track item) {
+						<p-accordionTab [disabled]="item?.teamPermission && !settingsStore.teamHasPermission(item.teamPermission)">
+							<ng-template pTemplate="header">
+								<div class="tw-flex tw-items-center tw-gap-2">
+									<span class="p-accordion-header-text">{{item.title | translate}}</span>
+									@if (teamMetricsForm.controls[item.value].invalid) {
+										<div class="tw-text-red-500" translate>import.error</div>
+										<i class="fas fa-exclamation tw-text-red-500"></i>
+									}
+								</div>
+							</ng-template>
+							<div *ngTemplateOutlet="itemTemplate; context: { item }"></div>
+						</p-accordionTab>
+					}
+				</div>
+			}
+		</p-accordion>
+	</div>
+} @else {
+	<p-tabMenu [model]="menuItems" [activeItem]="activeMenu">
+		<ng-template pTemplate="item" let-item>
+			<a class="p-menuitem-link">
+				<span class="p-menuitem-text"><p-skeleton width="100px"></p-skeleton></span>
+			</a>
+		</ng-template>
+	</p-tabMenu>
+	<div class="tw-mt-2 tw-p-2">
+		<div [class.tw-hidden]="activeMenu != menuItems[0]">
+			<iterpro-skeleton-accordion [accordions]="1" [showTitle]="true"></iterpro-skeleton-accordion>
+			<iterpro-skeleton-accordion [accordions]="2" [showTitle]="true"></iterpro-skeleton-accordion>
+		</div>
+		<div [class.tw-hidden]="activeMenu != menuItems[1]">
+			<iterpro-skeleton-accordion [accordions]="5" [showTitle]="true"></iterpro-skeleton-accordion>
+			<iterpro-skeleton-accordion [accordions]="1" [showTitle]="true"></iterpro-skeleton-accordion>
+			<iterpro-skeleton-accordion [accordions]="1" [showTitle]="true"></iterpro-skeleton-accordion>
+		</div>
+	</div>
+}
+
+<ng-template #itemTemplate let-item="item">
+	<div class="tw-flex tw-flex-col tw-gap-2 tw-items-end tw-text-sm iterpro-text-color-900 tw-mb-4" [formGroup]="teamMetricsForm">
+		@if (item.validators) {
+			@if (teamMetricsForm.controls[item.value].controls.active.errors) {
+				<iterpro-form-feedback [groupName]="item.value"
+															 [clickedCondition]="teamMetricsForm.controls[item.value].controls.active.errors"
+															 [field]="'active'"
+															 [type]="'custom'"
+															 [label]="item.validators.customError ? (item.validators.customError | translate : { value: teamMetricsForm.controls[item.value].controls.active.errors?.customError | translate })
+														 : teamMetricsForm.controls[item.value].controls.active.value.length > item.validators.maxMetrics ? (item.validators.maxError | translate)
+														  : teamMetricsForm.controls[item.value].controls.active.value.length < item.validators.minMetrics ? (item.validators.minError | translate) : null">
+
+				</iterpro-form-feedback>
+			}
+			<div>Min: {{item.validators.minMetrics}}, Max: {{ item.validators.maxMetrics }} @if (item.validators.suffixLabel) {<span translate>{{ item.validators.suffixLabel }}</span>}</div>
+		}
+		<div class="tw-flex tw-align-middle tw-gap-2">
+			<div translate>{{item.description}}</div>
+			@if (editMode && item.editable) {
+				<iterpro-icon-button
+					[icon]="'fas fa-plus'"
+					[tooltip]="'buttons.addNew' | translate"
+					(click)="editCustomMetric(item.value)">
+				</iterpro-icon-button>
+			}
+		</div>
+	</div>
+	<p-pickList
+		[disabled]="!editMode"
+		[filterBy]="item.filterLabel"
+		[showSourceControls]="false"
+		[showTargetControls]="true"
+		[source]="teamMetricsForm.controls[item.value].controls.available.value"
+		[target]="teamMetricsForm.controls[item.value].controls.active.value"
+		(onMoveToTarget)="onMoveTo(item.value, item.filterValue, true, $event)"
+		(onMoveToSource)="onMoveTo(item.value, item.filterValue, false, $event)"
+		(onMoveAllToTarget)="onMoveTo(item.value, item.filterValue, true, $event)"
+		(onMoveAllToSource)="onMoveTo(item.value, item.filterValue, false, $event)"
+		[responsive]="true"
+		[sourceHeader]="teamMetricsForm.controls[item.value].controls.available.value | picklistHeaderLabel : item.availableLabel"
+		[targetHeader]="teamMetricsForm.controls[item.value].controls.active.value | picklistHeaderLabel : 'preferences.metrics.active' : item.activeGroupBy"
+		[dragdrop]="editMode"
+		[showSourceFilter]="editMode"
+		[showTargetFilter]="editMode"
+		[sourceFilterPlaceholder]="editMode ? ('videogallery.search.placeholder' | translate) : null"
+		[targetFilterPlaceholder]="editMode ? ('videogallery.search.placeholder' | translate) : null"
+	>
+		<ng-template let-metric pTemplate="item">
+			<div (dblclick)="stop($event)" class="tw-flex tw-align-middle tw-justify-between">
+				<div>
+					@if (metric?.type) {
+						<span class="tw-mr-1">{{('prevention.treatments.' + metric.type) | translate }} -</span>
+						@if (metric.type === 'physiotherapy') {
+							<span class="tw-mr-1">{{('medical.prevention.treatments.physiotherapy.' + metric.category) | translate }} -</span>
+						}
+					}
+					@else if (metric?.category) {
+						<span class="tw-mr-1">{{('profile.attributes.' + metric.category) | translate }} -</span>
+					}
+					<span translate>{{ metric[item.filterLabel] }}</span>
+				</div>
+				@if (editMode && item.editable && metric.custom) {
+					<div class="tw-flex tw-align-middle tw-gap-2">
+						<iterpro-icon-button
+							[icon]="'fas fa-pencil tw-text-shark-800'"
+							[tooltip]="'buttons.edit' | translate"
+							(click)="editCustomMetric(item.value, metric)">
+						</iterpro-icon-button>
+						<iterpro-icon-button
+							[icon]="'fas fa-trash tw-text-shark-800'"
+							[tooltip]="'buttons.delete' | translate"
+							(click)="removeMetric(item.value, metric)">
+						</iterpro-icon-button>
+					</div>
+				}
+			</div>
+		</ng-template>
+	</p-pickList>
+</ng-template>

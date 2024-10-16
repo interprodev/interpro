@@ -1,0 +1,23 @@
+{
+	"name": "PlayerCalculatedData",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"playerId": {
+			"type": "string"
+		},
+		"robustnessData": {
+			"type": "array"
+		},
+		"bonuses": {
+			"type": "array"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

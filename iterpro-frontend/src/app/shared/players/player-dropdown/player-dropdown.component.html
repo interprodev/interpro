@@ -1,0 +1,30 @@
+<p-dropdown
+	appendTo="body"
+	[ngStyle]="{ width: '100%', display: 'flex', 'align-items': 'center', 'min-height': imgHeight }"
+	[filter]="true"
+	filterBy="displayName"
+	[showClear]="showClear"
+	[group]="group"
+	[options]="options | playersToDropdownType"
+	[ngModel]="playerId"
+	[disabled]="disabled"
+	optionValue="id"
+	[placeholder]="placeholder | translate"
+	(onChange)="onPlayerChange($event)"
+>
+	<ng-template let-group pTemplate="group">
+		<div class="tw-text-bold tw-uppercase">{{ group.label }}</div>
+	</ng-template>
+	<ng-template let-item pTemplate="item">
+		<ng-container *ngTemplateOutlet="playerTemplate; context: { $implicit: item, imgHeight: '35px' }"></ng-container>
+	</ng-template>
+	<ng-template let-item pTemplate="selectedItem">
+		<ng-container *ngTemplateOutlet="playerTemplate; context: { $implicit: item, imgHeight }"></ng-container>
+	</ng-template>
+	<ng-template #playerTemplate let-item let-imgHeight="imgHeight">
+		<div class="tw-flex tw-items-center tw-gap-4 tw-h-full">
+			<iterpro-picture class="tw-bg-white tw-rounded tw-overflow-hidden" [ngStyle]="{ height: imgHeight }" [photoUrl]="item.downloadUrl" />
+			<div>{{ item[optionLabel] }}</div>
+		</div>
+	</ng-template>
+</p-dropdown>

@@ -1,0 +1,14 @@
+<p-accordion>
+	<div class="tw-mb-4">
+		@if (showTitle) {
+			<h3 translate class="tw-uppercase tw-mb-2"><p-skeleton width="150px"></p-skeleton></h3>
+		}
+		@for (item of accordions | arrayFromNumber; track $index) {
+			<p-accordionTab [disabled]="true">
+				<ng-template pTemplate="header">
+					<p-skeleton [width]="(100 * ($index + 1)) + 'px'"></p-skeleton>
+				</ng-template>
+			</p-accordionTab>
+		}
+	</div>
+</p-accordion>

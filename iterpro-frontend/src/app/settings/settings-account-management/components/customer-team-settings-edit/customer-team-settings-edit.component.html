@@ -1,0 +1,82 @@
+@if (teamSettingForm) {
+	<div class="tw-h-full tw-relative" [formGroup]="teamSettingForm">
+		<div class="tw-flex tw-items-center tw-justify-between tw-py-8 tw-gap-2">
+			<iterpro-dialog-header [title]="header"></iterpro-dialog-header>
+			<iterpro-action-buttons [buttonTypes]="teamSettings?.id ? (teamSettingForm.dirty ? ['delete'] : ['discard', 'delete']) : (teamSettingForm.dirty ? [] : ['discard'])"
+															[editMode]="true" [discardLabel]="'buttons.close'" [discardIcon]="null"
+															[deleteAskConfirmation]="true"
+															(discard)="onDiscard()" (delete)="onDelete()">
+			</iterpro-action-buttons>
+		</div>
+		<div class="tw-flex tw-flex-col">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container tw-mb-2">
+				<div class="tw-text-sm iterpro-text-color-900" translate>settings.userPreferences</div>
+				<div>{{customer.firstName}} {{customer.lastName}}</div>
+			</div>
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container tw-mb-2">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.email</div>
+				<div>{{customer.email}}</div>
+			</div>
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container tw-mb-2">
+				<div class="tw-text-sm iterpro-text-color-900" translate>profile.team</div>
+				<div>{{teamName}}</div>
+			</div>
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.position</div>
+				<div>
+					<p-dropdown
+						appendTo="body"
+						[options]="positionsOptions"
+						[filter]="true"
+						[placeholder]="'dropdown.placeholder' | translate"
+						formControlName="position"
+					></p-dropdown>
+				</div>
+			</div>
+			<div class="tw-my-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'position'" [label]="'permissions.position' | translate"></iterpro-form-feedback>
+			</div>
+
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.permissions</div>
+				<div>
+					<p-multiSelect
+						appendTo="body"
+						[group]="true"
+						[options]="permissionsOptions"
+						selectedItemsLabel="{0} selected"
+						maxSelectedLabels="2"
+						[placeholder]="'multiselect.placeholder' | translate"
+						formControlName="permissions"
+					>
+					</p-multiSelect>
+				</div>
+			</div>
+			<div class="tw-my-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'permissions'" [label]="'permissions.permissions' | translate"></iterpro-form-feedback>
+			</div>
+
+			<div class="tw-grid tw-grid-cols-2 tw-items-center iterpro-item-container">
+				<div class="tw-text-sm iterpro-text-color-900" translate>permissions.mobilePermissions</div>
+				<div>
+					<p-multiSelect
+						appendTo="body"
+						[options]="mobilePermissionsOptions"
+						selectedItemsLabel="{0} selected"
+						maxSelectedLabels="2"
+						[placeholder]="'multiselect.placeholder' | translate"
+						formControlName="mobilePermissions"
+					>
+					</p-multiSelect>
+				</div>
+			</div>
+			<div class="tw-my-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'mobilePermissions'" [label]="'permissions.mobilePermissions' | translate"></iterpro-form-feedback>
+			</div>
+		</div>
+
+		@if (teamSettingForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()" [confirmAskConfirmation]="true"></iterpro-dialog-footer-buttons>
+		}
+	</div>
+}

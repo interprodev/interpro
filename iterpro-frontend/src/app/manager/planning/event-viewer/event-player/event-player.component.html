@@ -1,0 +1,36 @@
+<div class="tw-p-2 tw-flex tw-items-center tw-justify-between tw-gap-2 tw-bg-shark-900">
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<div class="tw-flex tw-items-center tw-gap-2" [ngClass]="expandable ? 'tw-w-[180px]' : 'tw-w-[160px]'">
+			<p-checkbox [disabled]="!editable || (selection !== undefined && !selection.selectable)" [(ngModel)]="selected" binary="true" (onChange)="selectPlayer($event)"></p-checkbox>
+			<iterpro-picture [photoUrl]="photoUrl"
+											 [baseClass]="'tw-w-[24px] tw-h-[24px]'"
+											 class="tw-block tw-bg-white tw-rounded-sm tw-overflow-hidden"
+											 [class.tw-grayscale]="!selected" [class.tw-opacity-50]="!selected"
+			></iterpro-picture>
+			<div>{{displayName}}</div>
+		</div>
+		<div class="tw-flex tw-items-center tw-gap-8">
+			<div class="iterpro-point" [ngClass]="getPointColorClass()"></div>
+			@if (selection !== undefined) {
+				@if (!selection.selectable) {
+					<span class="tw-badge tw-bg-danger-500 tw-text-white tw-p-[0.5] tw-rounded-full tw-text-xs tw-px-4">{{selection.cause}}</span>
+				} @else if (healthStatus === 'injury') {
+					<span class="tw-badge tw-bg-danger-500 tw-text-white tw-p-[0.5] tw-rounded-full tw-text-xs tw-px-4" translate>tooltip.injured</span>
+				}
+				@if (injuryOccurred) {
+					<i class="fas fa-bone-break"></i>
+				}
+			}
+		</div>
+	</div>
+	@if (eventFormat === 'training' && selected) {
+		<p-dropdown [options]="trainingOptions"
+								[ngModel]="modified"
+								[disabled]="!editable"
+								[dropdownIcon]="'fas fa-chevron-down'"
+								(onChange)="playerModified.emit($event.value)"></p-dropdown>
+	}
+	@if (expandable) {
+		<iterpro-icon-button [icon]="!expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-up'" [small]="true" [tooltip]="(!expanded ? 'buttons.show' : 'buttons.hide') | translate" (click)="expanded = !expanded" [disabled]="!editable"></iterpro-icon-button>
+	}
+</div>

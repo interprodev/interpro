@@ -1,0 +1,8 @@
+<div class="legend-row" *ngFor="let row of legendConfig">
+  <div class="legend-left">
+    <i *ngIf="row.type === legendRowTypes.Icon" [class]="row.icon" aria-hidden="true"></i>
+    <div *ngIf="row.type === legendRowTypes.Circle" class="circle" [ngStyle]="{'border-color': row.color}"></div>
+    <div *ngIf="row.type === legendRowTypes.Point" class="point" [ngStyle]="{'background-color': row.color}"></div>
+  </div>
+  <div class="legend-right">{{ row.label | translate }}</div>
+</div>

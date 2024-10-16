@@ -1,0 +1,46 @@
+<div
+	class="tw-relative tw-block tw-h-[350px] tw-cursor-pointer tw-overflow-hidden tw-rounded-md tw-shadow-md"
+	[ngClass]="{ 'tw-pointer-events-none tw-opacity-80': !enabled }"
+	[routerLink]="getLink()"
+>
+	<!-- Z-INDEX 0: Image -->
+	<img
+		class="tw-relative tw-z-0 tw-h-full tw-w-full tw-object-cover tw-opacity-80 tw-transition-transform tw-duration-200 tw-ease-linear"
+		[src]="img ? img : 'assets/img/blocks/default.jpg'"
+		[alt]="title"
+	/>
+
+	<!-- Z-INDEX 1: Gradient -->
+	<div
+		[ngClass]="{ gradient: enabled, disabledGradient: !enabled }"
+		class="tw-z-5 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-top-0"
+	></div>
+
+	<!-- Z-INDEX 3: Text -->
+	<div
+		class="text-box tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-top-0 tw-z-20 tw-p-6 tw-transition-transform tw-duration-100 tw-ease-linear"
+		[ngClass]="{ 'tw-opacity-60': !enabled }"
+	>
+		<h3 class="tw-mb-4 tw-uppercase">
+			{{ title | translate }}
+		</h3>
+		<p class="tw-max-w-20rem tw-w-full tw-text-base">{{ subtitle | translate }}</p>
+	</div>
+
+	<!-- Z-INDEX 4: DISABLED BLOCK -->
+	<!--	<div *ngIf="enabled"
+		class="tw-bg-red-900 tw-opacity-70 tw-z-30 tw-absolute tw-top-0 tw-bottom-0 tw-left-0 tw-right-0">
+	</div>-->
+	@if (!enabled) {
+		<i class="fas fa-lock lock-icon tw-z-30 tw-text-6xl tw-opacity-60"></i>
+	}
+
+	<!-- TEXT BETA -->
+	@if (beta) {
+		<p
+			class="tw-border-round-md tw-absolute tw-bottom-0 tw-right-0 tw-z-30 tw-mb-2 tw-mr-2 tw-block tw-bg-red-500 tw-p-2"
+		>
+			Beta
+		</p>
+	}
+</div>

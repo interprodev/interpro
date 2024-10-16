@@ -1,0 +1,54 @@
+<span class="inline-group">
+	<span *ngIf="financial" class="asset">
+		<p-checkbox
+			[(ngModel)]="bonus.asset"
+			title="{{ (bonus.asset === true ? 'toAnnual' : 'toAsset') | translate }}"
+			binary="true"
+			name="asset"
+			#STBonus_asset="ngModel"
+		></p-checkbox>
+	</span>
+	<span style="color: var(--color-neutral-900); margin-right: 1em" translate>admin.contracts.teamBonus.label</span>
+	<p-dropdown
+		[options]="teamActions"
+		[(ngModel)]="bonus.type"
+		name="action"
+		#STBonus_action="ngModel"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+	></p-dropdown>
+	<input
+		*ngIf="bonus.action === 'achieves' && (bonus.goal === 'wins' || bonus.goal === 'points')"
+		style="width: 5%; margin-left: 1em; margin-right: 1em"
+		pInputText
+		[(ngModel)]="bonus.count"
+		name="count"
+		#pBonus_count="ngModel"
+		type="number"
+	/>
+	<p-dropdown
+		*ngIf="bonus.action === 'achieves'"
+		[options]="teamActionsGoal"
+		[(ngModel)]="bonus.goal"
+		name="actionAchieves"
+		#STBonus_actionAchieves="ngModel"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+	></p-dropdown>
+	<p-multiSelect
+		maxSelectedLabels="1"
+		*ngIf="bonus.type !== 'achieves'"
+		[options]="competitions"
+		[(ngModel)]="bonus.competition"
+		name="competition"
+		#STBonus_competition="ngModel"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+	></p-multiSelect>
+	<span style="color: var(--color-neutral-900); margin-right: 1em" translate>admin.contracts.teamBonus.inSeason</span>
+	<p-multiSelect
+		maxSelectedLabels="1"
+		[options]="seasons"
+		[(ngModel)]="bonus.season"
+		name="season"
+		#season="ngModel"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+	></p-multiSelect>
+</span>

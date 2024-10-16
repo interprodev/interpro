@@ -1,0 +1,19 @@
+<div class="pflex-mb-4">
+	<h5 class="greyed pflex-mb-4">{{ 'sessionAnalysis.pdfMetrics' | translate }}</h5>
+	<p-multiSelect
+		appendTo="body"
+		selectedItemsLabel="{0} selected"
+		maxSelectedLabels="1"
+		[optionLabel]="'metricLabel'"
+		[options]="metrics"
+		[(ngModel)]="selectedPDFMetrics"
+	>
+	</p-multiSelect>
+</div>
+<p-button
+	size="small"
+	class="video-button buttons-panel pflex-w-full pflex-mb-2"
+	(click)="applyMetrics()"
+>
+	{{ 'buttons.apply' | translate }}
+</p-button>

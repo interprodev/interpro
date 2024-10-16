@@ -1,0 +1,168 @@
+<!-- FILTERS -->
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded tw-mb-4" [class.tw-hidden]="!showFilters">
+	<div class="tw-w-full tw-flex tw-justify-between">
+		<p-button type="button"
+							[outlined]="true"
+							[size]="'small'"
+							[label]="'RESET' | translate" (click)="resetFilters()"></p-button>
+		<!-- Filters / Table Columns -->
+		<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+			<ng-template pTemplate="item" let-item>
+				<a class="p-menuitem-link tw-px-2 tw-py-1">
+					<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+					<i class="tw-ml-2" [class]="item.icon"></i>
+				</a>
+			</ng-template>
+		</p-tabMenu>
+	</div>
+	<div>
+		@switch (activeFilterTabType) {
+			@case (filtersTabTypes[0]) {
+				<iterpro-table-filter *ngIf="playersBackup" [class.maximize]="true" [items]="playersBackup"
+															[options]="filterOptions" [hideReset]="true" (filterEmitter)="filterPlayers($event.filteredItems)" />
+			}
+			@case (filtersTabTypes[1]) {
+				<iterpro-table-column-filter [options]="columnOptions" [hideReset]="true"
+																		 (onChange)="changeViewableColumns($event)" />
+			}
+		}
+	</div>
+</div>
+
+<!-- CONTENT -->
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+	@if (!isTableLoading) {
+		<!-- TABLE -->
+		<p-table [value]="players" [columns]="columns"
+						 [scrollable]="true"
+						 [styleClass]="'p-datatable-striped'"
+						 [rowHover]="true"
+						 dataKey="id" scrollHeight="65vh">
+
+			<!-- TABLE HEADER -->
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10 tw-cursor-pointer">
+					<th *ngFor="let col of columns; let i = index"
+							class="tw-w-min"
+							[ngStyle]="{
+							height: '46px',
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? (col.width + 'px') : '150px',
+							width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+						}"
+							[pSortableColumn]="col.sortable ? col.field : undefined"
+							pFrozenColumn
+							[frozen]="col.frozen"
+					>
+						{{ col.header }}
+						<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+			</ng-template>
+
+			<!-- TABLE BODY -->
+			<ng-template pTemplate="body" let-rowData>
+				<tr class="tw-h-10" (click)="onRowClick(rowData)">
+					<td *ngFor="let col of columns; let i = index"
+							[ngStyle]="{
+							justifyContent: !!col.align ? col.align : 'center',
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? col.width : '150px',
+							width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+						}"
+						pFrozenColumn
+						[frozen]="col.frozen"
+					>
+
+						<!-- SWITCH -->
+						@switch (col.type) {
+							@case ('image') {
+								<div class="tw-h-14 tw-w-14 tw-flex tw-items-center tw-justify-center tw-rounded tw-overflow-hidden">
+									<iterpro-picture [photoUrl]="rowData.downloadUrl" class="tw-block tw-bg-white" />
+								</div>
+							}
+
+							@case ('year') {
+								{{ rowData[col.field] | formatDateBySetting }}
+							}
+
+							@case ('date') {
+								{{ rowData[col.field] | formatDateBySetting }}
+							}
+
+							@case ('age') {
+								{{ rowData[col.field] | age }}
+							}
+
+							@case ('percentage') {
+								{{ rowData[col.field] | shortNumber }}%
+							}
+
+							@case ('flag') {
+								<iterpro-player-flag lang="{{ rowData[col.field] }}" />
+							}
+
+							@case ('translate') {
+								<ng-container *ngIf="rowData && col.field">
+									<span *ngIf="!col?.translateValuePrefix">{{ rowData[col.field] | translate }}</span>
+									<span *ngIf="col?.translateValuePrefix">{{ col?.translateValuePrefix + rowData[col.field] | translate
+										}}</span>
+								</ng-container>
+							}
+
+							@case ('injury') {
+								<iterpro-injury-icon [style]="'unset'" [injuries]="rowData.injuries" />
+							}
+
+							@case ('readiness') {
+								<span class="pt-readiness" [style.background-color]="getReadinessColor(rowData)"></span>
+							}
+
+							@case ('expiration') {
+								<i *ngIf="rowData.expiration" class="fas fa-file-certificate"
+									 [pTooltip]="rowData.expirationDescription"></i>
+							}
+
+							@case ('test') {
+								{{ (rowData.testResults[col.field])?.currentValue || '-' }}
+								<span *ngIf="(rowData.testResults[col.field])?.interval" class="pt-readiness"
+											[style.background-color]="(rowData.testResults[col.field]).interval"
+											[pTooltip]="(rowData.testResults[col.field])?.date | formatDateBySetting"></span>
+							}
+
+							@case ('pending') {
+								<i *ngIf="rowData.pending" [escape]="false" [pTooltip]="rowData.pendingDescription"
+									 tooltipStyleClass="widthTooltip" class="fas fa-clock"></i>
+
+								<i *ngIf="rowData.preventionNext" tooltipStyleClass="widthTooltip" [escape]="false"
+									 [pTooltip]="rowData.preventionNextDescription" class="fas fa-clock"></i>
+							}
+
+							@case('playerAttributes') {
+								<div *ngIf="rowData.playerAttributes" class="playerAttributes"
+										 [pTooltip]="rowData.playerAttributes[col.field]?.tooltip | translate" tooltipStyleClass="longTooltip">
+							<span class="semaphore" [style.background-color]="rowData.playerAttributes[col.field]?.backgroundColor"
+										[style.color]="rowData.playerAttributes[col.field]?.color">
+								{{ rowData.playerAttributes[col.field]?.value || '-' }}
+							</span>
+								</div>
+							}
+
+							@case ('number') {
+								{{ rowData[col.field] | number: '1.0-1'}}
+							}
+
+							@default {
+								{{ rowData[col.field] }}
+							}
+						}
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<!-- TABLE LOADING -->
+		<iterpro-skeleton-table [rows]="26" [cols]="10" [showProfilePic]="true"></iterpro-skeleton-table>
+	}
+
+</div>

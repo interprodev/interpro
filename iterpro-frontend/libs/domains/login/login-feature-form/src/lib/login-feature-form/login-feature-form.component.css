@@ -1,0 +1,187 @@
+.login-progress-spinner {
+  width: 100%;
+  margin-top: 3em;
+  text-align: center;
+}
+
+.login-container {
+  display: flex;
+  height: 100%;
+  font-family: "Exo 2";
+}
+.login-container .login-container-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.login-container .login-container-row .login-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.login-container .login-container-row .login-section .login-content {
+  padding: 3em;
+  min-height: 60vh;
+}
+.login-container .login-container-row .login-section .login-content .login-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-header {
+  color: var(--color-neutral-500);
+  margin-bottom: 1em;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-header .login-subheader {
+  font-size: 1.2rem;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-header h2 {
+  color: var(--color-neutral-100);
+  margin-bottom: 0.8em;
+  text-transform: unset;
+  font-family: "Exo 2";
+  font-weight: bold;
+  font-size: 3rem;
+  letter-spacing: 0em;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-content {
+  width: 100%;
+  margin-top: 3.5em;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-content .login-input-fields {
+  margin: 1em 0 1em 0;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-content .login-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 3rem;
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-content .login-actions button {
+  font-family: "Exo 2";
+  font-size: 1.5em;
+  font-weight: bold;
+  width: 100%;
+  height: 3.5rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 2.5px 0 rgba(0, 0, 0, 0.26), 0 1px 5px 0 rgba(0, 0, 0, 0.16);
+}
+.login-container .login-container-row .login-section .login-content .login-form .login-form-content .login-actions a {
+  cursor: pointer;
+  color: var(--color-neutral-500);
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+.login-container .login-container-row .login-section.left {
+  background-color: white;
+  width: 65%;
+}
+.login-container .login-container-row .login-section.right {
+  background-color: #1a1a1a;
+  background: linear-gradient(225deg, rgb(26, 26, 26), 80%, rgb(65, 65, 65));
+  width: 35%;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.login-container .login-container-row .login-section.right > * {
+  margin-left: 20%;
+  font-weight: 300;
+  z-index: 2;
+}
+
+.logo {
+  margin-top: 11em;
+  padding-left: 0.4em;
+  width: 10em;
+}
+
+.cropped {
+  width: 100%;
+  margin-left: 0 !important;
+  margin-top: auto;
+  z-index: 0 !important;
+}
+
+.rotated {
+  margin-left: auto !important;
+  margin-top: auto;
+  width: 50%;
+  z-index: 0 !important;
+}
+
+.sub-logo {
+  font-size: 3.5em;
+  width: 30%;
+}
+
+.sub-sub-logo {
+  margin-top: 2em;
+  font-size: 2em;
+  color: var(--color-neutral-900);
+}
+
+.centered {
+  text-align: center;
+}
+
+.small-text {
+  font-size: 0.7em;
+}
+
+.store-icon-android {
+  height: 68px;
+  width: auto;
+}
+
+.store-icon-ios {
+  height: 48px;
+  width: auto;
+}
+
+.login-input {
+  padding: 1em 0.5em 1em 0.5em !important;
+  color: var(--color-neutral-100) !important;
+  background-color: rgba(32, 51, 69, 0.04);
+}
+
+.login-label {
+  display: block;
+  text-transform: uppercase;
+  margin: 0.5rem 0 1rem 0;
+  font-weight: bold;
+  color: var(--color-neutral-500);
+  font-size: 0.9rem;
+}
+
+@media screen and (min-width: 400px) {
+  .login-content {
+    max-width: 32.5rem;
+  }
+}
+@media screen and (min-width: 720px) {
+  .login-content {
+    max-width: 45rem;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .login-content {
+    max-width: 53.75rem;
+  }
+  .login-form-content {
+    max-width: 70%;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .login-content {
+    max-width: 58.5rem;
+  }
+}
+@media screen and (max-width: 1023px) {
+  .login-section.right {
+    display: none;
+  }
+  .login-section.left {
+    width: 100%;
+  }
+}/*# sourceMappingURL=login-feature-form.component.css.map */

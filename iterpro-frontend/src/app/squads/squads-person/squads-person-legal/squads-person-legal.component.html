@@ -1,0 +1,270 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div *ngIf="personType !== 'Agent'" class="rowProfile">
+				<div class="row" style="margin-bottom: 1em">
+					<div>
+						<div *ngIf="!isTransferSection || (isTransferSection && person['sell'] === true)" class="header-element">
+							<span class="inline-label uppercase" style="margin-left: 0"
+								translate>admin.contracts.currentStatus<span>:</span></span>
+							<span>{{ person.currentStatus ? ('profile.status.' + person.currentStatus | translate) : '' }}</span>
+						</div>
+						<span *ngIf="person.archived && person.currentStatus === 'disciplinary' && person._statusHistory[0]"
+							style="margin-left: 1em; color: red; text-transform: none">
+							{{ person._statusHistory[0]?.notes }}, {{ currency }}{{ person._statusHistory[0]?.fine }}
+						</span>
+					</div>
+					<div class="end">
+						<span *ngIf="selectedContract" class="flexed" style="margin-right: 2em">
+							<span class="greyed" style="display: flex; align-items: center; margin-right: 2em">
+								<span style="margin-right: 0.5em" translate>contract.installmentsDetails</span>
+								<p-inputSwitch [(ngModel)]="extended" [ngModelOptions]="{ standalone: true }"
+									[style]="{ 'font-size': '0.75em' }">
+								</p-inputSwitch>
+							</span>
+							<span style="display: flex; align-items: center">
+								<span class="greyed" style="margin-right: 0.5em" translate>financial.dashboard.netCosts</span>
+								<p-inputSwitch [(ngModel)]="postTaxes" [ngModelOptions]="{ standalone: true }"
+									[style]="{ 'font-size': '0.75em' }">
+								</p-inputSwitch>
+							</span>
+						</span>
+						<span *ngIf="selectedContract" class="header-element">
+							<p-dropdown *ngIf="!editMode" appendTo="body" [readonly]="editMode"
+								[options]="dropdownContractList" [(ngModel)]="selectedContract" [ngModelOptions]="{ standalone: true }"
+								(onChange)="onSelectContract($event.value, selectedContractType)"
+								[placeholder]="'dropdown.placeholder' | translate">
+							</p-dropdown>
+							<span *ngIf="(!person.archived || (person.archived && person.currentStatus !== 'sold')) && !editMode"
+								class="report-download" style="margin-left: 1em">
+								<i class="fas fa-plus" (click)="setOpen(!isOpen)" (iterproClickOutside)="setOpen(false)"
+									[pTooltip]="'admin.contracts.addNew' | translate"></i>
+								<div class="report-submenu" [ngStyle]="{ display: isOpen ? 'block' : 'none' }">
+									<div class="report-item" (click)="
+											confirmNewContract({
+												contractData: selectedContract,
+												contractType: selectedContractType,
+												transferType: selectedTransferType,
+												showConfirmationDialog: true
+											})
+										">
+										<span>{{ 'admin.contracts.new' | translate }}</span>
+									</div>
+									<div class="report-item" (click)="
+											confirmRenewContract({
+												contractData: selectedContract,
+												contractType: selectedContractType,
+												transferType: selectedTransferType,
+												showConfirmationDialog: true
+											})
+										">
+										<span>{{ 'admin.contracts.renew' | translate }}</span>
+									</div>
+								</div>
+							</span>
+						</span>
+						<!-- <div *ngIf="team.contractExportCredentials && team.contractExportCredentials.endpointUrl && canViewExport()"
+              class="header-element" style="margin-left:1em">
+              <button class="exportBtn" [disabled]="!isAllValid()" [(ngModel)]="team.contractExportCredentials"
+                (click)="onExportClick()"
+                [pTooltip]="(isAllValid() ? 'export.external.api' : 'export.external.nonExportable') | translate"
+                translate>
+                Export
+              </button>
+            </div> -->
+						<span style="font-size: 1.2em; float: right; margin-left: 1em">
+							<i *ngIf="selectedContract && canViewNotify()" style="text-transform: none" class="fas fa-bell-plus"
+								(click)="openNotify()" pTooltip="{{ 'notifyContract.label' | translate }}" translate></i>
+							<iterpro-report-download style="margin-left: 1em" (downloadPDF)="getReport()"></iterpro-report-download>
+						</span>
+					</div>
+				</div>
+				<div class="row" *ngIf="!selectedContract">
+					<div style="width: 100%">
+						<ng-container *ngTemplateOutlet="contractList"></ng-container>
+					</div>
+				</div>
+			</div>
+
+			<div *ngIf="personType === 'Agent' && !selectedContract" class="rowProfile">
+				<div class="row" style="margin-bottom: 1em">
+					<div class="end">
+						<!--						<player-dropdown
+							*ngIf="editMode"
+							[options]="players"
+							optionLabel="displayName"
+							(onPlayerChange)="onSelectPlayer($event)"
+							placeholder="{{ 'dropdown.placeholderPlayer' | translate }}"
+						></player-dropdown>-->
+					</div>
+				</div>
+				<div class="row" *ngIf="assistedPlayers?.length > 0; else noRecordsFound">
+					<iterpro-side-tabs style="width: 100%" (changeEmitter)="onSelectAssisted($event)">
+						<iterpro-side-tab *ngFor="let player of assistedPlayers" tabTitle="{{ player.displayName }}">
+							<ng-container *ngTemplateOutlet="contractList"></ng-container>
+						</iterpro-side-tab>
+					</iterpro-side-tabs>
+				</div>
+				<ng-template #noRecordsFound><span translate>alert.noRecordsFound</span></ng-template>
+			</div>
+
+			<div class="rowProfile" *ngIf="selectedContract">
+				<div class="row" *ngIf="selectedContractType === 'transfer' && selectedTransferType === 'outward'">
+					<iterpro-transfer-contract *ngIf="translation" style="width: 100%" [personType]="personType"
+						[personId]="person.id" [(ngModel)]="selectedContract" [outward]="true" [editMode]="editMode"
+						[financial]="financialMode" [team]="team" [currency]="currency" [seasons]="seasons" [agents]="agents"
+						[club]="club" [customers]="customers" [translation]="translation" [extended]="extended"
+						[postTaxes]="postTaxes" (submitContract)="onSubmit($event)">
+					</iterpro-transfer-contract>
+				</div>
+				<div class="row" *ngIf="selectedContractType === 'transfer' && selectedTransferType === 'inward'">
+					<iterpro-transfer-contract *ngIf="translation" style="width: 100%" [personType]="personType"
+						[personId]="person.id" [(ngModel)]="selectedContract" [outward]="false" [editMode]="editMode"
+						[financial]="financialMode" [team]="team" [currency]="currency" [seasons]="seasons" [agents]="agents"
+						[club]="club" [customers]="customers" [translation]="translation" [extended]="extended"
+						[postTaxes]="postTaxes" (submitContract)="onSubmit($event)">
+					</iterpro-transfer-contract>
+				</div>
+				<div class="row" *ngIf="selectedContractType === 'employment'">
+					<iterpro-employment-contract *ngIf="translation" style="width: 100%" [personType]="personType"
+						[personId]="person.id" [employments]="employments" [inwards]="inwards" [outwards]="outwards"
+						[(ngModel)]="selectedContract" [editMode]="editMode" [financial]="financialMode" [team]="team" [club]="club"
+						[currency]="currency" [seasons]="seasons" [agents]="agents" [translation]="translation"
+						[customers]="customers" [extended]="extended" [postTaxes]="postTaxes" (submitContract)="onSubmit($event)">
+					</iterpro-employment-contract>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<iterpro-notify-customers-dialog [customers]="customers" [visible]="visibleNotify"
+	(saveEmitter)="onNotifyCustomers($event)" (discardEmitter)="onDiscardNotifyEmitter()">
+</iterpro-notify-customers-dialog>
+
+<p-dialog [(visible)]="renewContractDialog.visible" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" modal="modal">
+	<h3 translate>confirm.title</h3>
+	<div style="margin-bottom: 2em">
+		<span translate>confirm.renewContract</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-contrast" (click)="onRenewContract(renewContractDialog, true)"
+			[label]="'copy' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="onRenewContract(renewContractDialog, false)"
+			[label]="'blank' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="discardRenewContract()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="newContractDialog.visible" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" modal="modal">
+	<h3 translate>confirm.title</h3>
+	<div style="margin-bottom: 2em">
+		<span translate>confirm.newContract</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-contrast" (click)="onNewContract(newContractDialog, true)"
+			[label]="'copy' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="onNewContract(newContractDialog, false)"
+			[label]="'blank' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="discardNewContractDialog()" [label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>
+
+<ng-container *ngIf="isActiveTab">
+	<ng-container *iterproTeleportTo="'.legal-buttons'">
+		<p-button size="small" styleClass="p-button-contrast" *ngIf="!editMode && selectedContract" style="margin-right: 1em"
+			(click)="onBack()" [label]="'buttons.back' | translate">
+		</p-button>
+		<ng-container *ngIf="personType !== 'Agent'">
+			<p-button size="small" styleClass="p-button-contrast" *ngIf="!editMode && selectedContract" style="margin-right: 1em" (click)="onEdit()" [label]="'buttons.edit' | translate">
+			</p-button>
+			<p-button size="small" styleClass="p-button-danger"  *ngIf="!editMode && selectedContract && personType !== 'Agent'" style="margin-right: 1em"
+							(click)="onDeleteContract({ contractData: selectedContract, contractType: selectedContractType })" [label]="'buttons.delete' | translate">
+			</p-button>
+			<button pButton size="small" class="p-button-primary"  *ngIf="editMode && selectedContractType === 'employment'" style="margin-right: 1em" form="form"
+							type="submit" [label]="'buttons.save' | translate">
+			</button>
+			<button pButton size="small" class="p-button-contrast" *ngIf="editMode && selectedContractType === 'transfer'" style="margin-right: 1em"
+							form="formTransfer" type="submit" [label]="'buttons.save' | translate">
+			</button>
+			<p-button size="small" styleClass="p-button-contrast" *ngIf="editMode" style="margin-right: 1em" (click)="onDiscard()" [label]="'buttons.discard' | translate"></p-button>
+		</ng-container>
+	</ng-container>
+</ng-container>
+
+<ng-template #contractList>
+	<p-accordion styleClass="accordion-visible" [activeIndex]="active" (onOpen)="onTabChange($event)">
+		<p-accordionTab *ngIf="personType !== 'Staff'">
+			<p-header class="p-accordion-header-text">
+				{{ 'admin.contracts.outward' | translate }}
+				<span class="invalid-contract" *ngIf="existsInvalidTransferContracts(outwards)"
+					[pTooltip]="'admin.contracts.incomplete' | translate">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+			</p-header>
+			<div class="item-container">
+				<iterpro-contract-list-item *ngIf="personType !== 'Agent'" [contractType]="'transfer'" [transferType]="'outward'"
+					[isNew]="true" (newContract)="confirmNewContract($event)">
+				</iterpro-contract-list-item>
+				<ng-container *ngIf="outwards?.length > 0; else noRecordsFound">
+					<iterpro-contract-list-item *ngFor="let contract of outwards" [personType]="personType" [contract]="contract"
+						[contractType]="'transfer'" [transferType]="'outward'" [hovered]="hoveredContractId" [agents]="agents"
+						[current]="contract.status" [showRenewButton]="!isTransferSection"
+						(newContract)="confirmNewContract($event)" (renewContract)="confirmRenewContract($event)"
+						(selectContract)="onSelectContract($event, 'transfer')" (deleteContract)="onDeleteContract($event)"
+						(hoverContract)="onHoverContract($event)">
+					</iterpro-contract-list-item>
+				</ng-container>
+			</div>
+		</p-accordionTab>
+		<p-accordionTab *ngIf="personType !== 'Staff'">
+			<p-header class="p-accordion-header-text">
+				{{ 'admin.contracts.inward' | translate }}
+				<span class="invalid-contract" *ngIf="existsInvalidTransferContracts(inwards)"
+					[pTooltip]="'admin.contracts.incomplete' | translate">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+			</p-header>
+			<div class="item-container">
+				<iterpro-contract-list-item *ngIf="personType !== 'Agent'" [isNew]="true" [contractType]="'transfer'"
+					[transferType]="'inward'" (newContract)="confirmNewContract($event)">
+				</iterpro-contract-list-item>
+				<ng-container *ngIf="inwards?.length > 0; else noRecordsFound">
+					<iterpro-contract-list-item *ngFor="let contract of inwards" [personType]="personType" [contract]="contract"
+						[contractType]="'transfer'" [transferType]="'inward'" [hovered]="hoveredContractId" [agents]="agents"
+						[current]="contract.status" [showRenewButton]="!isTransferSection"
+						(newContract)="confirmNewContract($event)" (renewContract)="confirmRenewContract($event)"
+						(selectContract)="onSelectContract($event, 'transfer')" (deleteContract)="onDeleteContract($event)"
+						(hoverContract)="onHoverContract($event)">
+					</iterpro-contract-list-item>
+				</ng-container>
+			</div>
+		</p-accordionTab>
+		<p-accordionTab>
+			<p-header class="p-accordion-header-text">
+				{{ 'admin.contracts' | translate }}
+				<span class="invalid-contract" *ngIf="existsInvalidEmploymentContracts(employments)"
+					[pTooltip]="'admin.contracts.incomplete' | translate">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+			</p-header>
+			<div class="item-container">
+				<iterpro-contract-list-item *ngIf="personType !== 'Agent'" [contractType]="'employment'" [isNew]="true"
+					(newContract)="confirmNewContract($event)">
+				</iterpro-contract-list-item>
+				<ng-container *ngIf="employments?.length > 0; else noRecordsFound">
+					<iterpro-contract-list-item *ngFor="let contract of employments" [personType]="personType" [contract]="contract"
+						[contractType]="'employment'" [hovered]="hoveredContractId" [agents]="agents" [current]="contract.status"
+						[showRenewButton]="!isTransferSection" (newContract)="confirmNewContract($event)"
+						(renewContract)="confirmRenewContract($event)" (selectContract)="onSelectContract($event, 'employment')"
+						(deleteContract)="onDeleteContract($event)" (hoverContract)="onHoverContract($event)">
+					</iterpro-contract-list-item>
+				</ng-container>
+			</div>
+		</p-accordionTab>
+	</p-accordion>
+</ng-template>
+<ng-template #noRecordsFound><span style="color: var(--color-neutral-900)"
+		translate>alert.noRecordsFound</span></ng-template>

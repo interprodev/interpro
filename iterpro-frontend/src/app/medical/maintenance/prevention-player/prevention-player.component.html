@@ -1,0 +1,107 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-2">
+	<!-- Sidebar -->
+	<div class="tw-col-span-1" *ngIf="sideBarOpen">
+		<div class="tw-flex tw-flex-col tw-gap-4">
+			<div class="tw-flex tw-flex-col tw-gap-2 tw-px-4 tw-py-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+				<h4 class="tw-overflow-hidden tw-text-ellipsis">{{ player.displayName | uppercase }}</h4>
+				<iterpro-picture [photoUrl]="player.downloadUrl" class="tw-w-full tw-bg-white tw-rounded tw-overflow-hidden" />
+				<div class="tw-mb-2">
+					<h3 class="tw-mb-1 tw-text-xs greyed" translate>profile.overview.nationality</h3>
+					<span class="tw-text-xs">{{ player.nationality | translate }}</span>
+				</div>
+				<div class="tw-mb-2">
+					<h3 class="tw-mb-1 tw-text-xs greyed" translate>profile.overview.age</h3>
+					<span class="tw-text-xs">{{ player?.birthDate | age }}</span>
+				</div>
+				<div class="tw-mb-2">
+					<h3 class="tw-mb-1 tw-text-xs greyed" translate>Weight</h3>
+					<span class="tw-text-xs">{{ player.weight }}</span>
+				</div>
+				<div class="tw-mb-2">
+					<h3 class="tw-mb-1 tw-text-xs greyed" translate>Height</h3>
+					<span class="tw-text-xs">{{ player.height }}</span>
+				</div>
+			</div>
+
+			<div class="tw-flex tw-flex-col tw-gap-2 tw-px-4 tw-py-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" *ngIf="tabIndex === 0">
+				<h4 class="tw-mb-1 tw-text-xs tw-text-nowrap" translate>clinicalRecords</h4>
+				<div class="tw-mb-2">
+					<h3 class="tw-mb-1 greyed tw-text-xs" translate>clinicalRecords.lastRecord</h3>
+					<span class="tw-text-xs tw-flex tw-gap-4">
+					<span>{{ getMedicalRecords(player) | formatDateBySetting }}</span>
+					<i
+						[pTooltip]="'goToMedicalRecords' | translate"
+						(click)="goToClinicalRecords(player)"
+						class="fas fa-external-link hover:tw-underline"
+					></i>
+				</span>
+				</div>
+				<div>
+					<h3 class="tw-mb-1 greyed tw-text-xs" translate>sidebar.expirationDate</h3>
+					<span class="tw-text-xs tw-flex tw-gap-4">
+					{{ getMedicalRecordsExpDate(player) | formatDateBySetting }}
+				</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Main Container -->
+	<div class="tw-col-span-11">
+		<div>
+			<p-tabView [activeIndex]="tabIndex" class="colView mainMenuInner" (onChange)="handleChangeTab($event)">
+				<!-- Panel Anamnesis -->
+				<p-tabPanel [header]="'medical.prevention.anamnesys' | translate">
+					<iterpro-prevention-anamnesys
+						[player]="player"
+						[injuries]="injuries"
+						[sorenessInjuries]="sorenessInjuries"
+						[chronicInjuries]="chronicInjuries"
+						[chronicInjuryId]="chronicInjuryId"
+					/>
+				</p-tabPanel>
+
+				<!-- Panel Assessment -->
+				<p-tabPanel [header]="'medical.prevention.assessment' | translate">
+					<iterpro-prevention-assessment
+						[player]="player"
+						[injuries]="injuries"
+						[tests]="tests"
+						(examAddedEmitter)="onExamsModified($event)"
+						(examDeletedEmitter)="onExamsModified($event)"
+					/>
+				</p-tabPanel>
+
+				<!-- Panel Diary -->
+				<p-tabPanel [header]="'medical.prevention.diary' | translate">
+					<iterpro-prevention-diary
+						[medicalTreatments]="medicalTreatments"
+						[player]="player"
+						[injuries]="injuries"
+						[tests]="tests"
+						(onClickPrevention)="handleChangeTab({ index: 3 })"
+					/>
+				</p-tabPanel>
+
+				<!-- Panel Treatmens -->
+				<p-tabPanel [header]="'medical.prevention.treatment' | translate">
+					<iterpro-medical-treatments
+						[medicalTreatments]="medicalTreatments"
+						[section]="'prevention'"
+						[allInjuries]="injuries"
+						[player]="player"
+						[players]="players"
+						(expand)="expandView($event)"
+						(treatmentAddedEmitter)="onTreatmentsModified($event)"
+						(treatmentDeletedEmitter)="onTreatmentsModified($event)"
+						(applyToPlayersEmitter)="onApplyPlayers($event)"
+					/>
+				</p-tabPanel>
+
+				<!-- Panel Screening -->
+				<p-tabPanel [header]="'Screening' | translate">
+					<iterpro-prevention-screening [player]="player" (save)="onAnamnesysSaveEmitter.emit($event)" />
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,146 @@
+<div class="tw-rounded tw-bg-shark-950 tw-bg-opacity-95 tw-p-4">
+	<p-table
+		[value]="players"
+		[columns]="columns"
+		[customSort]="true"
+		dataKey="id"
+		[scrollable]="true"
+		scrollHeight="65vh"
+		[styleClass]="'p-datatable-striped'"
+		[rowHover]="true"
+		(sortFunction)="customSort($event)"
+	>
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th
+					*ngFor="let col of columns; let i = index; trackBy: ngForTrackByFn"
+					[ngStyle]="{
+						height: '46px',
+						textAlign: !!col.align ? col.align : 'center',
+						minWidth: !!col.width ? col.width + 'px' : '150px',
+						width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+					}"
+					[pSortableColumn]="col.sortable ? col.field : false"
+					pFrozenColumn
+					[frozen]="col.frozen"
+				>
+					{{ col.header }}
+					<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10" (click)="onRowClick(rowData)">
+				<td
+					*ngFor="let col of columns; let i = index; trackBy: ngForTrackByFn"
+					[ngStyle]="{
+						textAlign: !!col.align ? col.align : 'center',
+						minWidth: !!col.width ? col.width : '150px',
+						width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+					}"
+					pFrozenColumn
+					[frozen]="col.frozen"
+				>
+					<ng-container [ngSwitch]="col.type">
+						<ng-container *ngSwitchCase="'image'">
+							<div
+								class="tw-flex tw-h-14 tw-w-14 tw-items-center tw-justify-center tw-overflow-hidden tw-rounded tw-bg-white"
+							>
+								<iterpro-picture [photoUrl]="rowData.downloadUrl" class="tw-block" />
+							</div>
+						</ng-container>
+						<ng-container *ngSwitchCase="'year'">
+							{{ rowData[col.field] | formatDateBySetting }}
+						</ng-container>
+						<ng-container *ngSwitchCase="'age'">
+							{{ rowData[col.field] | age }}
+						</ng-container>
+						<ng-container *ngSwitchCase="'flag'">
+							<iterpro-player-flag [lang]="rowData[col.field]" />
+						</ng-container>
+						<ng-container *ngSwitchCase="'translate'">
+							<ng-container *ngIf="!!rowData[col.field]"> {{ rowData[col.field] | translate }}</ng-container>
+						</ng-container>
+						<ng-container *ngSwitchCase="'injury'">
+							<iterpro-injury-icon [style]="'unset'" [injuries]="rowData.injuries"></iterpro-injury-icon>
+						</ng-container>
+						<ng-container *ngSwitchCase="'chronicInjuries'">
+							<i
+								*ngIf="rowData[col.field]?.length > 0"
+								[pTooltip]="rowData[col.field] | chronicInjuriesTooltip"
+								class="fas fa-fire"
+								style="color: var(--color-primary-500)"
+							></i>
+						</ng-container>
+						<ng-container *ngSwitchCase="'readiness'">
+							<span class="pt-readiness" [style.background-color]="rowData[col.field]"></span>
+						</ng-container>
+						<ng-container *ngSwitchCase="'expiration'">
+							<i class="fas fa-file-certificate" [pTooltip]="rowData.expirationDescription"></i>
+						</ng-container>
+						<ng-container *ngSwitchCase="'test'">
+							{{ rowData[col.field]?.currentValue || '-' }}
+							<span
+								*ngIf="!!rowData[col.field]?.interval"
+								class="pt-readiness"
+								[style.background-color]="rowData[col.field].interval"
+								[pTooltip]="rowData[col.field]?.date | formatDateBySetting"
+							></span>
+						</ng-container>
+						<ng-container *ngSwitchCase="'pending'">
+							<i
+								*ngIf="rowData.preventionPast"
+								[escape]="false"
+								tooltipStyleClass="widthTooltip"
+								[pTooltip]="rowData.preventionPastDescription"
+								class="fas fa-close fa-red"
+							></i>
+							<i
+								*ngIf="rowData.preventionNext"
+								[escape]="false"
+								tooltipStyleClass="widthTooltip"
+								[pTooltip]="rowData.preventionNextDescription"
+								class="fas fa-clock"
+							></i>
+						</ng-container>
+						<div *ngSwitchCase="'functionalTest'" style="width: 100%">
+							<i
+								*ngIf="rowData[col.field]?.length"
+								class="fas fa-check green-color"
+								[pTooltip]="rowData[col.field] | testInstancesTooltip"
+								tooltipPosition="top"
+								tooltipStyleClass="longTooltip"
+							></i>
+						</div>
+						<div *ngSwitchCase="'treatment'" style="width: 100%">
+							<i
+								*ngIf="rowData[col.field]?.undone.length"
+								class="icon fas fa-times red-color"
+								[pTooltip]="rowData[col.field].undone | treatmentsOfTheDayTooltip"
+								tooltipPosition="top"
+								tooltipStyleClass="longTooltip"
+							></i>
+							<i
+								*ngIf="rowData[col.field]?.done.length"
+								class="icon fas fa-check green-color"
+								[pTooltip]="rowData[col.field].done | treatmentsOfTheDayTooltip"
+								tooltipPosition="top"
+								tooltipStyleClass="longTooltip"
+							></i>
+							<i
+								*ngIf="rowData[col.field]?.todo.length"
+								class="icon fas fa-clock unset-color"
+								[pTooltip]="rowData[col.field].todo | treatmentsOfTheDayTooltip"
+								tooltipPosition="top"
+								tooltipStyleClass="longTooltip"
+							></i>
+						</div>
+						<ng-container *ngSwitchDefault>
+							{{ rowData[col.field] }}
+						</ng-container>
+					</ng-container>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>

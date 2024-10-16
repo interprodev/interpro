@@ -1,0 +1,120 @@
+<div [hidden]="scoutingViewType !== scoutingViewTypes.GameReports">
+	<iterpro-scouting-game-reports-table
+		[hidden]="scoutingGame"
+		[scoutingViewType]="scoutingViewType"
+		[players]="players"
+		[customers]="scoutCustomers"
+		(rowClick)="gameReportClickedFromReportsTable($event, 'gameId')"
+		(close)="changeView(scoutingViewTypes.Calendar)"
+	/>
+</div>
+
+@if (scoutingViewType === scoutingViewTypes.Calendar) {
+	<!-- Calendar Header -->
+	<div class="tw-flex tw-justify-between tw-items-center tw-mb-2" *ngIf="!scoutingGame">
+		@if (currentView.type !== 'resourceTimelineDay') {
+			<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded tw-flex tw-items-center tw-gap-2">
+				<div class="tw-text-sm iterpro-text-color-900" translate>general.date</div>
+				<div>
+					<p-calendar
+						showButtonBar="true"
+						view="month"
+						dateFormat="mm/yy"
+						appendTo="body"
+						(onSelect)="gotoDate($event)"
+						[(ngModel)]="updatedDate"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					></p-calendar>
+				</div>
+			</div>
+		}
+		@else {
+			<!-- Resource Timeline Day -->
+			<div class="tw-flex tw-gap-4 tw-items-end tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div class="tw-text-sm iterpro-text-color-900" translate>general.date</div>
+					<div>
+						<p-calendar showButtonBar="true" appendTo="body" (onSelect)="gotoDate($event)" [(ngModel)]="updatedDate"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+					</div>
+				</div>
+				<div>
+					<div class="tw-mt-1">
+						<iterpro-calendar-time-range-setting
+							[calendarId]="'scouting'"
+							[slotMinTime]="calendarOptions.slotMinTime"
+							[slotMaxTime]="calendarOptions.slotMaxTime"
+							(slotMinTimeChange)="onSlotMinTimeChange($event)"
+							(slotMaxTimeChange)="onSlotMaxTimeChange($event)"
+						/>
+					</div>
+				</div>
+			</div>
+		}
+		<!-- Scouting Calendar Filters -->
+		<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded tw-flex tw-justify-between tw-gap-4">
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<div class="tw-text-sm iterpro-text-color-900">{{'general.player' | translate}}: </div>
+				<div>
+					<p-multiSelect
+						[optionLabel]="'label'"
+						[optionValue]="'value'"
+						(onChange)="updateEvents()"
+						[options]="options.players"
+						[(ngModel)]="filters.player"
+						appendTo="body"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						selectedItemsLabel="{0} selected"
+						maxSelectedLabels="1"
+					></p-multiSelect>
+				</div>
+			</div>
+			@if (hasScoutingGamePermission) {
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div class="tw-text-sm iterpro-text-color-900">{{'Scout' | translate}}: </div>
+					<div>
+						<p-multiSelect
+							[optionLabel]="'label'"
+							[optionValue]="'value'"
+							(onChange)="updateEvents()"
+							[options]="options.scouts"
+							[(ngModel)]="filters.scout"
+							appendTo="body"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+							selectedItemsLabel="{0} selected"
+							maxSelectedLabels="1"
+						></p-multiSelect>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+	<!-- Calendar -->
+	<div class="tw-relative">
+		<ng-container *ngIf="currentView">
+			<div *ngIf="['resourceTimelineDay'].indexOf(currentView.type) > -1" class="report-scouting">
+				<iterpro-report-download (downloadPDF)="downloadResourceDailyTimelineReport()" />
+			</div>
+		</ng-container>
+		<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded-lg with-tooltips">
+			<full-calendar [options]="calendarOptions"></full-calendar>
+		</div>
+	</div>
+}
+
+<iterpro-scouting-event-shell
+	*ngIf="scoutingViewType === scoutingViewTypes.EventDetail && scoutingGame"
+	[game]="scoutingGame"
+	[backButtonLabel]="
+		lastScoutingViewType === scoutingViewTypes.GameReports || scoutingGame.sourceSection === 'scoutingProfile'
+			? 'back.to.table'
+			: 'back.to.calendar'
+	"
+	(save)="save($event)"
+	(close)="close(lastScoutingViewType)"
+	(newScoutingPlayers)="newScoutingPlayersEmitter.emit($event)"
+	(playerLensClicked)="onRedirectEmitter({ playerId: $event })"
+	(delete)="confirmDeleteEvent()"
+/>

@@ -1,0 +1,14 @@
+.semaphore-input {
+	font-size: 0.8em;
+	text-align: right;
+	width: 30%;
+	border-bottom: 1px solid var(--color-neutral-900) !important;
+}
+.semaphore-input-big {
+	width: 70%;
+}
+.centered {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

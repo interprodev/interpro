@@ -1,0 +1,29 @@
+.mainMenu {
+	width: 100%;
+}
+
+.row {
+	justify-content: center;
+}
+.header button {
+	margin-left: 1rem;
+}
+
+.sell {
+	background-color: var(--color-primary-500);
+}
+
+.sell:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+.spinner {
+	width: 100%;
+	margin-top: 3em;
+	margin-bottom: 3em;
+	text-align: center;
+}
+
+.legal-buttons {
+	margin-left: 1rem;
+}

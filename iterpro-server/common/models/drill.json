@@ -1,0 +1,259 @@
+{
+	"name": "Drill",
+	"plural": "drills",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"theme": {
+			"type": "string"
+		},
+		"goals": {
+			"type": "array"
+		},
+		"situationalTacticalGoals": {
+			"type": "array"
+		},
+		"situationalTacticalGoalsDef": {
+			"type": "array"
+		},
+		"situationalTacticalGoalsOff": {
+			"type": "array"
+		},
+		"tacticalGoals": {
+			"type": "array"
+		},
+		"technicalGoals": {
+			"type": "array"
+		},
+		"physicalGoals": {
+			"type": "array"
+		},
+		"analyticalTacticalGoals": {
+			"type": "array"
+		},
+		"ageGroup": {
+			"type": "string"
+		},
+		"pitchSizeX": {
+			"type": "number"
+		},
+		"pitchSizeY": {
+			"type": "number"
+		},
+		"players": {
+			"type": "number"
+		},
+		"duration": {
+			"type": "number"
+		},
+		"rules": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"identifier": {
+			"type": "string"
+		},
+		"coachingPoint": {
+			"type": "array"
+		},
+		"pinnedAttachmentId": {
+			"type": "string"
+		},
+		"creationDate": {
+			"type": "date"
+		},
+		"lastUpdateDate": {
+			"type": "date"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		},
+		"sharedWith": {
+			"type": "referencesMany",
+			"model": "Customer",
+			"foreignKey": "sharedWithIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"lastUpdateAuthor": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getDrillProfile": {
+			"accepts": [
+				{
+					"arg": "drillId",
+					"type": "string"
+				},
+				{
+					"arg": "teamId",
+					"type": "string"
+				},
+				{
+					"arg": "customerId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/getDrillProfile",
+				"verb": "get"
+			}
+		},
+		"getDrillStatsComparison": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "drillsIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "startDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "endDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "gpsSessionLoaded",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metric",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/getDrillStatsComparison",
+				"verb": "post"
+			}
+		},
+		"getDrillStatsTrend": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "drillsIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "startDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "endDate",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "gpsSessionLoaded",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metric",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playersIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/getDrillStatsTrend",
+				"verb": "post"
+			}
+		}
+	}
+}

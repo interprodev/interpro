@@ -1,0 +1,67 @@
+{
+	"name": "InjuryTreatment",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"date": {
+			"type": "date"
+		},
+		"category": {
+			"type": "string"
+		},
+		"treatment": {
+			"type": "array"
+		},
+		"description": {
+			"type": "array"
+		},
+		"complete": {
+			"type": "boolean"
+		},
+		"prescriptor": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"author": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"event": {
+			"type": "belongsTo",
+			"model": "Event"
+		},
+		"injury": {
+			"type": "belongsTo",
+			"model": "Injury",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

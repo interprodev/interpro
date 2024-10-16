@@ -1,0 +1,49 @@
+.player-header {
+	position: relative;
+}
+
+.player-header-title {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.player-right .player-header-title {
+	justify-content: flex-end;
+}
+
+.player-header-title:hover {
+	opacity: 0.8;
+}
+
+.player-dropdown {
+	position: absolute;
+	left: 0;
+	top: 105%;
+	z-index: 1;
+}
+
+.player-right .player-dropdown {
+	right: 0;
+	left: auto;
+}
+
+.player-name {
+	font-size: 1.6rem;
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.header-buttons {
+	display: flex;
+	justify-content: flex-end;
+	column-gap: 1em;
+	align-items: center;
+}
+
+
+.selector {
+	background-color: var(--color-bg-600);
+	border-radius: var(--iterpro-border-radius);
+}

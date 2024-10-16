@@ -1,0 +1,197 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3 class="h3-myteam-player">{{ player.displayName }}</h3>
+					<div class="profile-picture tw-rounded">
+						<iterpro-player-provider-widget
+							[wyscoutId]="player?.wyscoutId"
+							[instatId]="player?.instatId"
+						/>
+						<img
+							style="background-color: white"
+							class="player-pic"
+							[src]="player.downloadUrl | azureUrl"
+							onError="this.src='assets/img/default_icon.png';"
+							alt="player picture"
+						/>
+					</div>
+					<h4 class="spacing" style="display: flex; justify-content: space-between">
+						<span translate>profile.season</span>
+						<i
+							class="fas fa-sync"
+							(click)="refreshRobustness()"
+							pTooltip="{{ 'robustness.refreshData' | translate }}"
+						></i>
+					</h4>
+					<iterpro-change-season *ngIf="seasons" />
+				</div>
+
+				<div class="col-right-profile-thre" style="margin-left: 2rem">
+					<i
+						class="fas fa-external-link-alt tw-cursor-pointer"
+						style="margin-left: auto"
+						(click)="goToChronic()"
+						pTooltip="{{ 'event.medicalRecords.redirect' | translate }}"
+					></i>
+					<div class="rowProfile">
+						<div class="row row-column">
+							<h4 class="tw-mb-4 tw-capitalize" translate>profile.tabs.robustness</h4>
+							<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+								<div class="tw-col-span-6">
+									<table class="fields-table tw-w-full" *ngIf="robustnessData">
+										<tr>
+											<th translate>robustness.totalApps</th>
+											<td>{{ robustnessData['apps'] }} / {{ robustnessData.countGames }}</td>
+										</tr>
+										<tr>
+											<th translate>robustness.totalTrainings</th>
+											<td>{{ robustnessData['sessionsCalled'] }} / {{ robustnessData.countTrainings }}</td>
+										</tr>
+										<tr>
+											<th translate>player.robustness.availability</th>
+											<td>{{ robustnessData['availability'] }}%</td>
+										</tr>
+										<tr>
+											<th translate>attendance.statistics.gamesMissedThroughInjury</th>
+											<td>{{ robustnessData['gamesMissedInjuries'] }}</td>
+										</tr>
+										<tr>
+											<th translate>attendance.statistics.trainingMissedThroughInjury</th>
+											<td>{{ robustnessData['trainingsMissedInjuries'] }}</td>
+										</tr>
+									</table>
+								</div>
+								<div class="tw-col-span-6">
+									<table class="fields-table tw-w-full" *ngIf="robustnessData">
+										<tr>
+											<th translate>readiness.healthStatus</th>
+											<td>
+												<div [ngStyle]="getBackgroundColor(robustnessData['healthStatus'])" class="point"></div>
+											</td>
+										</tr>
+										<tr>
+											<th translate>player.robustness.n_injuries</th>
+											<td>{{ robustnessData['injuriesNumber'] }}</td>
+										</tr>
+										<tr>
+											<th translate>player.robustness.injury_severity</th>
+											<td>
+												@if (robustnessData['injurySeverity']) {
+													<span>{{(robustnessData['injurySeverity'] | number : '1.0-0')}}</span><span class="tw-ml-1">{{'days' | translate}}</span>
+												}
+											</td>
+										</tr>
+										<tr>
+											<th translate>player.robustness.reinjury_rate</th>
+											<td>{{ robustnessData['reinjuryRate'] }}</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="rowProfile tw-mt-8 tw-h-[150px]">
+						<div class="row row-column">
+							<div class="chart-container-robustness">
+								<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+									<div class="tw-col-span-8">
+										<h4 class="tw-capitalize" translate>robustness.seasonTimeline</h4>
+										<p-chart
+											*ngIf="dataTimeline"
+											[style]="{ height: '50%%', display: 'flex'}"
+											type="line"
+											[data]="dataTimeline"
+											[options]="optionsTimeline"
+										></p-chart>
+										<div id="chartjs-tooltip">
+											<table></table>
+										</div>
+									</div>
+									<div class="tw-col-span-4 tw-full">
+										<p-chart #baseChart [data]="dataPie" [height]="'200px'" [options]="optionsPie" type="doughnut"> </p-chart>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Injury history && Body Chart -->
+					<div class="tw-grid tw-grid-cols-12 tw-justify-between tw-mt-[5rem]">
+						<div class="tw-col-span-6 tw-flex tw-flex-col tw-gap-4">
+							<div class="tw-col-span-6 tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+								<h4 translate>sidebar.injuryHistory</h4>
+								<div class="table-scroll">
+									<p-table [value]="player.injuries" styleClass="p-datatable-striped">
+										<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+											<tr class="tw-h-10" pTooltip="Go to injury details" (click)="goToDetails(rowData)">
+												<td style="width: 5%">
+													<i
+														*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.injury'"
+														class="fas fa-plus"
+														style="color: red"
+													></i>
+													<i
+														*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.complaint'"
+														class="fas fa-plus"
+														style="color: yellow"
+													></i>
+													<i *ngIf="rowData.endDate" class="fas fa-plus" style="color: green"></i>
+												</td>
+												<td style="width: 25%" translate>
+													{{ rowData.date | formatDateBySetting }}
+												</td>
+												<td style="width: 25%" translate>
+													{{ rowData.endDate | formatDateBySetting }}
+												</td>
+												<td style="width: 25%" translate>
+													{{ rowData.issue }}
+												</td>
+												<td style="width: 25%" translate>
+													{{ rowData.location }}
+												</td>
+											</tr>
+										</ng-template>
+									</p-table>
+								</div>
+							</div>
+							<div class="tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+								<h4 translate>
+									chronicInjuries
+								</h4>
+								<div class="table-scroll">
+									<p-table [value]="player._chronicInjuries" styleClass="p-datatable-striped">
+										<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+											<tr class="tw-h-10" pTooltip="Open chronic issue details" (click)="goToDetailsChronic(rowData)">
+												<td style="width: 5%">
+													<i class="fas fa-fire" style="color: var(--color-primary-500)"></i>
+												</td>
+												<td style="width: 25%" translate>
+													{{ rowData.date | formatDateBySetting }}
+												</td>
+												<td translate>
+													{{ rowData.location }}
+												</td>
+												<td translate>
+													{{ rowData.system }}
+												</td>
+											</tr>
+										</ng-template>
+									</p-table>
+								</div>
+							</div>
+						</div>
+						<div class="tw-col-span-6">
+							<iterpro-body-chart
+								*ngIf="player && player.injuries"
+								[injuries]="player.injuries"
+								[chronic]="player._chronicInjuries"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,122 @@
+<div [formGroup]="filtersForm">
+	<!-- #region DATE PERIOD -->
+	<div>
+		<h3 class="spacing greyed" translate>sidebar.period</h3>
+		<div class="calendar calendar-width-215">
+			<p-calendar
+				[showButtonBar]="true"
+				[selectionMode]="'range'"
+				[formControlName]="'datePeriod'"
+				[clearButtonStyleClass]="'p-button-sm'"
+				[todayButtonStyleClass]="'p-button-sm'"
+			>
+				<ng-template pTemplate="date" let-date>
+					<div>
+						{{ date.day }}
+					</div>
+				</ng-template>
+			</p-calendar>
+		</div>
+	</div>
+	<!-- #endregion  DATE PERIOD -->
+
+	<!-- #region DRILLS -->
+	<div>
+		<h3 class="spacing greyed tw-relative" translate>
+			drills
+			<i
+				(click)="advancedFilters.toggle($event)"
+				[style]="'cursor: pointer'"
+				[class]="!showDrillAdvancedFilters ? 'fas fa-filter' : 'fas fa-filter-slash'"
+				[pTooltip]="(showDrillAdvancedFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+				[tooltipPosition]="'left'"
+			>
+			</i>
+		</h3>
+		<p-multiSelect
+			[selectedItemsLabel]="'{0} selected'"
+			[maxSelectedLabels]="1"
+			[placeholder]="'0 selected'"
+			[options]="drills"
+			[optionValue]="'id'"
+			[optionLabel]="'name'"
+			[formControlName]="'drillsIds'"
+		>
+		</p-multiSelect>
+	</div>
+	<!-- #endregion -->
+
+	<!-- #region PLAYERS -->
+	<div>
+		<h3 class="spacing greyed" translate>sidebar.partecipants</h3>
+		<p-multiSelect
+			[appendTo]="'body'"
+			[selectedItemsLabel]="'{0} selected'"
+			[maxSelectedLabels]="1"
+			[optionLabel]="'displayName'"
+			[options]="players"
+			[formControlName]="'players'"
+		>
+		</p-multiSelect>
+	</div>
+	<!-- #endregion -->
+
+	<!-- #region PLANNED/ACTUAL -->
+	<div>
+		<h3 class="spacing greyed" translate>drillStats.actualFlag</h3>
+		<p-inputSwitch [formControlName]="'drillType'"></p-inputSwitch>
+	</div>
+	<!-- #endregion -->
+
+	<!-- #region METRIC -->
+	<div>
+		<h3 class="spacing greyed" translate>
+			sidebar.metric
+			<i
+				*ngIf="legendConfig"
+				[style]="'cursor: pointer'"
+				[pTooltip]="'bodychart.showLegend' | translate"
+				(click)="op.toggle($event)"
+				class="fas fa-question"
+			></i>
+		</h3>
+		<p-dropdown [options]="metrics" [placeholder]="'dropdown.placeholder' | translate" [formControlName]="'metric'">
+		</p-dropdown>
+	</div>
+	<!-- #endregion -->
+
+	<!-- #region DRILL STATS VALUES -->
+	<div *ngIf="drillStatsValues">
+		<br />
+		<hr />
+		<h3 class="spacing greyed" translate>drillStats.numSessions</h3>
+		<span>{{ drillStatsValues.numSessions }}</span>
+		<h3 class="spacing greyed" translate>drillStats.numSessionsMin</h3>
+		<span>{{ drillStatsValues.numSessionsMin }}</span>
+		<h3 class="spacing greyed" translate>drillStats.numDrills</h3>
+		<span>{{ drillStatsValues.numDrills }}</span>
+		<h3 class="spacing greyed" translate>drillStats.numDrillsMin</h3>
+		<span>{{ drillStatsValues.numDrillsMin }}</span>
+		<h3 class="spacing greyed" translate>drillStats.numSessionMinPercentage</h3>
+		<span>{{ drillStatsValues.numSessionMinPercentage }}<small>%</small></span>
+	</div>
+	<!-- #endregion -->
+</div>
+
+<p-overlayPanel #advancedFilters>
+	<div class="tw-p-2 tw-max-w-[10rem]">
+		<iterpro-drills-filters
+			[cols]="1"
+			[config]="drillFiltersConfig"
+			[drillsMapping]="drillsMapping"
+			[drillFiltersListMapping]="drillFiltersListMapping"
+			(filtersChanged)="applyDrillFilters($event)"
+		/>
+	</div>
+</p-overlayPanel>
+
+<p-overlayPanel #op>
+	<div class="pflex-p-4 pflex-max-h-25rem pflex-max-w-20rem pflex-flex pflex-flex-column pflex-gap-4 pflex-overflow-auto">
+		<p *ngFor="let row of legendConfig">{{ row | translate }}</p>
+	</div>
+</p-overlayPanel>

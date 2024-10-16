@@ -1,0 +1,150 @@
+<ng-container *ngIf="!isLoading">
+	<div *ngIf="playerDescriptionsEntry; else noRowsFound" class="historical-records-header">
+		<div class="container">
+			<ng-container>
+				<span class="container-label" translate>records</span>
+				<p-dropdown
+					*ngIf="!editService.editMode && getId(playerDescriptionsEntry)"
+					appendTo="body"
+					[style]="{ 'min-width': '200px' }"
+					[options]="historicalRecordsOptions"
+					[ngModel]="getId(playerDescriptionsEntry)"
+					[readonly]="editService.editMode"
+					[placeholder]="'dropdown.placeholder' | translate"
+					(ngModelChange)="onSelectHistoricalRecord($event)"
+				></p-dropdown>
+				<p-calendar
+					*ngIf="editService.editMode"
+					[showButtonBar]="true"
+					[(ngModel)]="playerDescriptionsEntry.date"
+					[readonlyInput]="true"
+					[clearButtonStyleClass]="'p-button-sm'"
+					[todayButtonStyleClass]="'p-button-sm'"
+				>
+				</p-calendar>
+			</ng-container>
+			<i class="fas fa-plus iterpro-clickable-icon" (click)="onAddNewEntry()"></i>
+			<ng-container *ngIf="!editService.editMode">
+				<i class="fas fa-edit iterpro-clickable-icon" (click)="onEdit()"></i>
+				<iterpro-report-download (downloadCSV)="downloadCSV()" />
+			</ng-container>
+			<ng-container *ngIf="editService.editMode">
+				<i class="fas fa-save iterpro-clickable-icon" (click)="saveEntry()"></i>
+				<i class="fas fa-trash iterpro-clickable-icon" (click)="onDeleteEntry()"></i>
+				<i class="fas fa-close iterpro-clickable-icon" (click)="onDiscard()"></i>
+			</ng-container>
+		</div>
+	</div>
+	<ng-container *ngIf="!isLoading && playerDescriptionsEntry">
+		<div class="box-container">
+			<div>
+				<div class="outside-label" translate>description</div>
+				<editor
+					*ngIf="editService.editMode; else readOnlyEditorDescription"
+					[initialValue]="'input-text.placeholder' | translate"
+					[inline]="false"
+					[(ngModel)]="playerDescriptionsEntry.description"
+					[init]="tinyEditorInit"
+				>
+				</editor>
+				<ng-template #readOnlyEditorDescription>
+					<div class="readonlyEditorBox">
+						<span [innerHTML]="playerDescriptionsEntry.description | marked"></span>
+					</div>
+				</ng-template>
+			</div>
+		</div>
+		<div class="box-container">
+			<div>
+				<div class="outside-label" translate>scouting.strenghts</div>
+				<div>
+					<editor
+						*ngIf="editService.editMode; else readOnlyEditorStrengths"
+						[initialValue]="'input-text.placeholder' | translate"
+						[inline]="false"
+						[(ngModel)]="playerDescriptionsEntry.strengths"
+						[init]="tinyEditorInit"
+					>
+					</editor>
+					<ng-template #readOnlyEditorStrengths>
+						<div class="readonlyEditorBox">
+							<span [innerHTML]="playerDescriptionsEntry.strengths | marked"></span>
+						</div>
+					</ng-template>
+				</div>
+			</div>
+			<div>
+				<div class="outside-label" translate>scouting.weakness</div>
+				<div>
+					<editor
+						*ngIf="editService.editMode; else readOnlyEditorWeaknesses"
+						[initialValue]="'input-text.placeholder' | translate"
+						[inline]="false"
+						[(ngModel)]="playerDescriptionsEntry.weaknesses"
+						[init]="tinyEditorInit"
+					>
+					</editor>
+					<ng-template #readOnlyEditorWeaknesses>
+						<div class="readonlyEditorBox">
+							<span [innerHTML]="playerDescriptionsEntry.weaknesses | marked"></span>
+						</div>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+		<div class="box-container">
+			<div>
+				<div class="outside-label" translate>scouting.reccomendation</div>
+				<editor
+					*ngIf="editService.editMode; else readOnlyEditorRecommendation"
+					[initialValue]="'input-text.placeholder' | translate"
+					[inline]="false"
+					[(ngModel)]="playerDescriptionsEntry.recommendations"
+					[init]="tinyEditorInit"
+				>
+				</editor>
+				<ng-template #readOnlyEditorRecommendation>
+					<div class="readonlyEditorBox">
+						<span [innerHTML]="playerDescriptionsEntry.recommendations | marked"></span>
+					</div>
+				</ng-template>
+			</div>
+		</div>
+		<div class="box-container">
+			<div>
+				<div class="outside-label" translate>scouting.relevantLinks</div>
+				<div class="links-action" *ngIf="editService.editMode">
+					<input
+						pInputText
+						type="text"
+						[(ngModel)]="relevantLinkLabel"
+						[placeholder]="'input-link-name.placeholder' | translate"
+					/>
+					<input
+						pInputText
+						type="text"
+						[(ngModel)]="relevantLinkUrl"
+						[placeholder]="'input-link.placeholder' | translate"
+					/>
+					<p-button size="small" [disabled]="!relevantLinkLabel || !relevantLinkUrl" (click)="addLink($event)" [label]="'buttons.add' | translate"></p-button>
+				</div>
+				<div class="readonlyEditorBox">
+					<div class="relevant-link" *ngFor="let item of playerDescriptionsEntry?.relevantLinks; let i = index">
+						<span>
+							<span translate>label</span>: <span>{{ item.label }}</span>
+						</span>
+						<a [href]="item.url" target="_blank">
+							<i class="fas fa-external-link-alt"></i><span style="margin-left: 1em">{{ item.url }}</span></a
+						>
+						<i style="margin-left: 2em" (click)="removeLink(i)" class="fas fa-close" *ngIf="editService.editMode"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+</ng-container>
+
+<!-- No rows -->
+<ng-template #noRowsFound>
+	<div class="no-rows-found" translate (click)="onAddNewEntry()">profile.attributes.noDescriptions</div>
+</ng-template>

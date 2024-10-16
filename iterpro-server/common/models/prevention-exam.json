@@ -1,0 +1,50 @@
+{
+	"name": "PreventionExam",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"date": {
+			"type": "date"
+		},
+		"exam": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"cloudUrl": {
+			"type": "string"
+		},
+		"complete": {
+			"type": "boolean"
+		},
+		"history": {
+			"type": "array"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"attachments": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"event": {
+			"type": "belongsTo",
+			"model": "Event"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

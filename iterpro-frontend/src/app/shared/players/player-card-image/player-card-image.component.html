@@ -1,0 +1,61 @@
+<div [ngClass]="getClass()">
+  <div class="player-card-content">
+
+    <!-- Player Card -->
+    <ng-container *ngIf="player; else noPlayer">
+
+      <!-- Player Position -->
+      <div class="player-card-info">
+        <div class="player-card-info-pos" (click)="onShowShortlist(player, $event)">
+          <img class="player-pic" 
+            [src]="azureImg ? (player.downloadUrl | azureUrl) : player.downloadUrl"
+            onError="this.src='assets/img/default_icon.png';" alt="player picture" />
+          <span *ngIf="showBadge && getMappedPlayersNumber(tactic) > 0" class="foreignObject inner-label ">
+            {{ getMappedPlayersNumber(tactic) }}
+          </span>
+          <div class="player-card-info-pos-text">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Name -->
+      <div class="player-card-name">
+        <span style="font-weight:bold;margin-top: 0.3em;margin-bottom: 0.3em">{{ player.displayName }}</span>
+        <span>
+          <span *ngIf="player.birthDate" style="margin-right:0.8em">{{ age }}</span>
+          <span *ngIf="player.nationality" class="flag-icon" [ngClass]="getLangClass(player.nationality)"
+            title="{{ 'nationalities.' + player.nationality | translate }}"></span>
+          <span style="margin-left:0.8em" *ngIf="player.position">{{ position }}</span>
+        </span>
+      </div>
+    </ng-container>
+
+    <!-- No player -->
+    <ng-template #noPlayer>
+      <div class="player-card-info">
+        <div class="player-card-info-pos">
+          <img class="player-pic" src="/assets/img/default_icon.png" alt="player picture" />
+          <div class="player-card-info-pos-text">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="player-card-name">
+        <span style="font-weight:bold;margin-top: 0.3em;margin-bottom: 0.3em">no player</span>
+        <span>
+          <span style="margin-left:0.8em">N.A.</span>
+        </span>
+      </div>
+    </ng-template>
+
+  </div>
+  
+  <!-- Arrow -->
+  <div class="player-card-arrow">
+    <svg viewBox="0 0 100 15">
+      <polygon points="0,0 50,15 100,0" />
+    </svg>
+  </div>
+
+</div>

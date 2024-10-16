@@ -1,0 +1,94 @@
+.content-padded {
+	background-color: transparent;
+	padding: 0.5em;
+}
+
+.row {
+	column-gap: 0.5em;
+}
+
+.first-col {
+	flex: 1;
+}
+
+.second-col {
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.panelHistory {
+	background-color: transparent !important;
+	border-bottom: none !important;
+}
+
+.panelHistoryTh {
+	font-size: 0.9rem;
+	color: #bbbbbb;
+	font-weight: normal;
+}
+
+.panelHistoryTd {
+	font-size: 0.9rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.point {
+	/* margin-left: 5em; */
+	right: 10%;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+.pointCol {
+	right: 10%;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+.textAreaInjury {
+	padding: 0.2rem 0;
+}
+
+.inj-det-table th {
+	white-space: nowrap;
+	text-transform: capitalize;
+	width: 200px;
+}
+
+.inj-det-table {
+	width: 100%;
+}
+
+.no-wrap {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.flexed {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+.action-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	column-gap: 1rem;
+	font-size: 1.2em;
+}
+
+.action-container i {
+	cursor: pointer;
+}
+
+.body-chart {
+	margin-top: 3em;
+}

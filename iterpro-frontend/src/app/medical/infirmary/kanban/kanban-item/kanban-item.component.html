@@ -1,0 +1,62 @@
+<div
+	class="pflex-p-2 pflex-w-full pflex-w-15rem pflex-min-w-full"
+	[ngStyle]="lastAssessment?.available === 'no' && { 'background-color': 'rgba(200, 40, 27, 0.3)' }"
+>
+	<!-- RIBBON -->
+	<svg class="stripe" viewbox="0 0 20 20" [style.fill]="color">
+		<rect width="5" height="30" x="0" y="0" transform="rotate(-45)"></rect>
+	</svg>
+
+	<!-- PLAYER INFO -->
+	<div class="pflex-flex pflex-gap-2">
+		<div class="pflex-relative">
+			<iterpro-picture [photoUrl]="injury?.player?.downloadUrl" class="tw-block tw-w-[5rem] tw-bg-white tw-rounded tw-overflow-hidden"></iterpro-picture>
+			<small
+				class="pflex-absolute pflex-bottom-0 pflex-left-0 pflex-w-full pflex-bg-black-alpha-70 pflex-p-1 pflex-text-xs"
+				>{{ injury.player.position }}</small
+			>
+		</div>
+		<div>
+			<h4 class="pflex-mb-1">{{ injury.player.displayName }}</h4>
+			<!--this line was used to render different color for each paragraph in infirmaryColumn-->
+			<!-- <div [style.color]="color"> --> 
+			<div>
+				<p>{{ injury.issue | translate }}</p>
+				<p>{{ injury.location | translate }}</p>
+				<p>{{ injury.osics }}</p>
+				<p>{{ injury.expectedReturn | formatDateBySetting }}</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- INJURY ACTIONS -->
+	<div class="pflex-flex pflex-gap-1 pflex-z-1 pflex-absolute pflex-bottom-0 pflex-right-0 pflex-m-2">
+		<span *ngIf="lastAssessment && lastAssessment.next" class="inj-tooltip">
+			{{ lastAssessment.next | date : 'dd/MM/yy' }}
+		</span>
+		<span
+			*ngIf="lastAssessment && lastAssessment.next"
+			[pTooltip]="
+				('medical.infirmary.assessments.nextAssessment' | translate) + (lastAssessment.next | formatDateBySetting)
+			"
+			class="fas fa-calendar-alt fakeButtonIcon"
+		></span>
+		<span
+			*ngIf="pendingElements"
+			[pTooltip]="injury | pendingElementsToolitp : medicalTreatments"
+			class="fas fa-clock pflex-ml-2 pflex-text-sm"
+			[escape]="false"
+		></span>
+		<span
+			*ngIf="highPriority"
+			class="fas fa-exclamation-circle fakeButtonIconRed inj-priority"
+			[pTooltip]="'medical.infirmary.assessments.hightPriority' | translate"
+		></span>
+		<span
+			*ngIf="injury.chronicInjuryId"
+			class="fas fa-fire"
+			style="color: var(--color-primary-500); font-size: 1.2em"
+			[pTooltip]="'Generated from chronic'"
+		></span>
+	</div>
+</div>

@@ -1,0 +1,107 @@
+<div *ngIf="injuries">
+	<!-- Daily Report download -->
+	<div class="tw-w-full tw-flex tw-justify-end tw-mb-4">
+		<div class="tw-flex tw-items-center tw-gap-2 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+			<iterpro-report-download class="download" (downloadPDF)="getReport()" (downloadCSV)="getReportCSV()" />
+		</div>
+	</div>
+	<!-- Report list -->
+	<div
+		*ngFor="let injury of injuriesWithPlayer; let i = index; trackBy: injuryByID"
+		[ngClass]="'tw-bg-shark-950 tw-bg-opacity-85 tw-border-solid tw-border-0.3 tw-rounded tw-mb-8 tw-overflow-x-auto ' + 'tw-border-[' + getBorderColor(injury) +'] tw-border-l-4 tw-border-t-shark-800 tw-border-r-shark-800 tw-border-b-shark-800'"
+	>
+		<table class="report-table tw-border-l-" cellpadding="0" cellspacing="0">
+			<tbody>
+			<tr>
+				<th class="th-title" colspan="5">
+					<b class="player-name">{{ injury?.player?.displayName }}</b>
+				</th>
+			</tr>
+			<tr>
+				<td class="pic-td" rowspan="4">
+					<img
+						style="background-color: white"
+						class="medical-player-pic"
+						src="{{ getPlayerPic(injury?.player) | azureUrl }}"
+						onError="this.src='assets/img/default_icon.png';"
+						alt="player picture"
+					/>
+				</td>
+				<th>OSIICS</th>
+				<th translate>medical.infirmary.report.location</th>
+				<th translate>medical.infirmary.report.status</th>
+				<th translate>medical.infirmary.report.injuryDate</th>
+				<th translate>medical.infirmary.report.expectedReturn</th>
+			</tr>
+			<tr>
+				<td *ngIf="osicsList?.length > 0">{{ injury?.osics | osics : osicsList }}</td>
+				<td translate>{{ injury?.location }}</td>
+				<td translate>{{ injury?.currentStatus }}</td>
+				<td>{{ injury?.date | date }}</td>
+				<td>{{ injury?.expectedReturn | date }}</td>
+			</tr>
+			<tr>
+				<th class="side-th"><b translate>medical.infirmary.report.diagnosis</b></th>
+				<td colspan="3"><span [outerHTML]="injury?.diagnosis"></span></td>
+			</tr>
+			<tr>
+				<td colspan="4"></td>
+			</tr>
+			</tbody>
+		</table>
+		<table class="report-table" cellpadding="0" cellspacing="0">
+			<tbody>
+			<tr>
+				<th class="uppercase" translate>medical.infirmary.report.lastAssessment</th>
+			</tr>
+			<tr class="assessment-headers">
+				<th translate>medical.infirmary.report.date</th>
+				<th translate>medical.infirmary.report.rom</th>
+				<th translate>medical.infirmary.report.strength</th>
+				<th translate>medical.infirmary.report.stability</th>
+				<th translate>medical.infirmary.report.swelling</th>
+				<th translate>medical.infirmary.report.pain</th>
+				<th translate>medical.infirmary.report.functionality</th>
+				<th class="treatment-header-author" translate>medical.infirmary.report.lastExam</th>
+			</tr>
+			<tr>
+				<td>{{ injury.lastAssessment?.date | date }}</td>
+				<td translate>{{ injury.lastAssessment?.rom }}</td>
+				<td translate>{{ injury.lastAssessment?.strength }}</td>
+				<td translate>{{ injury.lastAssessment?.stability }}</td>
+				<td translate>{{ injury.lastAssessment?.swelling }}</td>
+				<td translate>{{ injury.lastAssessment?.pain }}</td>
+				<td translate>{{ injury.lastAssessment?.functionality }}</td>
+				<td>{{ injury.lastExam?.date | date }}</td>
+			</tr>
+			</tbody>
+		</table>
+		<table class="report-table treatment-table" cellpadding="0" cellspacing="0">
+			<thead>
+			<tr>
+				<th class="uppercase" translate>medical.infirmary.report.lastTreatment</th>
+			</tr>
+			<tr class="treatment-headers">
+				<th translate>medical.infirmary.report.type</th>
+				<th class="treatment-header-desc" translate>medical.infirmary.report.description</th>
+				<th translate>medical.infirmary.report.date</th>
+				<th translate>medical.infirmary.report.hour</th>
+				<th class="treatment-header-author" translate>medical.infirmary.report.author</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr class="treatment-multiple">
+				<td>{{ getTreatmentType(injury.lastTreatment) | translate }}</td>
+				<td>{{ getTreatmentName(injury.lastTreatment) }}</td>
+				<td>
+					{{ injury.lastTreatment?.date ? (injury.lastTreatment.date | date) : '-' }}
+				</td>
+				<td>
+					{{ injury.lastTreatment?.date ? (injury.lastTreatment.date | date : 'HH:mm') : '-' }}
+				</td>
+				<td>{{ injury.lastTreatment?.author | customerName : customers }}</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

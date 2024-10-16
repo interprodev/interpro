@@ -1,0 +1,160 @@
+<ng-container *ngIf="overlay; else accordion">
+	<div class="scoutin-player-fixed" (click)="onClose()"></div>
+	<div class="scouting-players">
+		<ng-container *ngTemplateOutlet="header"></ng-container>
+		<ng-container *ngTemplateOutlet="list"></ng-container>
+		<ng-container *ngTemplateOutlet="addPlayer"></ng-container>
+	</div>
+</ng-container>
+
+<ng-template #accordion>
+	<ng-container *ngTemplateOutlet="list"></ng-container>
+	<ng-container *ngTemplateOutlet="addPlayer"></ng-container>
+</ng-template>
+
+<ng-template #header>
+	<div class="scouting-player-title">
+		<h4>Scenario {{ scenarioTitle }} - Shortlist {{ player?.displayName }}</h4>
+	</div>
+
+	<div class="scouting-players-filter-container">
+		<div class="scouting-players-filter" *ngIf="shortlistScoutings && shortlistScoutings.length > 1">
+			<input
+				[(ngModel)]="scoutingFilterText"
+				(input)="filter()"
+				type="text"
+				pInputText
+				placeholder="{{ 'Search' | translate }}..."
+			/>
+			<iterpro-icon-button
+				[icon]="'fas fa-close'"
+				[tooltip]="'buttons.resetFilters' | translate"
+				(click)="onResetFilter()">
+			</iterpro-icon-button>
+		</div>
+		<iterpro-icon-button
+			[icon]="showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+			[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+			(click)="showFilters = !showFilters">
+		</iterpro-icon-button>
+	</div>
+	<iterpro-scouting-shortlist-filters *ngIf="showFilters" [status]="scoutingFilterStatus" (filter)="onSelectFilterField($event)" />
+</ng-template>
+
+
+<ng-template #list>
+	<div *ngIf="!shortlistScoutings || !shortlistScoutings.length; else shortList" class="no-scouting-player">
+		{{ 'scouting.noPlayers' | translate }}
+	</div>
+
+	<ng-template #shortList>
+		<div class="scouting-players-list">
+			<div
+				*ngFor="let scouting of filteredShortlistScoutings"
+				class="scouting-player-container"
+				pDraggable="player"
+				pDroppable="player"
+				(onDragStart)="onDragStart(scouting)"
+				(onDrop)="onDragEnter(scouting)"
+				(onDragEnd)="onDragEnd()"
+			>
+				<i class="fas fa-bars"></i>
+				<ng-container *ngTemplateOutlet="playerScouting; context: { $implicit: scouting }"></ng-container>
+			</div>
+		</div>
+	</ng-template>
+</ng-template>
+
+<ng-template #playerScouting let-scouting>
+	<div
+		class="scouting-player"
+		[ngStyle]="{ 'background-color': getColor(scouting) }"
+		(click)="onSelectPlayer(scouting)"
+	>
+		<img
+			class="scouting-pic"
+			src="{{ getImageUrl(scouting.downloadUrl) }}"
+			onError="this.src='assets/img/default_icon.png';"
+		/>
+		<span class="scouting-value">
+			<span class="scouting-position">
+				<iterpro-star-svg *ngIf="scouting.associatedPosition" [value]="scouting.associatedPosition"> </iterpro-star-svg>
+			</span>
+			<span class="scouting-name">{{ scouting.displayName }}</span>
+			<span class="properties">
+				<span
+					*ngIf="scouting.nationality"
+					class="flag-icon"
+					[ngClass]="getLangClass(scouting.nationality)"
+					style="margin-right: 1em"
+					title="{{ 'nationalities.' + scouting.nationality | translate }}"
+				></span>
+				<span *ngIf="scouting.birthDate" style="margin-right: 1em">{{ getAge(scouting) }}</span>
+			</span>
+		</span>
+		<span class="values">
+			<span class="scouting-label" translate>profile.overview.transferfee</span>
+			<span class="scouting-value">
+				<iterpro-price-range
+					[model]="scouting"
+					from="feeFrom"
+					to="feeTo"
+					[editMode]="false"
+				/>
+			</span>
+			<span class="scouting-label" translate>profile.overview.transferwage</span>
+			<span class="scouting-value">
+				<iterpro-price-range
+					[model]="scouting"
+					from="wageFrom"
+					to="wageTo"
+					[editMode]="false"
+				/>
+			</span>
+			<span>
+				<i
+					[pTooltip]="'profile.deletePlayerScouting' | translate"
+					class="fas fa-trash icon iterpro-clickable-icon"
+					(click)="deletePlayerMapping(scouting)"
+				></i>
+			</span>
+		</span>
+	</div>
+</ng-template>
+
+<ng-template #addPlayer>
+	<div class="scouting-player scouting-player-add" *ngIf="item && item.notAssignedOptions.length">
+		<img
+			class="scouting-pic"
+			src="{{ getScoutingDownloadUrl(item.associatedScoutingId) }}"
+			onError="this.src='assets/img/default_icon.png';"
+		/>
+
+		<span class="scouting-add-input">
+			<p-dropdown
+				[filter]="true"
+				[(ngModel)]="item.associatedScoutingId"
+				[options]="item.notAssignedOptions"
+				placeholder="{{ 'profile.player' | translate }}"
+			>
+			</p-dropdown>
+		</span>
+
+		<span class="scouting-label" translate>scouting.recommended</span>
+		<span class="scouting-add-input">
+			<p-dropdown
+				[options]="item.positions"
+				[(ngModel)]="item.associatedPosition"
+				placeholder="{{ 'dropdown.placeholder' | translate }}"
+			></p-dropdown>
+		</span>
+
+		<p-button
+			size="small"
+			(click)="onAddNewMapping()"
+			[disabled]="!item.associatedScoutingId || !item.associatedPosition ? 'disabled' : null"
+			[label]="'scouting.addPlayer' | translate"
+		>
+		</p-button>
+	</div>
+</ng-template>

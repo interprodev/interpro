@@ -1,0 +1,212 @@
+<h3 *ngIf="contract" class="spacing" translate>admin.contracts.agentOptions</h3>
+<table *ngIf="contract" class="fields-table block-table"
+	style="width: 100%; border-spacing: 0.5em 0.8em; background-color: transparent">
+	<tr>
+		<th style="display: flex">
+			<span translate>admin.contracts.agent</span>
+			<i *ngIf="!disabled" class="fas fa-trash" style="margin-left: auto" (click)="deleteAgentContract()"></i>
+		</th>
+		<td>
+			<div class="inline-group">
+				<p-dropdown [options]="agentsList" [(ngModel)]="contract.agentId"
+					(onChange)="onAgentChange($event)" name="agentName" #agentName="ngModel" [readonly]="disabled" filter="true"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"></p-dropdown>
+				<span class="inline-group" style="width: 100%">
+					<span class="inline-label" style="margin-left: 1em; margin-right: 1em"
+						translate>admin.contracts.agent.company</span>
+					<span>{{ getAgent(contract.agentId)?.company }}</span>
+					<span class="inline-label" style="margin-left: 1em; margin-right: 1em"
+						translate>admin.contracts.agent.legalRepresentant</span>
+					<span>{{ getAgent(contract.agentId)?.legalRepresentant }}</span>
+					<span class="inline-label" style="margin-left: 1em; margin-right: 1em"
+						translate>admin.contracts.agent.federalId</span>
+					<span>{{ getAgent(contract.agentId)?.federalId }}</span>
+					<span *ngIf="!isTypeTransferContract" class="inline-group">
+						<span class="inline-label" style="margin-left: 1em; margin-right: 1em"
+							translate>admin.contracts.agent.conflict</span>
+						<span>
+							<p-inputSwitch [disabled]="disabled" [(ngModel)]="contract.conflict"></p-inputSwitch>
+						</span>
+					</span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<h4 class="spacing">
+		{{ (isTypeTransferContract ? 'admin.contracts.agentFee' : 'admin.contracts.fixedWagePart') | translate }}
+	</h4>
+	<tr></tr>
+
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.basicWage</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('fee')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let wage of feeBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBasicWageText(wage, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(wage)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="wage.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(wage, 'fee', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(wage, 'fee', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(wage, 'fee', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<h4 *ngIf="contract" class="spacing" style="display: flex; justify-content: space-between">
+		<span translate>admin.contracts.variableWagePart</span>
+		<div class="inline-group" style="font-family: 'Gotham', sans-serif; flex-wrap: unset">
+			<span class="inline-label"
+				style="text-transform: capitalize; margin-right: 1em; word-break: keep-all; white-space: nowrap"
+				translate>admin.contracts.bonusCap</span>
+			<span style="color: #fafafa"> {{ currency }}</span>
+			<input iterproMask [disabled]="disabled" pInputText placeholder="None" [(ngModel)]="contract.bonusCap" name="bonusCap"
+				ngModel type="text" />
+		</div>
+	</h4>
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.appearance</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('appearance')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let bonus of appearanceBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(bonus)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="bonus.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(bonus, 'appearance', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(bonus, 'appearance', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(bonus, 'appearance', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.performance</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('performance')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let bonus of performanceBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(bonus)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="bonus.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(bonus, 'performance', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(bonus, 'performance', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(bonus, 'performance', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.standardTeam</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('standardTeam')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let bonus of standardTeamBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(bonus)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="bonus.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(bonus, 'standardTeam', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(bonus, 'standardTeam', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(bonus, 'standardTeam', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.signing</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('signing')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let bonus of signingBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(bonus)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="bonus.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(bonus, 'signing', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(bonus, 'signing', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(bonus, 'signing', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<th style="display: flex; justify-content: space-between">
+			<span translate>admin.contracts.custom</span>
+			<i class="fas fa-plus" *ngIf="!disabled" style="font-size: 1rem; cursor: pointer"
+				(click)="addContractClause('custom')"></i>
+		</th>
+		<td>
+			<div class="repeated-group">
+				<span *ngFor="let bonus of customBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+					<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+					<span class="buttons">
+						<i *ngIf="!isValid(bonus)" class="fas fa-exclamation-triangle"
+							[pTooltip]="'admin.contracts.incomplete' | translate"></i>
+						<i *ngIf="bonus.asset" class="point" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+						<i class="fas fa-search" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="editContractClause(bonus, 'custom', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-clone" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="cloneContractClause(bonus, 'custom', i)"></i>
+						<i *ngIf="!disabled" class="fas fa-close" style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+							(click)="deleteContractClause(bonus, 'custom', i)"></i></span>
+				</span>
+			</div>
+		</td>
+	</tr>
+	<h4 *ngIf="contract" class="spacing" translate>admin.contracts.notes</h4>
+	<tr>
+		<td [ngStyle]="!disabled ? undefined : { paddingTop: '0.5em' }">
+			<editor *ngIf="!disabled; else readOnlyEditor" [initialValue]="'input-text.placeholder' | translate"
+				[inline]="false" [(ngModel)]="contract.notes" [init]="tinyEditorInit">
+			</editor>
+			<ng-template #readOnlyEditor>
+				<span [innerHTML]="contract.notes | marked"></span>
+			</ng-template>
+		</td>
+	</tr>
+</table>
+
+<iterpro-bonus-panel *ngIf="selectedBonus" [visible]="visibleBonusPanel" [type]="type" [newBonus]="newBonus"
+	[isTypeTransferContract]="isTypeTransferContract" [agent]="true" [(ngModel)]="selectedBonus" [disabled]="disabled"
+	[currency]="currency" [seasons]="seasons" [club]="club" [ngModelOptions]="{ standalone: true }" [index]="tempIndex"
+	(saveEmitter)="onCloseBonusDialog()" (discardEmitter)="closePanel()">
+</iterpro-bonus-panel>

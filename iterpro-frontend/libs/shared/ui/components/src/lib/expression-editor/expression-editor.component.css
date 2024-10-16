@@ -1,0 +1,43 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.buttons {
+	display: flex;
+	margin-bottom: 1em;
+	justify-content: space-between;
+}
+
+.operators {
+	display: flex;
+}
+
+.not-valid {
+	border: 2px solid red;
+}
+
+.valid {
+	border: 0;
+}
+
+.editor-container {
+	display: flex;
+	flex-direction: column;
+	width:60%;
+}
+
+.listbox-container {
+	width: 38%;
+}
+
+.editor {
+	color: rgb(26, 26, 26);
+}

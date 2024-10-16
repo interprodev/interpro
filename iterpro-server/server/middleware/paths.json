@@ -1,0 +1,3836 @@
+[
+	{
+		"url": "/AgentContracts",
+		"paramToCheck": [
+			{
+				"personId": "person"
+			},
+			{
+				"inq": "agentContractArray"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/is-valid",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/clone",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/fee",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/fee/:feeId",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/bonuses/:bonusId",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/AgentContracts/:id/attachments",
+		"paramToCheck": [
+			{
+				"id": "agentContract"
+			}
+		]
+	},
+	{
+		"url": "/Agents/:id/assisted",
+		"paramToCheck": [
+			{
+				"id": "agent"
+			}
+		]
+	},
+	{
+		"url": "/Agents/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "agent"
+			}
+		]
+	},
+	{
+		"url": "/Agents",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Agents/update",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Agents/:id",
+		"paramToCheck": [
+			{
+				"id": "agent"
+			}
+		]
+	},
+	{
+		"url": "/AzureStorage/upload-file",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/AzureStorage/removeFile",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/AzureStorage/downloadFile",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/AzureStorage/sasToken",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/BasicWages",
+		"paramToCheck": []
+	},
+	{
+		"url": "/BasicWages/:id",
+		"paramToCheck": [
+			{
+				"id": "basicWage"
+			}
+		]
+	},
+	{
+		"url": "/Bonuses",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Bonuses/:id",
+		"paramToCheck": [
+			{
+				"id": "bonus"
+			}
+		]
+	},
+	{
+		"url": "/Chat/players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/signature",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/notifications",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/enabled",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/create-user",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/add-to-conversation",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/remove-from-conversation",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Chat/conversation",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/chat-players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/chat-staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/me",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/login",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/logout",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/change-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/reset-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/min-version",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/positions-coordinates",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/club",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/players/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/players/:id/readiness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/players/:id/fitness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/players/:id/injuries",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/players/:id/stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/players/:id/robustness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/notifications",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/notifications/badge",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/notifications/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/tactics",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Coaching/teams/:id/events",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/events/:eventId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/events/:eventId/player-report/:playerId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/match-lineup",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/players",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/season",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/season/flush",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/fixtures",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/fixtures/flush",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/fixtures/:eventId/match-stats",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/test-metrics",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/videos",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/videos/:videoId/comments",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/videos/:videoId/comments/:commentId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/videos/:videoId/comments/:commentId/replies",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/videos/:videoId/comments/:commentId/replies/:replyId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/readiness",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/Coaching/teams/:id/notification-settings",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			},
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons/:id",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons/:id/teamBonus",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons/:id/teamBonus/:fk",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons/:id/transferWindows",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			}
+		]
+	},
+	{
+		"url": "/ClubSeasons/:id/transferWindows/:fk",
+		"paramToCheck": [
+			{
+				"id": "clubSeason"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:clubId/scouting-game/custom-templates",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:clubId/scouting-game/custom-template-with-version",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:clubId/scouting-game/upsert-template",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/add-new-customer",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/scouting-events",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/findOne",
+		"paramToCheck": [
+			{
+				"id": "club"
+			},
+			{
+				"_id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/teams",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/clubSeasons",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/clubSeasons/:fk",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/customers",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/customers/:fk",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/players",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/staff",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/agents",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/players/count",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/playerScoutings",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/playerScoutings/count",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/squads-people",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/Clubs/:id/transfer-balance",
+		"paramToCheck": [
+			{
+				"id": "club"
+			}
+		]
+	},
+	{
+		"url": "/ComparePlayersStats/comparePlayerStats",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/customers",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/ComparePlayersStats/compareTeamStats",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/chat-players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/chat-staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/me",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/currency",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/customer",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/login",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/logout",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/notification-settings",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/positions-coordinates",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/tactics",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/min-version",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/club",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/teams/:id",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/bonus",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/events",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/events/:eventId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/events/:eventId/player-report/:playerId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/players",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/scouting-scenario",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/stats",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/test-metrics",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/stats/flush",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/fixtures/:fk/match-stats",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:id/videos",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:teamId/videos/:id/comments",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:teamId/videos/:id/comments/:commentId",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:teamId/videos/:id/comments/:commentId/replies",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/teams/:teamId/videos/:id/comments/:commentId/replies/:replyId",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/change-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/reset-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/players/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/players/:id/contracts",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/players/:id/stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/players/:id/fitness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/players/:id/robustness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/scouting/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/scouting/:id/stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/scouting/:id/comments",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/scouting/:id/comments/:commentId",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/scouting/:id/comments/:commentId/replies",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/scouting/:id/comments/:commentId/replies/:replyId",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/notifications",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/notifications/badge",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/notifications/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/staffs/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/staffs/:id/contracts",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/staffs/:id/stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/DirectorV2/teams/:id/readiness",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/players/:id/readiness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/DirectorV2/players/:id/injuries",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts",
+		"paramToCheck": [
+			{
+				"personId": "person"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/is-valid",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/clone",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/agentContracts",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/renewalClause",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/basicWages",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/privateWriting",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/bonuses/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/attachments",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/agentContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/basicWages/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/privateWriting/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/bonuses/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/EmploymentContracts/:id/attachments/:fk",
+		"paramToCheck": [
+			{
+				"id": "employmentContract"
+			}
+		]
+	},
+	{
+		"url": "/Events",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"_id": "event"
+			},
+			{
+				"teamSeasonId": "teamSeason"
+			},
+			{
+				"inq": "teamSeasonArray"
+			}
+		]
+	},
+	{
+		"url": "/Events/eventsForAttendance",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/medicalTreatments/count",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/gameReports",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/trainingReports",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/findEventsForMedicalStats",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/findEventsWithFilterAndMetrics",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/getEventWithSessionPlayerData",
+		"paramToCheck": [
+			{
+				"treatmentId": "medicalTreatment"
+			},
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/getSessionsImport",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/importGPSEvent",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/recalculateDefaultMetrics",
+		"paramToCheck": [
+			{
+				"eventIds": "eventArray"
+			}
+		]
+	},
+	{
+		"url": "/Events/resetGPSDataForEvents",
+		"paramToCheck": [
+			{
+				"eventIds": "eventArray"
+			}
+		]
+	},
+	{
+		"url": "/Events/resetGPSDataForSingleEvent",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/saveEventRpe",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/saveMatch",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/saveTraining",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/saveAssessment",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/saveEvent",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/createManyEvents",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Events/deleteEvent",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Events/setSessionPlayerDirtyStatus",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/singleSession",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/syncDateRangeEvents",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/syncEvent",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/syncPeriod",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/uploadCsvDataMatch",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Events/change-notify",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/injury",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/playerPrevention",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/Events/:id/testInstance",
+		"paramToCheck": [
+			{
+				"id": "event"
+			}
+		]
+	},
+	{
+		"url": "/explorer/",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Fieldwiz/createFieldwizAthlete",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/GOScores",
+		"paramToCheck": [
+			{
+				"inq": "playerArray"
+			},
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/GOScores/update",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Injuries",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"inq": "playerArray"
+			},
+			{
+				"playerId": "player"
+			},
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryAssessments",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryAssessments/:fk",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryExams",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryExams/:fk",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryTreatments",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Injuries/:id/injuryTreatments/:fk",
+		"paramToCheck": [
+			{
+				"id": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Matches/import-players-stats",
+		"paramToCheck": [
+			{
+				"matchId": "match"
+			}
+		]
+	},
+	{
+		"url": "/Matches/import-team-stats",
+		"paramToCheck": [
+			{
+				"matchId": "match"
+			}
+		]
+	},
+	{
+		"url": "/Matches",
+		"paramToCheck": [
+			{
+				"teamSeasonId": "teamSeason"
+			},
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Matches/:id",
+		"paramToCheck": [
+			{
+				"id": "match"
+			}
+		]
+	},
+	{
+		"url": "/Matches/:id/teamStat",
+		"paramToCheck": [
+			{
+				"id": "match"
+			}
+		]
+	},
+	{
+		"url": "/Matches/:id/videos",
+		"paramToCheck": [
+			{
+				"id": "match"
+			}
+		]
+	},
+	{
+		"url": "/Matches/:id/videos/:fk",
+		"paramToCheck": [
+			{
+				"id": "match"
+			}
+		]
+	},
+	{
+		"url": "/MedicalTreatments/countTreatmentsOfSameEvent",
+		"paramToCheck": []
+	},
+	{
+		"url": "/MedicalTreatments/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/MedicalTreatments/:id/can-be-detached",
+		"paramToCheck": [
+			{
+				"id": "medicalTreatment"
+			}
+		]
+	},
+	{
+		"url": "/MedicalTreatments",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Notifications",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkForInjuryCreation",
+		"paramToCheck": [
+			{
+				"injuryId": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkForInjuryStatusChanges",
+		"paramToCheck": [
+			{
+				"injuryId": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkForInjuryAvailability",
+		"paramToCheck": [
+			{
+				"injuryId": "injury"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkNotificationForPlayerContract",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkNotificationForPlayerOperation",
+		"paramToCheck": [
+			{
+				"idPlayer": "player"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkNotificationForPlayerScouting",
+		"paramToCheck": [
+			{
+				"playerId": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkNotificationForPlayerTransfer",
+		"paramToCheck": [
+			{
+				"idTransfer": "clubTransfer"
+			},
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkNotificationForPlayerValue",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkForVideoSharingNotification",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/checkForVideoCommentNotification",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/update",
+		"paramToCheck": [
+			{
+				"customerId": "customer"
+			}
+		]
+	},
+	{
+		"url": "/Notifications/:id",
+		"paramToCheck": [
+			{
+				"id": "notification"
+			}
+		]
+	},
+	{
+		"url": "/PlanningView/planningViewPlan",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/me",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/club",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/chat-players",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/chat-staffs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/reminders",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/currency",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/contracts",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/careersTransfers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/change-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/eventForPlayer",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/events",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/events/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/eventReminder",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/getSessionsForDay",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/loginPlayer",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/minimumVersion",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/notificationAllRead",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/notificationRead",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/notifications",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/toggle-notifications",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/toggle-all-notifications",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/notifications/badge",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/playerLogout",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/playerTodayStatus",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/resetPassword",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/season",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/seasonEventsForPlayer",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/setVideoAsRead",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/submitRpe",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/submitWellnessSurvey",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/updateNotificationSettings",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/videos/:id/comments",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/videos/:id/comments/:commentId",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/videos/:id/comments/:commentId/replies",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/videos/:id/comments/:commentId/replies/:replyId",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/videoMatchCommentEdit",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerApp/videos",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/tactics",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/readiness",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/fitness",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/test-metrics",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/robustness",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/fixtures",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerApp/fixtures/:id/match-stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PlayerNotifications/checkVideoCommentsNotifications",
+		"paramToCheck": [
+			{
+				"playerIds": "playerArray"
+			}
+		]
+	},
+	{
+		"url": "/PlayerNotifications/checkVideoSharingNotifications",
+		"paramToCheck": [
+			{
+				"playerIds": "playerArray"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			},
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/update",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/scouting-games",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/transfer",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/attributes",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/attributes/:fk",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/descriptions",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerScoutings/:id/descriptions/:fk",
+		"paramToCheck": [
+			{
+				"id": "playerScouting"
+			}
+		]
+	},
+	{
+		"url": "/PlayerStats/importFromCsv",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/ProfilePlayers/profileGameStats",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/ProfilePlayers/profileMaintenance",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/ProfilePlayers/profileRobustness",
+		"paramToCheck": [
+			{
+				"playerIds": "playerArray"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/amortization",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/employmentContracts",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/employmentContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/transferContracts",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTransfers/:id/transferContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "playerTransfer"
+			}
+		]
+	},
+	{
+		"url": "/PersonCostItems/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/PersonCostItems",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Readiness/period",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Readiness/team",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Readiness/player",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Readiness/player/latest",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/register",
+		"paramToCheck": []
+	},
+	{
+		"url": "/RenewalClauses",
+		"paramToCheck": []
+	},
+	{
+		"url": "/RenewalClauses/:id",
+		"paramToCheck": [
+			{
+				"id": "renewalClause"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingGames",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			},
+			{
+				"playerId": "playerScouting"
+			},
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingGames/getPlayerGames",
+		"paramToCheck": [
+			{
+				"playerId": "playerScouting"
+			},
+			{
+				"currentTeamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingGameReports",
+		"paramToCheck": [
+			{
+				"scoutingGameId": "scoutingGame"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingGameReports/:id",
+		"paramToCheck": [
+			{
+				"id": "scoutingGameReport"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingGames/sendEmail",
+		"paramToCheck": []
+	},
+	{
+		"url": "/ScoutingGames/:id",
+		"paramToCheck": [
+			{
+				"id": "scoutingGame"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingLineups",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingLineups/:id",
+		"paramToCheck": [
+			{
+				"id": "scoutingLineup"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingLineups/:id/dataReports",
+		"paramToCheck": [
+			{
+				"id": "scoutingLineup"
+			}
+		]
+	},
+	{
+		"url": "/ScoutingLineups/:id/dataReports/:fk",
+		"paramToCheck": [
+			{
+				"id": "scoutingLineup"
+			}
+		]
+	},
+	{
+		"url": "/SessionsStats/advanced-data",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/SessionsStats/periodCsv",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/SessionsStats/sessionsPeriodTotal",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/SessionsStats/sessionsPeriodTrend",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/SessionsStats/workloadAnalysisPeriod",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Staffs",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			},
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Staffs/update",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Staffs/:id",
+		"paramToCheck": [
+			{
+				"id": "staff"
+			}
+		]
+	},
+	{
+		"url": "/Staffs/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "staff"
+			}
+		]
+	},
+	{
+		"url": "/Staffs/:id/employmentContracts",
+		"paramToCheck": [
+			{
+				"id": "staff"
+			}
+		]
+	},
+	{
+		"url": "/Staffs/:id/employmentContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "staff"
+			}
+		]
+	},
+	{
+		"url": "/Storage/upload",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Storage/delete",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Storage/download",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/Storage/token",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/TeamBonuses",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/TeamBonuses/:id",
+		"paramToCheck": [
+			{
+				"id": "teamBonus"
+			}
+		]
+	},
+	{
+		"url": "/TeamGroups",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/TeamGroups/update",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/TeamGroups/:id",
+		"paramToCheck": [
+			{
+				"id": "teamGroup"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"inq": "teamArray"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/groups",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/groups/:fk",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/admin-dashboard-team",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/admin-dashboard-player",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			},
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/players",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TeamSeasons/:id/staffs",
+		"paramToCheck": [
+			{
+				"id": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/TestInstances",
+		"paramToCheck": [
+			{
+				"inq": "testArray"
+			}
+		]
+	},
+	{
+		"url": "/TestInstances/deleteTestInstance",
+		"paramToCheck": [
+			{
+				"testInstanceId": "testInstance"
+			}
+		]
+	},
+	{
+		"url": "/TestInstances/:id",
+		"paramToCheck": [
+			{
+				"id": "testInstance"
+			}
+		]
+	},
+	{
+		"url": "/TestInstances/:id/attachments",
+		"paramToCheck": [
+			{
+				"id": "testInstance"
+			}
+		]
+	},
+	{
+		"url": "/Thirdparties/getGPSPlayers",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Thirdparties/getTacticalPlayers",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Thirdparties/getThirdpartyGPSSessions",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"teamSeasonId": "teamSeason"
+			}
+		]
+	},
+	{
+		"url": "/Thirdparties/updateThirdpartyPlayerIds",
+		"paramToCheck": [
+			{
+				"playerArray": "playerObjArray"
+			}
+		]
+	},
+	{
+		"url": "/Utils/invalidateCache",
+		"paramToCheck": []
+	},
+	{
+		"url": "/VideoAssets",
+		"paramToCheck": []
+	},
+	{
+		"url": "/VideoAssets/playerVideos",
+		"paramToCheck": []
+	},
+	{
+		"url": "/VideoAssets/:id",
+		"paramToCheck": [
+			{
+				"id": "videoAsset"
+			}
+		]
+	},
+	{
+		"url": "/Wellnesses",
+		"paramToCheck": [
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/Wellnesses/:id",
+		"paramToCheck": [
+			{
+				"id": "wellness"
+			}
+		]
+	},
+	{
+		"url": "/Instat/standings-leaderboard",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/standings-match-list",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/standings-match-stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/careerTransfers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/dashboard",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Instat/dashboardSingleTeamStat",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/gamePlayerStats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/getCurrentSeasonMatches",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/getSecondaryTeamInfo",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Instat/matchesForSeason",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/playerImage",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/searchPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/playerSearchAdditionalInfo",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/playerSearchFilters",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/resyncEvent",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Instat/searchTeam",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/seasonsForCompetitions",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Instat/singleTeamStat",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/singleTeamStatWithPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/squadSeasonPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/teamSearch",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/instatCompetitionTeams",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/getTeamsCompetitions",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Instat/getMatchesForTeam",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/standings-leaderboard",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/standings-match-list",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/standings-match-stats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/careerTransfers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/dashboard",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Wyscout/dashboardSingleTeamStat",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/gamePlayerStats",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/getCurrentSeasonMatches",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/getPlayerNextGames",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/getSecondaryTeamInfo",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Wyscout/matchesForSeason",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/playerImage",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/searchPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/playerSearchAdditionalInfo",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/playerSearchFilters",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/resyncEvent",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Wyscout/searchTeam",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/getTeamWithImage",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/seasonsForCompetitions",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/Wyscout/singleTeamStat",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/singleTeamStatWithPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/squadSeasonPlayers",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/teamSearch",
+		"paramToCheck": []
+	},
+	{
+		"url": "/Wyscout/wyscoutCompetitionTeams",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/clubTransfers",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/clubTransfers/:id",
+		"paramToCheck": [
+			{
+				"id": "clubTransfer"
+			}
+		]
+	},
+	{
+		"url": "/clubTransfers/:id/player",
+		"paramToCheck": [
+			{
+				"id": "clubTransfer"
+			}
+		]
+	},
+	{
+		"url": "/clubTransfers/:id/buy",
+		"paramToCheck": [
+			{
+				"id": "clubTransfer"
+			},
+			{
+				"targetTeamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/clubTransfers/:id/sell",
+		"paramToCheck": [
+			{
+				"id": "clubTransfer"
+			},
+			{
+				"club": "string"
+			},
+			{
+				"amount": "number"
+			},
+			{
+				"personStatus": "string"
+			}
+		]
+	},
+	{
+		"url": "/customers/change-password-request",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/checkSelectedMetricsTeam",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/confirm",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/createCustomerTeam",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/password-requirements",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/generate-strong-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/is-valid-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/request-login",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/generate-secret",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/perform-login",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/perform-logout",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/reset-secret",
+		"paramToCheck": [
+			{
+				"customerId": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customers/validate-secret",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/login",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/logout",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/password-reset",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/reset-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customers/welcomeEmail",
+		"paramToCheck": [
+			{
+				"customerId": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customers/:id",
+		"paramToCheck": [
+			{
+				"id": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customers/:id/teamSettings",
+		"paramToCheck": [
+			{
+				"id": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customers/:id/teamSettings/:fk",
+		"paramToCheck": [
+			{
+				"id": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customers/:id/changelog",
+		"paramToCheck": [
+			{
+				"id": "customer"
+			}
+		]
+	},
+	{
+		"url": "/customerPlayers/password-reset",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customerPlayers/reset-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/customerPlayers/:id",
+		"paramToCheck": [
+			{
+				"id": "customerPlayer"
+			}
+		]
+	},
+	{
+		"url": "/customerPlayers/:id/welcome-email",
+		"paramToCheck": [
+			{
+				"id": "customerPlayer"
+			}
+		]
+	},
+	{
+		"url": "/CustomerTeamSettings",
+		"paramToCheck": []
+	},
+	{
+		"url": "/CustomerTeamSettings/:id",
+		"paramToCheck": [
+			{
+				"id": "customerTeamSettings"
+			}
+		]
+	},
+	{
+		"url": "/drills",
+		"paramToCheck": []
+	},
+	{
+		"url": "/drills/getDrillProfile",
+		"paramToCheck": [
+			{
+				"drillId": "drill"
+			}
+		]
+	},
+	{
+		"url": "/drills/getDrillStatsComparison",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/drills/getDrillStatsTrend",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/drills",
+		"paramToCheck": []
+	},
+	{
+		"url": "/drills/:id",
+		"paramToCheck": [
+			{
+				"id": "drill"
+			}
+		]
+	},
+	{
+		"url": "/drills/:id/attachments",
+		"paramToCheck": [
+			{
+				"id": "drill"
+			}
+		]
+	},
+	{
+		"url": "/explorer/swagger.json",
+		"paramToCheck": []
+	},
+	{
+		"url": "/players",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"clubId": "club"
+			}
+		]
+	},
+	{
+		"url": "/players/triggerRobustnessUpdate",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"playerId": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/triggerThresholdsUpdate",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			},
+			{
+				"playerIds": "playerArray"
+			}
+		]
+	},
+	{
+		"url": "/players/update",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/players/:id",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/amortization-old",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/amortization",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/customer-player",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/chronicInjuries",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/chronicInjuries/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/employmentContracts",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/employmentContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/injuries",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/injuries/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/preventionExams",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/preventionExams/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/preventionTreatments",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/preventionTreatments/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/transferContracts",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/transferContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/wellnesses",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/attributes",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/attributes/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/descriptions",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/descriptions/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/preventionExams/:fk",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/fitness",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/game-stats",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/maintenance",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/players/:id/investment-performance",
+		"paramToCheck": [
+			{
+				"id": "player"
+			}
+		]
+	},
+	{
+		"url": "/PlayerGameReports",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/PlayerGameReports/:id",
+		"paramToCheck": [
+			{
+				"id": "playerGameReport"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTrainingReports",
+		"paramToCheck": [
+			{
+				"eventId": "event"
+			}
+		]
+	},
+	{
+		"url": "/PlayerTrainingReports/:id",
+		"paramToCheck": [
+			{
+				"id": "playerTrainingReport"
+			}
+		]
+	},
+	{
+		"url": "/reset-password",
+		"paramToCheck": []
+	},
+	{
+		"url": "/socket.io",
+		"paramToCheck": []
+	},
+	{
+		"url": "/teams",
+		"paramToCheck": [
+			{
+				"clubId": "club"
+			},
+			{
+				"id": "team"
+			},
+			{
+				"inq": "teamArray"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/attachments",
+		"paramToCheck": []
+	},
+	{
+		"url": "/teams/:id/drills",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/enabled-modules",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/events",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/events/count",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/changelog",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/games-reports",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/games-reports-csv",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/match",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/match/count",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/observed-scouting",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/players-limit",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/players",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/playersScouting",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/staff",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/teamGroups",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/teamGroups/:fk",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/teamSeasons",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/teamSeasons/:fk",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/tests",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/event-videos",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/financial-overview",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/financial-analysis",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/cash-flow",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/compare-players",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/drill-canvases",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:id/drill-canvases/:canvasId",
+		"paramToCheck": [
+			{
+				"id": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-game/custom-templates",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-game/custom-template-with-version",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-game/upsert-template",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-training/custom-templates",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-training/custom-template-with-version",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/teams/:teamId/player-training/upsert-template",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/TeamTableFilterTemplates",
+		"paramToCheck": [
+			{
+				"teamId": "team"
+			}
+		]
+	},
+	{
+		"url": "/TeamTableFilterTemplates/:id",
+		"paramToCheck": []
+	},
+	{
+		"url": "/tests",
+		"paramToCheck": []
+	},
+	{
+		"url": "/tests/graphComparison",
+		"paramToCheck": [
+			{
+				"testModelId1": "test"
+			},
+			{
+				"testModelId2": "test"
+			},
+			{
+				"testModelId": "test"
+			}
+		]
+	},
+	{
+		"url": "/tests/graphTrend",
+		"paramToCheck": [
+			{
+				"testModelId1": "test"
+			},
+			{
+				"testModelId2": "test"
+			}
+		]
+	},
+	{
+		"url": "/tests/:id",
+		"paramToCheck": [
+			{
+				"id": "test"
+			}
+		]
+	},
+	{
+		"url": "/tests/:id/instances",
+		"paramToCheck": [
+			{
+				"id": "test"
+			}
+		]
+	},
+	{
+		"url": "/tests/:id/instances/:fk",
+		"paramToCheck": [
+			{
+				"id": "test"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts",
+		"paramToCheck": [
+			{
+				"personId": "person"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/is-valid",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/clone",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/agentContracts",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/sellOnFee",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/buyBack",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/loanOption",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/valorization",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/bonuses",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/attachments",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/agentContracts/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/sellOnFee/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/buyBack/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/loanOption/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/valorization/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/bonuses/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/TransferContracts/:id/attachments/:fk",
+		"paramToCheck": [
+			{
+				"id": "transferContract"
+			}
+		]
+	},
+	{
+		"url": "/pdf-report",
+		"paramToCheck": []
+	},
+	{
+		"url": "/EntityChangelogs",
+		"paramToCheck": []
+	},
+	{
+		"url": "/",
+		"paramToCheck": []
+	}
+]

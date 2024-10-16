@@ -1,0 +1,14 @@
+{
+	"name": "chat-feature-inbox",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/chat/chat-feature-inbox/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:chat", "type:feature"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

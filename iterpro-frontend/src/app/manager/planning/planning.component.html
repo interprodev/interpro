@@ -1,0 +1,287 @@
+<div class="main with-tooltips">
+	<!-- Header with Actions -->
+	<header class="header">
+		<h1 translate>navigator.planning</h1>
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+			<ng-container *ngIf="planningViewType !== planningViewTypes.EventDetail; else eventViewHeader">
+				<i
+					*ngIf="planningViewType === planningViewTypes.Calendar && areEventsSynchronizable"
+					class="fas fa-sync"
+					style="cursor: pointer"
+					(click)="syncCalendar()"
+					[pTooltip]="'buttons.resync' | translate"
+				></i>
+
+				<div class="tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2">
+					<iterpro-csv-upload-download (downloadEmptyCSV)="downloadEmptyCsv()" (uploadCSV)="inputjson.click()">
+					</iterpro-csv-upload-download>
+					<input
+						type="file"
+						#inputjson
+						accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+						style="display: none"
+						(change)="fileChanged($event)"
+					/>
+				</div>
+				<p-button
+					*ngIf="planningViewType === planningViewTypes.Calendar"
+					styleClass="p-button-contrast"
+					[size]="'small'"
+					[label]="'buttons.viewPlan' | translate"
+					(click)="changeView(planningViewTypes.Plan)"
+				>
+				</p-button>
+				<p-button
+					*ngIf="planningViewType === planningViewTypes.Plan"
+					styleClass="p-button-contrast"
+					[size]="'small'"
+					[label]="'buttons.backToCalendar' | translate"
+					(click)="changeView(planningViewTypes.Calendar)"
+				>
+				</p-button>
+			</ng-container>
+
+			<ng-template #eventViewHeader>
+				<ng-container *ngIf="!editService.editMode; else editModeButtons">
+					<p-button
+						styleClass="p-button-contrast"
+						[size]="'small'"
+						[label]="'buttons.back' | translate"
+						(click)="child.confirmDiscard()"
+					></p-button>
+					<p-button
+						styleClass="p-button-contrast"
+						[size]="'small'"
+						[label]="'buttons.edit' | translate"
+						(click)="child.edit()"
+					></p-button>
+					<p-button
+						styleClass="p-button-danger"
+						[size]="'small'"
+						[label]="'buttons.delete' | translate"
+						(click)="
+							event.format === 'assessment' || event.format === 'medical'
+								? confirmDeleteInstance()
+								: child.confirmDelete()
+						"
+					>
+					</p-button>
+				</ng-container>
+				<ng-template #editModeButtons>
+					<button
+						pButton
+						class="p-button-primary"
+						[size]="'small'"
+						[label]="'buttons.save' | translate"
+						type="submit"
+						form="form"
+						translate
+						[disabled]="saveDisabled"
+					></button>
+					<p-button
+						styleClass="p-button-contrast"
+						[size]="'small'"
+						[label]="'buttons.discard' | translate"
+						(click)="child.discard()"
+						type="reset"
+						form="form"
+					></p-button>
+				</ng-template>
+			</ng-template>
+		</div>
+	</header>
+
+	<!-- Calendar Header -->
+	<div
+		class="tw-mb-2 tw-flex tw-items-center tw-justify-between"
+		[ngClass]="{ 'tw-invisible tw-mb-0 tw-h-0': planningViewType !== planningViewTypes.Calendar }"
+	>
+		<div>
+			<div
+				class="tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2"
+				*ngIf="currentView.type !== 'resourceTimelineDay'"
+			>
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div class="iterpro-text-color-900 tw-text-sm" translate>general.date</div>
+					<div>
+						<p-calendar
+							*ngIf="currentView.type !== 'timeGridDay' && currentView.type !== 'listMonth'"
+							id="monthCalendar"
+							showButtonBar="true"
+							view="month"
+							dateFormat="mm/yy"
+							appendTo="body"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+							(onSelect)="gotoDate($event)"
+							[(ngModel)]="updatedDate"
+						></p-calendar>
+						<p-calendar
+							*ngIf="currentView.type === 'timeGridDay' || currentView.type === 'listMonth'"
+							showButtonBar="true"
+							appendTo="body"
+							(onSelect)="gotoDate($event)"
+							[(ngModel)]="updatedDate"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+					</div>
+				</div>
+			</div>
+			@if (currentView.type === 'resourceTimelineDay') {
+				<div class="tw-flex tw-items-end tw-gap-4 tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="iterpro-text-color-900 tw-text-sm" translate>general.date</div>
+						<div>
+							<p-calendar
+								showButtonBar="true"
+								appendTo="body"
+								(onSelect)="gotoDate($event)"
+								[(ngModel)]="updatedDate"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+						</div>
+					</div>
+					<div>
+						<div class="tw-mt-1">
+							<iterpro-calendar-time-range-setting
+								[calendarId]="'planning'"
+								[slotMinTime]="calendarOptions.slotMinTime"
+								[slotMaxTime]="calendarOptions.slotMaxTime"
+								(slotMinTimeChange)="onSlotMinTimeChange($event)"
+								(slotMaxTimeChange)="onSlotMaxTimeChange($event)"
+							/>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Planning Calendar Filter Component -->
+		<iterpro-planning-event-filter
+			[nationalClub]="isNationalClub$ | async"
+			[events]="events"
+			[players]="players"
+			[authors]="customers"
+			[staff]="staff"
+			[groups]="groups"
+			(changeFormat)="updateActiveFormatFilters($event)"
+			(changePlayers)="updatePlayerFilters($event)"
+			(changeStaff)="updateStaffFilters($event)"
+			(changeAuthors)="updateAuthorsFilters($event)"
+			(changeGroups)="updateGroupsFilters($event)"
+		/>
+	</div>
+
+	<!-- Calendar -->
+	<div class="row row-sidebar" *ngIf="planningViewType === planningViewTypes.Calendar">
+		<div class="col col-main no-max">
+			<ng-container *ngIf="currentView">
+				<div
+					*ngIf="['timeGridDay', 'timeGridWeek', 'resourceTimelineDay'].indexOf(currentView.type) > -1"
+					class="report-planning"
+				>
+					<iterpro-report-download (downloadPDF)="downloadReport()" />
+				</div>
+			</ng-container>
+			<div
+				class="tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-85 tw-p-4"
+				*blockUI="'full-calendar'; message: 'Please wait, we are checking your schedule...'"
+			>
+				<full-calendar [options]="calendarOptions"></full-calendar>
+			</div>
+		</div>
+	</div>
+
+	<!-- Event Detail -->
+	<div class="tw-w-full" *ngIf="planningViewType === planningViewTypes.EventDetail">
+		<div class="tw-flex tw-justify-center tw-gap-4" *blockUI="'event-view'">
+			<!-- Previous Event Button -->
+			<div class="tw-flex tw-w-[30px] tw-min-w-[30px] tw-items-start tw-justify-center">
+				<div class="tw-mt-[200px]">
+					<p-button
+						[disabled]="!hasPrev"
+						[size]="'large'"
+						[rounded]="true"
+						[icon]="'fas fa-chevron-left'"
+						(click)="prev()"
+						[pTooltip]="'planning.previousEvent' | translate"
+					></p-button>
+				</div>
+			</div>
+			<!-- Event Viewer Component -->
+			<div class="tw-flex-1">
+				@if (allTeams) {
+					<iterpro-event
+						[prefilledPlayerIds]="prefilledPlayerIds"
+						[event]="event"
+						[events]="events"
+						[newEvent]="newEvent"
+						[tests]="testList"
+						[customers]="customers"
+						[teams]="allTeams"
+						[isFromResourceTimelineDay]="currentView.type === 'resourceTimelineDay'"
+						(closeClicked)="closePanel($event)"
+						(saveClicked)="saveEvent($event)"
+						(deleteClicked)="handleDeleteEvent($event)"
+						(resyncEmitter)="handleResyncEvent($event)"
+					/>
+				}
+			</div>
+			<!-- Next Event Button -->
+			<div class="tw-flex tw-w-[30px] tw-min-w-[30px] tw-items-start tw-justify-center">
+				<div class="tw-mt-[200px]">
+					<p-button
+						[disabled]="!hasNext"
+						[size]="'large'"
+						[rounded]="true"
+						[icon]="'fas fa-chevron-right'"
+						(click)="next()"
+						[pTooltip]="'planning.nextEvent' | translate"
+					></p-button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<iterpro-plan-viewer *ngIf="planningViewType === planningViewTypes.Plan" />
+</div>
+
+<!-- Dialog -->
+<p-dialog
+	*ngIf="event"
+	[(visible)]="confirmDeleteFlag"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div>
+		<span *ngIf="event.format === 'assessment'" translate>confirm.instanceRelated</span>
+		<span *ngIf="event.format === 'medical' && event.medicalType === 'exam'" translate>confirm.medicalExam</span>
+		<span *ngIf="event.format === 'medical' && event.medicalType === 'treatment'" translate>
+			confirm.medicalTreatment
+		</span>
+	</div>
+	<p-footer>
+		<p-button
+			[size]="'small'"
+			styleClass="p-button-primary"
+			(click)="handleDeleteEvent(event, true, event.format)"
+			label="{{ 'yes' | translate }}"
+		></p-button>
+		<p-button
+			[size]="'small'"
+			(click)="handleDeleteEvent(event, false, event.format)"
+			label="{{ 'no' | translate }}"
+		></p-button>
+		<p-button
+			[size]="'small'"
+			[outlined]="true"
+			(click)="discard()"
+			label="{{ 'buttons.discard' | translate }}"
+		></p-button>
+	</p-footer>
+</p-dialog>

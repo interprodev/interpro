@@ -1,0 +1,82 @@
+<ng-container *ngIf="context$ | async as context">
+	<div class="main tw-my-8">
+		<div class="tw-w-full tw-flex tw-justify-between tw-mb-4">
+			<h1>{{ 'drillStats.title' | translate }}</h1>
+			<p-button
+				[size]="'small'"
+				styleClass="p-button-contrast"
+				(click)="location.back()"
+				[label]="'buttons.close' | translate">
+			</p-button>
+		</div>
+		<div class="main-content">
+			<div class="pflex-grid">
+				<div class="pflex-col-12" [ngClass]="{ 'lg:pflex-col-9': !context.ui.fullscreen }">
+					<p-tabView
+						[activeIndex]="context.ui.selectedView === VIEWS.Comparison ? 0 : 1"
+						(onChange)="changeSelectedView($event)"
+					>
+						<p-tabPanel [header]="'Comparison' | translate">
+							<iterpro-drills-stats-feature-comparison
+								class="pflex-block pflex-mb-5"
+								[ui]="context.ui"
+								[selectedPlayers]="context.filters.selectedFilters.players"
+								[drillsMapping]="context.filters.data?.drillsMapping"
+								[drillStatsMap]="context.comparison.results"
+							/>
+						</p-tabPanel>
+
+						<p-tabPanel [header]="'sessionAnalysis.options.trend' | translate">
+							<iterpro-drills-stats-feature-period-trend
+								class="pflex-block pflex-mb-5"
+								[ui]="context.ui"
+								[selectedPlayers]="context.filters.selectedFilters.players"
+								[drillsMapping]="context.filters.data?.drillsMapping"
+								[drillStatsMap]="context.period.results"
+							/>
+						</p-tabPanel>
+
+						<iterpro-drills-actions
+							[selectedView]="context.ui.selectedView"
+							[isFullscreen]="context.ui.fullscreen"
+							[chartFlags]="context.ui.chartFlags"
+							(toggleSidebar)="toggleSidebar($event)"
+							(toggleOrder)="toggleOrder($event)"
+							(togglePercentage)="togglePercentage($event)"
+							(toggleLabels)="toggleLabels($event)"
+							(downloadCSV)="downloadCSV()"
+							(downloadPDF)="downloadPDF()"
+						/>
+					</p-tabView>
+				</div>
+
+				<div class="pflex-col-12 lg:pflex-col-3" [ngClass]="{ 'lg:pflex-col-3': !context.ui.fullscreen }">
+					<p-tabView>
+						<p-tabPanel [header]="'Analysis' | translate">
+							<iterpro-drills-stats-feature-filters
+								[players]="context.filters.data?.players"
+								[drills]="context.filters.data?.drills"
+								[drillStatsValues]="
+									context.ui.selectedView === VIEWS.Comparison ? context.comparison.stats : context.period.stats
+								"
+							/>
+						</p-tabPanel>
+					</p-tabView>
+				</div>
+
+				<div class="pflex-col-12">
+					<iterpro-drills-table
+						[selectedView]="context.ui.selectedView"
+						[drillStatistics]="
+							context.ui.selectedView === VIEWS.Comparison ? context.comparison.results : context.period.results
+						"
+						[selectedPlayers]="context.filters.selectedFilters.players"
+						[drillsMapping]="context.filters.data?.drillsMapping"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-container>
+
+<iterpro-alert />

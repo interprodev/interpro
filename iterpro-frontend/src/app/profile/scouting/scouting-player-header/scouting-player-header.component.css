@@ -1,0 +1,55 @@
+.scouting-header {
+	margin-bottom: 1em;
+	padding: 2em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 200px;
+}
+
+.scouting-header > .scouting-header-column {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.scouting-header-column > .scouting-header-row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.scouting-header-row > * {
+	width: 25%;
+}
+
+.position {
+	width: 10% !important;
+}
+
+.pic {
+	width: 10% !important;
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color:white;
+  justify-content: center;
+}
+
+.registry {
+	align-self: flex-start;
+}
+
+.contract {
+	align-self: flex-start;
+}
+
+h4 {
+	text-transform: uppercase;
+	text-align: left !important;
+}
+
+th,
+td {
+	width: 50%;
+}

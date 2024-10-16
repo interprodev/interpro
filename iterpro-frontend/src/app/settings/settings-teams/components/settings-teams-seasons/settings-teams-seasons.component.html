@@ -1,0 +1,37 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [title]="'club.settings.seasons'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="false" [loading]="!teamSeasons" (discard)="discard()"
+													(create)="addNewSeason()"
+													[showDiscard]="false"
+													[buttonTypes]="['addNew']"></iterpro-action-buttons>
+</div>
+<div class="tw-mb-8 tw-mt-8"><iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown></div>
+<div class="tw-mt-2">
+	@if (teamSeasons) {
+		<p-table [value]="teamSeasons" [scrollable]="true" [scrollHeight]="'70vh'"
+						 [rowHover]="true"
+						 [styleClass]="'p-datatable-gridlines'">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th translate>season.name</th>
+					<th translate>season.offSeason</th>
+					<th translate>season.preSeason</th>
+					<th translate>season.inSeasonStart</th>
+					<th translate>season.inSeasonEnd</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-season>
+				<tr class="tw-h-10 tw-cursor-pointer" (click)="editSeason(season)">
+					<td>{{season.name}}</td>
+					<td>{{ season.offseason | formatDateBySetting }}</td>
+					<td>{{ season.preseason | formatDateBySetting }}</td>
+					<td>{{ season.inseasonStart | formatDateBySetting }}</td>
+					<td>{{ season.inseasonEnd | formatDateBySetting }}</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	}
+	@else {
+		<iterpro-skeleton-table [cols]="5" [rows]="10"></iterpro-skeleton-table>
+	}
+</div>

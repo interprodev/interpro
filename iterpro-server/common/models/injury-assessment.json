@@ -1,0 +1,65 @@
+{
+	"name": "injuryAssessment",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date"
+		},
+		"rom": {
+			"type": "string"
+		},
+		"strength": {
+			"type": "string"
+		},
+		"stability": {
+			"type": "string"
+		},
+		"swelling": {
+			"type": "string"
+		},
+		"pain": {
+			"type": "number"
+		},
+		"functionality": {
+			"type": "number"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"next": {
+			"type": "date"
+		},
+		"highPriority": {
+			"type": "boolean"
+		},
+		"available": {
+			"type": "any",
+			"default": "yes"
+		},
+		"expectation": {
+			"type": "date"
+		},
+		"further": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"validations": [],
+	"relations": {
+		"injury": {
+			"type": "belongsTo",
+			"model": "Injury",
+			"foreignKey": ""
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

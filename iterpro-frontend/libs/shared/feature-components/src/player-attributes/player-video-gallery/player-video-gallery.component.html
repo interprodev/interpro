@@ -1,0 +1,52 @@
+<div class="main-container">
+	<div class="edit-header">
+		<ng-container *ngIf="!editService.editMode">
+			<i class="fas fa-edit iterpro-clickable-icon" (click)="onEdit()"></i>
+		</ng-container>
+		<ng-container *ngIf="editService.editMode">
+			<i class="fas fa-save iterpro-clickable-icon" [class.icon-disabled]="videoUploading" (click)="saveEntry()"></i>
+			<i class="fas fa-close iterpro-clickable-icon" [class.icon-disabled]="videoUploading" (click)="onDiscard()"></i>
+		</ng-container>
+	</div>
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+		<div class="tw-col-span-3" *ngIf="editService.editMode">
+			<label translate>videogallery.form.label.video</label>
+			<iterpro-cloud-upload
+				[sizeLimit]="false"
+				(onStartEmitter)="startUploadVideo()"
+				(completedEmitter)="addVideo($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+				[sizeError]="onVideoSizeError"
+				[area]="true"
+				accept="video/*"
+			/>
+			<div *ngIf="!videoLoaded" class="invalid-feedback" translate>videogallery.form.required.video</div>
+		</div>
+		@for(video of videosToSave; track video) {
+			<ng-container *ngTemplateOutlet="attachmentsTemplate; context: { rowData: video.attachment }"></ng-container>
+		}
+		@if (videos?.length) {
+			@for(video of videos; track video) {
+				<ng-container *ngTemplateOutlet="attachmentsTemplate; context: { rowData: video._videoFile }"></ng-container>
+			}
+		} @else {
+			<p style="padding: 2rem 1rem">{{ 'alert.noRecordsFound' | translate }}</p>
+		}
+	</div>
+</div>
+
+<ng-template #attachmentsTemplate let-rowData="rowData">
+	<div class="tw-col-span-3">
+		<div class="video-attachment-header">
+			<input
+				*ngIf="!rowData?.id"
+				pInputText
+				type="text"
+				[(ngModel)]="rowData.name"
+				[placeholder]="'input-text.placeholder' | translate"
+			/>
+			<span *ngIf="rowData?.id">{{ rowData.name }}</span>
+			<p-button size="small" styleClass="p-button-danger" (click)="removeVideo(rowData)" *ngIf="editService.editMode" [label]="'buttons.delete' | translate"></p-button>
+		</div>
+		<iterpro-video-viewer [videoUrl]="(rowData?.downloadUrl | azureUrl)" [videoLoaded]="videoLoaded" (playerReady)="onPlayerReady($event)"></iterpro-video-viewer>
+	</div>
+</ng-template>

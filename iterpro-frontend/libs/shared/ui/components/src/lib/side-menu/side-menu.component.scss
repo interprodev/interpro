@@ -1,0 +1,4 @@
+.selected {
+	border-left: 4px solid var(--color-primary-500);
+	@apply tw-bg-shark-800 tw-text-white #{!important};
+}

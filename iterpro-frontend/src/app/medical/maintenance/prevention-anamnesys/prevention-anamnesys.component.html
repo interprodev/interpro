@@ -1,0 +1,218 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+	<div class="tw-col-span-6 tw-flex tw-flex-col tw-gap-4">
+		<!-- Readiness -->
+		<div class="tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded tw-flex tw-gap-2 tw-justify-between">
+			<span *ngIf="readinessData"
+				><ng-container *ngTemplateOutlet="goScore; context: { $implicit: readinessData.goscore }"></ng-container
+			></span>
+			<!-- Go Score Metrics -->
+			<div *ngIf="lastReadiness" class="tw-mt-4 tw-text-sm tw-max-h-[200px] tw-flex tw-flex-col tw-gap-2 tw-overflow-y-scroll tw-pr-2">
+				<div *ngFor="let item of wellbeingKeys" class="tw-flex tw-justify-between tw-p-2 iterpro-item-container">
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1" translate>{{ item.label }}</span>
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1 tw-flex tw-justify-evenly tw-items-center">
+						<span class="tw-text-center tw-overflow-hidden" style="width: 25%">
+							<ng-container *ngIf="isStandardField(item.key)">
+								<span>{{ lastReadiness[item.key]?.value || '-' }}</span>
+							</ng-container>
+							<ng-container *ngIf="isLocationField(item.key)">
+								<span [pTooltip]="getSorenessLocations(lastReadiness.locations)" class="tw-text-ov">
+									{{ getLocationsNumberString(lastReadiness.locations.length) }}</span
+								>
+							</ng-container>
+							<ng-container *ngIf="isSleepField(item.key)">
+								<span *ngIf="item.key !== 'duration'; else duration">
+									{{ lastReadiness[item.key] }}
+								</span>
+								<ng-template #duration>
+									{{ lastReadiness.sleep_duration }}
+								</ng-template>
+							</ng-container>
+						</span>
+						<span class="iterpro-point" [style.background-color]="lastReadiness[item.key]?.color"></span>
+						<span class="tw-text-center tw-text-ellipsis tw-overflow-hidden" style="width: 25%">{{ lastReadiness[item.key]?.increment }}</span>
+						<span class="tw-text-center tw-text-ellipsis tw-overflow-hidden" style="width: 50%">
+							{{ lastReadiness?.currentDay ?  (lastReadiness?.currentDay | formatDateBySetting) : '-' }}
+						</span>
+					</span>
+				</div>
+				<div *ngFor="let item of lastReadiness.readiness" class="tw-flex tw-justify-between iterpro-item-container">
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1">{{ item.test | translate }} - {{ item.label | translate }}</span>
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1 tw-flex tw-justify-evenly tw-items-center">
+						<span class="tw-text-center tw-text-ellipsis tw-overflow-hidden" style="width: 25%">
+							{{ item.value || '-' }}
+						</span>
+						<span class="iterpro-point" [style.background-color]="item.color"></span>
+						<span class="tw-text-center tw-text-ellipsis tw-overflow-hidden" style="width: 25%">
+							{{ item.increment }}
+						</span>
+						<span class="tw-text-center tw-text-ellipsis tw-overflow-hidden" style="width: 50%">
+							{{ item?.date ? (item.date | formatDateBySetting ) : '-' }}
+						</span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<!-- Injury History -->
+		<div class="tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+			<h3 class="tw-mb-2" translate>sidebar.injuryHistory</h3>
+			<div class="tw-mt-2">
+				<p-table [value]="injuries" [scrollable]="true" [scrollHeight]="'200px'" styleClass="p-datatable-striped" [rowHover]="true">
+					<ng-template pTemplate="body" let-rowData>
+						<tr class="tw-h-10">
+							<td style="width: 5%">
+								<i class="fas fa-eye" (click)="goToDetails(rowData)" style="cursor: pointer" pTooltip="Go to injury details"></i>
+							</td>
+							<td style="width: 5%">
+								<i
+									*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.injury'"
+									class="fas fa-plus"
+									style="color: red"
+								></i>
+								<i
+									*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.complaint'"
+									class="fas fa-plus"
+									style="color: yellow"
+								></i>
+								<i *ngIf="rowData.endDate" class="fas fa-plus" style="color: green"></i>
+							</td>
+							<td style="width: 25%" translate>
+								{{ rowData.date | formatDateBySetting }}
+							</td>
+							<td style="width: 25%" translate>
+								{{ rowData.endDate | formatDateBySetting }}
+							</td>
+							<td style="width: 20%" translate>
+								{{ rowData.issue }}
+							</td>
+							<td style="width: 25%" translate>
+								{{ rowData.location }}
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+		<!-- Chronic Issues -->
+		<div class="tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+			<h3 class="tw-flex tw-justify-between tw-items-center tw-mb-2" translate>
+				chronicInjuries
+				<p-button size="small" (onClick)="addChronic()" [label]="'buttons.add' | translate" [icon]="'fas fa-plus'"></p-button>
+			</h3>
+			<div class="tw-max-h-[205px] tw-overflow-y-auto tw-mt-2">
+				<p-table [value]="chronicInjuries" styleClass="p-datatable-striped">
+					<ng-template pTemplate="body" let-rowData>
+						<tr class="tw-h-10" pTooltip="Open chronic issue details" (click)="editChronic(rowData)">
+							<td style="width: 5%">
+								<i class="fas fa-fire" style="color: var(--color-primary-500)"></i>
+							</td>
+							<td style="width: 25%" translate>
+								{{ rowData.date | formatDateBySetting }}
+							</td>
+							<td translate>
+								{{ rowData.location }}
+							</td>
+							<td>
+								<span *ngFor="let system of rowData.system" translate>{{ system }}</span>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+	</div>
+	<div class="tw-col-span-6 tw-flex tw-flex-col tw-gap-4">
+		<!-- Fitness -->
+		<div class="tw-p-2 tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded tw-w-full">
+			<h3 class="tw-mb-2" translate>profile.tabs.fitness</h3>
+			<div class="tw-text-sm tw-max-h-[250px] tw-flex tw-flex-col tw-gap-2 tw-overflow-y-auto">
+				<div *ngFor="let item of table" class="tw-flex tw-justify-between tw-p-2 iterpro-item-container">
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1" title="{{ item.testName }} - {{ item.metricName }}">
+						{{ item.testName }} - {{ item.metricName }}
+					</span>
+					<span class="tw-overflow-hidden tw-text-ellipsis tw-text-nowrap tw-flex-1 tw-flex tw-justify-evenly tw-items-center">
+						<span class="tw-text-center tw-overflow-hidden" style="width: 25%">
+							{{ item.valueCurrent ? (item.valueCurrent | number : '0.0-2') : '-' }}
+						</span>
+						<span class="iterpro-point" [style.background-color]="item.diffThresholdColor" [pTooltip]="item.tooltip?.value"></span>
+						<span class="tw-text-center tw-overflow-hidden" style="width: 25%">
+							{{ item.valuePrev ? item.diffValuePercentage : '-' }}
+						</span>
+						<span class="tw-text-center tw-overflow-hidden" style="width: 50%">
+							{{ item.valueCurrent && item.date ? (item.date | formatDateBySetting) : '-' }}
+						</span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="tw-flex tw-justify-center tw-mt-8">
+			<div class="tw-w-[400px]">
+				<iterpro-body-chart *ngIf="injuriesAndSoreness" [injuries]="injuriesAndSoreness" [chronic]="chronicInjuries" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-dialog
+	[(visible)]="chronicInjuryShown"
+	[draggable]="false"
+	[resizable]="false"
+	[showHeader]="false"
+	[modal]="true"
+	[styleClass]="'p-dialog--overflow p-dialog--wide'"
+>
+	<div *blockUI="'chronicForm'">
+		<iterpro-chronic-form
+			*ngIf="chronicInjuryShown"
+			[player]="player"
+			[injury]="selectedChronicInjury"
+			[injuries]="injuries"
+			(deleteChronic)="deleteChronic()"
+			(close)="closeChronic()"
+			(onSubmit)="onSubmit($event)"
+		/>
+	</div>
+</p-dialog>
+
+<ng-template #goScore let-goscore>
+	<h3 translate>navigator.readiness</h3>
+	<div class="tw-flex tw-gap-8">
+		<div class="tw-px-0 tw-py-2">
+			<div class="tw-relative tw-w-[130px]">
+				<div class="go-score-text">
+					{{ goscore.today.value || '-' }}
+				</div>
+				<round-progress
+					[current]="goscore.today.value"
+					[max]="100"
+					[stroke]="10"
+					[color]="goscore.today.color"
+					[background]="'#dddddd'"
+					[radius]="100"
+					[responsive]="true"
+				/>
+			</div>
+		</div>
+		<div class="tw-px-0 tw-py-2 tw-flex tw-flex-col tw-gap-4">
+			<div>
+				<div class="tw-mb-2 iterpro-text-color-900" translate>readiness.last48h</div>
+				<div>
+					<strong [style.color]="goscore.last48h.color">{{ goscore.last48h.value || '-' }}</strong>
+					<span *ngIf="goscore.today.value">{{ goscore.last48h.increment }}</span>
+				</div>
+			</div>
+			<div>
+				<div class="tw-mb-2 iterpro-text-color-900" translate>readiness.last7d</div>
+				<div>
+					<strong [style.color]="goscore.last7d.color">{{ goscore.last7d.value || '-' }}</strong>
+					<span *ngIf="goscore.today.value">{{ goscore.last7d.increment }}</span>
+				</div>
+			</div>
+			<div>
+				<div class="tw-mb-2 iterpro-text-color-900" translate>readiness.injuryRisk</div>
+				<div>
+					<strong [style.color]="goscore.today.color" translate>{{ goscore.injuryRisk }}</strong>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>

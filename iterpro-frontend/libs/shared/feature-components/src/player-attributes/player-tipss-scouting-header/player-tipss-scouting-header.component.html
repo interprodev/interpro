@@ -1,0 +1,18 @@
+<div class="attributes-container">
+
+	<iterpro-player-scouting-report-summary-header
+		[player]="$any(player)"
+		[showCalculatedBy]="showCalculatedBy"
+		[mode]="scoutingMode"
+		(redirect)="scoutingRedirect.emit($event)"
+	/>
+
+	<iterpro-player-attributes-entries
+		*ngIf="customers"
+		[player]="player"
+		[customers]="customers"
+		[type]="type"
+		[team]="team"
+		[playerDescriptionSetting]="playerDescriptionSetting"
+	/>
+</div>

@@ -1,0 +1,390 @@
+{
+	"name": "PlayerScouting",
+	"plural": "PlayerScoutings",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"wyscoutId": {
+			"type": "number"
+		},
+		"instatId": {
+			"type": "number"
+		},
+		"gpexeId": {
+			"type": "number"
+		},
+		"catapultId": {
+			"type": "any"
+		},
+		"fieldwizId": {
+			"type": "any"
+		},
+		"statsportId": {
+			"type": "any"
+		},
+		"wimuId": {
+			"type": "any"
+		},
+		"name": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"displayName": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"altNationality": {
+			"type": "string"
+		},
+		"shoeSize": {
+			"type": "string"
+		},
+		"captain": {
+			"type": "boolean"
+		},
+		"inTeamFrom": {
+			"type": "date"
+		},
+		"inTeamTo": {
+			"type": "date"
+		},
+		"facebook": {
+			"type": "string"
+		},
+		"twitter": {
+			"type": "string"
+		},
+		"instagram": {
+			"type": "string"
+		},
+		"linkedin": {
+			"type": "string"
+		},
+		"snapchat": {
+			"type": "string"
+		},
+		"mobilePhone": {
+			"type": "string"
+		},
+		"otherMobile": {
+			"type": "array"
+		},
+		"education": {
+			"type": "string"
+		},
+		"school": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date",
+			"default": "1990-01-01T00:00:00.000Z"
+		},
+		"birthPlace": {
+			"type": "string"
+		},
+		"weight": {
+			"type": "number"
+		},
+		"height": {
+			"type": "number"
+		},
+		"position": {
+			"type": "string"
+		},
+		"role1": {
+			"type": ["string"]
+		},
+		"position2": {
+			"type": "string"
+		},
+		"role2": {
+			"type": ["string"]
+		},
+		"position3": {
+			"type": "string"
+		},
+		"role3": {
+			"type": ["string"]
+		},
+		"foot": {
+			"type": "string"
+		},
+		"jersey": {
+			"type": "number"
+		},
+		"valueField": {
+			"type": "string"
+		},
+		"value": {
+			"type": "number"
+		},
+		"clubValue": {
+			"type": "number"
+		},
+		"agentValue": {
+			"type": "number"
+		},
+		"wage": {
+			"type": "number"
+		},
+		"contractStart": {
+			"type": "date"
+		},
+		"contractEnd": {
+			"type": "date"
+		},
+		"phone": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"address": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"domicile": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"botId": {
+			"type": "string"
+		},
+		"botMessageUrl": {
+			"type": "string"
+		},
+		"anamnesys": {
+			"type": "array"
+		},
+		"archived": {
+			"type": "boolean",
+			"default": false
+		},
+		"archivedDate": {
+			"type": "date"
+		},
+		"currentStatus": {
+			"type": "string"
+		},
+		"statusDetails": {
+			"type": "object"
+		},
+		"movOnBall": {
+			"type": ["string"]
+		},
+		"movOffBall": {
+			"type": ["string"]
+		},
+		"passing": {
+			"type": ["string"]
+		},
+		"finishing": {
+			"type": ["string"]
+		},
+		"defending": {
+			"type": ["string"]
+		},
+		"technique": {
+			"type": ["string"]
+		},
+		"documents": {
+			"type": ["object"]
+		},
+		"nationalityOrigin": {
+			"type": "string"
+		},
+		"fiscalIssue": {
+			"type": "string"
+		},
+		"ageGroup": {
+			"type": "string"
+		},
+		"biography": {
+			"type": "string"
+		},
+		"federalMembership": {
+			"type": ["object"]
+		},
+		"maritalStatus": {
+			"type": "string"
+		},
+		"contractDetails": {
+			"type": "object"
+		},
+		"_statusHistory": {
+			"type": ["object"]
+		},
+		"recommended": {
+			"type": "number"
+		},
+		"notesThreads": {
+			"type": ["object"]
+		},
+		"agent": {
+			"type": "string"
+		},
+		"agentEmail": {
+			"type": "string"
+		},
+		"agentPhone": {
+			"type": "string"
+		},
+		"associatedPosition": {
+			"type": "number"
+		},
+		"associatedRole": {
+			"type": "string"
+		},
+		"lastUpdate": {
+			"type": "date"
+		},
+		"lastAuthor": {
+			"type": "string"
+		},
+		"feeFrom": {
+			"type": "number"
+		},
+		"feeTo": {
+			"type": "number"
+		},
+		"wageFrom": {
+			"type": "number"
+		},
+		"wageTo": {
+			"type": "number"
+		},
+		"currentTeam": {
+			"type": "string"
+		},
+		"passport": {
+			"type": "string"
+		},
+		"altPassport": {
+			"type": "string"
+		},
+		"currentLeague": {
+			"type": "string"
+		},
+		"observerTeams": {
+			"type": "object",
+			"default": {}
+		},
+		"observed": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"validations": [],
+	"relations": {
+		"associatedPlayer": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": "associatedPlayerId"
+		},
+		"gameReports": {
+			"type": "hasMany",
+			"model": "ScoutingGameReport",
+			"property": "gameReports"
+		},
+		"attributes": {
+			"type": "hasMany",
+			"model": "PlayerAttributesEntry",
+			"polymorphic": "person"
+		},
+		"descriptions": {
+			"type": "hasMany",
+			"model": "PlayerDescriptionEntry",
+			"polymorphic": "person"
+		},
+		"videos": {
+			"type": "hasMany",
+			"model": "VideoAsset",
+			"foreignKey": ""
+		},
+		"employmentContracts": {
+			"type": "hasMany",
+			"model": "EmploymentContract",
+			"property": "employmentContracts",
+			"polymorphic": "person"
+		},
+		"transferContracts": {
+			"type": "hasMany",
+			"model": "TransferContract",
+			"property": "transferContracts",
+			"polymorphic": "person"
+		},
+		"transfer": {
+			"type": "hasOne",
+			"model": "ClubTransfer",
+			"property": "transfer",
+			"polymorphic": "person"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getPlayerGames": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/scouting-games",
+				"verb": "get"
+			}
+		}
+	},
+	"indexes": {
+		"clubId_1_observed_1": {
+			"keys": {
+				"clubId": 1,
+				"observed": 1
+			}
+		},
+		"teamId_1_observerTeams_1_observed_1": {
+			"keys": {
+				"teamId": 1,
+				"observerTeams": 1,
+				"observed": 1
+			}
+		}
+	}
+}

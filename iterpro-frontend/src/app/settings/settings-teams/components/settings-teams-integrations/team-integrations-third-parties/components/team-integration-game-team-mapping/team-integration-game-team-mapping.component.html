@@ -1,0 +1,80 @@
+<div class="tw-mt-2">
+	<p-accordion [multiple]="true">
+		<!-- Primary Settings -->
+		<p-accordionTab [disabled]="mappingDisabled"
+										[pTooltip]="!mappingDisabled ? null : (team.providerTeam | manualBlockedProvider | translate)"
+										[tooltipPosition]="'bottom'">
+			<ng-template pTemplate="header">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div translate>{{'preferences.thirdParties.mappings' | translate}}</div>
+					@if (gameTeamMappingForm.controls.primarySettings.invalid) {
+						<div class="tw-text-red-500" translate>import.error</div>
+						<i class="fas fa-exclamation tw-text-red-500"></i>
+					}
+				</div>
+			</ng-template>
+			<div class="tw-flex tw-justify-between tw-items-center tw-mb-2">
+				<div class="tw-flex tw-gap-2 tw-items-center">
+					<h4 class="tw-uppercase tw-w-full" translate>preferences.mapping.gps.device</h4>
+					<input pInputText [formControl]="gameTeamMappingForm.controls.primarySettings.controls.mappingPresetTeam">
+				</div>
+				@if (editMode) {
+					<div class="tw-flex tw-gap-2 tw-items-center">
+						<p-fileUpload #fUpload mode="basic" auto="true" styleClass="p-button"
+													[style]="{fontSize: '0.85rem', fontWeight: '900'}"
+													(onSelect)="loadSample($event)" name="files[]" accept=".csv"
+													maxFileSize="1048576" [chooseLabel]="'fileUploader.loadSample' | translate">
+						</p-fileUpload>
+						<iterpro-tiered-menu
+							[label]="'Preset'"
+							[icon]="'fas fa-ellipsis-h'"
+							[menuItems]="presetMenuItems"
+						></iterpro-tiered-menu>
+					</div>
+				}
+			</div>
+			<p-table [value]="basicPrimarySettingsSkeleton" [scrollable]="true" [scrollHeight]="'40vh'" [styleClass]="'p-datatable-gridlines'">
+				<ng-template pTemplate="body" let-col>
+					<tr class="tw-h-10">
+						<td>{{col.label}}</td>
+						<td>
+							<p-dropdown appendTo="body"
+													showClear="true"
+													filter="true"
+													[formControl]="gameTeamMappingForm.controls.primarySettings.controls[col.value]"
+													[options]="rawMetricsOptions" [style]="{ width: '100%' }"
+													[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+													[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+							</p-dropdown>
+						</td>
+						<td>
+							@if (col.value === 'dateColumn' || col.value === 'startTimeColumn' || col.value === 'endTimeColumn') {
+								<p-dropdown appendTo="body"
+														showClear="true"
+														filter="true"
+														[formControl]="gameTeamMappingForm.controls.primarySettings.controls[col.format]"
+														[options]="dateFormatsOptions" [style]="{ width: '100%' }"
+														[dropdownIcon]="!editMode ? 'none' : 'fas fa-chevron-down'"
+														[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+								</p-dropdown>
+							}
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</p-accordionTab>
+		<!-- Raw Metrics -->
+		<p-accordionTab>
+			<ng-template pTemplate="header">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div translate>{{'preferences.thirdParties.rawMetrics' | translate}}</div>
+					@if (gameTeamMappingForm.controls.rawMetrics.invalid) {
+						<div class="tw-text-red-500" translate>import.error</div>
+						<i class="fas fa-exclamation tw-text-red-500"></i>
+					}
+				</div>
+			</ng-template>
+			<iterpro-generic-raw-metrics [editMode]="editMode" [name]="formGroupName" [saveClicked]="saveClicked"></iterpro-generic-raw-metrics>
+		</p-accordionTab>
+	</p-accordion>
+</div>

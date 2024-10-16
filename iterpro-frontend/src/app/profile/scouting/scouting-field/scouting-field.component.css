@@ -1,0 +1,165 @@
+.scouting-container {
+	display: flex;
+	margin-bottom: 50px;
+}
+.field-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+	width: 100%;
+}
+.field-container > * {
+  width: 100%;
+}
+.field {
+	display: flex;
+	width: 77%;
+	justify-content: center;
+	background-color: rgb(32 36 39 / 0.85);
+}
+.sidebar {
+	width: 21%;
+	margin-left: 2%;
+	padding: 18px;
+}
+.sidebar-buttons button[disabled] {
+	opacity: 0.2;
+}
+.sidebar h3 {
+	font-weight: bold;
+	font-size: 14px;
+	text-transform: uppercase;
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.sidebar-section {
+	display: block;
+	margin-bottom: 1.5em;
+}
+.scenario-input {
+	margin-bottom: 1.5em;
+	flex-direction: column;
+}
+.scenario-input > label {
+	color: #999;
+	font-size: 14px;
+	margin-bottom: 3px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.sidebar h3 > .fa-plus {
+	color: #fff;
+	cursor: pointer;
+}
+.field-match {
+	width: 75%;
+	max-width: 800px;
+	justify-content: center;
+	position: relative;
+}
+.field-match > img {
+	width: 100%;
+}
+
+.bench-match {
+	width: 25%;
+	position: relative;
+	text-align: center;
+}
+
+.bench-match > div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	width: 100%;
+	height: 95%;
+	left: 0;
+	top: 5%;
+	overflow-y: scroll;
+}
+
+.bench-match > div > * {
+	margin-bottom: 7px;
+}
+
+.bench-match h5 {
+	padding-right: 12px;
+}
+
+.line {
+	height: 1px;
+	background-color: var(--color-neutral-300);
+	display: block;
+	width: 80%;
+}
+.sidebar-buttons {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.data-reports {
+	max-height: 300px;
+	overflow-y: auto;
+}
+.box-dark {
+	/* background-color: var(--color-bg-600); */
+	padding: 12px;
+	width: 100%;
+}
+.data-reports div + div {
+	margin-top: 5px;
+}
+.data-reports .fa-download {
+	margin-right: 8px;
+}
+.box-data-report {
+	display: flex;
+}
+.box-data-report > span {
+	flex-grow: 1;
+	padding-right: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 13px;
+}
+.box-data-report .fa-trash {
+	margin-left: auto;
+}
+
+@media only screen and (max-width: 800px) {
+	.bench-match {
+		overflow-x: hidden;
+	}
+}
+
+.director-app {
+	margin-top: 50px;
+}
+
+.scenario-actions > i {
+	margin-left: 0.5em;
+}
+
+.profile-content {
+	padding: 1em;
+}
+
+.scenario-header {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 1em;
+}
+
+.scenario-header > * {
+	margin-right: 2em;
+}
+
+.inline-label {
+	font-weight: normal;
+	color: #bbbbbb;
+}

@@ -1,0 +1,13 @@
+@if (chartData) {
+<div class="pflex-flex pflex-align-items-center pflex-justify-content-center pflex-w-full">
+	<p-chart
+		[data]="chartData"
+		[options]="chartOptions"
+		[plugins]="plugins"
+		type="doughnut"
+		class="pflex-w-13rem pflex-mx-auto pflex-block"
+	></p-chart>
+</div>
+} @else {
+<p class="pflex-text-base pflex-text-center">{{ 'primeng.emptyMessage' | translate }}</p>
+}

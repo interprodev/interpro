@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+	xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+	<style>
+		.button-container {
+			text-align: center;
+			width: 100%;
+		}
+
+		.button {
+			background-color: #FF6900;
+			/* display: inline-block; */
+			cursor: pointer;
+			color: white;
+			/* font-family: 'Gotham', 'Open Sans'; */
+			/* font-size: 14px; */
+			padding: 6px 24px;
+			text-decoration: none;
+		}
+	</style>
+</head>
+
+<body>
+	<span>Hello <%= firstName %>
+			<%= lastName %>,
+	</span>
+	<br><br>
+	<span>
+		<%= senderFirstName %>
+			<%= senderLastName %> assigned you the following game:
+	</span>
+	<ul>
+		<li>Game: <b>
+				<%= title %>
+			</b></li>
+		<li>Date: <b>
+				<%= start %>
+			</b></li>
+		<li>Players: <b>
+				<%= players %>
+			</b></li>
+		<li>Location: <b>
+				<%= location || '' %>
+			</b></li>
+		<li>Notes: <b>
+				<%= notes || '' %>
+			</b></li>
+	</ul>
+	<span>For more info contact <%= senderEmail %>.</span>
+	<br><br>
+	<span class="button-container">
+		<a href="<%= host %>/#/home/players/scouting"><button class="button">View in Iterpro</button></a>
+	</span>
+	<br><br>
+	<span>Best regards</span>
+</body>
+
+</html>

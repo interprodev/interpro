@@ -1,0 +1,124 @@
+{
+	"name": "Storage",
+	"plural": "Storage",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getToken": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/token",
+				"verb": "get"
+			}
+		},
+		"deleteFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/delete",
+				"verb": "post"
+			}
+		},
+		"uploadFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "data",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/upload",
+				"verb": "post"
+			}
+		},
+		"downloadFile": {
+			"accepts": [
+				{
+					"arg": "clubId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "filename",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/download",
+				"verb": "get"
+			}
+		}
+	}
+}

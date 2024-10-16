@@ -1,0 +1,410 @@
+<div class="main tw-mt-8">
+	<div>
+		<header>
+			@if (!selectedPlayer) {
+				<!-- Toolbar -->
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+					<!-- Main Title -->
+					<h1 translate>navigator.scouting
+						@switch (activeViewType?.id) {
+							@case (viewTypes.TableView) {
+								<span> - <span translate>list</span></span>
+							}
+							@case (viewTypes.CardView) {
+								<span> - <span translate>list</span></span>
+							}
+							@case (viewTypes.FieldView) {
+								<span> - <span translate>scouting.shadowTeams</span></span>
+							}
+							@case (viewTypes.CalendarView) {
+								<span> - <span translate>admin.squads.calendarView</span></span>
+							}
+							@case (viewTypes.ReportsPerScoutView) {
+								<span> - <span translate>scouting.gameReports</span></span>
+							}
+						}
+					</h1>
+					<div class="tw-flex tw-gap-4">
+						@if (activeViewType?.id === viewTypes.TableView || activeViewType?.id === viewTypes.CardView) {
+							<!-- Search Bar -->
+							<div class="tw-flex tw-items-center tw-gap-4 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+								<div class="tw-relative tw-w-full tw-rounded tw-shadow-lg">
+									<input
+										type="text"
+										class="tw-w-80 tw-text-shark-200 tw-placeholder-shark-200 tw-border-shark-800 tw-transition-colors"
+										[placeholder]="'admin.squads.search' | translate"
+										[(ngModel)]="filterPlayer"
+									/>
+									<i class="fas fa-search tw-absolute tw-top-0 tw-right-0 tw-m-1 tw-text-shark-200"></i>
+								</div>
+							</div>
+						}
+						<!-- Download PDF / Filters / Legend -->
+						@if (isScoutingAdmin && activeViewType?.id === viewTypes.CardView
+						|| activeViewType?.id === viewTypes.TableView) {
+							<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+								@if (activeViewType?.id === viewTypes.CardView) {
+									<span class="tw-text-sm" translate>profile.showArchived</span>
+									<p-inputSwitch class="small-input-switch" [(ngModel)]="showArchivedPlayers"></p-inputSwitch>
+								}
+								<iterpro-report-download
+									*ngIf="activeViewType?.id === viewTypes.TableView"
+									(downloadPDF)="downloadPlayersReportPdf()"
+									(downloadCSV)="downloadPlayerReportCsv()"
+								/>
+								<iterpro-csv-upload-download (downloadEmptyCSV)="downloadEmptyCsv()" (uploadCSV)="inputjson.click()">
+								</iterpro-csv-upload-download>
+								<input
+									type="file"
+									#inputjson
+									accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+									style="display: none"
+									(change)="fileChanged($event)"
+								/>
+								<ng-container *ngIf="activeViewType?.id === viewTypes.TableView">
+									<div class="filters">
+										<iterpro-icon-button
+											[icon]="showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+											[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+											(click)="toggleFilters()"
+										>
+										</iterpro-icon-button>
+									</div>
+								</ng-container>
+							</div>
+						}
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<!-- Card View / List View -->
+							<p-tabMenu [model]="tabViewTypes" [activeItem]="activeViewType">
+								<ng-template pTemplate="item" let-item>
+									<a class="p-menuitem-link tw-px-2 tw-py-1">
+										<i [class]="item.icon" [pTooltip]="item.label | translate"></i>
+									</a>
+								</ng-template>
+							</p-tabMenu>
+						</div>
+					</div>
+				</div>
+				<!-- Add Player -->
+				<div class="tw-flex tw-items-center tw-justify-end">
+					@if (isScoutingAdmin && activeViewType?.id === viewTypes.CardView || activeViewType?.id === viewTypes.TableView) {
+						<iterpro-tiered-menu
+							[pTooltip]="(hasReachedMaxImportablePlayers() ? 'scouting.maxImported' : null) | translate"
+							[icon]="'fas fa-plus'"
+							[iconOnly]="false"
+							[label]="'buttons.addNew' | translate"
+							[styleClass]="'p-button-contrast'"
+							[isLoading]="isScoutingPlayersLoading"
+							[disabled]="hasReachedMaxImportablePlayers()"
+							[menuItems]="addPlayerMenuItems"
+						></iterpro-tiered-menu>
+					}
+				</div>
+			} @else {
+				<!-- Player Header -->
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+					<!-- Player Dropdown -->
+					@if (selectedPlayer) {
+						<!-- Player Dropdown -->
+						<iterpro-search-dropdown [showCaretIcon]="true" [selectedPerson]="selectedPlayer" (selectPerson)="onSelectFromDropdown($event)" [people]="searchDropdownElements" />
+					}
+					<div class="tw-flex tw-items-center tw-gap-4">
+						<p-button size="small" *ngIf="!!attributesEdit; else noAttributeEdit" (click)="closeAttributesEdit()" [label]="'buttons.back' | translate"></p-button>
+						<ng-template #noAttributeEdit>
+							<span [hidden]="!editService.editMode || !isOverviewTabActive()" class="save-player-overview-button"></span>
+							<span [hidden]="!editService.editMode || !isAttributeTabActive()" class="save-player-attributes-button"></span>
+							<ng-container *ngIf="!editService.editMode; else playerAttributesEditMode">
+								<p-button size="small" styleClass="p-button-primary" [disabled]="canBeTransferredToTeam(selectedPlayer)" (click)="openTransferDialog()" [label]="'sendToTransfers' | translate"></p-button>
+								<p-button
+									size="small"
+									styleClass="p-button-contrast"
+									*ngIf="!selectedPlayer.archived && activeIndex !== 3 && activeIndex !== 2 && activeIndex !== 1"
+									(click)="onEditPlayer()"
+									[label]="'buttons.edit' | translate"
+								>
+								</p-button>
+
+								<p-button size="small" styleClass="p-button-contrast" (click)="onCloseProfile()" [label]="'buttons.close' | translate"></p-button>
+							</ng-container>
+							<ng-template #playerAttributesEditMode>
+								<button pButton size="small" *ngIf="!hasCustomSaveButton()" class="p-button-primary" form="form" type="submit" [label]="'buttons.save' | translate"></button>
+								<p-button size="small" styleClass="p-button-contrast" (click)="onDiscard()" [label]="'buttons.discard' | translate"></p-button>
+							</ng-template>
+						</ng-template>
+					</div>
+				</div>
+			}
+		</header>
+		<!-- Filers & Table Columns -->
+		<div class="tw-mt-4" [hidden]="activeViewType?.id !== viewTypes.TableView || selectedPlayer">
+			<iterpro-table-filter-template
+				*ngIf="showFilterTemplateSelection"
+				[ngClass]="{ 'pflex p-hidden': !showFilters }"
+				[tableId]="'scouting_table'"
+				[filters]="filtersForTemplate"
+				[visibility]="visibleColumns"
+				(templateChanged)="handleFilterTemplateChanged($event)"
+			/>
+			<!-- FILTERS -->
+			<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded tw-mb-4" [hidden]="!showFilters">
+				<div class="tw-w-full tw-flex tw-justify-end">
+					<!-- Card View / List View -->
+					<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+						<ng-template pTemplate="item" let-item>
+							<a class="p-menuitem-link tw-px-2 tw-py-1">
+								<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+								<i class="tw-ml-2" [class]="item.icon"></i>
+							</a>
+						</ng-template>
+					</p-tabMenu>
+				</div>
+				<div>
+					@switch (activeFilterTabType) {
+						@case (filtersTabTypes[0]) {
+							<iterpro-table-filter
+								[class.maximize]="activeViewType?.id === viewTypes.CardView"
+								[items]="scaffoldPlayerOrigin"
+								[options]="filterOptions"
+								[hideReset]="true"
+								(filterEmitter)="handleFilterStateUpdated($event)"
+							/>
+						}
+						@case (filtersTabTypes[1]) {
+							<iterpro-table-column-filter
+								[options]="columnOptions"
+								[hideReset]="true"
+								(onChange)="changeViewableColumns($event)"
+							>
+							</iterpro-table-column-filter>
+						}
+					}
+				</div>
+			</div>
+		</div>
+		<div class="tw-mt-2" *ngIf="!selectedPlayer; else playerDetail">
+			<ng-container *ngIf="activeViewType?.id === viewTypes.CardView || activeViewType?.id === viewTypes.TableView">
+				<ng-container *ngIf="activeViewType?.id === viewTypes.TableView">
+					<div style="padding-bottom: 6px; padding-top: 6px; padding-left: 3px">
+						{{ (filteredPlayers | playersNotArchivedPipe)?.length || 0 }} <span translate>players</span>
+					</div>
+					<iterpro-scouting-table-view
+						#scoutingTable
+						[players]="filteredPlayers | playersNotArchivedPipe"
+						[isTableLoading]="isScoutingPlayersLoading"
+						[isSwissGameReport]="isSwissGameReport"
+						[isWatford]="isWatfordGameReport"
+						[standardAttributes]="standardAttributes"
+						[filterPlayer]="filterPlayer"
+						[visibleColumns]="visibleColumns"
+						[sportType]="sportType"
+						(onPlayerClick)="onClickPlayer($event)"
+					>
+					</iterpro-scouting-table-view>
+				</ng-container>
+
+				<ng-container *ngIf="activeViewType?.id === viewTypes.CardView">
+					<p-accordion [multiple]="true">
+						<ng-container *ngIf="!isScoutingPlayersLoading; else showLoadingCards">
+							<ng-container *ngFor="let item of categories">
+								<ng-container *ngIf="item.name !== 'noPosition'; else noPositions">
+									<p-accordionTab [headerStyleClass]="'shark-accordion-tab'" [selected]="true" header="{{ 'roles.categories.' + item.name + 's' | translate }}">
+										<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+											<iterpro-player-card
+												*ngFor="let player of item.players | playersPipe: filterPlayer"
+												[player]="player"
+												[scouting]="true"
+												[isPlayerDescriptionTipss]="isPlayerDescriptionTipss"
+												[maxImportableReached]="hasReachedMaxImportablePlayers()"
+												[maxArchivableReached]="hasReachedMaxArchivablePlayers()"
+												(clickedPlayer)="onClickPlayer($event)"
+												(clickedActivation)="openActivateDialog($event)"
+												(clickedArchiviation)="openArchiveDialog($event)"
+												(clickedDelete)="openDeleteDialog($event)"
+											/>
+										</div>
+									</p-accordionTab>
+								</ng-container>
+								<ng-template #noPositions>
+									<ng-container *ngIf="item.players.length > 0">
+										<p-accordionTab [headerStyleClass]="'shark-accordion-tab'" [selected]="true" header="{{ 'roles.categories.noPosition' | translate }}">
+											<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+												<iterpro-player-card
+													*ngFor="let player of item.players | playersPipe: filterPlayer"
+													[player]="player"
+													[scouting]="true"
+													[isPlayerDescriptionTipss]="isPlayerDescriptionTipss"
+													[maxImportableReached]="hasReachedMaxImportablePlayers()"
+													[maxArchivableReached]="hasReachedMaxArchivablePlayers()"
+													(clickedPlayer)="onClickPlayer($event)"
+													(clickedActivation)="openActivateDialog($event)"
+													(clickedArchiviation)="openArchiveDialog($event)"
+													(clickedDelete)="openDeleteDialog($event)"
+												/>
+											</div>
+										</p-accordionTab>
+									</ng-container>
+								</ng-template>
+							</ng-container>
+						</ng-container>
+
+						<ng-template #showLoadingCards>
+							<ng-container *ngFor="let item of categoryLabelForSkeletons">
+								<p-accordionTab [headerStyleClass]="'shark-accordion-tab'" [selected]="true" header="{{ 'roles.categories.' + item + 's' | translate }}">
+									<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+										<iterpro-player-card *ngFor="let player of 5 | arrayFromNumber" [isPlayersLoading]="true" />
+									</div>
+								</p-accordionTab>
+							</ng-container>
+						</ng-template>
+					</p-accordion>
+
+					<div style="height: 250px">
+						<ng-container *ngIf="archived.players.length > 0 && showArchivedPlayers">
+							<div [@toggleState]="showArchivedPlayers">
+								<div class="tw-text-bold tw-mb-2">
+									<h3 translate>profile.status.archived</h3>
+								</div>
+								<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8 tw-opacity-70">
+									<iterpro-player-card
+										*ngFor="let player of archived.players | playersPipe: filterPlayer"
+										[player]="player"
+										[scouting]="true"
+										[isPlayerDescriptionTipss]="isSwissGameReport"
+										[maxImportableReached]="hasReachedMaxImportablePlayers()"
+										[maxArchivableReached]="hasReachedMaxArchivablePlayers()"
+										(clickedPlayer)="onClickPlayer($event)"
+										(clickedActivation)="openActivateDialog($event)"
+										(clickedArchiviation)="openArchiveDialog($event)"
+										(clickedDelete)="openDeleteDialog($event)"
+									/>
+								</div>
+							</div>
+						</ng-container>
+					</div>
+				</ng-container>
+			</ng-container>
+
+			<ng-container *ngIf="activeViewType?.id === viewTypes.FieldView">
+				<iterpro-scouting-field
+					[scoutingPlayers]="scaffoldPlayerOrigin"
+					[clubPlayers]="clubPlayers"
+					[scenarioRoles]="scenarioRoles"
+					[scenarios]="scenarios"
+					[sportType]="sportType"
+					[customers]="scoutCustomers"
+					[isScoutingAdmin]="isScoutingAdmin"
+					(onClickPlayer)="onClickPlayer($event)"
+					(deleteScenarioEmitter)="onDeleteScenario($event)"
+					[isWatfordGameReport]="isWatfordGameReport"
+					[isPlayerDescriptionTipss]="isSwissGameReport"
+					[visibleColumns]="visibleColumns"
+					(updateScenarioEmitter)="onUpdateScenario($event)"
+					(visibleColumnsChange)="changeViewableColumns($event)"
+					(visibleColumnsResetRequest)="resetFilters()"
+				>
+				</iterpro-scouting-field>
+			</ng-container>
+
+			<ng-container *ngIf="activeViewType?.id === viewTypes.CalendarView || activeViewType?.id === viewTypes.ReportsPerScoutView">
+				<iterpro-scouting-calendar
+					[scoutCustomers]="scoutCustomers"
+					[players]="players"
+					[scoutingGame]="gameToEdit"
+					[tipssMode]="isGameReportTipss"
+					[isWatford]="isWatfordGameReport"
+					[isSwiss]="isSwissGameReport"
+					(redirectEmitter)="onRedirect($event)"
+					(requestPlayers)="requestPlayers()"
+					(newScoutingPlayersEmitter)="addNewScoutingPlayerFromEvent($event)"
+					[scoutingViewType]="activeViewType?.id === viewTypes.ReportsPerScoutView ? 2 : 1"
+				/>
+			</ng-container>
+		</div>
+	</div>
+</div>
+
+<p-dialog
+	*ngIf="playerToArchive"
+	[(visible)]="visible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="true"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+	[style]="{ width: '700px' }"
+>
+	<p-header>{{ playerToArchive.displayName | capitalize }}</p-header>
+	<div>
+		<div translate>scouting.archived</div>
+		<div class="ui-g" style="margin: 10px 0">
+			<div class="ui-g-12">
+				<div class="flexed" style="width: 100%">
+					<span style="margin-right: 0.8em" translate>profile.archive.notes</span>
+					<input pInputText type="text" [(ngModel)]="notes" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			(click)="saveArchived(playerToArchive)"
+			label="{{ 'buttons.save' | translate }}"
+		></p-button>
+		<p-button [outlined]="true" size="small" icon="fas fa-times" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>
+
+<iterpro-third-party-player-search
+	*ngIf="thirdPartyPlayerSearchDialogVisible"
+	[alreadyImportedPlayers]="alreadyImportedPlayers"
+	(discardEmitter)="onDiscardThirdPartySearchDialog()"
+	(selectPlayersEmitter)="onSelectThirdPartySearchDialog($event)"
+>
+</iterpro-third-party-player-search>
+
+<iterpro-to-transfer-dialog
+	*ngIf="transferDialog"
+	[visible]="transferDialog"
+	[player]="selectedPlayer"
+	[seasons]="clubSeasons"
+	(closeEmitter)="closeTransferDialog()"
+	(confirmEmitter)="sendToTransfer($event)"
+></iterpro-to-transfer-dialog>
+
+<iterpro-new-scouting-player-dialog
+	*ngIf="visibleAddPlayerDialog"
+	[visible]="visibleAddPlayerDialog"
+	(close)="closeAddPlayerDialog()"
+	(confirm)="addNewPlayer($event)"
+/>
+
+
+<ng-template #playerDetail>
+	<form id="form" #f="ngForm" (ngSubmit)="confirmPlayerFormSubmit(f)">
+		<iterpro-scouting-player
+			*ngIf="players"
+			name="player"
+			[player]="selectedPlayer"
+			[selectedTabIndex]="selectedPlayerTabIndex"
+			[scenarioRoles]="scenarioRoles"
+			[sportType]="sportType"
+			[scoutingPlayers]="players"
+			[editMode]="editService.editMode"
+			[discarded]="discarded"
+			[customers]="scoutCustomers"
+			[clubPlayers]="clubPlayers"
+			[seasons]="seasons"
+			[scenarios]="scenarios"
+			(onSavePlayer)="onSavePlayerAttributes($event)"
+			(tabChangeEmitter)="onTabChange($event)"
+			(scenariosEmitter)="onUpdateScenariosMapping($event)"
+			(swapEmitter)="onSwapEmitter($event)"
+			(selectedGameEmitter)="goToCalendar($event)"
+			(playerReportEmitter)="updatePlayerReportEntries($event)"
+		/>
+	</form>
+</ng-template>

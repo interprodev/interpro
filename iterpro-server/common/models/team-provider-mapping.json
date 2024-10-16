@@ -1,0 +1,28 @@
+{
+	"name": "TeamProviderMapping",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"rawMetrics": {
+			"type": ["object"]
+		},
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"goalsScoredField": {
+			"type": "string"
+		},
+		"goalsConcedField": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

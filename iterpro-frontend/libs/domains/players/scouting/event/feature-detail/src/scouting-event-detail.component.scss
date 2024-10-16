@@ -1,0 +1,28 @@
+.details-container {
+	position: relative;
+	.icons-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		align-items: center;
+		margin-bottom: 1rem !important;
+		height: 24px;
+	}
+	.main-row {
+		width: 100%;
+		border-spacing: 0 6px;
+		@apply tw-bg-shark-1000 tw-rounded tw-px-2 tw-py-1 tw-text-sm;
+	}
+	.mid-label {
+		color: var(--color-neutral-900);
+	}
+}
+
+.cannot-edit-info {
+	color: #bbbbbb;
+	font-size: 0.75em;
+	font-style: oblique;
+	position: absolute;
+	top: 0;
+	left: 0;
+}

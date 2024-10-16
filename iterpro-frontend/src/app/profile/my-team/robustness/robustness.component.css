@@ -1,0 +1,166 @@
+h5 + .small-table {
+	margin-top: 1rem;
+}
+
+h3,
+h4 {
+	text-transform: uppercase;
+}
+
+.section {
+	width: 100%;
+}
+
+.profile-data-personal {
+	width: 100%;
+}
+
+.profile-data-position {
+	width: 100%;
+}
+
+.profile-data-contract {
+	width: 100%;
+}
+
+.chart {
+	width: 100% !important;
+	display: block;
+}
+
+.col-left-profile {
+	width: 14%;
+	padding-right: 2em;
+	flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	flex-grow: 1;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+}
+
+.rowProfile {
+	display: flex;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+}
+
+.row-column {
+	justify-content: space-between;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.row-column.left {
+	width: 40%;
+}
+.row-column.right {
+	width: 40%;
+}
+
+.row-inner {
+	margin-top: 1em;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.profile-picture {
+	width: 100%;
+	margin: 1rem 0;
+  position: relative;
+}
+
+.profile-picture img {
+	width: 100%;
+}
+
+.player-pic {
+	box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+	opacity: 1;
+	display: block;
+	transition: 0.5s ease;
+	backface-visibility: hidden;
+}
+
+.chart-container-robustness {
+	height: 100%;
+}
+
+.chart-container {
+	height: 100%;
+	width: 100%;
+}
+
+.point {
+	right: 10%;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+canvas {
+	background-color: rgb(255, 255, 255);
+}
+
+#chartjs-tooltip {
+	opacity: 1;
+	/* position: absolute; */
+	background: rgba(0, 0, 0, 0.7);
+	color: white;
+	border-radius: 3px;
+	-webkit-transition: all 0.1s ease;
+	transition: all 0.1s ease;
+	pointer-events: none;
+	-webkit-transform: translate(-50%, 0);
+	transform: translate(-50%, 0);
+}
+
+.chartjs-tooltip-key {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin-right: 10px;
+}
+
+.legend {
+	list-style: none;
+}
+
+.legend li {
+	float: left;
+	margin-right: 10px;
+}
+
+.legend span {
+	border: 1px solid #ccc;
+	float: left;
+	width: 15px;
+	height: 12px;
+	margin: 2px;
+}
+
+.bbox {
+	padding: 10px;
+	border-radius: 3px;
+}
+
+.bbox + .bbox {
+	margin-top: 10px;
+}
+
+.table-scroll {
+	max-height: 206px;
+	overflow-y: auto;
+}
+
+
+.spacing > i {
+	cursor: pointer;
+}

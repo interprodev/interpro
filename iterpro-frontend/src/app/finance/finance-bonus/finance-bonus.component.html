@@ -1,0 +1,21 @@
+<div class="main">
+	<div *blockUI="'chart'">
+		<div>
+			<header class="header">
+				<h1>
+					{{ 'navigator.bonusTracking' | translate }}
+				</h1>
+				<div class="header-actions">
+					<div class="header-buttons">
+						<p-button size="small" styleClass="p-button-contrast" *ngIf="playerBonusFlag === 'player' && !editService.editMode" (click)="onEdit()" [label]="'buttons.edit' | translate"></p-button>
+						<p-button size="small" styleClass="p-button-primary" *ngIf="editService.editMode" (click)="onSave()" [label]="'buttons.save' | translate"></p-button>
+						<p-button size="small" styleClass="p-button-contrast" *ngIf="editService.editMode" (click)="onDiscard()" [label]="'buttons.discard' | translate"></p-button>
+					</div>
+				</div>
+			</header>
+
+			<iterpro-table-bonus *ngIf="club && teams" [club]="club" [teams]="teams" [taxes]="taxesItem"
+				[personBonusState]="playerBonusState" [editMode]="editService.editMode" (emitToSave)="applySave($event)"/>
+		</div>
+	</div>
+</div>

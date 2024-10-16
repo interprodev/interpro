@@ -1,0 +1,88 @@
+<div class="tw-flex tw-flex-wrap tw-gap-2">
+	<!-- Arrow -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.editor.arrow' | translate"
+		(click)="activateArrowDrawing(false)"
+	>
+		<fa-icon
+			[icon]="icons.faArrowLeft"
+			[ngClass]="canvasMode === canvasModes.Arrow ? 'tw-text-primary-500' : 'tw-text-white'"
+			class="tw-cursor-pointer tw-text-2xl tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+	<!-- Arrow Dashed -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.editor.dashedArrow' | translate"
+		(click)="activateArrowDrawing(true)"
+	>
+		<svg
+			class="tw-w-6"
+			viewBox="0 0 100 98"
+			fill="none"
+			[ngClass]="canvasMode === canvasModes.ArrowDashed ? 'tw-fill-primary-500' : 'tw-fill-white'"
+		>
+			<path
+				d="M96.21 52.7142H79.51C78.5048 52.7142 77.5408 52.3229 76.8301 51.6263C76.1193 50.9298 75.72 49.9851 75.72 49C75.72 48.0149 76.1193 47.0702 76.8301 46.3737C77.5408 45.6771 78.5048 45.2858 79.51 45.2858H96.21C97.2152 45.2858 98.1792 45.6771 98.8899 46.3737C99.6007 47.0702 100 48.0149 100 49C100 49.9851 99.6007 50.9298 98.8899 51.6263C98.1792 52.3229 97.2152 52.7142 96.21 52.7142ZM62.82 52.7142H46.13C45.1248 52.7142 44.1608 52.3229 43.4501 51.6263C42.7393 50.9298 42.34 49.9851 42.34 49C42.34 48.0149 42.7393 47.0702 43.4501 46.3737C44.1608 45.6771 45.1248 45.2858 46.13 45.2858H62.82C63.8252 45.2858 64.7892 45.6771 65.4999 46.3737C66.2107 47.0702 66.61 48.0149 66.61 49C66.61 49.9851 66.2107 50.9298 65.4999 51.6263C64.7892 52.3229 63.8252 52.7142 62.82 52.7142ZM29.44 52.7142H12.75C11.7448 52.7142 10.7808 52.3229 10.0701 51.6263C9.35931 50.9298 8.96001 49.9851 8.96001 49C8.96001 48.0149 9.35931 47.0702 10.0701 46.3737C10.7808 45.6771 11.7448 45.2858 12.75 45.2858H29.44C30.4452 45.2858 31.4092 45.6771 32.1199 46.3737C32.8307 47.0702 33.23 48.0149 33.23 49C33.23 49.9851 32.8307 50.9298 32.1199 51.6263C31.4092 52.3229 30.4452 52.7142 29.44 52.7142Z"
+			/>
+			<path
+				d="M32.42 80.9382C31.9028 80.9409 31.3905 80.8386 30.9156 80.6379C30.4406 80.4372 30.0131 80.1424 29.66 79.772L0 49L29.66 18.228C30.0014 17.8728 30.4109 17.587 30.8651 17.3869C31.3192 17.1868 31.8091 17.0763 32.3069 17.0617C32.8046 17.0472 33.3004 17.1288 33.7659 17.302C34.2314 17.4752 34.6576 17.7366 35.02 18.0712C35.3824 18.4058 35.6741 18.8071 35.8783 19.2522C36.0825 19.6972 36.1952 20.1774 36.2101 20.6651C36.2249 21.1529 36.1416 21.6388 35.9649 22.095C35.7881 22.5512 35.5214 22.9688 35.18 23.324L10.44 49L35.18 74.676C35.6879 75.2039 36.0269 75.8659 36.1551 76.5805C36.2834 77.295 36.1953 78.0307 35.9018 78.6967C35.6082 79.3628 35.1221 79.93 34.5033 80.3283C33.8846 80.7266 33.1603 80.9387 32.42 80.9382Z"
+			/>
+		</svg>
+	</div>
+	<!-- Line -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.elements.line' | translate"
+		(click)="activateLineDrawing(false)"
+	>
+		<fa-icon
+			[icon]="icons.faDash"
+			[ngClass]="canvasMode === canvasModes.Line ? 'tw-text-primary-500' : 'tw-text-white'"
+			class="tw-cursor-pointer tw-text-2xl tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+	<!-- Dashed Line -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.elements.dashedLine' | translate"
+		(click)="activateLineDrawing(true)"
+	>
+		<!-- Pen Line Dashed -->
+		<svg
+			viewBox="0 0 512 64"
+			class="tw-h-6"
+			[ngClass]="canvasMode === canvasModes.LineDashed ? 'tw-fill-primary-500' : 'tw-fill-white'"
+		>
+			<path
+				d="M284.5 32C284.5 14.3 298.842 0 316.594 0L479.906 2.67029e-05C497.658 2.67029e-05 512 14.3 512 32C512 49.7 497.658 64 479.906 64H316.594C298.842 64 284.5 49.7 284.5 32Z"
+			/>
+			<path
+				d="M0 32C0 14.3 14.342 2.67029e-05 32.094 2.67029e-05L180 0C197.752 0 212.094 14.3 212.094 32C212.094 49.7 197.752 64 180 64L32.094 64C14.342 64 0 49.7 0 32Z"
+			/>
+		</svg>
+	</div>
+	<!-- Circle -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.elements.circle' | translate"
+		(click)="addCircle()"
+	>
+		<fa-icon
+			[icon]="icons.faCircle"
+			class="tw-cursor-pointer tw-text-2xl tw-text-white tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+	<!-- Square -->
+	<div
+		class="tw-group tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[pTooltip]="'drillCanvas.elements.square' | translate"
+		(click)="addSquare()"
+	>
+		<fa-icon
+			[icon]="icons.faSquare"
+			class="tw-cursor-pointer tw-text-2xl tw-text-white tw-transition-all group-hover:tw-text-primary-500"
+		/>
+	</div>
+</div>

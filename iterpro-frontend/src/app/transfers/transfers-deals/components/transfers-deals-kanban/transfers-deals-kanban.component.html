@@ -1,0 +1,57 @@
+<div class="pflex-grid pflex-gap-2">
+	<div *ngFor="let transferStatus of kanbanMap | keyvalue : originalOrder" class="pflex-col-12 sm:pflex-col  tw-p-4 tw-bg-shark-1000 tw-rounded">
+		<ul
+			[attr.data-status]="transferStatus.key"
+			pDroppable
+			(onDrop)="drop($event)"
+			class="pflex-h-30rem pflex-overflow-auto pflex-w-15rem pflex-min-w-full"
+		>
+			<!-- Header -->
+			<header
+				[style.border-bottom]="'3px solid ' + transferStatus.value.color"
+				class="pflex-text-center pflex-p-2 pflex-sticky pflex-top-0 pflex-mb-1 tw-p-4 tw-bg-shark-900 tw-rounded pflex-z-1"
+			>
+				<h4>{{ 'admin.transfers.deals.' + transferStatus.key | translate }}</h4>
+
+				@if (kanbanType === 'sales' && salesBreakdown) {
+				<div class="deals-subtitle">
+					<div>
+						<span class="subtitle-label">{{ 'admin.transfers.trading.cost' | translate }}</span>
+						<span class="subtitle-value">{{ salesBreakdown[transferStatus.key]?.transferFee | shortNumber : true }}</span>
+					</div>
+					<div>
+						<span class="subtitle-label">{{ 'admin.transfers.trading.salary' | translate }}</span>
+						<span class="subtitle-value">{{ salesBreakdown[transferStatus.key]?.wage | shortNumber : true }}</span>
+					</div>
+				</div>
+				} @if (kanbanType === 'purchases' && purchasesBreakdown) {
+				<div class="deals-subtitle">
+					<div>
+						<span class="subtitle-label">{{ 'admin.transfers.trading.cost' | translate }}</span>
+						<span class="subtitle-value">{{ purchasesBreakdown[transferStatus.key]?.transferFee | shortNumber : true }}</span>
+					</div>
+					<div>
+						<span class="subtitle-label">{{ 'admin.transfers.trading.salary' | translate }}</span>
+						<span class="subtitle-value">{{ purchasesBreakdown[transferStatus.key]?.wage | shortNumber : true }}</span>
+					</div>
+				</div>
+				}
+			</header>
+
+			<li
+				*ngFor="let transfer of transferStatus.value.transfers"
+				class="pflex-my-1 pflex-border-round-sm pflex-overflow-hidden pflex-surface-900 pflex-cursor-pointer"
+				[class.transfer-closed]="transfer.closed"
+				[attr.data-id]="transfer.id"
+				[style.border-right-color]="transferStatus.value.color"
+				[pTooltip]="transfer | tooltipTransfer"
+				(click)="onTransferClick(transfer)"
+				(onDragStart)="dragStart(transfer)"
+				(onDragEnd)="dragEnd()"
+				pDraggable
+			>
+				<iterpro-transfers-deals-kanban-item [transfer]="transfer" [transferType]="kanbanType" />
+			</li>
+		</ul>
+	</div>
+</div>

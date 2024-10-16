@@ -1,0 +1,235 @@
+<div class="scouting-container">
+	<div class="field-container">
+		<div class="field">
+			<div class="field-match">
+				<iterpro-report-download style="position: absolute; right: 0" (downloadPDF)="downloadReport()"></iterpro-report-download>
+				<img [src]="getFieldUrl()" alt="field" />
+
+				<ng-container *ngIf="scenario">
+					<span *ngIf="!scenarioRoles; else roles">
+						<iterpro-player-card-image
+							*ngFor="let player of lineup; index as i"
+							[player]="getPlayerForCard(player)"
+							[tactic]="player"
+							[x]="tacticsPositions[i].x"
+							[y]="tacticsPositions[i].y"
+							[disabled]="!isActive(player)"
+							[highlighted]="isHighlighted(player)"
+							[isSelected]="isSelected(player)"
+							[azureImg]="!isHighlighted(player)"
+							[scoutingPlayers]="scoutingPlayers"
+							[scenario]="scenario"
+							[showBadge]="!shadowTeam"
+							(click)="onSelectPlayerCard(player)"
+							(showShortlist)="onShowShortlist($event)"
+						/>
+					</span>
+					<ng-template #roles>
+						<span>
+							<iterpro-role-card
+								*ngFor="let role of scenario._roles; index as i"
+								[tactic]="role"
+								[role]="getRoleForCard(role)"
+								[index]="i"
+								[x]="tacticsPositions[i].x"
+								[y]="tacticsPositions[i].y"
+								[scoutingPlayers]="scoutingPlayers"
+								[scenario]="scenario"
+								[showBadge]="!shadowTeam"
+								(showShortlist)="onShowShortlist($event)"
+								(changeRoleNameEmitter)="onChangeRoleName($event)"
+							>
+							</iterpro-role-card>
+						</span>
+					</ng-template>
+				</ng-container>
+			</div>
+
+			<div class="bench-match" *ngIf="!scenarioRoles">
+				<div>
+					<iterpro-player-card-image
+						*ngFor="let player of bench"
+						[player]="getPlayerForCard(player)"
+						[tactic]="player"
+						[disabled]="!isActive(player)"
+						[isSelected]="isSelected(player)"
+						[scoutingPlayers]="scoutingPlayers"
+						[scenario]="scenario"
+						[showBadge]="!shadowTeam"
+						(click)="onSelectPlayerCard(player)"
+						(showShortlist)="onShowShortlist($event)"
+					/>
+
+					<span class="line">&nbsp;</span>
+
+					<iterpro-player-card-image
+						*ngFor="let player of notCalled"
+						[player]="getPlayerForCard(player)"
+						[tactic]="player"
+						[disabled]="!isActive(player)"
+						[isSelected]="isSelected(player)"
+						[scoutingPlayers]="scoutingPlayers"
+						[scenario]="scenario"
+						[showBadge]="!shadowTeam"
+						(click)="onSelectPlayerCard(player)"
+						(showShortlist)="onShowShortlist($event)"
+					/>
+				</div>
+			</div>
+			<div class="sidebar tw-bg-shark-950 tw-bg-opacity-85 tw-rounded">
+				<div *ngIf="isScoutingAdmin" class="sidebar-section">
+					<h3 translate>scouting.searchForPlayers</h3>
+					<iterpro-player-dropdown
+						[options]="activeScoutingPlayers"
+						[filter]="true"
+						(playerIdChanged)="onSelectPlayer($event)"
+						[placeholder]="'dropdown.placeholderPlayer' | translate"
+					/>
+				</div>
+
+				<div class="sidebar-section">
+					<h3>
+						<span translate>scouting.scenario</span>
+						<span class="scenario-actions">
+							<i
+								*ngIf="isScoutingAdmin && !editMode"
+								class="fas fa-plus iterpro-clickable-icon"
+								(click)="onAddScenario()"
+								pTooltip="{{ 'buttons.addNew' | translate }}"
+							></i>
+						</span>
+					</h3>
+					<div style="display: flex; align-items: center; justify-content: space-between">
+						<input *ngIf="editMode" [(ngModel)]="scenario.name" pInputText />
+						<p-dropdown
+							*ngIf="!editMode"
+							[(ngModel)]="scenario"
+							[options]="scenariosList"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+							(onChange)="onSelectScenario($event)"
+						></p-dropdown>
+						<i
+							*ngIf="scenario && !editMode"
+							class="fas fa-pencil iterpro-clickable-icon"
+							(click)="onEditScenario()"
+						></i>
+						<i
+							*ngIf="scenario && isScoutingAdmin && !editMode"
+							class="fas fa-trash iterpro-clickable-icon"
+							(click)="onDeleteScenario()"
+						></i>
+						<i *ngIf="scenario && editMode" class="fas fa-check iterpro-clickable-icon" (click)="onSaveScenario()"></i>
+						<i *ngIf="scenario && editMode" class="fas fa-times iterpro-clickable-icon" (click)="onDiscard()"></i>
+					</div>
+				</div>
+
+				<div *ngIf="isScoutingAdmin" class="sidebar-section">
+					<h3 translate>dialog.file.sharedWith</h3>
+					<p-multiSelect
+						*ngIf="scenario"
+						[options]="customersItem"
+						[(ngModel)]="scenario.sharedWithIds"
+						[style]="{ width: '100%' }"
+						[filter]="true"
+						appendTo="body"
+						maxSelectedLabels="1"
+						selectedItemsLabel="{0} selected"
+						[placeholder]="'multiselect.placeholder' | translate"
+						(onChange)="onSelectCustomer($event)"
+					>
+					</p-multiSelect>
+				</div>
+
+				<div *ngIf="scenario && sportType === 'football'" class="sidebar-section">
+					<h3 translate>sidebar.yourTactic</h3>
+					<p-dropdown
+						*ngIf="scenario && scenario.tactic"
+						[options]="tacticsList"
+						[(ngModel)]="scenario.tactic"
+						[style]="{ width: '100%' }"
+						(onChange)="onSelectTactic($event)"
+					>
+					</p-dropdown>
+				</div>
+				<div *ngIf="!scenarioRoles" class="sidebar-section">
+					<h3 translate>scouting.shadowTeam</h3>
+					<p-inputSwitch [(ngModel)]="shadowTeam"></p-inputSwitch>
+				</div>
+
+				<div class="sidebar-section small-area">
+					<h3>
+						<span translate>test.attachments</span>
+					</h3>
+					<div>
+						<p-button
+							size="small"
+							class="redirect-icon"
+							icon="fas fa-folder-open"
+							(click)="uploadDialogVisibility = true"
+							[pTooltip]="
+								scenario?._attachments?.length > 0
+									? ('dialog.file.showDialog' | translate) + ' (' + scenario?._attachments?.length + ')'
+									: ('dialog.file.noFileAttached' | translate)
+							"
+						></p-button>
+					</div>
+				</div>
+
+				<div *ngIf="isScoutingAdmin && scenarios?.length" class="sidebar-section">
+					<h3>
+						<span translate>directorApp</span>
+						<i class="fas fa-question" pTooltip="{{ 'directorApp.scenario.help' | translate }}"></i>
+					</h3>
+					<div class="scenario-input">
+						<p-dropdown
+							[options]="scenariosList"
+							[ngModel]="scenarioForDirector"
+							(onChange)="onSelectScenarioForDirector($event)"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+						>
+						</p-dropdown>
+					</div>
+				</div>
+			</div>
+		</div>
+		<iterpro-scouting-shortlist-table
+			*ngIf="scenario"
+			[scenarioRoles]="scenarioRoles"
+			[players]="getPlayersForTable(scenario?._players)"
+			[roles]="getRolesForTable(scenario?._roles)"
+			[scenario]="scenario"
+			[scoutingPlayers]="scoutingPlayers"
+			[isWatfordGameReport]="isWatfordGameReport"
+			[isPlayerDescriptionTipss]="isPlayerDescriptionTipss"
+			[visibleColumns]="visibleColumns"
+			[sportType]="sportType"
+			(selectedPlayer)="onSelectPlayer($event)"
+			(visibleColumnsChange)="onVisibleColumnChange($event)"
+			(visibleColumnsResetRequest)="onVisibleColumnsResetRequest()"
+		>
+		</iterpro-scouting-shortlist-table>
+	</div>
+</div>
+
+<iterpro-scouting-shortlist
+	*ngIf="!!shortlistPlayer || shortlistRole"
+	[scenario]="scenario"
+	[scenarioTitle]="scenarioTitle"
+	[scenarioRoles]="scenarioRoles"
+	[player]="shortlistPlayer"
+	[role]="shortlistRole"
+	[scoutingPlayers]="scoutingPlayers"
+	[isScoutingAdmin]="isScoutingAdmin"
+	(closeEmitter)="onCloseShortlist(scenario)"
+	(selectPlayerEmitter)="onSelectPlayer($event)"
+>
+</iterpro-scouting-shortlist>
+
+<iterpro-multiple-file-upload
+	*ngIf="uploadDialogVisibility"
+	[visible]="uploadDialogVisibility"
+	[editMode]="true"
+	[attachmentModel]="scenario._attachments"
+	(save)="saveAttachments($event)"
+	(discard)="uploadDialogVisibility = false"
+/>

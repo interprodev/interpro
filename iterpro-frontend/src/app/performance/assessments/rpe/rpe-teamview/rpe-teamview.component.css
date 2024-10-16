@@ -1,0 +1,11 @@
+h3 {
+	margin-bottom: 2em;
+	margin-top: 0.6rem;
+}
+
+.teamView-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+	align-items: flex-start;
+}

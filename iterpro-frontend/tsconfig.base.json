@@ -1,0 +1,84 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"rootDir": ".",
+		"sourceMap": true,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"importHelpers": true,
+		"target": "es2022",
+		"module": "esnext",
+		"lib": ["es2020", "dom"],
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"baseUrl": ".",
+		"paths": {
+			"@iterpro/chat-feature-inbox": ["libs/domains/chat/chat-feature-inbox/src/index.ts"],
+			"@iterpro/chat-shell": ["libs/domains/chat/chat-shell/src/index.ts"],
+			"@iterpro/chat/data-access": ["libs/domains/chat/data-access/src/index.ts"],
+			"@iterpro/config": ["libs/config/src/index.ts"],
+			"@iterpro/login-feature-form": ["libs/domains/login/login-feature-form/src/index.ts"],
+			"@iterpro/login-shell": ["libs/domains/login/login-shell/src/index.ts"],
+			"@iterpro/manager/drills/data-access": ["libs/domains/manager/drills/data-access/src/index.ts"],
+			"@iterpro/manager/drills/stats/data-access": ["libs/domains/manager/drills/stats/data-access/src/index.ts"],
+			"@iterpro/manager/drills/stats/stats-feature-comparison": [
+				"libs/domains/manager/drills/stats/stats-feature-comparison/src/index.ts"
+			],
+			"@iterpro/manager/drills/stats/stats-feature-filters": [
+				"libs/domains/manager/drills/stats/stats-feature-filters/src/index.ts"
+			],
+			"@iterpro/manager/drills/stats/stats-feature-period": [
+				"libs/domains/manager/drills/stats/stats-feature-period/src/index.ts"
+			],
+			"@iterpro/manager/drills/stats/stats-shell": ["libs/domains/manager/drills/stats/stats-shell/src/index.ts"],
+			"@iterpro/manager/drills/stats/utils": ["libs/domains/manager/drills/stats/utils/src/index.ts"],
+			"@iterpro/manager/drills/ui": ["libs/domains/manager/drills/ui/src/index.ts"],
+			"@iterpro/manager/drills/utils": ["libs/domains/manager/drills/utils/src/index.ts"],
+			"@iterpro/players/scouting/event/feature-detail": [
+				"libs/domains/players/scouting/event/feature-detail/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/feature-game-report": [
+				"libs/domains/players/scouting/event/feature-game-report/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/feature-game-report-list": [
+				"libs/domains/players/scouting/event/feature-game-report-list/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/feature-line-up": [
+				"libs/domains/players/scouting/event/feature-line-up/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/feature-match-stats": [
+				"libs/domains/players/scouting/event/feature-match-stats/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/sand-box": ["libs/domains/players/scouting/event/sand-box/src/index.ts"],
+			"@iterpro/players/scouting/event/shell": ["libs/domains/players/scouting/event/shell/src/index.ts"],
+			"@iterpro/players/scouting/event/store-detail": ["libs/domains/players/scouting/event/store-detail/src/index.ts"],
+			"@iterpro/players/scouting/event/store-game-report-list": [
+				"libs/domains/players/scouting/event/store-game-report-list/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/store-line-up": [
+				"libs/domains/players/scouting/event/store-line-up/src/index.ts"
+			],
+			"@iterpro/players/scouting/event/store-match-stats": [
+				"libs/domains/players/scouting/event/store-match-stats/src/index.ts"
+			],
+			"@iterpro/players/scouting/ui": ["libs/domains/players/scouting/ui/src/index.ts"],
+			"@iterpro/players/shared": ["libs/domains/players/shared/src/index.ts"],
+			"@iterpro/shared/data-access/auth": ["libs/shared/data-access/auth/src/index.ts"],
+			"@iterpro/shared/data-access/changelog": ["libs/shared/data-access/changelog/src/index.ts"],
+			"@iterpro/shared/data-access/permissions": ["libs/shared/data-access/permissions/src/index.ts"],
+			"@iterpro/shared/data-access/sand-box": ["libs/shared/data-access/sand-box/src/index.ts"],
+			"@iterpro/shared/data-access/sdk": ["libs/shared/data-access/sdk/src/index.ts"],
+			"@iterpro/shared/data-access/talkjs": ["libs/shared/data-access/talkjs/src/index.ts"],
+			"@iterpro/shared/feature-components": ["libs/shared/feature-components/src/index.ts"],
+			"@iterpro/shared/ui/components": ["libs/shared/ui/components/src/index.ts"],
+			"@iterpro/shared/ui/directives": ["libs/shared/ui/directives/src/index.ts"],
+			"@iterpro/shared/ui/pipes": ["libs/shared/ui/pipes/src/index.ts"],
+			"@iterpro/shared/ui/primeng": ["libs/shared/ui/primeng/src/index.ts"],
+			"@iterpro/shared/utils/common-utils": ["libs/shared/utils/common-utils/src/index.ts"],
+			"@iterpro/shared/utils/etl": ["libs/shared/utils/etl/src/index.ts"]
+		}
+	},
+	"exclude": ["node_modules", "tmp"]
+}

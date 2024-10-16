@@ -1,0 +1,114 @@
+
+.tr-header th {
+	text-align: left;
+	background-color: transparent;
+	padding-bottom: 0.5em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: normal;
+	color: #bbbbbb;
+	white-space: nowrap;
+	font-size: 0.85rem;
+}
+.tr-cell {
+	height: 5vh;
+}
+.tr-cell td {
+	color: #fafafa;
+	text-align: left;
+	background-color: rgba(0, 0, 0, 0.4);
+	font-size: 0.85rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: normal;
+	padding: 0.5em;
+	white-space: nowrap;
+}
+.tr-header .cell-center,
+.tr-cell .cell-center {
+	text-align: center;
+}
+
+.tr-cell:nth-child(even) td {
+	background-color: rgba(53, 53, 53, 0.4);
+}
+
+/* .tr-cell:hover td {
+	background-color: rgba(100, 100, 100, 0.75);
+} */
+
+.game-attachment > * {
+	margin-right: 5px;
+}
+
+.row-header {
+	margin-bottom: 1em;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.right-section {
+	color: var(--color-neutral-900);
+}
+
+.row-header-cell {
+	margin-right: 1em;
+}
+
+.margin-left {
+	margin-left: 0.5rem;
+}
+
+.greenLevel {
+	background-color: #009900;
+	padding: 0.5rem;
+	border-radius: 50%;
+	width: 1.8rem;
+	height: 1.8rem;
+}
+
+.performanceCircle {
+	padding: 0.5rem;
+	border-radius: 50%;
+	width: 1.8rem;
+	height: 1.8rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.yellowLevel {
+	background-color: #ffee00;
+	color: #000000;
+	padding: 0.5rem;
+	border-radius: 50%;
+	width: 1.8rem;
+	height: 1.8rem;
+}
+.redLevel {
+	background-color: #dd0000;
+	padding: 0.5rem;
+	border-radius: 50%;
+	width: 1.8rem;
+	height: 1.8rem;
+}
+
+.with-tooltip-center {
+	justify-content: center;
+}
+
+.greenLevelTipss {
+	color: #009900;
+}
+.yellowLevelTipss {
+	color: #ffee00;
+}
+.redLevelTipss {
+	color: #dd0000;
+}
+
+.left-section {
+	display: flex;
+	align-items: center;
+	column-gap: 2rem;
+}

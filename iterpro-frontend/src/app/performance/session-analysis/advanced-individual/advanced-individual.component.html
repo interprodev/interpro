@@ -1,0 +1,29 @@
+<ng-container>
+	<h4 translate>sessionAnalysis.advancedAnalysis</h4>
+	<div *ngIf="individualALCL && !advancedFlags?.inProgress" class="row" style="margin-top: 1em">
+		<div class="col col-2">
+			<table class="custom-table" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr>
+						<th>{{ individualALCL[0]?.name || '-' }}</th>
+						<td>{{ individualALCL[0]?.value | number: '1.1-2' || '-' }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col col-2">
+			<table class="custom-table" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr>
+						<th>{{ individualALCL[1]?.name || '-' }}</th>
+						<td>{{ individualALCL[1]?.value | number: '1.1-2' || '-' }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div *ngIf="advancedFlags?.inProgress" class="row" style="margin-top: 1em; justify-content: center">
+		<p-progressSpinner [style]="{ width: '15px', height: '15px' }" strokeWidth="6"> </p-progressSpinner>
+	</div>
+</ng-container>

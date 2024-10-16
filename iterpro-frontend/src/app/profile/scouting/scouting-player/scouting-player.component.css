@@ -1,0 +1,9 @@
+.player-attributes-header-container {
+	display: flex;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+iterpro-tipss-scouting-header {
+	width: 100%;
+}

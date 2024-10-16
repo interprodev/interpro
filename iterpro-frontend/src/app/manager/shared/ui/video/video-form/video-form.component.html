@@ -1,0 +1,141 @@
+<header class="header">
+	<div>
+		<h1 translate>videogallery.title</h1>
+	</div>
+	<div class="header-buttons saveform-group" [class.edit]="isEditVideo">
+		<p-button size="small" styleClass="p-button-danger" *ngIf="isEditVideo" [disabled]="isOnSaving" (click)="deleteVideo()" class="right-margin" [label]="'buttons.delete' | translate"></p-button>
+		<span>
+			<button pButton size="small" [disabled]="
+							isOnSaving ||
+							(videoGalleryViewType === videoGalleryViewTypes.Upload &&
+								!multipleCloudUploadEl?.existingVideoAttachment &&
+								multipleCloudUploadEl?.selectedFiles?.length === 0)
+						" type="submit" (click)="onSubmit()" class="p-button-primary right-margin">
+				{{ (isEditVideo ? 'buttons.save' : 'upload') | translate }}
+			</button>
+			<p-button size="small" styleClass="p-button-contrast" [disabled]="isOnSaving" (click)="onDiscard()" [label]="'buttons.discard' | translate">
+			</p-button>
+		</span>
+	</div>
+</header>
+<div class="content">
+	<form [formGroup]="videoForm">
+		<div class="main-container">
+			<div class="video-container">
+				<div class="form-group">
+					<label translate>videogallery.form.label.video</label>
+					<iterpro-multiple-cloud-upload *ngIf="videoGalleryViewType === videoGalleryViewTypes.Upload"
+						[limitToOne]="!!isEditVideo" [existingVideo]="isEditVideo" [setBasicVideoAsset]="basicVideoAsset"/>
+					<ng-container *ngIf="videoGalleryViewType === videoGalleryViewTypes.Visualization">
+						<div class="video-filename" *ngIf="videoFileAttachment">
+							<div class="video-attachment-header">
+								{{ videoFileAttachment.name }}
+								<p-button size="small" styleClass="p-button-danger" (click)="removeVideo()"
+									label="{{ 'buttons.deleteAttachment' | translate }}"></p-button>
+							</div>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+			<div class="others-container">
+				<!-- title -->
+				<div class="form-group" [class.hidden]="!isOthersCategorySelected()">
+					<label translate>videogallery.form.title.description</label>
+					<input type="text" pInputText formControlName="title" (input)="updateBasicVideoAsset()" />
+				</div>
+
+				<!-- event -->
+				<div class="form-group" [class.hidden]="isOthersCategorySelected()">
+					<label translate>videogallery.form.label.event</label>
+					<p-dropdown appendTo="body" class="matchDropDown" formControlName="event"
+						[placeholder]="videoGuard.service.editMode ? ('dropdown.placeholder' | translate) : null"
+						[options]="eventDropDownItems" (onChange)="setFormMatchPlayers($event)">
+					</p-dropdown>
+					<div *ngIf="!isOnSaving && submitted && formControls.event.errors" class="invalid-feedback" translate>
+						videogallery.form.required.event
+					</div>
+				</div>
+
+				<!-- assign to category (VideoCategory) -->
+				<div class="form-group" [class.hidden]="!!category">
+					<label translate>videogallery.form.label.category</label>
+					<div class="radios" *ngFor="let category of categories; let i = index">
+						<p-radioButton name="category" [value]="category.value" [label]="category.label" formControlName="category"
+							[ngClass]="{ 'is-invalid': submitted && formControls.category.errors }" (change)="updateBasicVideoAsset()"
+							(onClick)="onChangeCategory(category.value)"></p-radioButton>
+					</div>
+
+					<div *ngIf="!isOnSaving && submitted && formControls.category.errors" class="invalid-feedback" translate>
+						videogallery.form.required.category
+					</div>
+				</div>
+
+				<!-- assign to stage (preparation/analysis) -->
+				<div class="form-group" [class.hidden]="!isGamesCategorySelected()">
+					<label translate>videogallery.form.label.stage</label>
+					<div class="radios" *ngFor="let stage of stages; let i = index">
+						<p-radioButton name="stage" [value]="stage.type" [label]="stage.label" formControlName="stage"
+							[ngClass]="{ 'is-invalid': submitted && formControls.stage.errors }"
+							(change)="updateBasicVideoAsset()"></p-radioButton>
+					</div>
+
+					<div *ngIf="!isOnSaving && submitted && formControls.stage.errors" class="invalid-feedback" translate>
+						videogallery.form.required.stage
+					</div>
+				</div>
+
+				<!-- subtitle -->
+				<div class="form-group">
+					<label translate>videogallery.form.label.description</label>
+					<input type="text" pInputText formControlName="subtitle" (input)="updateBasicVideoAsset()" />
+				</div>
+
+				<!-- apply to players -->
+				<div class="form-group">
+					<label translate>videogallery.form.label.players</label>
+					<div *ngIf="!playerOptions.length && anyPlayerAtEvent && !this.isOthersCategorySelected()" translate>
+						videogallery.form.requireEvent
+					</div>
+					<ng-container *ngIf="!linkedEventId && !anyPlayerAtEvent">
+						<div *ngIf="isGamesCategorySelected()" translate>videogallery.form.noMatchPlayers</div>
+						<div *ngIf="isTrainingCategorySelected()" translate>videogallery.form.noTrainingPlayers</div>
+					</ng-container>
+
+					<p-multiSelect [hidden]="!playerOptions.length"
+						[ngClass]="{ 'is-invalid': submitted && formControls.players.errors }" formControlName="players"
+						[options]="playerOptions" optionLabel="displayName" optionValue="id" appendTo="body"
+						(onChange)="updateBasicVideoAsset()"
+						[placeholder]="videoGuard.service.editMode ? ('multiselect.placeholder' | translate) : null"></p-multiSelect>
+				</div>
+
+				<!-- apply tags -->
+				<div class="form-group">
+					<label translate>videogallery.form.label.tags</label>
+					<input type="text" pInputText
+						[placeholder]="videoGuard.service.editMode ? ('tactics.video.newtags.placeholder' | translate) : null"
+						pTooltip="{{ 'tactics.video.newtags.tooltip' | translate }}" tooltipPosition="bottom" tooltipEvent="focus"
+						(input)="updateBasicVideoAsset()" formControlName="tags" />
+				</div>
+				<!-- apply to people (players/staffs) -->
+				<div class="form-group">
+					<label translate>Shared with:</label>
+					<p-multiSelect [group]="true"
+												 [filter]="true"
+												 appendTo="body"
+												 formControlName="sharedWithPeople"
+												 [options]="allSharedWithOptions"
+												 [hidden]="!allSharedWithOptions.length"
+												 [ngClass]="{ 'is-invalid': submitted && formControls.sharedWithPeople.errors }"
+												 (onChange)="updateBasicVideoAsset()"
+												 [placeholder]="videoGuard.service.editMode ? ('multiselect.placeholder' | translate) : null"></p-multiSelect>
+				</div>
+
+				<!-- readonly author -->
+				<div class="form-group" *ngIf="basicVideoAsset?.authorId">
+					<label><span translate>tooltip.author</span>:</label>
+					<span>{{ basicVideoAsset.authorId | customerName : customers}}</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,224 @@
+<p-tabView>
+	<p-tabPanel>
+		<ng-template pTemplate="header">
+			<div class="crest" *ngIf="!isGameDataLoading; else showTeamDataLoadingTemplate">
+				<ng-container *ngIf="!isLineUpLoading; else showCrestLoadingTemplate">
+					<img
+						*ngIf="homeTeamCrest; else noCrest"
+						[src]="homeTeamCrest"
+						onError="this.src='assets/img/default_crest.png';"
+						alt="club-rest"
+					/>
+				</ng-container>
+				<ng-template #showCrestLoadingTemplate>
+					<div class="crest">
+						<div style="width: 24px"><p-skeleton></p-skeleton></div>
+					</div>
+				</ng-template>
+				<span class="panel-custom-title">{{ gameData.homeTeam }}</span>
+			</div>
+		</ng-template>
+		<div class="player-multiselect-container" *ngIf="isEditable && gameData?.homeTeam">
+			<ng-container *ngIf="!isTeamSquadLoading; else showMultiselectLoadingTemplate">
+				<div class="pflex-flex pflex-align-items-center pflex-mr-6" *ngIf="isScoutingAdmin">
+					<span class="tw-text-sm iterpro-text-color-900" translate>scouting.assignedTo</span>
+					<div class="iterpro-item-container tw-ml-1">
+						<p-multiSelect
+							[optionLabel]="'label'"
+							[optionValue]="'value'"v
+							[options]="homeScouts"
+							[disabled]="!isEditable"
+							[(ngModel)]="selectedScoutIdsHome"
+							[style]="{ 'max-width': '200px', 'min-width': '100px' }"
+							[placeholder]="'multiselect.placeholder' | translate"
+							[maxSelectedLabels]="1"
+							selectedItemsLabel="{0} selected"
+						>
+						</p-multiSelect>
+					</div>
+				</div>
+				<div class="pflex-flex pflex-align-items-center pflex-mr-6">
+					<span class="tw-text-sm iterpro-text-color-900" translate>players</span>
+					<div class="iterpro-item-container tw-ml-1">
+						<p-multiSelect
+							[optionLabel]="'label'"
+							[optionValue]="'value'"
+							[options]="homeAvailablePlayers"
+							[disabled]="!isEditable || selectableGameReportsPlayersAway.length > 0"
+							[(ngModel)]="selectableGameReportsPlayersHome"
+							[style]="{ 'max-width': '200px', 'min-width': '100px' }"
+							[placeholder]="'multiselect.placeholder' | translate"
+							selectedItemsLabel="{0} selected"
+							[maxSelectedLabels]="1"
+						>
+						</p-multiSelect>
+					</div>
+				</div>
+			</ng-container>
+			<p-button
+				size="small"
+				[styleClass]="'tw-ml-2'"
+				[disabled]="
+					!gameData.homeTeam ||
+					selectableGameReportsPlayersHome.length === 0 ||
+					selectableGameReportsPlayersAway.length > 0
+				"
+				(click)="onClickAddGameReport(selectableGameReportsPlayersHome, gameData.homeTeam, 'home')"
+				[label]="'buttons.add' | translate"
+			>
+			</p-button>
+		</div>
+		<ng-container>
+			<div class="tw-flex tw-flex-col tw-gap-4" *ngIf="isGameReportsLoading || isTemplatesLoading || gameReportsHome.length > 0; else noReportsToShow">
+				@for(report of gameReportsHome; track $index) {
+					<iterpro-scouting-event-game-report
+						[clubId]="clubId"
+						[index]="$index"
+						[currentScout]="currentScout"
+						[reportPlayer]="report"
+						[isOnEditMode]="isEditable"
+						[isScoutingAdmin]="isScoutingAdmin"
+						[gameDate]="gameData.start"
+						[scoutsOptions]="homeScouts"
+						[schema]="report?.template ? report.template : activeGameReportTemplate"
+						[isReportsLoading]="isGameReportsLoading || isTemplatesLoading"
+					/>
+				}
+			</div>
+		</ng-container>
+	</p-tabPanel>
+	<p-tabPanel>
+		<ng-template pTemplate="header">
+			<div class="crest" *ngIf="!isGameDataLoading; else showTeamDataLoadingTemplate">
+				<ng-container *ngIf="!isLineUpLoading; else showCrestLoadingTemplate">
+					<img
+						*ngIf="awayTeamCrest; else noCrest"
+						[src]="awayTeamCrest"
+						onError="this.src='assets/img/default_crest.png';"
+						alt="club-rest"
+					/>
+				</ng-container>
+				<ng-template #showCrestLoadingTemplate>
+					<div class="crest">
+						<div style="width: 24px"><p-skeleton></p-skeleton></div>
+					</div>
+				</ng-template>
+				<span class="panel-custom-title">{{ gameData.awayTeam }}</span>
+			</div>
+		</ng-template>
+		<div class="player-multiselect-container" *ngIf="isEditable && gameData?.awayTeam">
+			<ng-container *ngIf="!isTeamSquadLoading; else showMultiselectLoadingTemplate">
+				<div class="pflex-flex pflex-align-items-center pflex-mr-6" *ngIf="isScoutingAdmin">
+					<span class="tw-text-sm iterpro-text-color-900" translate>scouting.assignedTo</span>
+					<div class="iterpro-item-container tw-ml-1">
+						<p-multiSelect
+							[optionLabel]="'label'"
+							[optionValue]="'value'"
+							[options]="awayScouts"
+							[disabled]="!isEditable"
+							[(ngModel)]="selectedScoutIdsAway"
+							[style]="{ 'max-width': '200px', 'min-width': '100px' }"
+							placeholder="{{ 'multiselect.placeholder' | translate }}"
+							[maxSelectedLabels]="1"
+							selectedItemsLabel="{0} selected"
+						>
+						</p-multiSelect>
+					</div>
+				</div>
+				<div class="pflex-flex pflex-align-items-center">
+					<span class="tw-text-sm iterpro-text-color-900" translate>players</span>
+					<div class="iterpro-item-container tw-ml-1">
+						<p-multiSelect
+							[optionLabel]="'label'"
+							[optionValue]="'value'"
+							[options]="awayAvailablePlayers"
+							[disabled]="!isEditable || selectableGameReportsPlayersHome.length > 0"
+							[(ngModel)]="selectableGameReportsPlayersAway"
+							[style]="{ 'max-width': '200px', 'min-width': '100px' }"
+							placeholder="{{ 'multiselect.placeholder' | translate }}"
+							[maxSelectedLabels]="1"
+							selectedItemsLabel="{0} selected"
+						>
+						</p-multiSelect>
+					</div>
+				</div>
+			</ng-container>
+			<p-button
+				size="small"
+				[styleClass]="'tw-ml-2'"
+				[disabled]="
+					!gameData.awayTeam ||
+					selectableGameReportsPlayersAway.length === 0 ||
+					selectableGameReportsPlayersHome.length > 0
+				"
+				(click)="onClickAddGameReport(selectableGameReportsPlayersAway, gameData.awayTeam, 'away')"
+				[label]="'buttons.add' | translate"
+			>
+			</p-button>
+		</div>
+		<ng-container>
+			<div class="tw-flex tw-flex-col tw-gap-4" *ngIf="isGameReportsLoading || isTemplatesLoading || gameReportsAway.length > 0; else noReportsToShow">
+				@for(report of gameReportsAway; track $index) {
+					<iterpro-scouting-event-game-report
+						[clubId]="clubId"
+						[index]="$index"
+						[currentScout]="currentScout"
+						[reportPlayer]="report"
+						[isOnEditMode]="isEditable"
+						[isScoutingAdmin]="isScoutingAdmin"
+						[gameDate]="gameData.start"
+						[scoutsOptions]="awayScouts"
+						[schema]="report?.template ? report.template : activeGameReportTemplate"
+						[isReportsLoading]="isGameReportsLoading || isTemplatesLoading"
+					/>
+				}
+			</div>
+		</ng-container>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="isGameReportNotCategorized">
+		<ng-template pTemplate="header">
+			<div class="crest" *ngIf="!isGameDataLoading; else showTeamDataLoadingTemplate">
+				<ng-container>
+					<img [src]="'assets/img/default_crest.png'" alt="club-rest" />
+				</ng-container>
+				<span class="panel-custom-title">{{ 'Not categorized' }}</span>
+			</div>
+		</ng-template>
+		<div class="tw-flex tw-flex-col tw-gap-4">
+			@for(report of gameReportsWithPlayersNotCategorized; track $index) {
+				<iterpro-scouting-event-game-report
+					[clubId]="clubId"
+					[index]="$index"
+					[notCategorized]="true"
+					[reportPlayer]="report"
+					[isOnEditMode]="isEditable"
+					[isScoutingAdmin]="isScoutingAdmin"
+					[gameDate]="gameData.start"
+					[bothTeamsOptions]="bothTeamsOptions"
+					[schema]="report?.template ? report.template : activeGameReportTemplate"
+					[currentScout]="currentScout"
+					[isReportsLoading]="isGameReportsLoading"
+					[scoutsOptions]="homeScouts"
+				/>
+			}
+		</div>
+	</p-tabPanel>
+</p-tabView>
+
+<ng-template #noCrest>
+	<img src="assets/img/default_crest.png" onError="this.src='assets/img/default_crest.png';" alt="club-rest" />
+</ng-template>
+
+<ng-template #showTeamDataLoadingTemplate>
+	<div style="width: 116px"><p-skeleton></p-skeleton></div>
+</ng-template>
+
+<ng-template #showMultiselectLoadingTemplate>
+	<div class="crest">
+		<div style="width: 24px"><p-skeleton></p-skeleton></div>
+	</div>
+</ng-template>
+
+<ng-template #noReportsToShow>
+	<div translate>alert.noRecordsFound</div>
+</ng-template>

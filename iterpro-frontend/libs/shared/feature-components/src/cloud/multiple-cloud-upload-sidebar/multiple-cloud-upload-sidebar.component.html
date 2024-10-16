@@ -1,0 +1,40 @@
+<!-- Toggle Icon -->
+<i class="fas fa-upload upload-icon" *ngIf="openSideBarButtonVisibility && !sideBarVisibility"
+	[pTooltip]="'fileUploader.showUploads' | translate" [class.upload-animated]="queueInProgress"
+	[class.upload-completed]="queueCompleted" (click)="sideBarVisibility = true"></i>
+
+<!-- Sidebar -->
+<p-sidebar position="bottom" [closeOnEscape]="false" [modal]="false" [dismissible]="false"
+	[(visible)]="sideBarVisibility" (onHide)="closeSideBar()"
+	[style]="{left: 'unset', width: '30rem', height: 'auto', right: 0}">
+	<h3 style="margin-bottom: 12px">Uploads</h3>
+	<p-table [value]="queueFiles" dataKey="name" responsiveLayout="scroll">
+		<ng-template pTemplate="header">
+			<tr>
+				<th>Nr.</th>
+				<th translate>fileUploader.fileName</th>
+				<th translate>fileUploader.fileLength</th>
+				<th translate>fileUploader.uploadStatus</th>
+				<th>Link</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+			<tr>
+				<td class="upload-status-label">{{rowIndex + 1}}</td>
+				<td class="upload-status-label">{{file.name}}</td>
+				<td class="upload-status-label">{{file.duration | durationLabel}}</td>
+				<td>
+					<div class="upload-status-label">{{getUploadStatusLabel(file)}}</div>
+					<p-progressBar [mode]="file.status === uploadStatuses.Uploading ? 'indeterminate' : 'determinate'"
+						[class.progressbar-success]="file.status === uploadStatuses.VideoSaved" [value]="file.progress"
+						[showValue]="true" [style]="{'position': 'relative'}"></p-progressBar>
+				</td>
+				<td>
+					<i *ngIf="file?.videoId" class="fas fa-video iterpro-clickable-icon"
+						[routerLink]="['/manager/video-gallery', { id: file.videoId }]"
+						[title]="'navigator.videogallery' | translate"></i>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</p-sidebar>

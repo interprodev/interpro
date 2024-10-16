@@ -1,0 +1,122 @@
+
+.info-container {
+	text-align: center;
+	padding: 1rem;
+	font-size: 1rem;
+}
+
+.info-date {
+	font-weight: bold;
+}
+
+.info-competition {
+	text-transform: uppercase;
+	color: #bbbbbb;
+}
+
+.res-container {
+	/* margin-bottom: 1rem; */
+	padding: 1rem;
+	display: flex;
+	justify-content: center;
+	/* background: linear-gradient(to bottom, rgba(0, 0, 0, 0.29) 0%,rgba(255, 255, 255, 0) 14%,rgba(255, 255, 255, 0) 86%,rgba(0, 0, 0, 0.29) 100%); */
+}
+.res-home,
+.res-away {
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.res-results-container {
+	display: flex;
+	margin-top: 1.2rem;
+}
+.res-results {
+	width: 40px;
+	height: 40px;
+	background-color: rgba(68, 68, 68, 0.55);
+	text-align: center;
+	line-height: 44px;
+	font-size: 30px;
+	font-weight: bold;
+	border-radius: 3px;
+	margin: 0.5rem;
+}
+.goals {
+	padding: 10px;
+	text-align: center;
+	max-width: 300px;
+	font-size: 0.85rem;
+}
+.res-away .goals {
+	text-align: center;
+}
+
+.res-info {
+	display: flex;
+	align-items: center;
+}
+
+.res-home .res-info {
+	justify-content: flex-end;
+}
+.res-away .res-info {
+	justify-content: flex-start;
+}
+
+.stats-container {
+	padding: 1rem;
+}
+.stats-title {
+	text-align: center;
+	text-transform: uppercase;
+	margin-bottom: 0.7em;
+	font-size: 0.85rem;
+}
+.bars {
+	display: flex;
+	align-items: stretch;
+	margin-bottom: 1.2em;
+	height: 1em;
+}
+.bar-value {
+	width: 50px;
+	background-color: rgba(68, 68, 68, 0.55);
+	border-radius: 2px;
+	margin-left: 10px;
+	margin-right: 5px;
+	padding: 2px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 0.8em;
+}
+.bar-value + .bar-value {
+	margin-left: 5px;
+	margin-right: 10px;
+}
+.bar-display {
+	border-radius: 2px;
+	flex-grow: 1;
+	display: flex;
+	background-color: rgba(68, 68, 68, 0.55);
+}
+.bar-display > div {
+	background-color: var(--color-primary-500);
+	border-radius: 2px;
+}
+.bar-display-left {
+	justify-content: flex-end;
+}
+
+.crest {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.crest > img {
+	width: 80%;
+	/* height: 80%; */
+}

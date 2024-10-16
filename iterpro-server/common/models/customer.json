@@ -1,0 +1,419 @@
+{
+	"name": "Customer",
+	"plural": "customers",
+	"base": "User",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": ["firstName", "lastName", "telephone", "username"]
+		}
+	},
+	"hidden": ["useTwoFactor", "secretTwoFactor", "secretTwoFactorTemp"],
+	"properties": {
+		"firstName": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"isTempPassword": {
+			"type": "boolean"
+		},
+		"telephone": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"currentTeamId": {
+			"type": "string"
+		},
+		"currentTeamSeasonId": {
+			"type": "string"
+		},
+		"currentLanguage": {
+			"type": "string",
+			"default": "en-GB"
+		},
+		"currentDateFormat": {
+			"type": "number",
+			"default": 1
+		},
+		"_customPresets": {
+			"type": "array"
+		},
+		"_customPresetsTeam": {
+			"type": "array"
+		},
+		"_customPresetsPlayer": {
+			"type": "array"
+		},
+		"playersTableHiddenFields": {
+			"type": "array"
+		},
+		"admin": {
+			"type": "boolean"
+		},
+		"notificationTransfers": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationScouting": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationScoutingPlayers": {
+			"type": "string"
+		},
+		"notificationScoutingMessages": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationScoutingMessagesPlayers": {
+			"type": "string"
+		},
+		"notificationScoutingGameReport": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationScoutingGameInvitation": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationScoutingGameReminder": {
+			"type": {
+				"active": "boolean",
+				"minutes": "number"
+			}
+		},
+		"useTwoFactor": {
+			"type": "boolean",
+			"default": false
+		},
+		"secretTwoFactor": {
+			"type": "string"
+		},
+		"secretTwoFactorTemp": {
+			"type": "string"
+		},
+		"webLatestLogin": {
+			"type": "date"
+		},
+		"directorLatestLogin": {
+			"type": "date"
+		},
+		"coachingLatestLogin": {
+			"type": "date"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"teamSettings": {
+			"type": "hasMany",
+			"model": "CustomerTeamSettings",
+			"foreignKey": "customerId"
+		},
+		"notifications": {
+			"type": "hasMany",
+			"model": "Notification",
+			"foreignKey": ""
+		},
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"staff": {
+			"type": "hasOne",
+			"model": "Staff",
+			"foreignKey": "customerId"
+		},
+		"changelog": {
+			"type": "hasMany",
+			"model": "EntityChangelog",
+			"polymorphic": "entity"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"welcomeEmail": {
+			"accepts": [
+				{
+					"arg": "customerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/welcomeEmail",
+				"verb": "post"
+			}
+		},
+		"checkSelectedMetricsTeam": {
+			"accepts": [
+				{
+					"arg": "tokenId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/checkSelectedMetricsTeam",
+				"verb": "post"
+			}
+		},
+		"getPasswordRequirements": {
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/password-requirements",
+				"verb": "get"
+			}
+		},
+		"generateStrongPassword": {
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/generate-strong-password",
+				"verb": "get"
+			}
+		},
+		"isValidPassword": {
+			"accepts": [
+				{
+					"arg": "passwordValidationInput",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/is-valid-password",
+				"verb": "post"
+			}
+		},
+		"requestLogin": {
+			"accepts": [
+				{
+					"arg": "credentials",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/request-login",
+				"verb": "post"
+			}
+		},
+		"generateSecret": {
+			"accepts": [
+				{
+					"arg": "customerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/generate-secret",
+				"verb": "post"
+			}
+		},
+		"validateSecret": {
+			"accepts": [
+				{
+					"arg": "credentials",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/validate-secret",
+				"verb": "post"
+			}
+		},
+		"changePasswordRequest": {
+			"accepts": [
+				{
+					"arg": "customerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "oldPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "newPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/change-password-request",
+				"verb": "post"
+			}
+		},
+		"resetPasswordRequest": {
+			"accepts": [
+				{
+					"arg": "email",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/password-reset",
+				"verb": "post"
+			}
+		},
+		"resetSecret": {
+			"accepts": [
+				{
+					"arg": "customerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/reset-secret",
+				"verb": "post"
+			}
+		},
+		"performLogin": {
+			"accepts": [
+				{
+					"arg": "credentials",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/perform-login",
+				"verb": "post"
+			}
+		},
+		"performLogout": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/perform-logout",
+				"verb": "post"
+			}
+		}
+	}
+}

@@ -1,0 +1,166 @@
+{
+	"name": "TeamSeason",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"offseason": {
+			"type": "date"
+		},
+		"preseason": {
+			"type": "date"
+		},
+		"inseasonStart": {
+			"type": "date"
+		},
+		"inseasonEnd": {
+			"type": "date"
+		},
+		"competitionInfo": {
+			"type": "array"
+		},
+		"resync": {
+			"type": "boolean",
+			"default": false
+		},
+		"wyscoutStandingTeamsFilter": {
+			"type": "array"
+		},
+		"instatStandingTeamsFilter": {
+			"type": "array"
+		},
+		"wyscoutAreas": {
+			"type": "array"
+		},
+		"instatAreas": {
+			"type": "array"
+		},
+		"wyscoutNationalLeague": {
+			"type": "any"
+		},
+		"instatNationalLeague": {
+			"type": "any"
+		},
+		"wyscoutNationalCup": {
+			"type": "any"
+		},
+		"instatNationalCup": {
+			"type": "any"
+		},
+		"wyscoutTournamentQualifiers": {
+			"type": "any"
+		},
+		"instatTournamentQualifiers": {
+			"type": "any"
+		},
+		"wyscoutTournamentFinalStages": {
+			"type": "any"
+		},
+		"instatTournamentFinalStages": {
+			"type": "any"
+		},
+		"thirdPartyCredentials": {
+			"type": "object"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"clubSeason": {
+			"type": "belongsTo",
+			"model": "ClubSeason",
+			"foreignKey": ""
+		},
+		"players": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": ""
+		},
+		"staffs": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"foreignKey": ""
+		},
+		"groups": {
+			"type": "referencesMany",
+			"model": "TeamGroup",
+			"foreignKey": ""
+		},
+		"thresholdsTeam": {
+			"type": "embedsMany",
+			"model": "Threshold",
+			"property": "_thresholdsTeam",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getAdministrationDashboardData": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/admin-dashboard-team",
+				"verb": "get"
+			}
+		},
+		"getAdministrationDashboardDataForPlayer": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "minutesField",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/admin-dashboard-player",
+				"verb": "get"
+			}
+		}
+	}
+}

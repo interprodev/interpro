@@ -1,0 +1,56 @@
+<ng-container *ngIf="team">
+  <table class="players-table">
+    <thead>
+			@if (hasMultipleGameSets) {
+				<tr class="tw-h-10">
+					<th style="width: 6%"></th>
+					<th style="width: 8%"></th>
+					<th style="width: 43%"></th>
+					<th style="width: 5%">
+						<i class="fas fa-hourglass-start" [pTooltip]="'event.game.startingRoster' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+					</th>
+					<th style="width: 8%">
+						<div class="tw-text-center">
+							<i class="fas fa-clock" [pTooltip]="'event.game.min' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+						</div>
+					</th>
+					<th *ngFor="let set of sets; let i = index" style="width: 8%" class="tw-text-center">
+						<span>{{ i + 1 }}</span>
+						<i class="fas" [class]="getScoreIcon()" [pTooltip]="getScoreIconTooltip() | translate"></i>
+					</th>
+				</tr>
+			} @else if (hasTwoGameSets) {
+				<tr>
+					<th style="width:14%">
+						<iterpro-picture [type]="'team'" [photoUrl]="team?.imageDataURL" [baseClass]="'tw-w-[40px] tw-h-[40px]'"></iterpro-picture>
+					</th>
+					<th style="width:30%" class="tw-text-sm tw-text-left">
+						<h4 *ngIf="showHeader">{{ team.name }}</h4>
+					</th>
+					<th style="width:9%">
+						<i class="fas fa-clock" [pTooltip]="'event.game.min' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+					</th>
+					<th style="width:9%">
+						<i class="fas fa-arrow-up" [pTooltip]="'event.game.in' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+					</th>
+					<th style="width:9%">
+						<i class="fas fa-arrow-down" [pTooltip]="'event.game.out' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+					</th>
+					<th style="width:5%">
+						<div class="soccer-card yellow" [pTooltip]="'event.game.yellow' | translate" [tooltipStyleClass]="'tw-lowercase'"></div>
+					</th>
+					<th style="width:5%">
+						<div class="soccer-card double-yellow" [pTooltip]="'event.game.doubleYellow' | translate" [tooltipStyleClass]="'tw-lowercase'"></div>
+					</th>
+					<th style="width:5%">
+						<div class="soccer-card red" [pTooltip]="'event.game.red' | translate" [tooltipStyleClass]="'tw-lowercase'"></div>
+					</th>
+					<th style="width:9%">
+						<i class="fas fa-futbol" [pTooltip]="'goals' | translate" [tooltipStyleClass]="'tw-lowercase'"></i>
+					</th>
+				</tr>
+			}
+    </thead>
+  </table>
+	<iterpro-role-container *ngFor="let position of positions" [players]="team.players" [role]="position" [editable]="editable" [selectable]="selectable" [displayEmptyPlayers]="displayEmptyPlayers" [sportType]="sportType" [hasMultipleGameSets]="hasMultipleGameSets" [hasTwoGameSets]="hasTwoGameSets" [sets]="sets" />
+</ng-container>

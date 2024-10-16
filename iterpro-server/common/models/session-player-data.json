@@ -1,0 +1,166 @@
+{
+	"name": "SessionPlayerData",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true,
+		"remoting": {
+			"sharedMethods": {
+				"*": false,
+				"deleteSessionPlayer": true
+			}
+		}
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"date": {
+			"type": "date",
+			"required": false
+		},
+		"dirty": {
+			"type": "boolean",
+			"default": false
+		},
+		"complete": {
+			"type": "boolean",
+			"default": true
+		},
+		"playerName": {
+			"type": "string",
+			"required": false
+		},
+		"splitName": {
+			"type": "string",
+			"required": false
+		},
+		"splitStartTime": {
+			"type": "date",
+			"required": false
+		},
+		"splitEndTime": {
+			"type": "date",
+			"required": false
+		},
+		"duration": {
+			"type": "number",
+			"required": false
+		},
+		"rpe": {
+			"type": "number",
+			"default": 0
+		},
+		"rpeTl": {
+			"type": "number",
+			"default": 0
+		},
+		"totalDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"sprintDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"highspeedRunningDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"powerDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"highPowerDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"powerPlays": {
+			"type": "number",
+			"default": 0
+		},
+		"highIntensityAcceleration": {
+			"type": "number",
+			"default": 0
+		},
+		"highIntensityDeceleration": {
+			"type": "number",
+			"default": 0
+		},
+		"explosiveDistance": {
+			"type": "number",
+			"default": 0
+		},
+		"averageMetabolicPower": {
+			"type": "number",
+			"default": 0
+		},
+		"distancePerMinute": {
+			"type": "number",
+			"default": 0
+		},
+		"heartRate85to90": {
+			"type": "number",
+			"default": 0
+		},
+		"heartRateGr90": {
+			"type": "number",
+			"default": 0
+		},
+		"workload": {
+			"type": "number"
+		},
+		"perceivedWorkload": {
+			"type": "number",
+			"default": 0
+		},
+		"cardioWorkload": {
+			"type": "number",
+			"default": 0
+		},
+		"kinematicWorkload": {
+			"type": "number",
+			"default": 0
+		},
+		"metabolicWorkload": {
+			"type": "number",
+			"default": 0
+		},
+		"mechanicalWorkload": {
+			"type": "number",
+			"default": 0
+		},
+		"intensity": {
+			"type": "number",
+			"default": 0
+		},
+		"gdType": {
+			"type": "string"
+		},
+		"teamId": {
+			"type": "string"
+		},
+		"fromCsv": {
+			"type": "boolean"
+		},
+		"mainSession": {
+			"type": "boolean",
+			"default": false
+		},
+		"drillId": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

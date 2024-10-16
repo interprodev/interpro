@@ -1,0 +1,41 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4" *blockUI="'containerPlanVi'">
+	<div class="tw-col-span-10 tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+			<i
+				class="fas fa-tag"
+				[ngClass]="{'fa-active': datalabels }"
+				[pTooltip]="'sessionAnalysis.labels' | translate"
+				(click)="onToggleLabels()"
+			></i>
+		</div>
+		<div class="tw-p-4">
+			<p-chart *ngIf="data" type="bar" [data]="data" [options]="options"></p-chart>
+		</div>
+	</div>
+
+	<div class="tw-col-span-2">
+		<p-tabView>
+			<p-tabPanel>
+				<ng-template pTemplate="header">
+					<span>{{'sidebar.period' | translate}}</span>
+				</ng-template>
+				<div class="spacing">
+					<p-calendar
+						showButtonBar="true"
+						*ngIf="datePeriod"
+						appendTo="body"
+						[(ngModel)]="datePeriod"
+						(onSelect)="fetchData($event)"
+						selectionMode="range"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					></p-calendar>
+				</div>
+				<div class="spacing"><span translate>sidebar.counterDays</span><span>{{getDays()}}</span></div>
+				<div class="spacing"><span translate>sidebar.trainingCounter</span><span>{{counters.training}}</span></div>
+				<div class="spacing"><span translate>sidebar.gamesCounter</span><span>{{counters.game}}</span></div>
+				<div class="spacing"><span translate>sidebar.friendlyCounter</span><span>{{counters.friendly}}</span></div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+</div>

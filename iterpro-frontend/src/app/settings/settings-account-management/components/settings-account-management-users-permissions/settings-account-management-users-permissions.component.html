@@ -1,0 +1,156 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header
+		[section]="'settings.accountManagement'"
+		[title]="'settings.accountManagement.users&Permissions'"
+	></iterpro-settings-header>
+	<div class="tw-flex tw-items-center tw-justify-end tw-gap-3">
+		<iterpro-action-buttons
+			[editMode]="selectedRows?.length > 0"
+			[loading]="isLoading"
+			(discard)="discard()"
+			(create)="editCustomer()"
+			(delete)="deleteCustomers()"
+			[deleteCounter]="selectedRows?.length"
+			[showDiscard]="selectedRows?.length > 0"
+			[buttonTypes]="['discard', 'addNew', 'delete']"
+		></iterpro-action-buttons>
+		<iterpro-csv-upload-download (downloadEmptyCSV)="downloadEmptyCsv()" (uploadCSV)="csvInput.click()" />
+		<input
+			#csvInput
+			type="file"
+			accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+			class="tw-hidden"
+			(change)="fileChanged($event)"
+		/>
+		@if (selectedRows?.length > 0) {
+			<iterpro-icon-button
+				(click)="reset2FA()"
+				[icon]="'fas fa-user-lock'"
+				[tooltip]="'permissions.reset2FA' | translate"
+				[tooltipPosition]="'bottom'"
+			></iterpro-icon-button>
+		}
+	</div>
+</div>
+<div class="tw-mt-8" [class.tw-hidden]="isLoading">
+	<p-table
+		#table
+		[value]="customers"
+		[scrollable]="true"
+		[columns]="teams"
+		[(selection)]="selectedRows"
+		[scrollHeight]="'90vh'"
+		[styleClass]="'p-datatable-gridlines'"
+		[rowHover]="true"
+		[globalFilterFields]="['firstName', 'lastName', 'email']"
+	>
+		<ng-template pTemplate="header" let-columns>
+			<tr class="tw-h-10">
+				<th class="tw-w-min">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div>
+							<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+						</div>
+						<div class="tw-relative tw-w-full">
+							<input
+								pInputText
+								type="text"
+								class="tw-rounded tw-bg-shark-200 tw-p-2 tw-text-shark-950"
+								[placeholder]="'permissions.user.search' | translate"
+								[(ngModel)]="nameFilter"
+								(input)="table.filterGlobal($event.target.value, 'contains')"
+							/>
+							<i class="fas fa-search tw-absolute tw-right-2 tw-top-2 tw-text-shark-950"></i>
+						</div>
+					</div>
+				</th>
+				<th translate>permissions.role</th>
+				@for (teamCol of columns; track teamCol; let i = $index) {
+					<th>
+						<div class="tw-flex tw-gap-2">
+							<span>{{ teamCol.name }}</span>
+							<span>({{ teamCol.id | teamCounterCustomer: customers }})</span>
+						</div>
+					</th>
+				}
+			</tr>
+		</ng-template>
+
+		<ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
+			<tr [pSelectableRow]="rowData" class="tw-h-14">
+				<td class="tw-flex tw-items-center tw-justify-between tw-gap-2">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<td>
+							<div class="tw-flex tw-items-center tw-gap-2">
+								<p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+								<iterpro-icon-button
+									[icon]="'fas fa-paper-plane'"
+									(click)="sendWelcomeEmail(rowData)"
+									[tooltip]="'permissions.send..welcome.mail.to.new.customer' | translate"
+								></iterpro-icon-button>
+							</div>
+						</td>
+						<div class="tw-flex tw-cursor-pointer tw-items-center tw-gap-2" (click)="editCustomer(rowData, index)">
+							<div class="tw-flex tw-h-14 tw-w-14 tw-items-center tw-justify-center">
+								<iterpro-picture
+									class="tw-h-8 tw-w-8"
+									[additionalClass]="'tw-rounded'"
+									[photoUrl]="rowData.downloadUrl"
+								/>
+							</div>
+							<div>
+								<div class="tw-font-bold">{{ rowData.firstName }} {{ rowData.lastName }}</div>
+								<div class="tw-text-sm tw-text-shark-300">
+									{{ rowData.email }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+				<td class="tw-items-center">
+					{{ (rowData?.admin ? 'permissions.role.admin' : 'permissions.role.member') | translate }}
+				</td>
+				@for (teamCol of columns; track teamCol; let i = $index) {
+					<td class="tw-min-w-48">
+						@if (teamCol.id | customerTeamSetting: rowData.teamSettings; as teamSettings) {
+							<div
+								class="tw-flex tw-gap-2"
+								[pTooltip]="teamSettings | teamPermissionsTooltip"
+								[escape]="false"
+								[appendTo]="'body'"
+								tooltipPosition="top"
+								(click)="openTeamSettings(rowData, teamCol)"
+							>
+								@if (permissionsOptions) {
+									<div>
+										({{
+											teamSettings?.permissions?.length === permissionsOptions.length
+												? 'Full'
+												: teamSettings?.permissions.length
+										}})
+									</div>
+								}
+								<div>
+									{{ teamSettings?.position | translate }}
+								</div>
+							</div>
+						} @else {
+							<div class="tw-flex tw-items-center tw-justify-center tw-gap-2">
+								<p-button
+									size="small"
+									styleClass="tw-text-xs tw-font-normal tw-normal-case"
+									(click)="createTeamSettings(rowData, teamCol)"
+								>
+									{{ 'Grant access' | translate }}
+								</p-button>
+							</div>
+						}
+					</td>
+				}
+			</tr>
+		</ng-template>
+	</p-table>
+</div>
+<div class="tw-mt-8" [class.tw-hidden]="!isLoading">
+	<iterpro-skeleton-table [showProfilePic]="true" [cols]="5" [rows]="20"></iterpro-skeleton-table>
+</div>

@@ -1,0 +1,14 @@
+{
+	"name": "shared-utils-etl",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/utils/etl/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:shared", "type:util"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

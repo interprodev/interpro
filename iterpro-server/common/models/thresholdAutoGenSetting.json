@@ -1,0 +1,37 @@
+{
+	"name": "ThresholdAutoGenSetting",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"thresholdType": {
+			"type": "string",
+			"required": true
+		},
+		"gd": {
+			"type": "string",
+			"required": false
+		},
+		"name": {
+			"type": "string",
+			"default": false
+		},
+		"testId": {
+			"type": "string"
+		},
+		"valueType": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

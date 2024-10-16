@@ -1,0 +1,22 @@
+<p-toast position="bottom-right" [life]="5000" [baseZIndex]="999" [autoZIndex]="true" [preventOpenDuplicates]="true">
+	<ng-template let-message pTemplate="message">
+		<div class="pflex-flex pflex-w-full">
+			<ng-container [ngSwitch]="message.severity">
+				<i *ngSwitchCase="'chat'" class="fa-solid fa-comment pflex-mr-4 pflex-text-5xl"></i>
+				<i *ngSwitchCase="'success'" class="fa-solid fa-check-square pflex-mr-4 pflex-text-5xl"></i>
+				<i *ngSwitchCase="'warn'" class="fa-solid fa-triangle-exclamation pflex-mr-4 pflex-text-5xl"></i>
+				<i *ngSwitchCase="'error'" class="fa-solid fa-circle-xmark-circle pflex-mr-4 pflex-text-5xl"></i>
+				<i *ngSwitchCase="'info'" class="fa-solid fa-circle-info pflex-mr-4 pflex-text-5xl"></i>
+			</ng-container>
+			<div class="pflex-flex pflex-flex-column">
+				<h4>{{ message.summary }}</h4>
+				<p>{{ message.detail }}</p>
+			</div>
+			<div
+				*ngIf="message.redirectUrl"
+				class="pflex-cursor-pointer pflex-absolute pflex-top-0 pflex-left-0 pflex-w-full pflex-h-full pflex-z-1"
+				(click)="redirect(message)"
+			></div>
+		</div>
+	</ng-template>
+</p-toast>

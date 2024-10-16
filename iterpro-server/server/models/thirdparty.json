@@ -1,0 +1,107 @@
+{
+	"name": "Thirdparty",
+	"base": "Model",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getGPSPlayers": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Get players IDs from one GPS third-party provider",
+			"http": {
+				"path": "/getGPSPlayers",
+				"verb": "get"
+			}
+		},
+		"getTacticalPlayers": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Get players IDs from one tactical third-party provider",
+			"http": {
+				"path": "/getTacticalPlayers",
+				"verb": "get"
+			}
+		},
+		"getThirdpartyGPSSessions": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string"
+				},
+				{
+					"arg": "teamSeasonId",
+					"type": "string"
+				},
+				{
+					"arg": "date",
+					"type": "DateString"
+				},
+				{
+					"arg": "gdType",
+					"type": "string"
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Get GPS sessions from a third-party provider",
+			"http": {
+				"path": "/getThirdpartyGPSSessions",
+				"verb": "get"
+			}
+		},
+		"updateThirdpartyPlayerIds": {
+			"accepts": [
+				{
+					"arg": "playerArray",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/updateThirdpartyPlayerIds",
+				"verb": "post"
+			}
+		}
+	}
+}

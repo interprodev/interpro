@@ -1,0 +1,221 @@
+@if (schema) {
+	<div class="tw-flex tw-flex-col tw-text-sm tw-font-normal tw-w-full tw-my-2">
+		<!-- Schema title -->
+		@if (schema.title !== 'STANDARD') {
+			<div class="tw-flex tw-mb-2 tw-font-bold">
+				<span class="iterpro-text-color-900">{{ schema.title }} (v.{{ schema.version }})</span>
+			</div>
+			<!-- Sections -->
+			@for(section of schema.sections; track section) {
+				<div class="tw-mb-4">
+					<!-- Section title -->
+					<div class="tw-flex tw-mb-2">
+						<div class="iterpro-text-color-900">{{ section.title }}</div>
+					</div>
+					<!-- Properties -->
+					<div class="tw-grid tw-grid-cols-3 tw-gap-4 tw-justify-center tw-items-center tw-text-center">
+						@for (property of section.properties; track property) {
+							<div>
+								<div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-mb-1">
+									@if (schema.title === 'TIPSS') {
+										<span class="tw-text-shark-300" translate>scouting.gameReportTemplate.{{property.label }}</span>
+									} @else {
+										<span class="tw-text-shark-300">{{property.label }}</span>
+									}
+									<div class="tw-flex tw-items-center tw-gap-2">
+										@if (property.description) {
+											<i
+												class="fas fa-info-circle iterpro-clickable-icon"
+												pTooltip="{{ property.description }}"
+											></i>
+										}
+										@if (property.hasComment) {
+											<i
+												class="fas fa-search iterpro-clickable-icon"
+												[pTooltip]="'scouting.gameReportTemplate.openComments' | translate"
+												(click)="openPropertyCommentDialog(section.id, property.name)"
+											></i>
+										}
+									</div>
+								</div>
+								<div class="iterpro-item-container tw-text-left">
+									@switch (property.type) {
+										@case ('int16') {
+											<p-dropdown
+												[ngModel]="reportData?.[section.id]?.[property.name]"
+												(onChange)="onReportDataChange(section.id, property.name, $event.value)"
+												[disabled]="disabled"
+												[options]="isEditorPreview ? getOptionsByType(property) : property.options"
+												[showClear]="true"
+												appendTo="body"
+												[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+											>
+												<ng-template let-item pTemplate="selectedItem">
+													<span><span class="iterpro-point" [style.background-color]="(getStyle(property, item)).color" [pTooltip]="getStyle(property, item).label"></span>{{ item?.value }}</span>
+												</ng-template>
+												<ng-template let-item pTemplate="item">
+													<div class="tw-flex tw-items-center tw-gap-1">
+														<div class="iterpro-point" [style.background-color]="(getStyle(property, item)).color"></div>
+														<div class="tw-flex tw-items-center tw-gap-1">
+															<div>{{ item?.value }}</div>
+															@if (getStyle(property, item).label) {
+																<div>- {{getStyle(property, item).label}}</div>
+															}
+														</div>
+													</div>
+												</ng-template>
+											</p-dropdown>
+										}
+										@case ('float32') {
+											<p-dropdown
+												[ngModel]="reportData?.[section.id]?.[property.name]"
+												(onChange)="onReportDataChange(section.id, property.name, $event.value)"
+												[disabled]="disabled"
+												[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)	"
+												[options]="isEditorPreview ? getOptionsByType(property) : property.options"
+												[showClear]="true"
+												appendTo="body"
+											>
+												<ng-template let-item pTemplate="selectedItem">
+													<span><span class="iterpro-point" [style.background-color]="getStyle(property, item).color" [pTooltip]="getStyle(property, item).label"></span>{{ item?.value }}</span>
+												</ng-template>
+												<ng-template let-item pTemplate="item">
+													<div class="tw-flex tw-items-center tw-gap-1">
+														<div class="iterpro-point" [style.background-color]="(getStyle(property, item)).color"></div>
+														<div class="tw-flex tw-items-center tw-gap-1">
+															<div>{{ item?.value }}</div>
+															@if (getStyle(property, item).label) {
+																<div>- {{getStyle(property, item).label}}</div>
+															}
+														</div>
+													</div>
+												</ng-template>
+											</p-dropdown>
+										}
+										@case ('string') {
+											<p-dropdown
+												[ngModel]="reportData?.[section.id]?.[property.name]"
+												(onChange)="onReportDataChange(section.id, property.name, $event.value)"
+												[disabled]="disabled"
+												[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+												[options]="isEditorPreview ? getOptionsByType(property) : property.options"
+												[showClear]="true"
+												appendTo="body"
+											>
+												<ng-template let-item pTemplate="selectedItem">
+													<span><span class="iterpro-point" [style.background-color]="getStyle(property, item).color" [pTooltip]="getStyle(property, item).label"></span>{{ item?.value }}</span>
+												</ng-template>
+												<ng-template let-item pTemplate="item">
+													<div class="tw-flex tw-items-center tw-gap-1">
+														<div class="iterpro-point" [style.background-color]="(getStyle(property, item)).color"></div>
+														<div class="tw-flex tw-items-center tw-gap-1">
+															<div>{{ item?.value }}</div>
+															@if (getStyle(property, item).label) {
+																<div>- {{getStyle(property, item).label}}</div>
+															}
+														</div>
+													</div>
+												</ng-template>
+											</p-dropdown>
+										}
+										@case ('boolean') {
+											<p-dropdown
+												[ngModel]="reportData?.[section.id]?.[property.name]"
+												(onChange)="onReportDataChange(section.id, property.name, $event.value)"
+												[disabled]="disabled"
+												[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="disabled? null : ('dropdown.placeholder' | translate)"
+												[options]="booleanOptions"
+												[showClear]="true"
+												appendTo="body"
+											>
+												<ng-template let-option pTemplate="selectedItem">
+													@if (option.value) {
+														<i class="tw-text-sm fas fa-circle-check" [style.color]="'green'"></i>
+													} @else {
+														<i class="tw-text-sm fas fa-circle-xmark" [style.color]="'red'"></i>
+													}
+												</ng-template>
+												<ng-template let-option pTemplate="item">
+													@if (option.value) {
+														<i class="tw-text-sm fas fa-circle-check" [style.color]="'green'"></i>
+													} @else {
+														<i class="tw-text-sm fas fa-circle-xmark" [style.color]="'red'"></i>
+													}
+												</ng-template>
+											</p-dropdown>
+										}
+										@case ('enum') {
+											<p-dropdown
+												[ngModel]="reportData?.[section.id]?.[property.name]"
+												(onChange)="onReportDataChange(section.id, property.name, $event.value)"
+												[disabled]="disabled"
+												[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+												[placeholder]="disabled ? null: ('dropdown.placeholder' | translate)"
+												[options]="property.enum | selectItem"
+												[showClear]="true"
+												appendTo="body"
+											>
+												<ng-template let-item pTemplate="selectedItem">
+													<span><span class="iterpro-point" [style.background-color]="getStyle(property, item).color" [pTooltip]="getStyle(property, item).label"></span>{{ item?.value }}</span>
+												</ng-template>
+												<ng-template let-item pTemplate="item">
+													<div class="tw-flex tw-items-center tw-gap-1">
+														<div class="iterpro-point" [style.background-color]="(getStyle(property, item)).color"></div>
+														<div class="tw-flex tw-items-center tw-gap-1">
+															<div>{{ item?.value }}</div>
+															@if (getStyle(property, item).label) {
+																<div>- {{getStyle(property, item).label}}</div>
+															}
+														</div>
+													</div>
+												</ng-template>
+											</p-dropdown>
+										}
+										@case ('Function') {
+											@if (property.operation.name === 'sum' || property.operation.name === 'average') {
+												<div class="tw-flex tw-items-center tw-gap-1">
+													<div class="iterpro-point" [style.background-color]="getStyleForFunction(section.properties, property, getComputedValue(section.id, property)).color"></div>
+													<div>{{ getStyleForFunction(section.properties, property, getComputedValue(section.id, property)).value }}</div>
+													<div>{{ getStyleForFunction(section.properties, property, getComputedValue(section.id, property))?.label}}</div>
+												</div>
+											} @else {
+												<!-- showBasicFunctionPreviewer -->
+												<div [style.color]="getStyleForFunction(section.properties, property, getComputedValue(section.id, property)).color">
+													<span>{{getStyleForFunction(section.properties, property, getComputedValue(section.id, property)).label }}</span>
+												</div>
+											}
+										}
+									}
+								</div>
+							</div>
+						}
+					</div>
+				</div>
+			}
+		}
+	</div>
+} @else {
+	<!-- Show Scheme Loading -->
+	<div class="tw-flex tw-mt-2">
+		<div class="tw-flex tw-mb-2">
+			<span><div style="width: 90px"><p-skeleton></p-skeleton></div></span>
+		</div>
+		<div class="tw-mb-4 tw-mt-4">
+			<div class="tw-grid tw-grid-cols-3 tw-gap-4 tw-justify-center tw-items-center tw-text-center">
+				@for (item of 6 | arrayFromNumber; track item) {
+					<div>
+						<div class="tw-mb-2">
+							<div class="iterpro-text-color-900">
+								<div style="width: 90px"><p-skeleton></p-skeleton></div>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}

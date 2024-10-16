@@ -1,0 +1,117 @@
+{
+	"name": "MedicalTreatment",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date"
+		},
+		"treatmentType": {
+			"type": "string"
+		},
+		"category": {
+			"type": "array"
+		},
+		"treatment": {
+			"type": "array"
+		},
+		"description": {
+			"type": "array"
+		},
+		"drug": {
+			"type": "string"
+		},
+		"drugDose": {
+			"type": "string"
+		},
+		"complete": {
+			"type": "boolean"
+		},
+		"prescriptor": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"author": {
+			"type": "string"
+		},
+		"injuryType": {
+			"type": "string"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"lastUpdateDate": {
+			"type": "date"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player"
+		},
+		"event": {
+			"type": "belongsTo",
+			"model": "Event"
+		},
+		"injury": {
+			"type": "belongsTo",
+			"model": "Injury"
+		},
+		"attachment": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"property": "_attachment",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"lastUpdateAuthor": {
+			"type": "belongsTo",
+			"model": "Customer"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"canBeDetachedFromEvent": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "treatmentDate",
+					"type": "DateString",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/can-be-detached",
+				"verb": "get"
+			}
+		}
+	}
+}

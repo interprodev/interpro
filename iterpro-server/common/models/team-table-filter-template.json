@@ -1,0 +1,48 @@
+{
+	"name": "TeamTableFilterTemplate",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"creationDate": {
+			"type": "date",
+			"required": true
+		},
+		"lastUpdateDate": {
+			"type": "date"
+		},
+		"tableId": {
+			"type": "string"
+		},
+		"templateName": {
+			"type": "string"
+		},
+		"filters": {
+			"type": "object",
+			"required": true,
+			"default": []
+		},
+		"visibility": {
+			"type": "object",
+			"required": true,
+			"default": []
+		}
+	},
+	"validations": [],
+	"relations": {
+		"lastUpdateAuthor": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,559 @@
+{
+	"name": "Wyscout",
+	"plural": "Wyscout",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"dashboard": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "wyscoutTeamId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "wyscoutCompetitionId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "wyscoutSeasonId",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/dashboard",
+				"verb": "post"
+			}
+		},
+		"dashboardSingleTeamStat": {
+			"accepts": [
+				{
+					"arg": "wyscoutMatchId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "wyscoutTeamId1",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "wyscoutTeamId2",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/dashboardSingleTeamStat",
+				"verb": "post"
+			}
+		},
+		"singleTeamStat": {
+			"accepts": [
+				{
+					"arg": "wyscoutMatchId",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/singleTeamStat",
+				"verb": "post"
+			}
+		},
+		"singleTeamStatWithPlayers": {
+			"accepts": [
+				{
+					"arg": "wyscoutMatchId",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/singleTeamStatWithPlayers",
+				"verb": "post"
+			}
+		},
+		"gamePlayerStats": {
+			"accepts": [
+				{
+					"arg": "wyscoutMatchId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "playersWyIds",
+					"type": "array",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "substitutions",
+					"type": "object",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/gamePlayerStats",
+				"verb": "post"
+			}
+		},
+		"matchesForSeason": {
+			"accepts": [
+				{
+					"arg": "seasonId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "date",
+					"type": "date",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/matchesForSeason",
+				"verb": "post"
+			}
+		},
+		"squadSeasonPlayers": {
+			"accepts": [
+				{
+					"arg": "squadIds",
+					"type": "array",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "seasonId",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/squadSeasonPlayers",
+				"verb": "post"
+			}
+		},
+		"wyscoutCompetitionTeams": {
+			"accepts": [
+				{
+					"arg": "wyscoutCompetitionId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/wyscoutCompetitionTeams",
+				"verb": "post"
+			}
+		},
+		"careerTransfers": {
+			"accepts": [
+				{
+					"arg": "wyscoutId",
+					"type": "number",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/careerTransfers",
+				"verb": "post"
+			}
+		},
+		"teamSearch": {
+			"accepts": [
+				{
+					"arg": "query",
+					"type": "string",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "competitionIds",
+					"type": "array",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "gender",
+					"type": "any",
+					"required": false,
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/teamSearch",
+				"verb": "post"
+			}
+		},
+		"searchPlayers": {
+			"accepts": [
+				{
+					"arg": "playerName",
+					"type": "string",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "competitions",
+					"type": "array",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "nationalities",
+					"type": "array",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "ageMin",
+					"type": "number",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "ageMax",
+					"type": "number",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "positions",
+					"type": "array",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "gender",
+					"type": "string",
+					"http": { "source": "query" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/searchPlayers",
+				"verb": "get"
+			}
+		},
+		"playerImage": {
+			"accepts": [
+				{
+					"arg": "playerWyscoutIds",
+					"type": "array",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/playerImage",
+				"verb": "post"
+			}
+		},
+		"playerSearchFilters": {
+			"accepts": [],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/playerSearchFilters",
+				"verb": "post"
+			}
+		},
+		"playerSearchAdditionalInfo": {
+			"accepts": [
+				{
+					"arg": "playerWyscoutIds",
+					"type": "array",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/playerSearchAdditionalInfo",
+				"verb": "post"
+			}
+		},
+		"seasonsForCompetitions": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "competitionsIds",
+					"type": "array",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "date",
+					"type": "any",
+					"required": false,
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/seasonsForCompetitions",
+				"verb": "post"
+			}
+		},
+		"getCurrentSeasonMatches": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "from",
+					"type": "date",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "to",
+					"type": "date",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/getCurrentSeasonMatches",
+				"verb": "post"
+			}
+		},
+		"getPlayerNextGames": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "number",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "from",
+					"type": "date",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "to",
+					"type": "object",
+					"http": { "source": "form" },
+					"required": false
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/getPlayerNextGames",
+				"verb": "post"
+			}
+		},
+		"searchTeam": {
+			"accepts": [
+				{
+					"arg": "team",
+					"type": "string",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "byId",
+					"type": "boolean",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/searchTeam",
+				"verb": "post"
+			}
+		},
+		"getTeamWithImage": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/getTeamWithImage",
+				"verb": "post"
+			}
+		},
+		"getSecondaryTeamInfo": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "form" }
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": { "source": "form" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/getSecondaryTeamInfo",
+				"verb": "post"
+			}
+		},
+		"getStandingsLeaderboard": {
+			"accepts": [
+				{
+					"arg": "seasonId",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-leaderboard",
+				"verb": "get"
+			}
+		},
+		"getStandingsMatchList": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "number"
+				},
+				{
+					"arg": "seasonId",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-match-list",
+				"verb": "get"
+			}
+		},
+		"getStandingsMatchStats": {
+			"accepts": [
+				{
+					"arg": "matchId",
+					"type": "number"
+				},
+				{ "arg": "req", "type": "object", "http": { "source": "req" } }
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-match-stats",
+				"verb": "get"
+			}
+		}
+	}
+}

@@ -1,0 +1,114 @@
+<div *ngIf="event" class="tw-flex tw-flex-col tw-p-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" style="font-size: 0.8rem;">
+	<div class="pflex-flex pflex-flex-column pflex-p-4">
+		@if (player || editMode) {
+			<div class="pflex-flex pflex-align-items-center pflex-mb-4">
+				<iterpro-player-dropdown
+					[playerId]="player?.id"
+					[options]="players"
+					[imgHeight]="'90px'"
+					[disabled]="!editMode"
+					(playerIdChanged)="onSelectPlayer($event)"
+					class="tw-bg-shark-1000"
+				/>
+			</div>
+		} @else {
+			<div translate>alert.noPlayersSelected</div>
+		}
+		@if (player) {
+			<div class="infoHealth">
+				<div class="bbox">
+					<h4 translate>sidebar.injuryHistory</h4>
+					<div class="table-scroll">
+						<p-table styleClass="p-datatable-striped" [value]="player.injuries | sortBy : 'desc' : 'date'">
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+								<tr
+									class="tw-h-10"
+									pTooltip="Show Injury"
+									(click)="showDetails(rowData)"
+									[ngClass]="selectedInjury && rowData?.id === selectedInjury.id ? 'selected' : ''"
+								>
+									<td style="width: 10%">
+										<i (click)="redirectToInjury(rowData)" pTooltip="Go to Injury Details" class="fas fa-search"></i>
+									</td>
+									<td style="width: 10%">
+										<i
+											*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.injury'"
+											class="fas fa-plus"
+											style="color: red"
+										></i>
+										<i
+											*ngIf="!rowData.endDate && rowData.issue === 'medical.infirmary.details.issue.complaint'"
+											class="fas fa-plus"
+											style="color: yellow"
+										></i>
+										<i *ngIf="rowData.endDate" class="fas fa-plus" style="color: green"></i>
+									</td>
+									<td style="width: 25%" translate>
+										{{ rowData.date | formatDateBySetting }}
+									</td>
+									<td style="width: 35%">
+										{{ rowData.location | translate }}
+									</td>
+									<td style="width: 30%">
+										{{ rowData.issue | translate }}
+									</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				</div>
+			</div>
+			<div class="tw-w-full tw-flex tw-justify-between tw-items-center">
+				<div class="infoHealth" *ngIf="selectedInjury">
+					<table class="fields-table" style="width: 100%">
+						<tr>
+							<th style="white-space: nowrap" translate>medical.infirmary.details.issue</th>
+							<td style="white-space: nowrap">
+								<i *ngIf="selectedInjury.chronicInjuryId" class="fas fa-fire" style="color: var(--color-primary-500)"></i>
+								<span translate>{{ selectedInjury.issue }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th style="white-space: nowrap" translate>OSIICS</th>
+							<td style="white-space: nowrap">
+								<span>{{ selectedInjury.osics | osics : osicsList }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th style="white-space: nowrap" translate>medical.infirmary.details.location</th>
+							<td style="white-space: nowrap">
+								<span>{{ selectedInjury.location | translate }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th style="white-space: nowrap" translate>
+								medical.infirmary.details.anatomicalDetails
+							</th>
+							<td style="white-space: nowrap">
+								<span translate>{{ selectedInjury.anatomicalDetails }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th style="white-space: nowrap" translate>medical.infirmary.details.currentStatus</th>
+							<td style="white-space: nowrap">
+								<span>{{ getInjuryStatusAtDay(selectedInjury) | translate }}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div *ngIf="selectedInjury; else allInjuriesBodyChart" class="tw-w-full tw-flex tw-justify-center tw-p-2 tw-mt-4">
+					<div class="tw-w-[400px]">
+						<iterpro-body-chart #bodyChart [injuries]="[selectedInjury]" [hidePast]="false" />
+					</div>
+				</div>
+				<ng-template #allInjuriesBodyChart>
+					<div class="tw-w-full tw-flex tw-justify-center tw-p-2 tw-mt-4">
+						<div class="tw-w-[400px]">
+							<iterpro-body-chart #bodyChart [injuries]="player.injuries" [hidePast]="false" />
+						</div>
+					</div>
+				</ng-template>
+			</div>
+		}
+	</div>
+</div>

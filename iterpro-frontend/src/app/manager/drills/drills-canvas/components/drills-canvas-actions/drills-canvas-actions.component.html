@@ -1,0 +1,160 @@
+<div class="tw-flex tw-flex-wrap tw-justify-start tw-gap-2 tw-rounded-sm">
+	<!-- Color Palette -->
+	<!-- <div class="tw-relative">
+		<fa-icon
+			[icon]="faPalette"
+			[pTooltip]="'drillCanvas.editor.changeColor' | translate"
+			[ngClass]="
+				isObject
+					? 'tw-opacity-100 hover:tw-text-primary-500'
+					: 'tw-pointer-events-none tw-opacity-50'
+			"
+			class="tw-cursor-pointer tw-text-xl tw-text-white tw-transition-all hover:tw-text-primary-500"
+		/>
+		<p-colorPicker
+			id="drill-canvas-colorpicker"
+			(onChange)="updateObjColor($event)"
+			class="tw-absolute tw-left-0 tw-h-full tw-w-full"
+			[ngClass]="{ 'tw-pointer-events-none': !isObject }"
+		/>
+	</div> -->
+
+	<!-- Default Mode -->
+	<!-- <div
+		class="tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shart-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none': undoStack.length === 0 }"
+		[pTooltip]="'drillCanvas.editor.undo' | translate"
+		(click)="defaultMode.emit()"
+	>
+		<fa-icon
+			[icon]="icons.faArrowPointer"
+			[ngClass]="undoStack.length > 0 ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div> -->
+
+	<!-- Undo -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': undoStack.length <= 1 }"
+		[pTooltip]="'drillCanvas.editor.undo' | translate"
+		(click)="undo()"
+	>
+		<fa-icon
+			[icon]="icons.faRotateLeft"
+			[ngClass]="undoStack.length > 1 ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<!-- Redo -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': redoStack.length === 0 }"
+		[pTooltip]="'drillCanvas.editor.redo' | translate"
+		(click)="redo()"
+	>
+		<fa-icon
+			[icon]="icons.faRotateRight"
+			[ngClass]="redoStack.length > 0 ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<!-- Copy Item -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': !canClone }"
+		[pTooltip]="'drillCanvas.editor.copy' | translate"
+		(click)="copy()"
+	>
+		<fa-icon
+			[icon]="icons.faCopy"
+			[ngClass]="canClone ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<!-- Group / unGroup -->
+	@if (canUngroup) {
+		<div
+			class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+			[pTooltip]="'drillCanvas.editor.ungroup' | translate"
+			(click)="ungroup()"
+		>
+			<fa-icon
+				[icon]="icons.faObjectUngroup"
+				class="tw-cursor-pointer tw-text-xl tw-text-white group-hover:tw-text-primary-500"
+			/>
+		</div>
+	}
+
+	@if (canGroup) {
+		<div
+			class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+			[pTooltip]="'drillCanvas.editor.group' | translate"
+			(click)="group()"
+		>
+			<fa-icon
+				[icon]="icons.faObjectGroup"
+				(click)="group()"
+				class="tw-cursor-pointer tw-text-xl tw-text-white group-hover:tw-text-primary-500"
+			/>
+		</div>
+	}
+
+	<!-- Bring Front -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': !canUpdateZIndex }"
+		[pTooltip]="'drillCanvas.editor.bringFront' | translate"
+		(click)="bringObjFront()"
+	>
+		<fa-icon
+			[icon]="icons.faBringFront"
+			[ngClass]="canUpdateZIndex ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': !canUpdateZIndex }"
+		[pTooltip]="'drillCanvas.editor.sendBack' | translate"
+		(click)="sendObjBack()"
+	>
+		<fa-icon
+			[icon]="icons.faSendBack"
+			[ngClass]="canUpdateZIndex ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<!-- Delete Item -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': !canDelete }"
+		[pTooltip]="'drillCanvas.editor.delete' | translate"
+		(click)="delete()"
+	>
+		<fa-icon
+			[icon]="icons.faTrash"
+			[ngClass]="canDelete ? 'tw-opacity-100 group-hover:tw-text-primary-500' : 'tw-opacity-50'"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+
+	<!-- Reset Canvas -->
+	<div
+		class="tw-bg-shart-900 tw-group tw-flex tw-h-10 tw-w-10 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+		[ngClass]="{ 'tw-pointer-events-none tw-cursor-not-allowed': canvas.isEmpty() }"
+		[pTooltip]="'drillCanvas.editor.clear' | translate"
+		(click)="resetCanvas.emit()"
+	>
+		<fa-icon
+			[icon]="icons.faBroom"
+			[ngClass]="canvas.isEmpty() ? 'tw-opacity-50' : 'group-hover:tw-text-primary tw-opacity-100 '"
+			class="tw-cursor-pointer tw-text-xl tw-text-white"
+		/>
+	</div>
+</div>

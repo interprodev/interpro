@@ -1,0 +1,188 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>attendances</h1>
+		</header>
+
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+			<!-- COLUMN -->
+			<div class="tw-col-span-12 lg:tw-col-span-10">
+				<!-- ACTIVITY LOG -->
+				<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg" *ngIf="viewIsActivityLog$ | async">
+					<div class="content">
+						<iterpro-report-download class="tw-absolute tw-cursor-pointer tw-right-0 tw-mr-2"
+							(downloadPDF)="downloadReportAction()" (downloadCSV)="downloadCsvAction()" />
+
+						<div class="legend">
+							<div *ngFor="let item of legend$ | async">
+								<div *ngIf="!!item.attrs" [style.background]="item.attrs.color" class="legend-item">
+									{{ item.attrs.text }}
+								</div>
+								<div class="legend-label">{{ item.label }}</div>
+							</div>
+						</div>
+
+						<div>
+							<div class="attendance-table">
+								<div class="player-col">
+									<div></div>
+									<div></div>
+								</div>
+								<div class="days-col">
+									<div class="days-top-col" #daysEl>
+										<div class="days-row">
+											<div *ngFor="let dayName of dayNames$ | async" style="color: #bbbbbb">
+												{{ dayName }}
+											</div>
+										</div>
+										<div class="days-row n-days-row">
+											<div *ngFor="let day of days$ | async">
+												<span class="day-header" [pTooltip]="'attendance.viewThisDayInPlanning' | translate"
+													(click)="dayHeaderClicked(day + 1)">{{ day + 1 }}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="attendance-body">
+								<div class="attendance-table">
+									<div class="player-col player-body-col" #playersEl>
+										<div class="player-inner-col">
+											<div class="player-row" *ngFor="let attendance of attendances$ | async">
+												{{ attendance.player.displayName }}
+											</div>
+										</div>
+									</div>
+									<div class="days-col days-body-col" #bodyEl>
+										<div class="days-row" *ngFor="let attendance of attendances$ | async">
+											<div *ngFor="let day of attendance.days; let dayNum = index">
+												<div tooltipStyleClass="tooltip-style"
+													(mouseover)="cellEnteredAction(day, attendance.player.displayName, dayNum + 1)"
+													[style.background]="day.current.color" class="attendance-item" [pTooltip]="tooltip$ | async"
+													[escape]="false" tooltipPosition="bottom">
+													{{ day.current.text }}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- STATS -->
+				<ng-container *ngIf="viewIsStatistics$ | async">
+					<iterpro-statistics [stats]="stats$ | async" [options]="statsOptions$ | async"
+						[showInOrder]="ordered$ | async" [showLabels]="labelled$ | async" />
+				</ng-container>
+			</div>
+
+			<!-- SIDEBAR -->
+			<div class="tw-col-span-12 lg:tw-col-span-2">
+				<p-tabView (onChange)="handleChangeTabAction($event)" [activeIndex]="view$ | async">
+					<!-- ACTIVITY LOG -->
+					<p-tabPanel header="{{ 'sidebar.activityLog' | translate }}">
+						<div class="iterpro-item-container">
+							<p-dropdown class="tw-w-full" [options]="monthList$ | async" [ngModel]="month$ | async"
+													(onChange)="handleMonthChangeAction($event)">
+							</p-dropdown>
+						</div>
+						<div class="iterpro-item-container tw-mt-2">
+							<p-dropdown class="tw-w-full" [options]="yearList$ | async" [ngModel]="year$ | async"
+													(onChange)="handleYearChangeAction($event)">
+							</p-dropdown>
+						</div>
+						<br />
+						<div class="spacing">
+							<label translate>
+								sidebar.sessionCounter
+								<span>{{ (counter$ | async)?.sessions }}</span>
+							</label>
+						</div>
+						<div class="spacing">
+							<label translate>
+								sidebar.trainingCounter
+								<span>{{ (counter$ | async)?.trainings }}</span>
+							</label>
+						</div>
+						<div class="spacing">
+							<label translate>
+								sidebar.gamesCounter
+								<span>{{ (counter$ | async)?.games }}</span>
+							</label>
+						</div>
+						<div class="spacing"></div>
+						<div class="spacing"></div>
+					</p-tabPanel>
+
+					<!--STATISTICS-->
+					<p-tabPanel header="{{ 'sidebar.statistics' | translate }}">
+						<div class="tw-text-sm iterpro-text-color-900" translate>sidebar.period</div>
+						<div class="iterpro-item-container tw-mt-1">
+							<p-calendar class="calendar-width-215" showButtonBar="true" [ngModel]="datePeriod$ | async"
+													(ngModelChange)="onChangePeriodDateAction($event)" selectionMode="range"
+													[maxDate]="today$ | async"
+													[clearButtonStyleClass]="'p-button-sm'"
+													[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+						</div>
+						<div class="tw-text-sm iterpro-text-color-900 tw-mt-2" translate>sidebar.sessiontype.title</div>
+						<div class="iterpro-item-container tw-mt-1">
+							<p-dropdown [options]="statsType" (onChange)="onFilterStatsTypeAction($event)"
+													placeholder="{{ 'dropdown.placeholder' | translate }}"></p-dropdown>
+						</div>
+
+						<div class="spacing">
+							<label translate>
+								sidebar.sessionCounter
+								<span>{{ (counter$ | async)?.sessions }}</span>
+							</label>
+						</div>
+						<div class="spacing">
+							<label translate>
+								sidebar.trainingCounter
+								<span>{{ (counter$ | async)?.trainings }}</span>
+							</label>
+						</div>
+						<div class="spacing">
+							<label translate>
+								sidebar.gamesCounter
+								<span>{{ (counter$ | async)?.games }}</span>
+							</label>
+						</div>
+						<div class="spacing">
+							<label translate>
+								sidebar.counterDays
+								<span>{{ (counter$ | async)?.days }}</span>
+							</label>
+						</div>
+						<div class="spacing"></div>
+
+						<div class="tw-text-sm iterpro-text-color-900 tw-mt-2" translate>sidebar.player</div>
+						<div class="iterpro-item-container tw-mt-1">
+							<p-multiSelect [style]="{ 'z-index': 'auto !important', 'min-width': '12.5em' }" appendTo="body"
+														 [options]="selectablePlayerRoles$ | async" optionLabel="displayName" selectedItemsLabel="{0} selected"
+														 maxSelectedLabels="2" [ngModel]="selectedPlayerRoles$ | async"
+														 (ngModelChange)="onChangePlayersAction($event)"></p-multiSelect>
+						</div>
+						<ng-container *ngIf="isNationalClub$ | async">
+							<div class="tw-text-sm iterpro-text-color-900 tw-mt-2" translate>sidebar.teamtype</div>
+							<div class="iterpro-item-container tw-mt-1">
+								<p-multiSelect [style]="{ 'z-index': 'auto !important', 'min-width': '12.5em' }" appendTo="body"
+															 [options]="teamTypesList" [ngModel]="teamTypes$ | async"
+															 (ngModelChange)="onChangeTeamTypeAction($event)"></p-multiSelect>
+							</div>
+						</ng-container>
+
+						<div class="tw-text-sm iterpro-text-color-900 tw-mt-2" translate>sidebar.metrics</div>
+						<div class="iterpro-item-container tw-mt-1">
+							<p-dropdown appendTo="body" [options]="metricList$ | async" [ngModel]="metric$ | async"
+													(ngModelChange)="onChangeMetricsAction($event)" [placeholder]="'dropdown.placeholder' | translate">
+							</p-dropdown>
+						</div>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+</div>

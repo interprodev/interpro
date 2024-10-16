@@ -1,0 +1,46 @@
+<!-- Comment -->
+<div class="comment-container">
+	<div class="comment-body">
+		<div class="comment-input-zone">
+			<div class="customer-pic-container">
+				<img class="customer-pic" [src]="customer?.downloadUrl | azureUrl"
+					onError="this.src='assets/img/default_icon.png';" alt="user picture"/>
+			</div>
+			<div class="comment-input-textarea">
+				<textarea [disabled]="!editMode" [(ngModel)]="content" (keyup.enter)="add()" (keydown.escape)="content = ''"
+					pInputTextarea [placeholder]="placeholder || ('comments.writeComment' | translate)"
+					class="p-inputtext p-component comment-edit"></textarea>
+			</div>
+		</div>
+		<div class="attachment-icon">
+			<i *ngIf="editMode" (click)="triggerFileInput()" class="fas fa-paperclip"></i>
+		</div>
+	</div>
+</div>
+
+<input #fileInput (change)="addAttachment($event)" type="file" name="" class="hidden-file" />
+
+<!-- Upload dialog -->
+<p-dialog [visible]="showUploadDialog" [responsive]="true" [showHeader]="false" [closeOnEscape]="true"
+	[focusOnShow]="true" [draggable]="false" [resizable]="false" (onHide)="hideDialog()" modal="modal"
+	[style]="{ width: '700px' }">
+	<div class="comment-dialog">
+		<header>
+			<h3>Upload a file</h3>
+			<i (click)="disposeUpload()" class="fas fa-close"></i>
+		</header>
+		<textarea [(ngModel)]="uploadContent" pInputTextarea placeholder="{{ 'comments.addFileMessage' | translate }}"
+			class="p-inputtext p-component comment-edit"
+			style="border: 1px solid var(--color-neutral-300); border-radius: 3px; height: 70px;"></textarea>
+		<div *ngIf="fileAttachments.length" class="input-attachments">
+			<div class="single-attachment" *ngFor="let fileAttachment of fileAttachments">
+				<iterpro-attachment [attachment]="fileAttachment.attachment" [preview]="true"></iterpro-attachment>
+			</div>
+		</div>
+		<div class="add-attachment" [class.add-disabled]="uploading" (click)="triggerFileInput()">Add file</div>
+		<div class="upload-spinner">
+			<p-progressSpinner *ngIf="uploading" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+		</div>
+		<p-button size="small" styleClass="p-button-contrast" [disabled]="uploading" (click)="add()">UPLOAD</p-button>
+	</div>
+</p-dialog>

@@ -1,0 +1,4 @@
+<ng-container>
+	<p-chart *ngIf="!roa" [data]="data" [options]="options" [height]="'400px'" type="bar"></p-chart>
+	<p-chart *ngIf="roa" [data]="data" [options]="options" type="bubble"></p-chart>
+</ng-container>

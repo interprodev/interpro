@@ -1,0 +1,70 @@
+<p-tabView class="mainMenu" (onChange)="onTabChange($event)" [activeIndex]="activeIndex">
+	<p-tabPanel *ngIf="personType === 'PlayerTransfer'" [disabled]="editMode" class="info"
+		[ngClass]="personType === 'PlayerTransfer' ? 'selected' : ''"
+		header="{{ 'squads.players.tabs.overview' | translate }}">
+		<iterpro-squads-person-overview [editMode]="editMode" [person]="person" [agents]="agents" [deal]="deal"
+			[clubSeasons]="clubSeasons" [sportType]="sportType">
+		</iterpro-squads-person-overview>
+	</p-tabPanel>
+	<p-tabPanel [disabled]="editMode" class="info" [ngClass]="personType === 'PlayerTransfer' ? '' : 'selected'"
+		header="{{ 'squads.players.tabs.details' | translate }}">
+		<iterpro-squads-person-details *ngIf="person" (reportsData)="getReport()"
+			(removeFromSeasonEmitter)="onRemoveFromSeasonTrigger($event)" [person]="person" [seasons]="seasons"
+			[playerMode]="personType === 'Player'" [agentMode]="personType === 'Agent'" [editMode]="editMode"
+			[customers]="customers" [club]="club" [transfer]="personType === 'PlayerTransfer'"></iterpro-squads-person-details>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="accessToLegal || (!accessToLegal && !hideDisabledModules)" [disabled]="editMode || !canAccessToModule('legal').response"
+		[ngClass]="editMode || !accessToLegal ? 'ui-state-disabled' : null" class="info"
+		header="{{ 'squads.players.tabs.contract' | translate }}"
+		tooltip="{{ canAccessToModule('legal').error | translate }}">
+		<iterpro-squads-person-legal *ngIf="person && team"
+			[isActiveTab]="personType === 'PlayerTransfer' ? activeIndex === 2 : activeIndex === 1" [personType]="personType"
+			[person]="person" [seasons]="seasons" [players]="players" [isNew]="isNew" [editMode]="editMode" [agents]="agents"
+			[isTransferSection]="personType === 'PlayerTransfer'" [team]="team" [club]="club"
+			[deletedTransferContract]="deletedTransferContract" [contractIdParam]="contractIdParam"
+			(contractsChangedEmitter)="contractsChangedEmitter.emit($event)"></iterpro-squads-person-legal>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="personType === 'Player'" [disabled]="editMode || !canAccessToModule('finance-overview').response"
+		[ngClass]="editMode || !canAccessToModule('finance-overview').response ? 'ui-state-disabled' : null" class="info"
+		header="{{ 'squads.players.tabs.evaluation' | translate }}"
+		tooltip="{{ canAccessToModule('finance-overview').error | translate }}">
+		<iterpro-squads-person-evaluation [player]="person" [editMode]="editMode"> </iterpro-squads-person-evaluation>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="
+			personType === 'Player' ||
+			(personType === 'PlayerTransfer' &&
+				(canAccessToModule('finance-overview').response || (!canAccessToModule('finance-overview').response && !hideDisabledModules)))
+		" [disabled]="editMode || !canAccessToModule('finance-overview').response"
+		[ngClass]="editMode || !canAccessToModule('finance-overview').response ? 'ui-state-disabled' : null" class="info"
+		header="{{ 'squads.players.tabs.forecast' | translate }}"
+		tooltip="{{ canAccessToModule('finance-overview').error | translate }}">
+		<iterpro-squads-person-amortization [personType]="personType" [player]="person" [bonuses]="bonuses" [agents]="agents"
+			[seasons]="seasons" [isPurchase]="isPurchase" [club]="club">
+		</iterpro-squads-person-amortization>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="
+			personType === 'Player' &&
+			(canAccessToModule('finance-overview').response || (!canAccessToModule('finance-overview').response && !hideDisabledModules))
+		" [disabled]="editMode || !canAccessToModule('finance-overview').response"
+		[ngClass]="editMode || !canAccessToModule('finance-overview').response ? 'ui-state-disabled' : null" class="info"
+		header="{{ 'squads.players.tabs.thresholds' | translate }}"
+		tooltip="{{ canAccessToModule('finance-overview').error | translate }}">
+		<iterpro-thresholds name="threshold" [user]="customer" [player]="person" [players]="players" [admin]="true"
+			[editMode]="editMode"></iterpro-thresholds>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="
+			personType !== 'PlayerTransfer' &&
+			(canAccessToModule('cost-items').response || (!canAccessToModule('cost-items').response && !hideDisabledModules))
+		" [disabled]="editMode || !canAccessToModule('cost-items').response"
+		[ngClass]="editMode || !canAccessToModule('cost-items').response ? 'ui-state-disabled' : null" class="info"
+		header="{{ 'navigator.transactions' | translate }}"
+		tooltip="{{ canAccessToModule('cost-items').error | translate }}">
+		<iterpro-cost-items-table [personId]="person.id" [personName]="person.displayName" [personTeamId]="person.teamId"
+			[personType]="personType" [mode]="'both'"></iterpro-cost-items-table>
+	</p-tabPanel>
+	<p-tabPanel *ngIf="personType === 'PlayerTransfer'" [disabled]="editMode || !canAccessToModule('transfers').response"
+		[ngClass]="editMode || !canAccessToModule('transfers').response ? 'ui-state-disabled' : null" class="info"
+		[header]="'profile.archive.notes' | translate" [tooltip]="canAccessToModule('transfers').error | translate">
+		<iterpro-squads-person-notes [isTransfer]="personType === 'PlayerTransfer'" [player]="person"> </iterpro-squads-person-notes>
+	</p-tabPanel>
+</p-tabView>

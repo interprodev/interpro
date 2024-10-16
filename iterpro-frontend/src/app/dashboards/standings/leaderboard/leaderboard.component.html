@@ -1,0 +1,88 @@
+<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-rounded-lg">
+  <div class="table-title">
+    <div class="title-container">
+      <span translate>dashboard.leadeboard</span><span class="table-title-comp"> {{ competition?.name }}</span>
+    </div>
+  </div>
+	@if (!isLoading) {
+		<p-table [value]="teams" styleClass="p-datatable-striped">
+			<ng-template pTemplate="header">
+				<tr>
+					<th class="tw-bg-transparent" style="width:5%"></th>
+					<th class="tw-bg-transparent" style="width:25%" translate>dashboard.leaderboard.team</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.totalPlayed.tooltip' | translate }}" translate>
+						dashboard.leaderboard.totalPlayed
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.wins.tooltip' | translate }}" translate>
+						dashboard.leaderboard.wins
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.draws.tooltip' | translate }}" translate>
+						dashboard.leaderboard.draws
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.losses.tooltip' | translate }}" translate>
+						dashboard.leaderboard.losses
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.goalsFor.tooltip' | translate }}" translate>
+						dashboard.leaderboard.goalsFor
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.goalsAgainst.tooltip' | translate }}" translate>
+						dashboard.leaderboard.goalsAgainst
+					</th>
+					<th class="tw-bg-transparent" style="width:10%;text-align:center"
+							pTooltip="{{ 'dashboard.leaderboard.points.tooltip' | translate }}" translate>
+						dashboard.leaderboard.points
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10" [ngClass]="isCurrentTeam(rowData.teamId) ? 'tw-bg-shark-700 tw-bg-opacity-65' : ''">
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:5%;text-align:center;font-size:0.7vw">
+						{{ rowIndex + 1 }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:25%">
+						<img class="crest" src="{{ rowData.team.imageDataURL }}" />
+						<span class="tw-ml-2">{{ rowData.team.name }}</span>
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalPlayed }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalWins }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalDraws }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalLosses }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalGoalsFor }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalGoalsAgainst }}
+					</td>
+					<td [ngStyle]="{ 'font-weight': isCurrentTeam(rowData.teamId) ? 'bold' : 'unset' }"
+							style="width:10%;text-align:center;">
+						{{ rowData.totalPoints }}
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<iterpro-skeleton-table [cols]="8" [rows]="20" [showProfilePic]="true"></iterpro-skeleton-table>
+	}
+</div>

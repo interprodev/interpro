@@ -1,0 +1,96 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [title]="'settings.teams.integrations'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="thirdPartiesForm?.dirty || apiForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+<div class="tw-mb-8 tw-mt-8"><iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown></div>
+@if (!isLoading) {
+	<p-tabMenu [model]="menuItems" [activeItem]="activeMenu">
+		<ng-template pTemplate="item" let-item>
+			<a class="p-menuitem-link">
+				@if (item.id === 'thirdPartiesForm') {
+					<span class="p-menuitem-text">
+						{{ item.label | translate }}
+						@if (thirdPartiesForm.invalid) {
+							<i class="fas fa-exclamation-triangle tw-text-red-500"></i>
+						}
+					</span>
+				}
+				@if (item.id === 'apiForm') {
+					<span class="p-menuitem-text">
+						{{ item.label | translate }}
+						@if (apiForm.invalid) {
+							<i class="fas fa-exclamation-triangle tw-text-red-500"></i>
+						}
+					</span>
+				}
+			</a>
+		</ng-template>
+	</p-tabMenu>
+	<div class="tw-mt-2 tw-p-2">
+		<div [class.tw-hidden]="activeMenu !== menuItems[0]" [formGroup]="thirdPartiesForm">
+			<div class="tw-mb-2">
+				<h4 translate class="tw-uppercase tw-mb-2">preferences.device.general</h4>
+				<iterpro-team-integration-general [formGroupName]="'general'" [team]="selectedTeam" [editMode]="editMode" [saveClicked]="saveClicked"></iterpro-team-integration-general>
+			</div>
+			<div class="tw-mb-8">
+				<h4 translate class="tw-uppercase tw-mb-2">preferences.mapping.gps</h4>
+				<iterpro-team-integration-gps-mapping [formGroupName]="'gpsMapping'" [team]="selectedTeam" [customer]="currentCustomer"
+																							[dateFormatsOptions]="dateFormatsOptions" [durationFormatsOptions]="durationFormatsOptions"
+																							[editMode]="editMode" [saveClicked]="saveClicked"></iterpro-team-integration-gps-mapping>
+			</div>
+			<div class="tw-mb-8">
+				<h4 translate class="tw-uppercase tw-mb-2">preferences.mapping.team</h4>
+				<iterpro-team-integration-game-team-mapping [formGroupName]="'gameTeamMapping'" [team]="selectedTeam"
+																										[editMode]="editMode" [dateFormatsOptions]="dateFormatsOptions" [durationFormatsOptions]="durationFormatsOptions"
+																										[saveClicked]="saveClicked"></iterpro-team-integration-game-team-mapping>
+			</div>
+			<div>
+				<h4 translate class="tw-uppercase tw-mb-2">preferences.mapping.player</h4>
+				<iterpro-team-integration-game-player-mapping [formGroupName]="'gamePlayerMapping'" [team]="selectedTeam"
+																											[editMode]="editMode" [dateFormatsOptions]="dateFormatsOptions" [durationFormatsOptions]="durationFormatsOptions"
+																											[saveClicked]="saveClicked"></iterpro-team-integration-game-player-mapping>
+			</div>
+		</div>
+		<div [class.tw-hidden]="activeMenu !== menuItems[1]">
+			@if ((selectedTeam | teamHasProvider)) {
+				<div [formGroup]="apiForm">
+					<iterpro-team-integration-api-player-mapping [formGroupName]="'playersMapping'" [players]="seasonPlayers"  [team]="selectedTeam" [editMode]="editMode" [saveClicked]="saveClicked"></iterpro-team-integration-api-player-mapping>
+				</div>
+			} @else {
+				<h4>No API integration for this Team</h4>
+			}
+		</div>
+	</div>
+} @else {
+	<p-tabMenu [model]="menuItems" [activeItem]="activeMenu">
+		<ng-template pTemplate="item" let-item>
+			<a class="p-menuitem-link">
+				<span class="p-menuitem-text"><p-skeleton width="100px"></p-skeleton></span>
+			</a>
+		</ng-template>
+	</p-tabMenu>
+	<div class="tw-mt-2 tw-p-2">
+		<div [class.tw-hidden]="activeMenu != menuItems[0]">
+			<div class="tw-flex tw-justify-between tw-mb-8 tw-gap-2">
+				<iterpro-skeleton-table [cols]="1" [rows]="1"></iterpro-skeleton-table>
+				<iterpro-skeleton-table [cols]="1" [rows]="2"></iterpro-skeleton-table>
+				<iterpro-skeleton-table [cols]="1" [rows]="1"></iterpro-skeleton-table>
+			</div>
+			<div class="tw-mb-8">
+				<iterpro-skeleton-accordion [accordions]="4" [showTitle]="true"></iterpro-skeleton-accordion>
+			</div>
+			<div class="tw-mb-8">
+				<iterpro-skeleton-accordion [accordions]="4" [showTitle]="true"></iterpro-skeleton-accordion>
+			</div>
+			<div class="tw-mb-8">
+				<iterpro-skeleton-accordion [accordions]="2" [showTitle]="true"></iterpro-skeleton-accordion>
+			</div>
+		</div>
+		<div [class.tw-hidden]="activeMenu != menuItems[1]">
+			<iterpro-skeleton-table [cols]="4" [rows]="20"></iterpro-skeleton-table>
+		</div>
+	</div>
+
+}

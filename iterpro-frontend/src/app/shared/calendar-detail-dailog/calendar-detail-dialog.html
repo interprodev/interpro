@@ -1,0 +1,14 @@
+<ng-container>
+	<div class="cell-container with-tooltips">
+		<div
+			*ngFor="let seg of cellInfo?.allSegs; trackBy:segId"
+			[ngStyle]="{'background-color': seg.event.backgroundColor, 'color': seg.event.textColor}"
+			class="pflex-my-2 pflex-p-2 pflex-border-round-md pflex-cursor-pointer"
+			(click)="selectEvent(seg.event)"
+			(mouseover)="showEventTooltip(seg.event, $event)"
+			(mouseout)="hideTooltip()"
+		>
+			{{ seg.event | calendarDetailEventLabel }}
+		</div>
+	</div>
+</ng-container>

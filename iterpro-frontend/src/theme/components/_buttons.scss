@@ -1,0 +1,227 @@
+//region P-Buttons
+// Default (Shark)
+.p-button {
+  @apply tw-bg-shark-700;
+  @apply tw-border-solid tw-border-1 tw-border-shark-700;
+  @apply tw-rounded-lg;
+}
+.p-button:not(:disabled):hover {
+  @apply tw-bg-shark-900 tw-border-shark-900;
+}
+.p-button:not(:disabled):active {
+  @apply tw-bg-shark-900 tw-border-shark-900;
+}
+// Outlined Default
+.p-button.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-shark-700;
+}
+.p-button.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-shark-700 tw-text-white tw-border-shark-700;
+}
+.p-button.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-shark-800 tw-text-white tw-border-shark-800;
+}
+// Text Default
+.p-button.p-button-text {
+  @apply tw-bg-transparent tw-text-white tw-border-transparent;
+}
+.p-button.p-button-text:not(:disabled):hover {
+  @apply tw-bg-shark-950 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-text:not(:disabled):active {
+  @apply tw-bg-shark-950 tw-text-white tw-border-transparent;
+}
+// Primary (iterpro orange)
+.p-button.p-button-primary {
+  @apply tw-bg-primary-500;
+  @apply tw-border-solid tw-border-1 tw-border-primary-500;
+}
+.p-button.p-button-primary:not(:disabled):hover {
+  @apply tw-bg-primary-600 tw-border-primary-600;
+}
+.p-button.p-button-primary:not(:disabled):active {
+  @apply tw-bg-primary-700 tw-border-primary-700;
+}
+// Outlined Primary
+.p-button.p-button-primary.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-primary-500;
+}
+.p-button.p-button-primary.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-primary-500 tw-text-white tw-border-primary-500;
+}
+.p-button.p-button-primary.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-primary-600 tw-text-white tw-border-primary-600;
+}
+// Text Primary
+.p-button.p-button-primary.p-button-text {
+  @apply tw-bg-transparent tw-text-primary-500 tw-border-transparent;
+}
+.p-button.p-button-primary.p-button-text:not(:disabled):hover {
+  @apply tw-bg-primary-600 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-primary.p-button-text:not(:disabled):active {
+  @apply tw-bg-primary-700 tw-text-white tw-border-transparent;
+}
+// Success
+.p-button.p-button-success {
+  @apply tw-bg-success-500;
+  @apply tw-border-solid tw-border-1 tw-border-success-500;
+}
+.p-button.p-button-success:not(:disabled):hover {
+  @apply tw-bg-success-600 tw-border-success-600;
+}
+.p-button.p-button-success:not(:disabled):active {
+  @apply tw-bg-success-700 tw-border-success-700;
+}
+// Outlined Success
+.p-button.p-button-success.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-success-500;
+}
+.p-button.p-button-success.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-success-500 tw-text-white tw-border-success-500;
+}
+.p-button.p-button-success.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-success-600 tw-text-white tw-border-success-600;
+}
+// Text Success
+.p-button.p-button-success.p-button-text {
+  @apply tw-bg-transparent tw-text-success-500 tw-border-transparent;
+}
+.p-button.p-button-success.p-button-text:not(:disabled):hover {
+  @apply tw-bg-success-600 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-success.p-button-text:not(:disabled):active {
+  @apply tw-bg-success-700 tw-text-white tw-border-transparent;
+}
+// Info
+.p-button.p-button-info {
+  @apply tw-bg-info-500;
+  @apply tw-border-solid tw-border-1 tw-border-info-500;
+}
+.p-button.p-button-info:not(:disabled):hover {
+  @apply tw-bg-info-600 tw-border-info-600;
+}
+.p-button.p-button-info:not(:disabled):active {
+  @apply tw-bg-info-700 tw-border-info-700;
+}
+// Outlined Info
+.p-button.p-button-info.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-info-500;
+}
+.p-button.p-button-info.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-info-500 tw-text-white tw-border-info-500;
+}
+.p-button.p-button-info.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-info-600 tw-text-white tw-border-info-600;
+}
+// Text Info
+.p-button.p-button-info.p-button-text {
+  @apply tw-bg-transparent tw-text-info-500 tw-border-transparent;
+}
+.p-button.p-button-info.p-button-text:not(:disabled):hover {
+  @apply tw-bg-info-600 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-info.p-button-text:not(:disabled):active {
+  @apply tw-bg-info-700 tw-text-white tw-border-transparent;
+}
+// Warning
+.p-button.p-button-warning {
+  @apply tw-bg-warning-500;
+  @apply tw-border-solid tw-border-1 tw-border-warning-500;
+}
+.p-button.p-button-warning:not(:disabled):hover {
+  @apply tw-bg-warning-600 tw-border-warning-600;
+}
+.p-button.p-button-warning:not(:disabled):active {
+  @apply tw-bg-warning-700 tw-border-warning-700;
+}
+// Outlined Warning
+.p-button.p-button-warning.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-warning-500;
+}
+.p-button.p-button-warning.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-warning-500 tw-text-white tw-border-warning-500;
+}
+.p-button.p-button-warning.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-warning-600 tw-text-white tw-border-warning-600;
+}
+// Warning Text
+.p-button.p-button-warning.p-button-text {
+  @apply tw-bg-transparent tw-text-warning-500 tw-border-transparent;
+}
+.p-button.p-button-warning.p-button-text:not(:disabled):hover {
+  @apply tw-bg-warning-600 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-warning.p-button-text:not(:disabled):active {
+  @apply tw-bg-warning-700 tw-text-white tw-border-transparent;
+}
+// Danger
+.p-button.p-button-danger {
+  @apply tw-bg-danger-500;
+  @apply tw-border-solid tw-border-1 tw-border-danger-500;
+}
+.p-button.p-button-danger:not(:disabled):hover {
+  @apply tw-bg-danger-600 tw-border-danger-600;
+}
+.p-button.p-button-danger:not(:disabled):active {
+  @apply tw-bg-danger-700 tw-border-danger-700;
+}
+// Outlined Danger
+.p-button.p-button-danger.p-button-outlined {
+  @apply tw-bg-transparent tw-text-white tw-border-solid tw-border-1 tw-border-danger-500;
+}
+.p-button.p-button-danger.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-danger-500 tw-text-white tw-border-danger-500;
+}
+.p-button.p-button-danger.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-danger-600 tw-text-white tw-border-danger-600;
+}
+// Text Danger
+.p-button.p-button-danger.p-button-text {
+  @apply tw-bg-transparent tw-text-danger-500 tw-border-transparent;
+}
+.p-button.p-button-danger.p-button-text:not(:disabled):hover {
+  @apply tw-bg-danger-600 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-danger.p-button-text:not(:disabled):active {
+  @apply tw-bg-danger-700 tw-text-white tw-border-transparent;
+}
+// Contrast (Dark Shark)
+.p-button.p-button-contrast {
+  @apply tw-bg-shark-900;
+  @apply tw-border-solid tw-border-1 tw-border-shark-900;
+}
+.p-button.p-button-contrast:not(:disabled):hover {
+  @apply tw-bg-shark-950 tw-border-shark-950;
+}
+.p-button.p-button-contrast:not(:disabled):active {
+  @apply tw-bg-shark-800 tw-border-shark-800;
+}
+// Outlined Contrast (dark shark)
+.p-button.p-button-contrast.p-button-outlined {
+  @apply tw-bg-transparent tw-text-shark-950 tw-border-solid tw-border-1 tw-border-shark-950;
+}
+.p-button.p-button-contrast.p-button-outlined:not(:disabled):hover {
+  @apply tw-bg-shark-950 tw-text-white tw-border-shark-950;
+}
+.p-button.p-button-contrast.p-button-outlined:not(:disabled):active {
+  @apply tw-bg-shark-900 tw-text-white tw-border-shark-900;
+}
+// Text Contrast (dark shark)
+.p-button.p-button-contrast.p-button-text {
+  @apply tw-bg-transparent tw-text-shark-1000 tw-border-transparent;
+}
+.p-button.p-button-contrast.p-button-text:not(:disabled):hover {
+  @apply tw-bg-shark-1000 tw-text-white tw-border-transparent;
+}
+.p-button.p-button-contrast.p-button-text:not(:disabled):active {
+  @apply tw-bg-shark-1000 tw-text-white tw-border-transparent;
+}
+// Common
+.p-button:disabled {
+  @apply tw-opacity-60;
+}
+.p-button-rounded {
+  @apply tw-rounded-full;
+}
+//endregion

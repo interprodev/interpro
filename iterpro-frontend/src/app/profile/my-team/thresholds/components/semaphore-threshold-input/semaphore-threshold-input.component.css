@@ -1,0 +1,12 @@
+.inline-container {
+	display: flex;
+	align-items: center;
+}
+
+.semaphore-input {
+	font-size: 0.8em;
+	text-align: right;
+	width: 4em;
+	border-bottom: 1px solid var(--color-neutral-900) !important;
+	margin-left: 0.5em;
+}

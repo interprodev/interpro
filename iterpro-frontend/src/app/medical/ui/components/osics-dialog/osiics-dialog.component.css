@@ -1,0 +1,16 @@
+.spacing {
+  color: #bbbbbb;
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin-top: 1.5em;
+}
+
+.padded .ui-dropdown-item {
+  padding: 0.5em 0.25em !important;
+}
+
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}

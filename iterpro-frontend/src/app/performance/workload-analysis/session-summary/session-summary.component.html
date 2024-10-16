@@ -1,0 +1,101 @@
+<div>
+	<div class="tw-grid tw-grid-cols-12 tw-gap-8 tw-mb-8">
+		<!-- OVERVIEW -->
+		<div class="tw-col-span-6">
+			<h4 class="tw-uppercase tw-mb-2" translate>workload.overview</h4>
+			<div class="tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900" *ngIf="session">
+				<p-table
+					[value]="[session]"
+					styleClass="p-datatable-gridlines"
+				>
+					<ng-template pTemplate="body" let-metric let-index="rowIndex">
+						<tr class="tw-h-8">
+							<td translate>general.date</td>
+							<td>{{ session.start | formatDateBySetting }}</td>
+						</tr>
+						<tr class="tw-h-8">
+							<td translate>event.type</td>
+							<td>{{ session.type }}</td>
+						</tr>
+						<tr class="tw-h-8">
+							<td translate>event.duration</td>
+							<td>{{ getDuration(session.duration) }}</td>
+						</tr>
+						<tr class="tw-h-8">
+							<td translate>event.theme</td>
+							<td translate>{{ session.theme }}</td>
+						</tr>
+						<tr class="tw-h-8" *ngIf="session.theme === 'field'">
+							<td translate>event.subtheme</td>
+							<td translate>{{ session.subtheme }}</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+		<!-- Contents -->
+		<div class="tw-col-span-6">
+			<h4 class="tw-uppercase tw-mb-2" translate>workload.contents</h4>
+			<div class="tw-rounded tw-border-solid tw-border-0.3 tw-border-shark-900" *ngIf="session">
+				<p-table styleClass="p-datatable-striped" [value]="session._drillsExecuted">
+					<ng-template pTemplate="header">
+						<tr class="tw-h-8">
+							<th style="width: 5%"></th>
+							<th style="width: 75%" translate>drills</th>
+							<th style="width: 20%" translate>drills.duration</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+						<tr class="tw-h-8">
+							<td>{{ rowIndex + 1 }}</td>
+							<td>{{ rowData.name }}</td>
+							<td>{{ getDuration(rowData.duration) }}</td>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="emptymessage">
+						<tr class="tw-h-8">
+							<td colspan="3" class="tw-text-center" translate>alert.noRecordsFound</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+	</div>
+
+	<!-- OUTCOME -->
+	<h4 class="tw-uppercase" translate>workload.outcome</h4>
+	<div class="tw-grid tw-grid-cols-12 tw-gap-1">
+		<!-- LOW -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 1, targetPlayers: light, borderColor: 'lightgray' }"> </ng-container>
+		<!-- MEDIUM -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 2, targetPlayers: medium, borderColor: 'lightblue' }"> </ng-container>
+		<!-- HIGH -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 3, targetPlayers: high, borderColor: 'yellow' }"> </ng-container>
+		<!-- VERY HIGH -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 4, targetPlayers: veryHigh, borderColor: 'orange' }"> </ng-container>
+		<!-- MAX -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 5, targetPlayers: maximum, borderColor: 'crimson' }"> </ng-container>
+		<!-- SUPRAMAXIMAL -->
+		<ng-container *ngTemplateOutlet="outcomeTemplate; context: { target: 6, targetPlayers: supramaximal, borderColor: 'darkred'  }"> </ng-container>
+	</div>
+</div>
+
+<ng-template #outcomeTemplate let-target="target" let-targetPlayers="targetPlayers" let-borderColor="borderColor">
+	<div class="tw-col-span-2 tw-flex tw-flex-col tw-gap-2">
+		<div class="tw-uppercase tw-font-bold" [class.tw-invisible]="!session || !isTarget(target, session)">
+			<span>Target<span *ngIf="sessionPlayers">: {{ getPercentTarget(targetPlayers) | percent : '1.0-0' }}</span></span>
+		</div>
+		<header
+			class="tw-p-2 tw-flex tw-justify-center tw-items-center tw-bg-shark-900 tw-rounded tw-border-0 tw-border-b-2 tw-border-solid"
+			[ngStyle]="{'border-color': borderColor}"
+			[class.!tw-bg-shark-800]="session && isTarget(target, session)"
+		>
+			<h4 class="tw-uppercase" translate>{{'event.effort.' + target }}</h4>
+		</header>
+		<div class="tw-bg-shark-900 tw-flex tw-flex-col tw-items-center tw-gap-4 tw-min-h-10 tw-rounded-sm tw-py-2 tw-h-full" [class.!tw-bg-shark-800]="session && isTarget(target, session)">
+			<div *ngFor="let player of targetPlayers">
+				<span>{{ player.playerName }}</span>
+			</div>
+		</div>
+	</div>
+</ng-template>

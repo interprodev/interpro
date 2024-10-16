@@ -1,0 +1,27 @@
+.filter-check {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+.filter-check label {
+	color: var(--color-neutral-900);
+	margin-bottom: 0.2rem;
+}
+.filter-switch {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+.filter-switch label {
+	color: var(--color-neutral-900);
+	margin-bottom: 0.2rem;
+	width: 100%;
+}
+.video-filter {
+	white-space: nowrap;
+}
+.resetFiltersBtn {
+	display: flex;
+	margin-top: 10px;
+	flex-direction: row-reverse;
+}

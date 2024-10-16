@@ -1,0 +1,36 @@
+.team-container-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2em;
+}
+
+.team-container-header > * {
+  margin-right: 1em;
+}
+
+
+.players-table {
+  margin-top: 2rem;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+.soccer-card {
+  width: 18px;
+  height: 25px;
+  margin: auto;
+  border-radius: 5%;
+}
+
+.red {
+  background-color: red;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.double-yellow {
+  background: linear-gradient(to right bottom, yellow 50%, red 50%);
+}

@@ -1,0 +1,44 @@
+{
+	"name": "LoanOption",
+	"plural": "LoanOptions",
+	"base": "ContractOption",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"dateFrom": {
+			"type": "date"
+		},
+		"dateTo": {
+			"type": "date"
+		},
+		"option": {
+			"type": "string"
+		},
+		"action": {
+			"type": "string"
+		},
+		"percentage": {
+			"type": "boolean",
+			"default": false
+		},
+		"conditioned": {
+			"type": "boolean",
+			"default": false
+		},
+		"counterOption": {
+			"type": "object"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"model": "TransferContract",
+			"foreignKey": "contractId"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,181 @@
+<div class="container">
+	<div class="ui-g">
+		<div class="ui-g-12" *blockUI="'containerImportDash'">
+			<p-tabView class="colView mainMenuInner">
+				<p-tabPanel header="{{ 'import.dashboard.sessions' | translate }}">
+					<div class="col col-main wysearch">
+						<p-table styleClass="p-datatable-striped" *ngIf="sessionLength && sessionLength !== 0" dataKey="id" scrollHeight="600px"
+							rowExpandMode="single" [value]="sessions" [rows]="20" [scrollable]="true" scrollDirection="both"
+							[lazy]="true" [paginator]="true" [totalRecords]="sessionLength" (onLazyLoad)="loadLazySession($event)"
+							(onRowExpand)="filterSessions($event)" [(selection)]="selectedSessions">
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th style="white-space: nowrap; width: 100px">
+										<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+									</th>
+									<th>
+										<div class="tw-flex tw-items-center tw-gap-4">
+											<i *ngIf="selectedSessions.length > 0 && !computingMetricsAll" class="fas fa-cogs"
+												 pTooltip="{{ 'import.computeMetricsAll' | translate }}" (click)="openDialogMetricsAll()"></i>
+											<p-progressSpinner *ngIf="computingMetricsAll"
+																				 [style]="{ width: '15px', height: '15px', 'margin-left': '0.5vw' }" strokeWidth="6">
+											</p-progressSpinner>
+											<i *ngIf="selectedSessions.length > 0" class="fas fa-trash" style="margin-left: 0.5vw"
+												 pTooltip="{{ 'import.deleteAll' | translate }}" (click)="openDialogDeleteAll()"></i>
+										</div>
+									</th>
+									<th style="width: 350px" translate>import.dashboard.sessions</th>
+									<th style="width: 200px" translate>general.date</th>
+									<th style="width: 100px" translate>thresholds.type</th>
+									<th style="width: 50px" translate>general.player</th>
+									<th style="width: 100px" translate>sidebar.split</th>
+									<th style="width: 100px" translate>import.dashboard.sessions.modified</th>
+									<th style="width: 50px">GPS</th>
+									<th style="width: 200px" translate>import.dashboard.lastUpload</th>
+									<th style="width: 175px" translate>import.dashboard.author</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+								<tr class="tw-h-10" [pSelectableRow]="rowData">
+									<td>
+										<div class="tw-flex tw-items-center tw-gap-4">
+											<p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+											<a [pRowToggler]="rowData">
+												<i [ngClass]="expanded ? 'fas fa-fw fa-chevron-down' : 'fas fa-fw fa-chevron-right'"></i>
+											</a>
+										</div>
+									</td>
+									<th>
+										<div class="tw-flex tw-items-center tw-gap-4 tw-px-2">
+											<i class="fas fa-search pflex-cursor-pointer" pTooltip="{{ 'import.openEvenViewer' | translate }}"
+												 href="#" [routerLink]="getLink(rowData)"></i>
+											<i *ngIf="!rowData.computingMetrics" class="fas fa-cogs pflex-cursor-pointer"
+												 pTooltip="{{ 'import.computeMetrics' | translate }}" (click)="openDialogMetrics(rowData)"
+												 [ngClass]="computingMetricsAll ? 'disabled-events' : ''"></i>
+											<p-progressSpinner *ngIf="rowData.computingMetrics" [style]="{ width: '15px', height: '15px' }"
+																				 strokeWidth="6">
+											</p-progressSpinner>
+											<i class="fas fa-trash pflex-cursor-pointer" pTooltip="{{ 'import.delete' | translate }}"
+												 (click)="openDialogDelete(rowData)"></i>
+										</div>
+									</th>
+									<td style="width: 350px">
+										<span>{{ rowData.title }}</span>
+									</td>
+									<td style="width: 200px">
+										{{ rowData.start | formatDateBySetting : 'HH:mm' }}
+									</td>
+									<td style="width: 100px">{{ getGD(rowData.start) }}</td>
+									<td style="width: 50px">{{ getPlayersNumberForSession(rowData) }}</td>
+									<td style="width: 100px">
+										{{ rowData.format === 'training' ? currentTeam.mainSplitName : currentTeam.mainGameName }}
+									</td>
+									<td style="width: 100px"></td>
+									<td style="width: 50px">
+										<i class="fal" [ngClass]="rowData.gpsSessionLoaded === true ? 'fa-check' : ''"></i>
+									</td>
+									<td style="width: 200px">
+										{{ rowData.lastUpdateDate | formatDateBySetting : 'HH:mm' }}
+									</td>
+									<td style="width: 175px">{{ rowData.lastUpdateAuthor }}</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="rowexpansion" let-rowData>
+								<tr class="tw-h-10" *ngFor="let session of rowData._sessionPlayers">
+									<td style="white-space: nowrap; width: 100px"></td>
+									<td style="width: 350px">{{ session.playerName }}</td>
+									<td style="width: 200px"></td>
+									<td style="width: 100px"></td>
+									<td style="width: 50px"></td>
+									<td style="width: 100px">{{ session.splitName }}</td>
+									<td style="width: 50px; text-align: center">
+										<i class="fal" [ngClass]="session.dirty ? 'fa-check' : ''"></i>
+									</td>
+									<td style="width: 100px"></td>
+									<td style="width: 100px"></td>
+									<td style="width: 175px"></td>
+									<th style="white-space: nowrap; width: 50px"></th>
+									<th></th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage">
+								<tr>
+									<td translate>alert.noRecordsFound</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				</p-tabPanel>
+
+				<p-tabPanel header="{{ 'import.dashboard.gameStats' | translate }}">
+					<div class="col col-main">
+						<p-table *ngIf="matchLength && matchLength !== 0" styleClass="p-datatable-striped" dataKey="date"
+							scrollHeight="800px" rowExpandMode="single" [value]="matches" [rows]="20" [scrollable]="true"
+							scrollDirection="both" [lazy]="true" [paginator]="true" [totalRecords]="matchLength"
+							(onLazyLoad)="loadLazyMatch($event)">
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th style="width: 50px"></th>
+									<th style="width: 175px" translate>sidebar.date</th>
+									<th style="width: 350px" translate>sidebar.game</th>
+									<th style="width: 200px" translate>matchAnalysis.result</th>
+									<th style="width: 300px" translate>import.match.players</th>
+									<th style="width: 200px" translate>import.dashboard.teamStats</th>
+									<th style="width: 200px" translate>import.dashboard.playerStats</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+								<tr class="tw-h-10">
+									<td style="width: 50px">
+										<a href="#" [pRowToggler]="rowData">
+											<i [ngClass]="expanded ? 'fas fa-fw fa-chevron-down' : 'fas fa-fw fa-chevron-right'"></i>
+										</a>
+									</td>
+									<td style="width: 175px">{{ rowData.date | amDateFormat : 'DD/MM/YYYY' }}</td>
+									<td style="width: 350px">{{ getMatchName(rowData) }}</td>
+									<td style="width: 200px">{{ rowData.result }}</td>
+									<td style="width: 300px">{{ rowData.playerIds.length }}</td>
+									<td style="width: 200px">
+										<span *ngIf="rowData._teamStat" translate>import.dashboard.gameStats.defined2</span>
+										<span *ngIf="!rowData._teamStat">-</span>
+									</td>
+									<td style="width: 200px">{{ rowData.playerStats?.length }}</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="rowexpansion" let-rowData>
+								<tr class="tw-h-10" *ngFor="let player of rowData.playerIds">
+									<td style="width: 50px"></td>
+									<td style="width: 175px">{{ rowData.date | amDateFormat : 'DD/MM/YYYY' }}</td>
+									<td style="width: 350px"></td>
+									<td style="width: 200px"></td>
+									<td style="width: 300px">{{ player?.displayName }}</td>
+									<td style="width: 200px"></td>
+									<td style="width: 200px">
+										<i class="fal" [ngClass]="getPlayerStat(rowData, player)"></i>
+									</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage">
+								<tr>
+									<td>No records found</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+	</div>
+</div>
+
+<p-dialog [(visible)]="deleteFlag || deleteFlagAll" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" modal="modal">
+	<div>
+		<span translate>confirm.eventRelated</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="delete(deleteFlag ? [deleteFlag] : this.selectedSessions, true)" label="{{ 'yes' | translate }}"></p-button>
+		<p-button size="small" (click)="delete(deleteFlag ? [deleteFlag] : this.selectedSessions, false)" label="{{ 'no' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

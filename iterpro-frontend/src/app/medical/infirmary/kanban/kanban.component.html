@@ -1,0 +1,36 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+
+	<div *ngFor="let status of injuryStatusesMap | keyvalue : originalOrder" class="tw-col-span-2">
+
+		<header class="tw-mb-4 tw-text-center tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded">
+			<h4 class="tw-uppercase">{{ status.key | translate }}</h4>
+		</header>
+
+		<ul
+			[attr.data-status]="status.key"
+			pDroppable
+			(onDrop)="drop($event)"
+			class="tw-h-[30rem] tw-overflow-auto tw-w-[15rem] tw-min-w-full tw-bg-shark-950 tw-bg-opacity-85 tw-rounded"
+		>
+			<li
+				*ngFor="let injury of status.value.injuries"
+				class="col-box tw-flex tw-mb-2 tw-p-0"
+				[attr.data-id]="injury.id"
+				pDraggable
+				(onDragStart)="dragStart(injury)"
+				(onDragEnd)="dragEnd()"
+				(click)="onInjuryClick(injury)"
+			>
+				<!-- Kanban Item -->
+				<iterpro-kanban-item
+					class="pflex-w-full"
+					[injury]="injury"
+					[medicalTreatments]="medicalTreatments"
+					[color]="status.value.color"
+				/>
+			</li>
+		</ul>
+
+	</div>
+
+</div>

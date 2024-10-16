@@ -1,0 +1,116 @@
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded tw-mb-4">
+	@if (!isTableLoading) {
+		<p-table
+			#table
+			dataKey="id"
+			[value]="filtered"
+			[columns]="columns"
+			[scrollable]="true"
+			[rows]="200"
+			[styleClass]="'p-datatable-striped'"
+			[rowHover]="true"
+			[paginator]="filtered.length > 200"
+			[rowTrackBy]="trackByFn"
+		>
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10 tw-cursor-pointer">
+					<th [ngStyle]="{ width: '60px', textAlign: 'center' }"></th>
+					<th
+						*ngFor="let col of columns"
+						[ngStyle]="{
+							height: '46px',
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? col.width + 'px' : '200px'
+						}"
+						[pSortableColumn]="col.sortable ? col.type === 'playerAttributes' ? 'playerAttributes.' + col.field + '.value' :
+						 col.field : null"
+					>
+						{{ col.header }}
+						<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10" (click)="onRowClick(rowData)">
+					<td [ngStyle]="{ width: '60px', textAlign: 'center' }">{{ rowIndex + 1 }}</td>
+					<td
+						*ngFor="let col of columns"
+						[ngStyle]="{
+							textAlign: !!col.align ? col.align : 'center',
+							minWidth: !!col.width ? col.width + 'px' : '200px'
+						}"
+					>
+						<ng-container [ngSwitch]="col.type">
+							<div *ngSwitchCase="'image'" class="tw-h-14 tw-w-14 tw-flex tw-items-center tw-justify-center tw-relative tw-bg-white tw-rounded tw-overflow-hidden">
+								<iterpro-player-provider-widget [wyscoutId]="rowData?.wyscoutId" [instatId]="rowData?.instatId" />
+
+								<iterpro-picture [photoUrl]="rowData[col.field]" class="tw-block" baseClass="tw-h-14 tw-w-14" />
+							</div>
+							<ng-container *ngSwitchCase="'date'">
+								{{ rowData[col.field] | formatDateBySetting }}
+							</ng-container>
+							<ng-container *ngSwitchCase="'flag'">
+								<iterpro-player-flag [lang]="rowData[col.field]" />
+							</ng-container>
+							<ng-container *ngSwitchCase="'translate'">
+								<ng-container *ngIf="!!rowData[col.field]"> {{ rowData[col.field] | translate }}</ng-container>
+							</ng-container>
+							<ng-container *ngSwitchCase="'reportData'">
+								<ng-container
+									*ngIf="
+										rowData.reportDataAvgFlatted[col.field]?.avg === true || rowData.reportDataAvgFlatted[col.field]?.avg === false;
+										else basicReportData
+									"
+								>
+									<i
+										class="fa fa-check-circle"
+										*ngIf="rowData.reportDataAvgFlatted[col.field]?.avg === true"
+										[class.greenIcon]="rowData.reportDataAvgFlatted[col.field]?.avg === true"
+									></i>
+									<span *ngIf="rowData.reportDataAvgFlatted[col.field]?.avg === false">-</span>
+								</ng-container>
+								<ng-template #basicReportData>
+									<span [pTooltip]="rowData.reportDataAvgFlatted[col.field]?.tooltip" tooltipStyleClass="longTooltip">
+										{{ rowData.reportDataAvgFlatted[col.field]?.avg || '-' }}
+										<span class="iterpro-point" [style.background-color]="rowData.reportDataAvgFlatted[col.field]?.color"> </span>
+									</span>
+								</ng-template>
+							</ng-container>
+							<ng-container *ngSwitchCase="'playerAttributes'">
+								<div
+									*ngIf="rowData.playerAttributes"
+									[pTooltip]="rowData.playerAttributes[col.field]?.tooltip | translate"
+									tooltipStyleClass="longTooltip"
+								>
+									{{ rowData.playerAttributes[col.field]?.value || '-' }}
+									<span class="iterpro-point" [style.background-color]="rowData.playerAttributes[col.field]?.backgroundColor"> </span>
+								</div>
+							</ng-container>
+							<ng-container *ngSwitchCase="'prognosis'">
+								<div class="tipssLevel prognosis">
+									<span
+										[class.greenLevel]="rowData.prognosisColor === 'green'"
+										[class.yellowLevel]="rowData.prognosisColor === 'yellow'"
+										[class.redLevel]="rowData.prognosisColor === 'red'"
+										[pTooltip]="rowData.prognosisTooltip"
+									>
+										{{ rowData.prognosis || '-' }}
+									</span>
+								</div>
+							</ng-container>
+							<ng-container *ngSwitchCase="'report'">
+								<i *ngIf="rowData[col.field]" class="fas fa-search" [pTooltip]="rowData[col.field]" tooltipStyleClass="longTooltip"></i>
+							</ng-container>
+							<ng-container *ngSwitchDefault>
+								{{ rowData[col.field] }}
+							</ng-container>
+						</ng-container>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<!-- TABLE LOADING -->
+		<iterpro-skeleton-table [rows]="50" [cols]="7" [showProfilePic]="true"></iterpro-skeleton-table>
+	}
+</div>

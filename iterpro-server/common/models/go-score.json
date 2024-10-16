@@ -1,0 +1,60 @@
+{
+	"name": "GOScore",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"score": {
+			"type": "number"
+		},
+		"date": {
+			"type": "date"
+		},
+		"color": {
+			"type": "string"
+		},
+		"increment": {
+			"type": "number"
+		},
+		"dirty": {
+			"type": "boolean",
+			"default": false
+		},
+		"wellness": {
+			"type": "number"
+		},
+		"_cmj": {
+			"type": "number"
+		},
+		"_hrv": {
+			"type": "number"
+		},
+		"_tc": {
+			"type": "number"
+		},
+		"_hydration": {
+			"type": "number"
+		},
+		"_cpk": {
+			"type": "number"
+		},
+		"_hipMobility": {
+			"type": "number"
+		},
+		"_sleep": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

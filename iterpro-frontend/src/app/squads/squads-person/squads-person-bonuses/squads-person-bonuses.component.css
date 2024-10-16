@@ -1,0 +1,19 @@
+.expanded-row {
+	/* background-color: rgba(0, 0, 0, 0.4); */
+	font-size: 0.85rem;
+}
+
+.expanded-row-container {
+	margin: 1em;
+	display: flex;
+}
+
+.expanded-row-bar {
+	margin: 0.5em;
+	width: 30%;
+}
+
+.expanded-row-string {
+	margin: 0.5em;
+	width: 70%;
+}

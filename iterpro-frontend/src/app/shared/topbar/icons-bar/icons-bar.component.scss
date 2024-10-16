@@ -1,0 +1,41 @@
+.notification-counter {
+	position: absolute;
+	background: #e1141e;
+	color: #fff;
+	font-size: 12px;
+	border-radius: 50%;
+	height: 20px;
+	width: 20px;
+	z-index: 1;
+	top: -7px;
+	left: 7px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.notifications-menu {
+	position: absolute;
+	z-index: 101;
+	top: 100%;
+	right: 0;
+	padding-top: 3px;
+	background-color: rgba(23, 23, 23, 0.9);
+	padding: 1rem;
+	border-radius: 3px;
+	box-shadow: 0px 3px 0px rgba(23, 23, 23, 1);
+	max-height: 500px;
+	overflow: auto;
+	width: 700px;
+	transition: all 0.2s ease-out;
+	transition-behavior: allow-discrete;
+}
+
+.disabled-link {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.selected {
+	@apply tw-bg-shark-800 tw-text-white #{!important};
+}

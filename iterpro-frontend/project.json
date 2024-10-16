@@ -1,0 +1,192 @@
+{
+	"name": "iterpro-frontend",
+	"$schema": "node_modules/nx/schemas/project-schema.json",
+	"projectType": "application",
+	"prefix": "iterpro",
+	"sourceRoot": "./src",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@angular-devkit/build-angular:browser",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/iterpro-frontend",
+				"index": "./src/index.html",
+				"main": "./src/main.ts",
+				"polyfills": ["./src/polyfills.ts"],
+				"tsConfig": "./tsconfig.app.json",
+				"assets": [
+					"./src/favicon.ico",
+					"./src/assets",
+					{
+						"glob": "**/*",
+						"input": "node_modules/tinymce",
+						"output": "/tinymce/"
+					}
+				],
+				"styles": [
+					"./src/theme/styles.scss",
+					"node_modules/@fortawesome/fontawesome-pro/css/all.min.css",
+					"node_modules/@videogular/ngx-videogular/fonts/videogular.css",
+					"node_modules/flag-icons/css/flag-icons.min.css"
+				],
+				"scripts": ["/node_modules/chart.js/dist/chart.umd.js"],
+				"allowedCommonJsDependencies": [
+					"moment",
+					"moment-range",
+					"moment-duration-format",
+					"lodash",
+					"file-saver",
+					"chroma-js",
+					"deepmerge",
+					"events",
+					"numeral",
+					"papaparse",
+					"moment-timezone",
+					"typed-function",
+					"seedrandom",
+					"javascript-natural-sort",
+					"complex.js",
+					"fraction.js",
+					"escape-latex",
+					"marked",
+					"pdfjs-dist",
+					"deep-diff"
+				]
+			},
+			"configurations": {
+				"production": {
+					"fileReplacements": [
+						{
+							"replace": "libs/config/src/environments/environment.ts",
+							"with": "libs/config/src/environments/environment.prod.ts"
+						}
+					],
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "7mb",
+							"maximumError": "10mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "7kb",
+							"maximumError": "10kb"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"grassroots": {
+					"fileReplacements": [
+						{
+							"replace": "libs/config/src/environments/environment.ts",
+							"with": "libs/config/src/environments/environment.grassroots.ts"
+						}
+					],
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "7mb",
+							"maximumError": "10mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "7kb",
+							"maximumError": "10kb"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"agent": {
+					"fileReplacements": [
+						{
+							"replace": "libs/config/src/environments/environment.ts",
+							"with": "libs/config/src/environments/environment.agent.ts"
+						}
+					],
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "7mb",
+							"maximumError": "10mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "7kb",
+							"maximumError": "10kb"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"staging": {
+					"fileReplacements": [
+						{
+							"replace": "libs/config/src/environments/environment.ts",
+							"with": "libs/config/src/environments/environment.staging.ts"
+						}
+					],
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "7mb",
+							"maximumError": "10mb"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "7kb",
+							"maximumError": "10kb"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"development": {
+					"buildOptimizer": false,
+					"optimization": false,
+					"vendorChunk": true,
+					"extractLicenses": false,
+					"sourceMap": true,
+					"namedChunks": true
+				}
+			},
+			"defaultConfiguration": "production"
+		},
+		"serve": {
+			"executor": "@angular-devkit/build-angular:dev-server",
+			"configurations": {
+				"production": {
+					"buildTarget": "iterpro-frontend:build:production"
+				},
+				"development": {
+					"buildTarget": "iterpro-frontend:build:development"
+				}
+			},
+			"defaultConfiguration": "development"
+		},
+		"extract-i18n": {
+			"executor": "@angular-devkit/build-angular:extract-i18n",
+			"options": {
+				"buildTarget": "iterpro-frontend:build"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["./src/**/*.ts", "./src/**/*.html"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectName}"],
+			"options": {
+				"jestConfig": "jest.config.app.ts"
+			}
+		},
+		"serve-static": {
+			"executor": "@nx/web:file-server",
+			"options": {
+				"buildTarget": "iterpro-frontend:build"
+			}
+		}
+	}
+}

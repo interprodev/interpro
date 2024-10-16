@@ -1,0 +1,1575 @@
+<form id="form" #form="ngForm" (ngSubmit)="save(form)" autocomplete="off"
+			[class.view-mode]="!isOnEditMode()">
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4"
+			 [ngStyle]="{ 'align-items': (isAnyGameEventFormat$ | async) ? 'flex-start' : 'unset' }">
+		<!-- Sx Container -->
+		<div class="tw-col-span-6 md:tw-col-span-7">
+			<p-tabView *ngIf="isGameEventFormat$ | async; else eventViewer" [(activeIndex)]="gameTabsActiveIndex">
+				<p-tabPanel header="{{ 'admin.details' | translate }}">
+					<ng-container *ngTemplateOutlet="eventViewer"></ng-container>
+				</p-tabPanel>
+				<p-tabPanel header="{{ 'event.game.stats' | translate }}">
+					@if (event.wyscoutId || event.instatId) {
+						<div class="flexed">
+						<span class="match-stats" *ngIf="!!thirdPartySelected; else thirdPartySpinner">
+							<iterpro-match-details [style]="{ 'background-color': 'unset', 'margin-right': '0' }"
+																		 [selected]="thirdPartySelected"></iterpro-match-details>
+						</span>
+							<ng-template #thirdPartySpinner>
+								<div class="tw-w-full tw-text-center">
+									<p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+								</div>
+							</ng-template>
+						</div>
+					} @else {
+						<div class="tw-flex tw-justify-center tw-items-center">
+							<div class="tw-px-4 tw-py-2 tw-bg-info-500 tw-rounded-full">
+								<span class="tw-text-sm" translate>alert.noStatsForManuallyCreatedGame</span>
+							</div>
+						</div>
+					}
+				</p-tabPanel>
+			</p-tabView>
+			@if ((isGameEventFormat$ | async) && gameTabsActiveIndex === 1 &&  sidesMatchStats) {
+				<div class="tw-my-4 tw-p-5 tw-bg-shark-950 tw-opacity-95 tw-rounded-lg">
+					<iterpro-third-party-players-club-game
+						style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"
+						[gameDetails]="sidesMatchStats"
+						[horizontalAlign]="true"
+						[sportType]="sportType"
+						[editable]="isOnEditMode()"
+						[displayEmptyPlayers]="(!event?.wyscoutId && !event?.instatId)"
+						[homeSelectable]="!event.home && (!event?.wyscoutId && !event?.instatId)"
+						[awaySelectable]="event.home && (!event?.wyscoutId && !event?.instatId)"
+					/>
+				</div>
+			}
+			<ng-template #eventViewer>
+				<div class="event-viewer" [class.!tw-bg-unset]="isGameEventFormat$ | async" [class.!tw-p-0]="isGameEventFormat$ | async">
+					<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+						<iterpro-icon-button
+							*ngIf="isOnEditMode() && ((isAnyGameEventFormat$ | async) || (isTrainingEventFormat$ | async))"
+							[icon]="'fas fa-cogs'" (click)="onResetGpsButtonClick()"
+							[tooltip]="'buttons.reset.gps' | translate"></iterpro-icon-button>
+						<iterpro-icon-button
+							*ngIf="!isOnEditMode() && (isAnyGameEventFormat$ | async) && (event?.instatId || event?.wyscoutId)"
+							[icon]="'fas fa-sync'"
+							(click)="emitResync()"
+							[tooltip]="'buttons.resync' | translate"
+						></iterpro-icon-button>
+						<iterpro-icon-button
+							*ngIf="!event.wyscoutId && !event.instatId"
+							[icon]="'fas fa-copy'"
+							(click)="duplicateEventConfirmation()"
+							[tooltip]="'buttons.duplicateEvent' | translate"></iterpro-icon-button>
+						@if ((isGameEventFormat$ | async) || (isTrainingEventFormat$ | async)) {
+							<!-- Video Gallery -->
+							<iterpro-tiered-menu [iconOnly]="true" [pTooltip]="'videogallery.title' | translate" [icon]="'fas fa-video'"
+																	 [menuItems]="videoGalleryTieredMenuItems"
+																	 (menuClicked)="setupTieredMenuVideoGallery()"></iterpro-tiered-menu>
+							<!-- Import Data -->
+							<iterpro-icon-button [icon]="'fas fa-upload'" [routerLink]="['/import-data']"
+																	 [tooltip]="'home.import' | translate"></iterpro-icon-button>
+						}
+						<!-- Event File Repository -->
+						<iterpro-icon-button [icon]="'fas fa-folder-open'" (click)="showEventRepository()" [tooltip]="
+								event?._attachments?.length > 0
+									? ('dialog.file.showDialog' | translate) + ' (' + event?._attachments?.length + ')'
+									: ('dialog.file.noFileAttached' | translate)
+							"
+						></iterpro-icon-button>
+						<iterpro-icon-button
+							*ngIf="(isMedicalEventFormat$ | async) && event.medicalType === 'treatment'"
+							(click)="redirectToPreventionTreatment(event.playerIds[0])"
+							[icon]="'fas fa-eye'"
+							[tooltip]="'dialog.redirectTo' | translate: { value: ('dialog.file.sectionParent.preventionTreatment' | translate) }"
+						></iterpro-icon-button>
+						<iterpro-tiered-menu
+							*ngIf="event.format === 'medical' && event.medicalType === 'treatment'"
+							[iconOnly]="true"
+							[icon]="'fas fa-ellipsis-h'"
+							[menuItems]="tieredMenuItems"
+							(menuClicked)="setupTieredMenu()"
+						></iterpro-tiered-menu>
+						<iterpro-report-download
+							*ngIf="isTrainingEventFormat$ | async"
+							(downloadPDF)="downloadReportTraining()"
+						></iterpro-report-download>
+						<iterpro-report-download *ngIf="isAnyGameEventFormat$ | async" (downloadPDF)="downloadReportGame()"> </iterpro-report-download>
+					</div>
+					<table class="fields-table tw-mt-4 tw-w-full tw-table-fixed tw-overflow-y-auto">
+						<tbody>
+						<!-- Name -->
+						<tr>
+							<th translate>event.name</th>
+							<td>
+								<div class="tw-flex tw-items-baseline tw-justify-between tw-gap-4">
+									<div class="tw-flex-[0.4]">
+										<input
+											class="tw-text-bold"
+											[disabled]="!isOnEditMode()"
+											[ngModel]="event.title"
+											(ngModelChange)="onTitleChange($event)"
+											type="text"
+											name="title"
+											pInputText
+										/>
+									</div>
+									<div class="tw-flex-[0.5] tw-flex tw-gap-2 tw-justify-end">
+										<span class="iterpro-text-color-900" translate>event.created</span>
+										@if (event.author) {
+											<span>{{ event.author | customerName: customers }}</span>
+										} @else {
+											<span>Iterpro</span>
+										}
+									</div>
+									@if ((isAnyGameEventFormat$ | async) && (event?.instatId || event?.wyscoutId)) {
+										<div class="tw-flex-[0.1] tw-flex tw-gap-2">
+											<span class="iterpro-text-color-900" translate>Sync</span>
+											@if (thirdPartyProvider === 'Wyscout') {
+												<i
+													class="fas smaller"
+													[pTooltip]="event.wyscoutSynced ? 'Synced with Wyscout!' : 'Waiting from Wyscout data'"
+													[ngClass]="event.wyscoutSynced ? 'fa-check' : 'fa-clock'"
+												></i>
+											} @else if (thirdPartyProvider === 'InStat') {
+												<i
+													class="fas smaller"
+													[pTooltip]="event.instatSynced ? 'Synced with Instat!' : 'Waiting from Instat data'"
+													[ngClass]="event.instatSynced ? 'fa-check' : 'fa-clock'"
+												></i>
+											}
+										</div>
+									}
+								</div>
+							</td>
+						</tr>
+
+						<!-- Date -->
+						<tr>
+							<th translate>sidebar.date</th>
+							<td>
+								<div class="tw-flex tw-items-baseline tw-gap-4">
+									<div class="tw-flex-[0.5] tw-flex tw-items-center tw-gap-2 tw-justify-between">
+										<div class="tw-w-[100px]">
+											<p-calendar
+												appendTo="body"
+												showButtonBar="true"
+												[ngModelOptions]="{ standalone: true }"
+												[ngModel]="date$ | async"
+												(ngModelChange)="onStartDateChange($event)"
+												[disabled]="!isOnEditMode() || blockDate"
+												name="startDate"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'"
+											></p-calendar>
+										</div>
+										@if (event.allDay === false && start_hour) {
+											<div class="tw-flex tw-gap-2">
+												<iterpro-timepicker
+													[disabled]="!isOnEditMode() || blockDate"
+													[ngModel]="start_hour"
+													(timeChanged)="getStartDate($event)"
+													name="start_hour"
+												></iterpro-timepicker>
+												<span> - </span>
+												<iterpro-timepicker
+													[disabled]="!isOnEditMode() || blockDate"
+													[ngModel]="end_hour"
+													[minTime]="getConfigTime()"
+													(timeChanged)="getEndDate($event)"
+													name="end_hour"
+												></iterpro-timepicker>
+											</div>
+										}
+										<div class="picker-date">
+											<p-calendar
+												appendTo="body"
+												showButtonBar="true"
+												[ngModelOptions]="{ standalone: true }"
+												[ngModel]="endDate"
+												(ngModelChange)="onEndDateChange($event)"
+												[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async) || blockDate"
+												[minDate]="startDate"
+												name="endDate"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'"
+											></p-calendar>
+										</div>
+									</div>
+									<div class="tw-flex-[0.25] tw-flex tw-items-center tw-gap-2">
+										<span class="iterpro-text-color-900" translate>event.duration</span>
+										<span>{{ getDuration(event.duration) }}</span>
+									</div>
+									<div class="tw-flex-[0.25] tw-flex tw-items-center tw-justify-end tw-gap-2">
+										<span class="iterpro-text-color-900" translate>event.type</span>
+										<span>{{ gameDay }}</span>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<!-- Location -->
+						<tr>
+							<th translate>event.where</th>
+							<td>
+								<input
+									[ngModelOptions]="{ standalone: true }"
+									[(ngModel)]="event.where"
+									[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+									name="where"
+									pInputText
+								/>
+							</td>
+						</tr>
+						<!-- Description -->
+							@if ((isAnyGameEventFormat$ | async) === false) {
+								<tr>
+									<th translate>event.description</th>
+									<td>
+										<input
+											[ngModelOptions]="{ standalone: true }"
+											[(ngModel)]="event.description"
+											[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+											name="description"
+											pInputText
+										/>
+									</td>
+								</tr>
+							}
+						<!-- Format -->
+						<tr>
+							<th translate>event.format</th>
+							<td>
+								<div class="tw-flex tw-items-baseline">
+									<div class="tw-flex-[0.5]">
+										<p-dropdown
+											appendTo="body"
+											name="format"
+											[style]="{ width: '100%' }"
+											[options]="formatList$ | async"
+											[disabled]="!isOnEditMode() || (isReadOnlyFormat$ | async)"
+											[readonly]="isReadOnlyFormat$ | async"
+											[class.view-mode]="(isMedicalEventFormat$ | async)"
+											[ngModel]="format$ | async"
+											(onChange)="confirmChangeFormat($event)"
+										>
+										</p-dropdown>
+									</div>
+									@if (isTrainingEventFormat$ | async) {
+										<div class="tw-flex-[0.5] tw-flex tw-items-center tw-justify-end tw-gap-2">
+											<span class="iterpro-text-color-900" translate>event.individual</span>
+											<p-dropdown
+												appendTo="body"
+												[style]="{ width: '100%' }"
+												[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async) || event.theme === 'reconditioning'"
+												[class.view-mode]="!isOnEditMode() || (isMedicalEventFormat$ | async) || event.theme === 'reconditioning'"
+												[ngModelOptions]="{ standalone: true }"
+												[options]="individualOptions"
+												[(ngModel)]="event.individual"
+											>
+											</p-dropdown>
+										</div>
+									}
+								</div>
+							</td>
+						</tr>
+						<!-- Destination -->
+							@if (isTravelEventFormat$ | async) {
+								<tr>
+									<th translate>event.destination</th>
+									<td>
+										<input
+											class="form-control"
+											name="destination"
+											[ngModelOptions]="{ standalone: true }"
+											[(ngModel)]="event.destination"
+											pInputText
+											[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+											required
+										/>
+									</td>
+								</tr>
+							}
+						<!-- Theme -->
+							@if(isTrainingEventFormat$ | async) {
+								<tr>
+									<th translate>event.theme</th>
+									<td>
+										<div class="tw-flex tw-items-baseline tw-justify-between">
+											<div class="tw-flex-[0.5]">
+												<p-dropdown
+													appendTo="body"
+													name="theme"
+													[options]="themeList"
+													[(ngModel)]="event.theme"
+													[ngModelOptions]="{ standalone: true }"
+													[disabled]="!isOnEditMode()"
+													[style]="{ width: '100%' }"
+													[showClear]="true"
+													(onChange)="checkTheme($event)"
+													[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+												>
+												</p-dropdown>
+											</div>
+											@if (event.theme === 'field') {
+												<div class="tw-flex-[0.5] tw-flex tw-items-center tw-justify-end tw-gap-2">
+													<span class="iterpro-text-color-900" translate>event.subtheme</span>
+													<p-dropdown
+														filter="true"
+														appendTo="body"
+														[options]="fieldThemeList"
+														[ngModelOptions]="{ standalone: true }"
+														[(ngModel)]="event.subtheme"
+														[disabled]="!isOnEditMode()"
+														[showClear]="true"
+														name="subtheme"
+														[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+													></p-dropdown>
+												</div>
+											}
+										</div>
+									</td>
+								</tr>
+							}
+						<!-- Competition -->
+							@if (isAnyGameEventFormat$ | async) {
+								<tr>
+									<th translate>event.subformat</th>
+									<td>
+										<div class="tw-flex tw-items-baseline tw-gap-4">
+											<div class="tw-flex-[0.5]">
+												@if((isClubGameEventFormat$ | async) && (isSynced$ | async)) {
+													<div class="tw-p-2">{{ event.subformatDetails }}</div>
+												} @else {
+													<p-dropdown
+														appendTo="body"
+														[options]="competitions$ | async"
+														[ngModelOptions]="{ standalone: true }"
+														[(ngModel)]="event.subformat"
+														[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+														[style]="{ width: '100%' }"
+														name="subformat"
+														[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+														(onChange)="onSelectCompetition($event)"
+													>
+													</p-dropdown>
+												}
+											</div>
+										</div>
+									</td>
+								</tr>
+							}
+						<!-- Club Game Format Home -->
+							@if (isClubGameEventFormat$ | async) {
+								<tr>
+									<th translate>event.team.home</th>
+									<td>
+										<div class="tw-flex">
+											<div class="tw-flex-[0.5]">
+												<iterpro-third-party-team-seeker
+													*ngIf="competitionIdsForSeeker"
+													[currentTeamGender]="teamGender"
+													[teamName]="event.clubGameHomeTeam"
+													[competitionIds]="competitionIdsForSeeker"
+													[editable]="isOnEditMode()"
+													(select)="selectClubGameHomeTeam($event)"
+												>
+												</iterpro-third-party-team-seeker>
+											</div>
+										</div>
+									</td>
+								</tr>
+							}
+
+						<!-- Game Format Opponent -->
+							@if (isAnyGameEventFormat$ | async) {
+								<tr>
+									<th>{{ ((isGameEventFormat$ | async) ? 'event.opponent' : 'event.team.away') | translate }}</th>
+									<td>
+										<div class="tw-flex tw-items-center tw-gap-4">
+											@if (isGameEventFormat$ | async) {
+												<div class="tw-flex-[0.4]">
+													@if (crestLoading) {
+														<p-progressSpinner
+															[style]="{ width: '20px', height: '20px' }"
+														></p-progressSpinner>
+													} @else {
+														@if (!isOnEditMode()) {
+															<div class="tw-flex tw-items-center tw-gap-2">
+																<iterpro-picture [photoUrl]="opponent?.imageDataURL" [baseClass]="'tw-w-[20px]'" [type]="'team'"></iterpro-picture>
+																{{ opponent?.name }}
+															</div>
+														} @else {
+															@if (opponents.length > 0) {
+																<p-dropdown
+																	appendTo="body"
+																	[disabled]="!isOnEditMode() || !event.subformat"
+																	[ngModelOptions]="{ standalone: true }"
+																	[options]="opponents"
+																	[(ngModel)]="opponent"
+																	[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+																	(onChange)="onChangeOpponent($event)">
+																	<ng-template let-item pTemplate="selectedItem">
+																		<div class="tw-flex tw-items-center tw-gap-2">
+																			<img src="{{ item.value.imageDataURL }}" class="crest" />
+																			<div class="tw-text-nowrap">{{ item.label }}</div>
+																		</div>
+																	</ng-template>
+																	<ng-template let-opponent pTemplate="item">
+																		<div class="tw-flex tw-items-center tw-gap-2">
+																			<img src="{{ opponent.value.imageDataURL }}" class="crest" />
+																			<div class="tw-text-nowrap">{{ opponent.label }}</div>
+																		</div>
+																	</ng-template>
+																</p-dropdown>
+															} @else {
+																<!-- No opponents -->
+																<div>
+																	<input
+																		name="opponent"
+																		[(ngModel)]="event.opponent"
+																		[ngModelOptions]="{ standalone: true }"
+																		pInputText
+																		[disabled]="!isOnEditMode() || !event.subformat"
+																	/>
+																</div>
+															}
+														}
+													}
+												</div>
+												<div class="tw-flex-[0.1] tw-flex tw-items-center tw-gap-2">
+													<span class="iterpro-text-color-900" translate>event.home</span>
+													<p-checkbox
+														name="home"
+														[(ngModel)]="event.home"
+														[ngModelOptions]="{ standalone: true }"
+														[disabled]="!isOnEditMode()"
+														binary="true"
+														(onChange)="gameSideChanged()"
+													></p-checkbox>
+												</div>
+											}
+											@else {
+												<!-- clubGameAwayTeamContent -->
+												<iterpro-third-party-team-seeker
+													*ngIf="competitionIdsForSeeker"
+													[currentTeamGender]="teamGender"
+													[teamName]="event.clubGameAwayTeam"
+													[competitionIds]="competitionIdsForSeeker"
+													[editable]="isOnEditMode()"
+													(select)="selectClubGameAwayTeam($event)"
+												>
+												</iterpro-third-party-team-seeker>
+											}
+											<!-- Result -->
+											<div class="tw-flex-[0.25] tw-flex tw-items-center tw-gap-2">
+												<span class="iterpro-text-color-900" translate>matchAnalysis.result</span>
+												<i
+													class="fas fa-exclamation smaller tw-text-red-500"
+													*ngIf="hasMissingResult()"
+													pTooltip="{{ 'event.missingResult' | translate }}"
+												></i>
+												<input
+													[ngModelOptions]="{ standalone: true }"
+													[(ngModel)]="event.result"
+													[disabled]="!isOnEditMode()"
+													name="result"
+													pInputText
+												/>
+											</div>
+											@if (isGameEventFormat$ | async) {
+												<div class="tw-flex-[0.25] tw-flex tw-items-center tw-justify-end tw-gap-2">
+													<p-dropdown
+														appendTo="body"
+														[disabled]="!isOnEditMode()"
+														[ngModelOptions]="{ standalone: true }"
+														[options]="results"
+														[(ngModel)]="event.resultFlag"
+														[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+													>
+													</p-dropdown>
+												</div>
+											}
+										</div>
+									</td>
+								</tr>
+							}
+							@if ((isGameEventFormat$ | async) || (isTrainingEventFormat$ | async)) {
+								<!-- Workload -->
+								<tr>
+									<th translate>event.workload</th>
+									<td>
+										<div class="tw-flex tw-items-baseline tw-gap-4">
+											<div class="tw-flex-[0.5]">
+												<p-dropdown
+													appendTo="body"
+													[style]="{ width: '100%' }"
+													[options]="effortList"
+													[(ngModel)]="event.workload"
+													[ngModelOptions]="{ standalone: true }"
+													name="workload"
+													[showClear]="isOnEditMode()"
+													[placeholder]="!isOnEditMode() || hasImportData(event) || (isAnyGameEventFormat$ | async) || event.theme === 'recovery' ? null : ('dropdown.placeholder' | translate)"
+													[class.view-mode]="!isOnEditMode() || hasImportData(event) || (isAnyGameEventFormat$ | async) || event.theme === 'recovery'"
+													[disabled]="!isOnEditMode() || hasImportData(event) || (isAnyGameEventFormat$ | async) || event.theme === 'recovery'">
+													<ng-template let-selectedStatus pTemplate="selectedItem">
+														<div class="tw-flex tw-items-center tw-gap-2" *ngIf="selectedStatus">
+															<span>{{ selectedStatus.label | translate }}</span>
+															<span [ngStyle]="getBackgroundColor(selectedStatus.value)" class="iterpro-point"></span>
+														</div>
+													</ng-template>
+													<ng-template let-status pTemplate="item">
+														<div class="tw-flex tw-items-center tw-gap-2">
+															<span translate>{{ status.label }}</span>
+															<span [ngStyle]="getBackgroundColor(status.value)" class="iterpro-point"></span>
+														</div>
+													</ng-template>
+												</p-dropdown>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<!-- Training Notes -->
+								@if (isTrainingEventFormat$ | async) {
+									<!-- Notes -->
+									<tr>
+										<th translate>squads.players.tabs.notes</th>
+										<td>
+											<div>
+												<editor
+													*ngIf="isOnEditMode(); else readOnlyEditor"
+													name="notes"
+													ngModel
+													[initialValue]="'input-text.placeholder' | translate"
+													[inline]="false"
+													[(ngModel)]="event.notes"
+													[init]="tinyEditorInit"
+												>
+												</editor>
+												<ng-template #readOnlyEditor>
+													<span [innerHTML]="event.notes | marked"></span>
+												</ng-template>
+											</div>
+										</td>
+									</tr>
+								}
+							}
+						<!-- Assessment Test -->
+							@if (isAssessmentEventFormat$ | async) {
+								<tr>
+									<th translate>event.test</th>
+									<td>
+										<div class="tw-flex tw-items-baseline tw-gap-4">
+											<p-dropdown
+												appendTo="body"
+												filter="true"
+												[options]="testList"
+												[(ngModel)]="event.testModel"
+												[ngModelOptions]="{ standalone: true }"
+												[disabled]="!isOnEditMode()"
+												[style]="{ width: '100%' }"
+												name="test"
+												[placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null"
+												(onChange)="createTestInstance($event)"
+											>
+											</p-dropdown>
+											@if (event.testInstance) {
+												<i
+													class="fas fa-search smaller"
+													href="#"
+													[routerLink]="getLinkTest(event)"
+													pTooltip="{{ 'event.test.tooltip' | translate }}"
+												></i>
+											}
+										</div>
+									</td>
+									}
+						<!-- Medical Event -->
+							@if (isMedicalEventFormat$ | async) {
+								<!-- Exams -->
+								@if (event.medicalType === 'exam') {
+									<tr>
+										<th>{{'medical.infirmary.exam.exam' | translate}}</th>
+										<td>
+											@if (!event.injuryId) {
+												<div class="tw-flex tw-items-baseline tw-gap-4">
+													<ul>
+														<li>
+															<span>Exam: </span>
+															<span class="tw-ml-2">{{ getMedicalName(event.preventionExams[0], 'exam') }}</span>
+														</li>
+														<li class="tw-mt-2">
+															<span>Description: </span>
+															<span class="tw-ml-2">{{ getMedicalDescription(event.preventionExams[0], 'exam') }}</span>
+															@if (event.preventionExams[0]) {
+																<span
+																	[style.color]="getCompleteClass(event.preventionExams[0]).color"
+																	[pTooltip]="getCompleteTitle(event.preventionExams[0])" [style.font-size]="'1em'"
+																	class="tw-ml-2 fas"
+																	[ngClass]="getCompleteClass(event.preventionExams[0]).class"></span>
+															}
+														</li>
+													</ul>
+												</div>
+											} @else {
+												<!-- Injury Exam Detail -->
+												@if (event?.injuryExams?.length > 0) {
+													<div class="tw-flex tw-items-baseline tw-gap-4">
+														<ul>
+															<li>
+																<span>Exam: </span>
+																<span class="tw-ml-2">{{ getMedicalName(event.injuryExams[0], 'exam') }}</span>
+															</li>
+															<li class="tw-mt-2">
+																<span>Description: </span>
+																<span class="tw-ml-2">{{ getMedicalDescription(event.injuryExams[0], 'exam') }}</span>
+																@if (event.injuryExams[0]) {
+																	<span
+																		[style.color]="getCompleteClass(event.injuryExams[0]).color"
+																		[pTooltip]="getCompleteTitle(event.injuryExams[0])" [style.font-size]="'1em'"
+																		class="tw-ml-2 fas"
+																		[ngClass]="getCompleteClass(event.injuryExams[0]).class"></span>
+																}
+															</li>
+															<li class="tw-mt-2">
+																<span>Attachment: </span>
+																<span class="tw-ml-2">
+																	<iterpro-table-attachment *ngIf="event.injuryExams[0].attachment" accept="*"
+																														[editable]="false" [attachment]="event.injuryExams[0].attachment">
+																	</iterpro-table-attachment>
+															</span>
+															</li>
+														</ul>
+													</div>
+												}
+											}
+										</td>
+									</tr>
+								}
+							}
+							@if (isStagingEnv) {
+								<tr>
+									<th translate>profile.season</th>
+									<td>{{ currentEventSeason?.name }}</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</ng-template>
+		</div>
+		<!-- Dx Container -->
+		<div class="tw-col-span-6 md:tw-col-span-5" *blockUI="'event-details'">
+			@if (isMedicalEventFormat$ | async) {
+				<!-- Medical Details -->
+				<iterpro-event-medical-details
+					[editMode]="isOnEditMode()" [event]="event" [players]="allPlayers"
+					[player]="getCorrectPlayer(event.playerIds[0])"
+					(selectedPlayerId)="onMedicalPlayerChanged($event)"></iterpro-event-medical-details>
+			} @else {
+				<!-- Not Medical Details -->
+				@if ((isAnyGameEventFormat$ | async) === false) {
+					<div class="tw-h-[407px] tw-overflow-auto tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" [class.tw-h-[586px]]="(isTrainingEventFormat$ | async) && isOnEditMode()">
+						<div class="tw-flex tw-flex-col tw-gap-4 tw-text-sm">
+							<!-- Title Participants/Modified -->
+							<div class="tw-flex tw-items-baseline tw-gap-4">
+								<div class="tw-flex tw-items-center tw-gap-2 tw-uppercase tw-font-bold">
+									<div translate>event.partecipants</div>
+									@if (selectablePlayers) {
+										<div>{{ selectedPlayers.length }}</div>
+									}
+								</div>
+								@if (isTrainingEventFormat$ | async) {
+									<div class="tw-flex tw-items-center tw-gap-2 tw-uppercase">
+										<div translate>event.modified</div>
+										<div>{{ (selectedPlayers | playersModifiedTraining)?.length }}</div>
+									</div>
+								}
+							</div>
+							@if (isTrainingEventFormat$ | async) {
+								<!-- Team Performance Report -->
+								<ng-container *ngTemplateOutlet="teamPerformanceReport"></ng-container>
+							}
+							@if (selectablePlayers) {
+								@if (isOnEditMode()) {
+									<div class="tw-px-2 tw-text-base">
+										<p-checkbox binary="true" [label]="'buttons.addAll' | translate"
+																[ngModel]="(getSelectablePlayers()) | selectablePlayersAreAllChecked"
+																(onChange)="toggleAllPlayers($event.checked)" [ngModelOptions]="{ standalone: true }"></p-checkbox>
+									</div>
+								}
+								<!-- Non Game-Events Players -->
+								@for(item of getSelectablePlayers(); track  item) {
+									<div class="tw-flex tw-flex-col">
+										<div class="tw-px-2 tw-py-1 tw-text-sm tw-flex tw-bg-shark-1000 tw-rounded tw-gap-2">
+											@if (isOnEditMode()) {
+												<p-checkbox binary="true" [(ngModel)]="item.allSelected"
+																		(onChange)="selectAllPlayersForPosition($event.checked, item)" [ngModelOptions]="{ standalone: true }">
+												</p-checkbox>
+											}
+											<div class="tw-uppercase" translate>roles.categories.{{ item.position }}s</div>
+										</div>
+										<div class="tw-flex tw-flex-col tw-gap-2">
+											@for (player of item.players; track player) {
+												<iterpro-planning-event-player [displayName]="player.displayName"
+																											 [photoUrl]="player.downloadUrl"
+																											 [healthStatusAvailability]="player.healthStatus.available"
+																											 [injuryOccurred]="player.injuryOccurred"
+																											 [injuries]="player.injuries"
+																											 [editable]="isOnEditMode()"
+																											 [expandable]="isTrainingEventFormat$ | async"
+																											 [eventFormat]="event.format"
+																											 [selected]="isSelectedForEvent(player.id)"
+																											 [modified]="player?.modified"
+																											 [selection]="canBeSelectedObj(player)"
+																											 (playerSelect)="onAddPlayerToParticipants(player)"
+																											 (playerModified)="onCheckModifiedPlayer(player, $event)"
+																											 #playerEl></iterpro-planning-event-player>
+												<!-- Training Game Report -->
+												@if (playerEl.expanded) {
+													@if (activePlayerReportTemplate) {
+														@if (player.trainingReport) {
+															<ng-container *ngTemplateOutlet="playerReportTemplate; context: { player: player, playerReport: player.trainingReport }"></ng-container>
+														}
+													} @else {
+														<div class="tw-text-shark-300 tw-text-center" translate>player.missingActiveTrainingReportTemplate</div>
+													}
+												}
+											}
+										</div>
+									</div>
+								}
+								<!-- Non Game-Events Staff -->
+								@for(item of getSelectableStaff(); track  item) {
+									<div class="tw-flex tw-flex-col">
+										<div class="tw-px-2 tw-py-1 tw-text-sm tw-flex tw-items-center tw-gap-2 tw-bg-shark-1000 tw-rounded">
+											@if (isOnEditMode()) {
+												<div class="tw-text-base">
+													<p-checkbox binary="true" [(ngModel)]="item.allSelected"
+																			(onChange)="selectAllStaffs($event, item)" [ngModelOptions]="{ standalone: true }">
+													</p-checkbox>
+												</div>
+											}
+											<div class="tw-uppercase" translate>Staff</div>
+										</div>
+										<div class="tw-flex tw-flex-col tw-gap-2">
+											@for (staff of item.staff; track staff) {
+												<iterpro-planning-event-staff [displayName]="staff.firstName + ' ' + staff.lastName"
+																											[photoUrl]="staff.downloadUrl"
+																											[editable]="isOnEditMode()"
+																											[selected]="isSelectedStaffForEvent(staff)"
+																											(staffSelect)="onAddStaffToParticipants(staff)"></iterpro-planning-event-staff>
+											}
+										</div>
+									</div>
+								}
+							} @else {
+								<iterpro-skeleton-grid [columns]="3" [rows]="15"></iterpro-skeleton-grid>
+							}
+						</div>
+					</div>
+				} @else {
+					<!-- Game Details -->
+					<div>
+						<div class="event-viewer tw-h-[600px] tw-overflow-auto" [ngStyle]="{ padding: (isClubGameEventFormat$ | async) && (isSynced$ | async) ? '0' : '1rem' }">
+							<ng-container *ngIf="(isClubGameEventFormat$ | async) && (isSynced$ | async); else gamePlayerDetails">
+								<iterpro-third-party-players-club-game [gameDetails]="thirdPartyProviderSyncedPlayerDetails$ | async"
+																											 [tabView]="true" [sportType]="sportType">
+								</iterpro-third-party-players-club-game>
+							</ng-container>
+
+							<ng-template #gamePlayerDetails>
+								<!-- Club Game Players Detail START -->
+								<div class="flexed" style="justify-content: space-between;">
+								<span class="title" translate>
+									event.partecipants
+									<span *ngIf="sidesMatchStats" style="color: #ddd"> {{ (sidesMatchStats | playersStatsEnabled : (event.home ? 'home' : 'away'))?.length + getSelectedStaffCount() }}</span>
+								</span>
+									<div class="redirect-icons-container">
+										<i [class.disabled]="isFutureEvent(event)" [pTooltip]="'event.drill.redirectDA' | translate"
+											 style="cursor: pointer; margin-right: 1.5em" href="#" (click)="goToSessionAnalysis(event)">
+											<svg class="svgIcon" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+													 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.005 512.005"
+													 style="enable-background: new 0 0 512.005 512.005" xml:space="preserve">
+											<g>
+												<g>
+													<g>
+														<path
+															d="M224,170.669h-42.667c-5.888,0-10.667,4.779-10.667,10.667v128c0,5.888,4.779,10.667,10.667,10.667H224 c5.888,0,10.667-4.779,10.667-10.667v-128C234.667,175.448,229.888,170.669,224,170.669z"
+															attr.fill="{{ getLinkColor(event._sessionImport) }}" />
+														<path
+															d="M138.667,234.669H96c-5.888,0-10.667,4.779-10.667,10.667v64c0,5.888,4.779,10.667,10.667,10.667h42.667 c5.888,0,10.667-4.779,10.667-10.667v-64C149.333,239.448,144.555,234.669,138.667,234.669z"
+															attr.fill="{{ getLinkColor(event._sessionImport) }}" />
+														<path
+															d="M309.333,106.669h-42.667c-5.888,0-10.667,4.779-10.667,10.667v192c0,5.888,4.779,10.667,10.667,10.667h42.667 c5.888,0,10.667-4.779,10.667-10.667v-192C320,111.448,315.221,106.669,309.333,106.669z"
+															attr.fill="{{ getLinkColor(event._sessionImport) }}" />
+														<path
+															d="M505.749,475.587L378.411,348.248c30.123-36.779,48.256-83.755,48.256-134.912c0-117.632-95.701-213.333-213.333-213.333 S0,95.704,0,213.336s95.701,213.333,213.333,213.333c51.157,0,98.133-18.133,134.912-48.256l127.339,127.339 c4.16,4.16,9.621,6.251,15.083,6.251s10.923-2.091,15.083-6.251C514.091,497.411,514.091,483.928,505.749,475.587z   M213.333,384.003c-94.101,0-170.667-76.565-170.667-170.667S119.232,42.669,213.333,42.669S384,119.235,384,213.336 S307.435,384.003,213.333,384.003z"
+															attr.fill="{{ getLinkColor(event._sessionImport) }}" />
+													</g>
+												</g>
+											</g>
+										</svg>
+										</i>
+										<i [class.disabled]="!event.match" pTooltip="{{ 'event.drill.redirectMA' | translate }}"
+											 style="cursor: pointer" href="#" [routerLink]="getLinkMAGame(event)">
+											<svg class="svgIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 297 297"
+													 xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 297 297">
+												<g>
+													<path
+														d="m16.173,92.554l24.624-24.624 24.623,24.624c1.85,1.849 4.274,2.774 6.699,2.774s4.849-0.925 6.699-2.774c3.7-3.7 3.7-9.699 0-13.399l-24.622-24.623 24.623-24.623c3.7-3.7 3.7-9.699 0-13.399-3.701-3.699-9.698-3.699-13.399,0l-24.623,24.623-24.624-24.624c-3.701-3.699-9.698-3.699-13.399,0-3.7,3.7-3.7,9.699 0,13.399l24.623,24.623-24.622,24.624c-3.7,3.7-3.7,9.699 1.33227e-15,13.399 1.85,1.849 4.274,2.774 6.699,2.774s4.849-0.925 6.699-2.774z"
+														attr.fill="{{ getLinkColor(event.match) }}" />
+													<path
+														d="m204.11,204.446c-3.701-3.699-9.698-3.699-13.399,0l-24.623,24.623-24.624-24.623c-3.701-3.699-9.698-3.699-13.399,0-3.7,3.701-3.7,9.699 0,13.399l24.624,24.623-24.624,24.624c-3.7,3.7-3.7,9.699 0,13.399 1.85,1.849 4.274,2.774 6.699,2.774 2.425,0 4.849-0.925 6.699-2.774l24.624-24.624 24.623,24.623c1.85,1.849 4.274,2.774 6.699,2.774 2.425,0 4.849-0.925 6.699-2.774 3.7-3.701 3.7-9.699 0-13.399l-24.623-24.623 24.623-24.623c3.702-3.7 3.702-9.7 0.002-13.399z"
+														attr.fill="{{ getLinkColor(event.match) }}" />
+													<path
+														d="m204.848,71.597l-38.207-33.213c-3.949-3.434-9.933-3.013-13.365,0.935-3.433,3.949-3.014,9.932 0.935,13.365l20.262,17.614c-59.804,7.822-95.214,39.074-114.899,65.49-18.186,24.404-26.156,48.415-29.026,59 1.891-0.251 3.815-0.394 5.773-0.394 4.696,0 9.217,0.755 13.459,2.136 3.162-10.426 10.559-30.26 25.443-50.029 24.639-32.726 58.867-51.999 101.926-57.48l-18.88,21.719c-3.433,3.949-3.014,9.932 0.935,13.365 1.794,1.56 4.008,2.324 6.211,2.324 2.648,0 5.281-1.104 7.154-3.259l33.213-38.208c3.434-3.949 3.015-9.932-0.934-13.365z"
+														attr.fill="{{ getLinkColor(event.match) }}" />
+													<path
+														d="m36.322,209.998c-15.436,0-27.995,12.558-27.995,27.995 0,15.437 12.558,27.996 27.995,27.996 15.437,0 27.996-12.559 27.996-27.996 0-15.437-12.559-27.995-27.996-27.995z"
+														attr.fill="{{ getLinkColor(event.match) }}" />
+													<path
+														d="m269.005,48.91c-15.437,0-27.996,12.558-27.996,27.995 0,15.437 12.558,27.996 27.996,27.996 15.436,0 27.995-12.558 27.995-27.996 0-15.436-12.558-27.995-27.995-27.995z"
+														attr.fill="{{ getLinkColor(event.match) }}" />
+												</g>
+											</svg>
+										</i>
+									</div>
+								</div>
+								<div class="tw-flex tw-flex-col tw-gap-4 tw-text-sm">
+									@if (sidesMatchStats) {
+										<!-- Team Performance Report -->
+										<ng-container *ngTemplateOutlet="teamPerformanceReport"></ng-container>
+										<!-- Toggle All Players -->
+										@if (isOnEditMode()) {
+											<div class="tw-px-2 tw-text-base">
+												<p-checkbox binary="true" [label]="'buttons.addAll' | translate"
+																		[ngModel]="(getCurrentTeamSide()) | playersStatsAreAllChecked"
+																		(onChange)="toggleAllPlayersForGame($event.checked)" [ngModelOptions]="{ standalone: true }"></p-checkbox>
+											</div>
+										}
+										<!-- Game Right Side Participants Panel -->
+										@for(role of positionCategories; track role) {
+											<div class="tw-flex tw-flex-col">
+												<div class="tw-px-2 tw-py-1 tw-text-sm tw-flex tw-bg-shark-1000 tw-rounded tw-gap-2">
+													@if (isOnEditMode()) {
+														<p-checkbox binary="true"
+																				[ngModel]="(getCurrentTeamSide() | playersStatsFilterByPosition : role : sportType) | playersStatsAreAllChecked"
+																				(onChange)="toggleAllPlayersForGame($event.checked, role)" [ngModelOptions]="{ standalone: true }"></p-checkbox>
+													}
+													<div class="tw-uppercase" translate>roles.categories.{{ role }}s</div>
+												</div>
+												<div class="tw-flex tw-flex-col tw-gap-2">
+													@for (item of (getCurrentTeamSide() | playersStatsFilterByPosition : role : sportType); track item) {
+														<iterpro-planning-event-player [displayName]="item.playerStats.playerName"
+																													 [photoUrl]="item.downloadUrl"
+																													 [editable]="isOnEditMode()"
+																													 [expandable]="true"
+																													 [selected]="item.playerStats.playerId | playerIsSelectedForGame : getCurrentTeamSide()"
+																													 (playerSelect)="selectPlayerForGame(item.playerStats.playerId)"
+																													 #playerEl></iterpro-planning-event-player>
+														@if (playerEl.expanded) {
+															@if (activePlayerReportTemplate) {
+																@if (item.gameReport) {
+																	<ng-container *ngTemplateOutlet="playerReportTemplate; context: { player: item?.playerStats.player, playerReport: item.gameReport }"></ng-container>
+																}
+															} @else {
+																<div class="tw-text-shark-300 tw-text-center" translate>player.missingActiveGameReportTemplate</div>
+															}
+														}
+													}
+												</div>
+											</div>
+										}
+										<!-- Game Staff Participants Panel -->
+										@for(item of getSelectableStaff(); track  item) {
+											<div class="tw-flex tw-flex-col">
+												<div class="tw-px-2 tw-py-1 tw-text-sm tw-flex tw-items-center tw-gap-2 tw-bg-shark-1000 tw-rounded">
+													@if (isOnEditMode()) {
+														<div class="tw-text-base">
+															<p-checkbox binary="true" [(ngModel)]="item.allSelected"
+																					(onChange)="selectAllStaffs($event, item)" [ngModelOptions]="{ standalone: true }">
+															</p-checkbox>
+														</div>
+													}
+													<div class="tw-uppercase" translate>Staff</div>
+												</div>
+												<div class="tw-flex tw-flex-col tw-gap-2">
+													@for (staff of item.staff; track staff) {
+														<iterpro-planning-event-staff [displayName]="staff.firstName + ' ' + staff.lastName"
+																													[photoUrl]="staff.downloadUrl"
+																													[editable]="isOnEditMode()"
+																													[selected]="isSelectedStaffForEvent(staff)"
+																													(staffSelect)="onAddStaffToParticipants(staff)"></iterpro-planning-event-staff>
+													}
+												</div>
+											</div>
+										}
+									} @else {
+										<iterpro-skeleton-grid [columns]="3" [rows]="15"></iterpro-skeleton-grid>
+									}
+								</div>
+							</ng-template>
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
+	<!-- Medical Treatments -->
+	<div class="tw-mt-4 tw-mb-8 tw-w-[90vw]" *ngIf="(isMedicalEventFormat$ | async) && event.medicalType === 'treatment'">
+		<p-tabView>
+			<p-tabPanel>
+				<ng-template pTemplate="header">
+					<span>{{'medical.prevention.treatment' | translate}}</span>
+				</ng-template>
+				<div>
+					<iterpro-medical-treatments [readonlyMode]="!isOnEditMode()" [currentEventDate]="date$ | async"
+																			[medicalTreatments]="event.medicalTreatments"
+																			[allInjuries]="getCorrectPlayer(event.playerIds[0])?.injuries"
+																			[player]="getCorrectPlayer(event.playerIds[0])" [players]="allPlayers" [showFilters]="false"
+																			[tableScrollHeight]="undefined">
+					</iterpro-medical-treatments>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+	<!-- Drills -->
+	<div class="tw-mt-4 tw-mb-8 tw-w-[90vw]" *ngIf="hasDrills()">
+		<p-tabView>
+			<p-tabPanel [header]="'event.drill.planned' | translate">
+				<div class="drill-table-container">
+					<div class="tw-flex tw-justify-end tw-p-2">
+						<p-button size="small" *ngIf="isOnEditMode()" (click)="addDrillInstance()" [label]="'event.addDrill' | translate"></p-button>
+					</div>
+					<p-table
+						*ngIf="plannedDrillList"
+						[value]="plannedDrillList | plannedDrillFilter: customers : currentUserId"
+						dataKey="id"
+						styleClass="p-datatable-striped"
+						[ngStyle]="{ width: '100%' }"
+					>
+						<ng-template pTemplate="header" let-columns>
+							<tr class="tw-h-10">
+								<th *ngIf="!isOnEditMode()" style="width: 2%"></th>
+								<th style="width: 6%">{{ 'players.group' | translate }}</th>
+								<th style="width: 20%;" translate>drills.theme</th>
+								<th style="width: 32%;" translate>event.drill</th>
+								<th *ngIf="isOnEditMode()" style="width: 16%;" translate>home.players</th>
+								<th style="width: 16%;" translate>event.drill.shareWith</th>
+								<th style="width: 6%;" translate>event.drill.sets</th>
+								<th style="width: 6%;" translate>event.drill.reps</th>
+								<th style="width: 6%;" translate>event.drill.count</th>
+								<th style="width: 6%;" translate>event.drill.rest</th>
+								<th style="width: 8%;" translate>event.drill.duration</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex" let-expanded="expanded">
+							<tr class="tw-h-10">
+								<td *ngIf="!isOnEditMode()">
+									<!-- <i *ngIf="isOnEditMode()" class="fa fa-bars row-handler" style="width: 100%"
+										pReorderableRowHandle></i> -->
+									<a class="tw-ml-2" [pRowToggler]="rowData">
+										<i [ngClass]="expanded ? 'fas fa-fw fa-chevron-down' : 'fas fa-fw fa-chevron-right'"></i>
+									</a>
+								</td>
+								<td class="tw-text-left">
+									<div class="tw-flex tw-gap-4 tw-justify-between">
+										<span *ngIf="!isOnEditMode(); else selectIndexing">{{ rowData.drill.index }}{{ rowData.drill.letter }}</span>
+										<div class="tw-flex tw-gap-4">
+											<i *ngIf="isOnEditMode()" class="fa fa-trash iterpro-clickable-icon" (click)="removeDrillInstance(rowData)"></i>
+											<i
+												*ngIf="isOnEditMode()"
+												class="fas fa-file-export iterpro-clickable-icon"
+												[class.disabled]="!canCopyToActual()"
+												(click)="copyToActual(rowData)"
+												[pTooltip]="'planning.copyToActual' | translate"
+											></i>
+										</div>
+										<ng-template #selectIndexing>
+											<div class="tw-flex tw-justify-between">
+												<p-dropdown [options]="drillIndexes | selectItem" [(ngModel)]="rowData.drill.index"
+																		[ngModelOptions]="{ standalone: true }" [filter]="true" appendTo="body"
+																		[dropdownIcon]="!isOnEditMode() ? 'none' : 'fas fa-chevron-down'"
+																		[placeholder]="'dropdown.placeholder' | translate"></p-dropdown>
+												<p-dropdown [options]="drillLetters | selectItem" [(ngModel)]="rowData.drill.letter"
+																		[ngModelOptions]="{ standalone: true }" [filter]="true" appendTo="body"
+																		[dropdownIcon]="!isOnEditMode() ? 'none' : 'fas fa-chevron-down'"
+																		[placeholder]="'dropdown.placeholder' | translate"></p-dropdown>
+											</div>
+										</ng-template>
+									</div>
+								</td>
+								<td>
+									<div class="tw-flex tw-items-center">
+										<p-autoComplete
+											class="tw-flex-1"
+											[(ngModel)]="rowData.themeModel"
+											[ngModelOptions]="{ standalone: true }"
+											[suggestions]="
+												allDrillThemeList
+											"
+											[dropdown]="true"
+											[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+											[style]="{ width: '100%' }"
+											(completeMethod)="filterThemes($event, rowData)"
+											(onSelect)="selectTheme($event, rowData)"
+											(onClear)="resetDrillsList(rowData)"
+											field="label"
+											dropdownMode="current"
+											appendTo="body"
+										>
+										</p-autoComplete>
+									</div>
+								</td>
+								<td>
+									<div class="tw-flex tw-items-center tw-gap-2">
+										<iterpro-redirect-icon
+											icon="fas fa-eye"
+											path="/manager/drills"
+											tooltip="to.drills.redirect"
+											[params]="{ id: rowData.drill.drillsId }"
+											[disabled]="!canAccessToModule('drills')"
+										>
+										</iterpro-redirect-icon>
+										<p-autoComplete
+											class="tw-flex-1"
+											[(ngModel)]="rowData.drillDetail"
+											[ngModelOptions]="{ standalone: true }"
+											[suggestions]="drillsList | drillListFilter: currentUserId"
+											[dropdown]="true"
+											[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+											[style]="{ width: '90%' }"
+											(onSelect)="selectDrill($event.value, rowData)"
+											(completeMethod)="filterDrills($event, rowData)"
+											(onClear)="resetDrillsList(rowData)"
+											field="name"
+											dropdownMode="current"
+											appendTo="body"
+											required="true"
+										>
+											<ng-template let-empty pTemplate="empty">
+												<div class="tw-cursor-pointer tw-text-white" (click)="addNewDrill(rowData.drillDetail, rowData)" translate>
+													event.drill.new
+												</div>
+											</ng-template>
+										</p-autoComplete>
+										<i *ngIf="isOnEditMode()" class="fas fa-search iterpro-clickable-icon"
+											 style="font-size: unset;"
+											 [class.icon-disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+											 [pTooltip]="'drill.select' | translate" (click)="showSelectDrillDialog(rowData)"></i>
+									</div>
+								</td>
+								<td *ngIf="isOnEditMode()">
+									<p-multiSelect
+										appendTo="body"
+										[options]="selectedPlayers"
+										optionLabel="displayName"
+										maxSelectedLabels="2"
+										selectedItemsLabel="{0} selected"
+										optionValue="id"
+										filter="true"
+										[(ngModel)]="rowData.drill.participantsIds"
+										[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+										[ngModelOptions]="{ standalone: true }"
+										(onChange)="selectParticipants($event, rowData)"
+										[dropdownIcon]="!isOnEditMode() ? 'none' : 'fas fa-chevron-down'"
+										[placeholder]="
+											selectedPlayers?.length > 0 ? ('dropdown.placeholder' | translate) : ('event.drill.selectParticipants' | translate)
+										"
+									>
+									</p-multiSelect>
+								</td>
+								<td>
+									<p-multiSelect
+										appendTo="body"
+										maxSelectedLabels="2"
+										selectedItemsLabel="{0} selected"
+										[group]="true"
+										[options]="rowData.drill.tempSharedWithOptions"
+										[(ngModel)]="rowData.drill.tempSharedWithIds"
+										[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+										[ngModelOptions]="{ standalone: true }"
+										(onChange)="selectShareWith($event, rowData)"
+										[dropdownIcon]="!isOnEditMode() ? 'none' : 'fas fa-chevron-down'"
+										[placeholder]="
+											!isOnEditMode()
+												? null
+												: rowData.drillDetail
+													? ('dropdown.placeholder' | translate)
+													: ('event.drill.selectDrill' | translate)
+										"
+									>
+									</p-multiSelect>
+								</td>
+								<td>
+									<input [disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+												 (change)="computeDrillDuration(rowData)" [ngModelOptions]="{ standalone: true }"
+												 [(ngModel)]="rowData.drill.sets"
+												 [placeholder]="!isOnEditMode() || (isMedicalEventFormat$ | async) ? '' : 'num'" type="number"
+												 min="1" pInputText />
+								</td>
+								<td>
+									<input [disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+												 (change)="computeDrillDuration(rowData)" [ngModelOptions]="{ standalone: true }"
+												 [(ngModel)]="rowData.drill.reps" pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+												 [placeholder]="!isOnEditMode() || (isMedicalEventFormat$ | async) ? '' : 'min'" type="text"
+												 pInputText />
+								</td>
+								<td>
+									<input [disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+												 (change)="computeDrillDuration(rowData)" [ngModelOptions]="{ standalone: true }"
+												 [(ngModel)]="rowData.drill.count"
+												 [placeholder]="!isOnEditMode() || (isMedicalEventFormat$ | async) ? '' : 'num'" type="number"
+												 min="1" pInputText />
+								</td>
+								<td>
+									<input [disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+												 (change)="computeDrillDuration(rowData)" [ngModelOptions]="{ standalone: true }"
+												 [(ngModel)]="rowData.drill.rest" pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+												 [placeholder]="!isOnEditMode() || (isMedicalEventFormat$ | async) ? '' : 'min'" type="text"
+												 pInputText />
+								</td>
+								<td>
+									<div class="tw-flex tw-items-center tw-gap-2 tw-text[0.85em]">
+										<input [disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+													 [ngModelOptions]="{ standalone: true }" (change)="computeDrillMinDuration(rowData)"
+													 [(ngModel)]="rowData.drill.durationMin"
+													 pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$" type="text"
+													 style="width: 40px;" pInputText />
+										<div *ngIf="rowData.drill.durationMin">min</div>
+									</div>
+								</td>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="rowexpansion" let-rowData>
+							<tr *ngIf="!isOnEditMode() || ((isMedicalEventFormat$ | async) && rowData.drillDetail)" class="drill-info">
+								<td></td>
+								<td></td>
+								<td colspan="7">
+									<div class="drill-info-elements">
+										<div class="drill-info-el drill-info-photo">
+											<iterpro-fileuploader *ngIf="rowData.drillDetail"
+																						[attachments]="rowData.drillDetail?._attachments" [editMode]="false">
+											</iterpro-fileuploader>
+										</div>
+										<div class="drill-info-el drill-info-desc">
+											<h3 *ngIf="rowData.drillDetail?.description" translate>drills.description</h3>
+											<div *ngIf="rowData.drillDetail?.description" [innerHTML]="rowData.drillDetail.description | marked"></div>
+											<h3 *ngIf="rowData.drillDetail?.rules" translate>drills.rules</h3>
+											<div *ngIf="rowData.drillDetail?.rules" [innerHTML]="rowData.drillDetail.rules | marked"></div>
+										</div>
+										<div class="drill-info-el drill-info-goals">
+											<h3 *ngIf="rowData.drillDetail?.technicalGoals" translate>drills.technicalGoal</h3>
+											<div *ngIf="rowData.drillDetail?.technicalGoals" class="goals">
+												<span *ngFor="let goal of rowData.drillDetail?.technicalGoals" translate
+												>{{ goal | selectItemLabel: drillsMapping.goals }}<span>, </span></span
+												>
+											</div>
+											<h3 *ngIf="rowData.drillDetail?.tacticalGoals" translate>drills.tacticalGoals</h3>
+											<div *ngIf="rowData.drillDetail?.tacticalGoals" class="goals">
+												<span *ngFor="let goal of rowData.drillDetail?.tacticalGoals" translate
+												>{{ goal | selectItemLabel: drillsMapping.goals }}<span>, </span></span
+												>
+											</div>
+											<h3 *ngIf="rowData.drillDetail?.situationalTacticalGoalsDef" translate>drills.situationalTacticalGoalDef</h3>
+											<div *ngIf="rowData.drillDetail?.situationalTacticalGoalsDef" class="goals">
+												<span *ngFor="let goal of rowData.drillDetail?.situationalTacticalGoalsDef" translate
+												>{{ goal | selectItemLabel: drillsMapping.goals }}<span>, </span></span
+												>
+											</div>
+											<h3 *ngIf="rowData.drillDetail?.situationalTacticalGoalsOff" translate>drills.situationalTacticalGoalOff</h3>
+											<div *ngIf="rowData.drillDetail?.situationalTacticalGoalsOff" class="goals">
+												<span *ngFor="let goal of rowData.drillDetail?.situationalTacticalGoalsOff" translate
+												>{{ goal | selectItemLabel: drillsMapping.goals }}<span>, </span></span
+												>
+											</div>
+											<h3 *ngIf="rowData.drillDetail?.physicalGoals" translate>drills.physicalGoal</h3>
+											<div *ngIf="rowData.drillDetail?.physicalGoals" class="goals">
+												<span *ngFor="let goal of rowData.drillDetail?.physicalGoals"
+												>{{ goal | selectItemLabel: drillsMapping.goals }}<span>, </span></span
+												>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr *ngIf="!isOnEditMode()" class="drill-info">
+								<td></td>
+								<td></td>
+								<td colspan="7">
+									<div class="drill-info-elements">
+										<div class="drill-info-el drill-info-players">
+											<h3 style="margin-bottom: 0.5em">{{ 'players' | translate }}</h3>
+											<div *ngFor="let item of getSelectablePlayers()" class="drill-info-position">
+												<span
+													*ngIf="(item.players | filterByIncludes: rowData.drill.participantsIds || [] : 'id').length > 0"
+													class="drill-player-position-label"
+													translate
+												>roles.categories.{{ item.position }}s</span
+												>
+												<div class="drill-players">
+													<span
+														*ngFor="let player of item.players | filterByIncludes: rowData.drill.participantsIds || [] : 'id'"
+														class="drill-player"
+													>
+														<img
+															src="{{ player.downloadUrl | azureUrl }}"
+															[ngClass]="{ 'player-thumb': true, selected: selected, 'not-selected': !selected }"
+															onError="this.src='assets/img/default_icon.png';" alt="player picture" />
+														<span>{{ player.displayName }}</span>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</p-tabPanel>
+			<p-tabPanel [header]="'event.drill.actual' | translate" [disabled]="!canSeeActual()">
+				<div style="width: 100%; padding-bottom: 1rem">
+					<p-table *ngIf="actualDrillList" styleClass="p-datatable-striped" [value]="actualDrillList" [rows]="20"
+									 [scrollable]="true" scrollHeight="325px" dataKey="date"
+									 (onRowReorder)="onRowReorder($event)">
+						<ng-template #notPresent pTemplate="header">
+							<tr class="tw-h-10">
+								<!-- <th style="width:2%"></th> -->
+								<th style="width: 2%"></th>
+								<th *ngIf="event.gpsSessionLoaded === false" style="width: 20%;" translate>
+									drills.theme
+								</th>
+								<th style="width: 20%;" translate>event.drill</th>
+								<th style="width: 30%;" translate>drill.mapper.column.split</th>
+								<th style="width: 5%;" translate>event.drill.duration</th>
+								<th style="width: 8%">
+									<i [pTooltip]="'event.drill.redirectDA' | translate" [class.icon-disabled]="isFutureEvent(event)"
+										 style="cursor: pointer; margin-left: 1.7em" href="#" (click)="goToSessionAnalysis(event)">
+										<svg class="svgIcon" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+												 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.005 512.005"
+												 style="enable-background: new 0 0 512.005 512.005" xml:space="preserve">
+											<g>
+												<g>
+													<g>
+														<path
+															d="M224,170.669h-42.667c-5.888,0-10.667,4.779-10.667,10.667v128c0,5.888,4.779,10.667,10.667,10.667H224 c5.888,0,10.667-4.779,10.667-10.667v-128C234.667,175.448,229.888,170.669,224,170.669z"
+															fill="#bbbbbb" />
+														<path
+															d="M138.667,234.669H96c-5.888,0-10.667,4.779-10.667,10.667v64c0,5.888,4.779,10.667,10.667,10.667h42.667 c5.888,0,10.667-4.779,10.667-10.667v-64C149.333,239.448,144.555,234.669,138.667,234.669z"
+															fill="#bbbbbb" />
+														<path
+															d="M309.333,106.669h-42.667c-5.888,0-10.667,4.779-10.667,10.667v192c0,5.888,4.779,10.667,10.667,10.667h42.667 c5.888,0,10.667-4.779,10.667-10.667v-192C320,111.448,315.221,106.669,309.333,106.669z"
+															fill="#bbbbbb" />
+														<path
+															d="M505.749,475.587L378.411,348.248c30.123-36.779,48.256-83.755,48.256-134.912c0-117.632-95.701-213.333-213.333-213.333 S0,95.704,0,213.336s95.701,213.333,213.333,213.333c51.157,0,98.133-18.133,134.912-48.256l127.339,127.339 c4.16,4.16,9.621,6.251,15.083,6.251s10.923-2.091,15.083-6.251C514.091,497.411,514.091,483.928,505.749,475.587z 	M213.333,384.003c-94.101,0-170.667-76.565-170.667-170.667S119.232,42.669,213.333,42.669S384,119.235,384,213.336 S307.435,384.003,213.333,384.003z"
+															fill="#bbbbbb" />
+													</g>
+												</g>
+											</g>
+										</svg>
+									</i>
+								</th>
+								<th style="width: 20%">
+									<i class="fas fa-video" pTooltip="Open external link"></i>
+								</th>
+								<th style="width: 5%" class="tw-text-center" translate>prevention.treatments.note</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" pReorderableRowHandle>
+							<tr class="tw-h-10" [pReorderableRow]="rowIndex">
+								<!-- <td style="width:2%">
+									<i class="fas fa-bars" *ngIf="!event.gpsSessionLoaded && editMode()" pReorderableRowHandle></i>
+								</td> -->
+								<td style="width: 2%">
+									<div class="tw-flex tw-gap-2">
+										<div>{{ rowIndex + 1 }}</div>
+										<i *ngIf="isOnEditMode() && !event.gpsSessionLoaded" class="fas fa-trash" style="cursor: pointer; margin-left: 1em" (click)="removeDrillExecutedInstance(rowData, rowIndex)"></i>
+									</div>
+								</td>
+								<td *ngIf="event.gpsSessionLoaded === false" style="width: 20%">
+									<p-autoComplete
+										[(ngModel)]="rowData.themeModel"
+										class="tw-flex-1"
+										[ngModelOptions]="{ standalone: true }"
+										[suggestions]="allDrillThemeList"
+										[dropdown]="true"
+										[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async)"
+										[style]="{ width: '100%' }"
+										(completeMethod)="filterThemes($event, rowData)"
+										(onSelect)="selectTheme($event, rowData)"
+										(onClear)="resetDrillsList(rowData)"
+										field="label"
+										dropdownMode="current"
+										appendTo="body"
+										name="selectedTheme"
+									></p-autoComplete>
+								</td>
+								<td>
+									<div class="tw-flex tw-items-center tw-gap-2">
+										<iterpro-redirect-icon
+											*ngIf="!!rowData?.drill.drillsId || !!rowData?.drill.drillId"
+											icon="fas fa-eye"
+											path="/manager/drills"
+											tooltip="to.drills.redirect"
+											[params]="{ id: rowData.drill.drillsId || rowData.drill.drillId }"
+											[disabled]="!canAccessToModule('drills')"
+										>
+										</iterpro-redirect-icon>
+
+										<p-autoComplete
+											class="tw-flex-1"
+											[(ngModel)]="rowData.drillDetail"
+											[ngModelOptions]="{ standalone: true }"
+											[suggestions]="drillsList | drillListFilter: currentUserId"
+											[dropdown]="true"
+											[disabled]="!isOnEditMode() || (isMedicalEventFormat$ | async) || event.gpsSessionLoaded"
+											[style]="{ width: '90%' }"
+											(onSelect)="selectDrill($event.value, rowData)"
+											(completeMethod)="filterDrills($event, rowData)"
+											(onClear)="resetDrillsList(rowData)"
+											field="name"
+											dropdownMode="current"
+											appendTo="body"
+											required="true"
+										>
+										</p-autoComplete>
+									</div>
+								</td>
+								<td class="lighter" style="width: 25%">
+									<span *ngIf="event.gpsSessionLoaded">{{ rowData?.drill?.name }}</span>
+								</td>
+								<td style="width: 5%">
+									<div *ngIf="(rowData.duration && !isOnEditMode()) || (isMedicalEventFormat$ | async)" class="tw-text-sm">
+										{{ getDuration(rowData.duration) }}
+									</div>
+									<input *ngIf="isOnEditMode()" name="drillDuration" pInputText type="number"
+												 pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$" [ngModelOptions]="{ standalone: true }"
+												 [(ngModel)]="rowData.duration"
+												 [placeholder]="isOnEditMode() ? ('dropdown.placeholder' | translate) : null" />
+								</td>
+								<td style="width: 8%"></td>
+								<td style="width: 20%; text-align: center">
+									<input *ngIf="isOnEditMode()" [ngModelOptions]="{ standalone: true }" [(ngModel)]="rowData.videoUrl"
+												 pInputText type="text" name="drillVideoUrl" />
+									<a *ngIf="!isOnEditMode() && !!rowData.videoUrl" target="_blank" rel="external noopener noreferrer"
+										 class="fas fa-link" style="font-size: 1rem" href="{{ rowData.videoUrl }}">
+									</a>
+								</td>
+								<td style="width: 5%;">
+									<div class="tw-text-center">
+										<i (click)="openDialogNote(rowData)" aria-hidden="true" class="fas fa-search" style="cursor: pointer"
+											 pTooltip="{{ 'tooltip.add.notes' | translate }}"></i>
+									</div>
+								</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+</form>
+
+<iterpro-drills-search
+	*ngIf="showDrillSearch"
+	[maxSelectableRows]="1"
+	[drills]="drillsListBackup | drillListFilter: currentUserId"
+	[drillFiltersConfig]="drillFiltersConfig"
+	[drillsMapping]="drillsMapping"
+	(discardEmitter)="showDrillSearch = false"
+	(saveEmitter)="handleDrillSelected($event)"
+></iterpro-drills-search>
+
+
+<ng-template #playerReportTemplate let-player="player" let-playerReport="playerReport">
+	<div class="tw-bg-shark-1000 tw-rounded-lg tw-p-4 tw-relative">
+		<!-- Player Report -->
+		<iterpro-player-performance-report
+			[clubId]="clubId"
+			[editMode]="isOnEditMode()"
+			[editable]="true"
+			[deletable]="false"
+			[wyscoutId]="player.wyscoutId"
+			[photoUrl]="player.downloadUrl"
+			[position]="player.position"
+			[birthDate]="player.birthDate"
+			[nationality]="player.nationality"
+			[weight]="player.weight"
+			[height]="player.height"
+			[foot]="player.foot"
+			[displayName]="player.displayName"
+			[showRedirectIcon]="!isOnEditMode()"
+			[authorOptions]="customers | customersToSelectItems"
+			[reportDataHistory]="playerReport.reportDataHistory | lastAuthor"
+			[notesHistory]="playerReport.notesHistory | lastAuthor"
+			[currentUserId]="currentUserId"
+			[notes]="playerReport.notes"
+			[customVideosTemplate]="true"
+			[customDocumentClickEvent]="true"
+			[docAttachments]="event._attachments | playerReportDocuments : playerReport.playerId"
+			[showSharedWith]="true"
+			[showEditAttachment]="true"
+			[sharedWithOptions]="allSharedWithOptions"
+			[redirectTooltip]="'diary.goToWeek' | translate"
+			(deleteClicked)="deleteGameReport(playerReport)"
+			(addAttachment)="addAttachment(playerReport, $event.attachment, $event.type)"
+			(deleteAttachment)="deleteAttachment(playerReport, $event.attachment, $event.type)"
+			(editDocumentClicked)="showEventRepository()"
+			(redirectClicked)="onClickPlayerLens(player.id)"
+			(reportNotesChanged)="onGameReportNotesChange(playerReport, $event)"
+			(addVideoClicked)="showVideoGalleryFormDialog(player.id)"
+			(addDocumentClicked)="showEventRepository(null, player.id)">
+			<!-- Schema -->
+			<iterpro-custom-report-template
+				[disabled]="!isOnEditMode()"
+				[schema]="getCorrectSchema(playerReport)"
+				[reportData]="playerReport.reportData"
+				(reportDataChange)="onReportDataChange(playerReport, $event)"
+			></iterpro-custom-report-template>
+			<!-- Videos -->
+			<div videos class="tw-grid tw-grid-cols-2 tw-gap-y-4 tw-gap-x-2">
+				@if (((videos$ | async) | playerReportVideos : player.id : event.id)?.length > 0) {
+					@for (video of ((videos$ | async) | playerReportVideos : player.id : event.id); track video) {
+						<div>
+							<iterpro-video-list-item [paddingBase]="'tw-p-2'" [item]="video" [customers]="customers" (click)="showVideoGalleryFormDialog(player.id, video)"></iterpro-video-list-item>
+						</div>
+					}
+				} @else {
+					<p class="tw-p-2 tw-text-shark-300">{{ 'alert.noRecordsFound' | translate }}</p>
+				}
+			</div>
+			<!-- Shared With Report Data -->
+			<div sharedWithReportData>
+				<ng-container *ngTemplateOutlet="reportSharedWithPlayerTemplate; context: { report: playerReport, modelField: 'reportDataShareWithPlayer', label: 'shareWithPlayer' }"></ng-container>
+			</div>
+			<!-- Shared With Notes -->
+			<div sharedWithNotes>
+				<ng-container *ngTemplateOutlet="reportSharedWithPlayerTemplate; context: { report: playerReport, modelField: 'notesShareWithPlayer', label: 'shareWithPlayer' }"></ng-container>
+			</div>
+		</iterpro-player-performance-report>
+	</div>
+</ng-template>
+
+<ng-template #teamPerformanceReport>
+	<!-- Current Team Name -->
+	<div class="tw-flex tw-items-center tw-justify-between tw-gap-2 tw-p-2 tw-bg-shark-900 tw-rounded">
+		<div class="tw-flex tw-items-center tw-gap-2">
+			<div class="tw-w-[3rem] tw-h-[3rem]">
+				@if (isTrainingEventFormat$ | async) {
+					<iterpro-picture [type]="'team'" [photoUrl]="clubCrest"></iterpro-picture>
+				} @else {
+					<iterpro-picture [type]="'team'" [photoUrl]="event.home ? sidesMatchStats.home.imageDataURL : sidesMatchStats.away.imageDataURL"></iterpro-picture>
+				}
+			</div>
+			@if (isTrainingEventFormat$ | async) {
+				<div>{{ teamName }}</div>
+			} @else {
+				<div>{{ event.home ? sidesMatchStats.home.name : sidesMatchStats.away.name }}</div>
+			}
+		</div>
+		<iterpro-icon-button [icon]="!teamReportExpanded ? 'fas fa-chevron-down' : 'fas fa-chevron-up'" [small]="true" [tooltip]="(!teamReportExpanded ? 'buttons.show' : 'buttons.hide') | translate" (click)="teamReportExpanded = !teamReportExpanded"></iterpro-icon-button>
+	</div>
+	<!-- Team Report -->
+	@if (teamReportExpanded) {
+		<div class="tw-bg-shark-1000 tw-rounded-lg tw-p-4">
+			<h4 class="tw-mb-2" translate>profile.team</h4>
+			<p-accordion [multiple]="true">
+				<!-- Notes -->
+				<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'">
+					<ng-template pTemplate="header">
+						<div class="tw-w-full tw-flex tw-items-center tw-justify-between tw-gap-2">
+							<div>{{'squads.players.tabs.notes' | translate}}</div>
+							@if (teamReport.notesHistory?.length > 0) {
+								<div class="tw-flex tw-justify-end">
+									<!-- Notes Last Update -->
+									<iterpro-performance-report-history [lastUpdateAuthor]="(teamReport?.notesHistory | lastAuthor).author" [lastUpdateDate]="(teamReport?.notesHistory | lastAuthor).updatedAt" [authorOptions]="customers | customersToSelectItems"></iterpro-performance-report-history>
+								</div>
+							}
+						</div>
+					</ng-template>
+					<div>
+						@if (isOnEditMode()) {
+							<editor
+								[initialValue]="'input-text.placeholder' | translate"
+								[inline]="false"
+								[ngModel]="teamReport.notes"
+								[ngModelOptions]="{ standalone: true }"
+								[init]="tinyEditorInit"
+								modelEvents="change"
+								(ngModelChange)="teamReportNotesChanged($event)"
+							>
+							</editor>
+						} @else {
+							<div class="readonlyEditorBox">
+								<span [innerHTML]="teamReport.notes | marked"></span>
+							</div>
+						}
+						<!-- Shared With Notes -->
+						<div>
+							<ng-container *ngTemplateOutlet="reportSharedWithPlayerTemplate; context: { report: teamReport, modelField: 'notesShareWithPlayers', label: 'shareWithPlayers' }"></ng-container>
+						</div>
+					</div>
+				</p-accordionTab>
+				<!-- Documents -->
+				<p-accordionTab [headerStyleClass]="'tw-bg-shark-950 tw-text-sm'" [contentStyleClass]="'tw-bg-shark-950'">
+					<ng-template pTemplate="header">
+						<div class="tw-w-full tw-flex tw-items-center tw-justify-between tw-gap-2">
+							<div>{{'medicalScreening.documents' | translate}}</div>
+							<iterpro-icon-button [icon]="'fas fa-plus'" [tooltip]="'buttons.add' | translate" (click)="showEventRepository($event)"></iterpro-icon-button>
+						</div>
+					</ng-template>
+					<iterpro-attachments [attachments]="event._attachments"
+															 [showEditButton]="true"
+															 [showDeleteButton]="false"
+															 [sharedWithOptions]="allSharedWithOptions"
+															 (editAttachmentClicked)="showEventRepository()"></iterpro-attachments>
+				</p-accordionTab>
+			</p-accordion>
+		</div>
+	}
+</ng-template>
+
+
+<ng-template #reportSharedWithPlayerTemplate let-report="report" let-modelField="modelField" let-label="label">
+	<div class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-mt-4">
+		<span class="iterpro-text-color-900" translate>{{label}}</span>
+		<p-inputSwitch
+			class="small-input-switch"
+			[disabled]="!isOnEditMode()"
+			[(ngModel)]="report[modelField]"
+		>
+		</p-inputSwitch>
+	</div>
+</ng-template>
+
+@if (videoGalleryForm?.visible) {
+	<p-dialog [visible]="true" [showHeader]="false" [closable]="false" [closeOnEscape]="false" [draggable]="false"
+						[resizable]="false" [modal]="true" [style]="{ width: '90vw', height: '90vh' }">
+		<iterpro-video-form
+			[linkedEventId]="event.id"
+			[isEditVideo]="videoGalleryForm.videoToEdit"
+			[events]="[event]"
+			[players]="allPlayers"
+			[prefilledTitle]="videoGalleryForm.prefilledTitle"
+			[prefilledPlayerIds]="videoGalleryForm.prefilledPlayerIds"
+			[staffs]="staffs"
+			[customers]="customers"
+			[category]="videoCategory"
+			(discardClicked)="resetVideoFormProps()"
+			(videoDeleted)="resetVideoFormProps()"
+		/>
+	</p-dialog>
+}
+
+
+@if (eventRepository?.visible) {
+	<iterpro-multiple-file-upload [visible]="true"
+																[editMode]="isOnEditMode()"
+																[attachmentModel]="eventRepository.attachments"
+																[prefilledPlayerIds]="eventRepository.prefilledPlayerIds"
+																(save)="saveEventRepository($event)"
+																(discard)="discardEventRepository()">
+	</iterpro-multiple-file-upload>
+}

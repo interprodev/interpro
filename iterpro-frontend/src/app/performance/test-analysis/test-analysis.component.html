@@ -1,0 +1,373 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1>{{ 'navigator.testAnalysis' | translate }}</h1>
+		</header>
+
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+			<div class="tw-col-span-12 lg:tw-col-span-9">
+				<div class="tw-relative tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg">
+					<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+						<i
+							class="fas fa-percentage tw-cursor-pointer"
+							[ngClass]="{ 'fa-active': percent }"
+							[pTooltip]="'testAnalysis.percentage' | translate"
+							(click)="onTogglePercent()"
+						></i>
+						<i
+							class="fas fa-tag tw-cursor-pointer"
+							[ngClass]="{ 'fa-active': labels }"
+							[pTooltip]="'sessionAnalysis.labels' | translate"
+							(click)="onToggleLabels()"
+						></i>
+						<i
+							*ngIf="viewType === viewTypes.Period && dataPeriod"
+							class="fas fa-file-excel tw-cursor-pointer"
+							[pTooltip]="'surveys.csvDownload' | translate"
+							(click)="downloadCsvDataTrend()"
+						></i>
+						<iterpro-report-download *ngIf="viewType === viewTypes.Period" (downloadPDF)="testAnalysisPeriod?.downloadPeriodReport()" />
+						<iterpro-report-download *ngIf="viewType === viewTypes.Comparison" (downloadPDF)="testAnalysisComparison?.downloadComparisonReport()" (downloadCSV)="testAnalysisComparison.downloadComparisonCsv()" />
+						<i
+							*ngIf="viewType === viewTypes.Comparison"
+							class="fas fa-sort-amount-up tw-cursor-pointer"
+							[ngClass]="{ 'fa-active': order }"
+							[pTooltip]="'sessionAnalysis.order' | translate"
+							(click)="onToggleOrder()"
+						></i>
+					</div>
+					<div>
+						<!-- Comparison -->
+						<iterpro-test-analysis-comparison
+							*ngIf="viewType === viewTypes.Comparison && dataComparison && dataComparison.length > 0"
+							[serverData]="dataComparison"
+							[metrics]="selectedMetricsComparison"
+							[order]="order"
+							[downloadReport]="downloadComparisonReport"
+							[downloadCsv]="downloadCsvDataComparison"
+							[labels]="labels"
+							[percent]="percent"
+							[selectedPlayers]="selectedPlayers"
+						/>
+
+						<!-- Period -->
+						<iterpro-test-analysis-period
+							*ngIf="viewType === viewTypes.Period"
+							[serverData]="dataPeriod"
+							[metrics]="selectedMetricsPeriod"
+							[labels]="labels"
+							[downloadReport]="downloadPeriodReport"
+							[percent]="percent"
+							[selectedPlayerPeriod]="selectedPlayersPeriod"
+						/>
+					</div>
+				</div>
+				@if (viewType === viewTypes.Comparison && testAnalysisComparison) {
+					<!-- Comparison Team Stats -->
+					<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+						<iterpro-table-stats [headers]="testAnalysisComparison.headers" [rows]="testAnalysisComparison.rows">
+							<ng-template #headersTemplate let-headers>
+								<th pFrozenColumn [style.width]="'200px'">{{ 'general.player' | translate }}</th>
+								<th *ngFor="let header of headers; let i = index">
+									{{ header }}
+								</th>
+							</ng-template>
+
+							<ng-template #rowsTemplate let-row>
+								<td
+									*ngFor="let field of row; let i = index"
+									pFrozenColumn
+									[frozen]="i === 0"
+								>
+									{{ field }}
+								</td>
+							</ng-template>
+						</iterpro-table-stats>
+					</div>
+				}
+				@if (viewType === viewTypes.Period && testAnalysisPeriod) {
+					<!-- Period Team Stats -->
+					<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+						<p-table *ngIf="testAnalysisPeriod.serverData"
+										 [scrollable]="true"
+										 [value]="testAnalysisPeriod.serverData.table"
+										 [columns]="testAnalysisPeriod.columns"
+										 [styleClass]="'p-datatable-striped'"
+										 [scrollHeight]="'50vh'">
+							<ng-template pTemplate="header" let-columns>
+								<tr class="tw-h-10">
+									<th pFrozenColumn frozen="true" translate class="tw-min-w-[100px] tw-w-[100px]">players</th>
+									<th *ngFor="let col of testAnalysisPeriod.columnsInDateFormat" class="tw-min-w-[300px] tw-w-[300px]">
+										<span>{{ col | formatDateBySetting }}</span>
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns">
+								<tr class="tw-h-10">
+									<td pFrozenColumn frozen="true" class="tw-min-w-[100px] tw-w-[100px]">
+										<span>{{ testAnalysisPeriod.getPlayerName(rowData.playerId) }}</span>
+									</td>
+									<td *ngFor="let col of columns; let i = index" [pTooltip]="testAnalysisPeriod.getValues(rowData[col])" class="tw-min-w-[300px] tw-w-[300px]">
+										<span>{{ testAnalysisPeriod.getValues(rowData[col]) }}</span>
+									</td>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="emptymessage">
+								<tr class="tw-h-10">
+									<td class="tw-pt-4" colspan="4" translate>alert.noRecordsFound</td>
+								</tr>
+							</ng-template>
+						</p-table>
+				</div>
+				}
+			</div>
+			<!-- Side bar -->
+			<div class="tw-col-span-12 lg:tw-col-span-3">
+				<p-tabView [activeIndex]="viewType" (onChange)="onChangeTab($event)">
+					<!-- COMPARISON -->
+					<p-tabPanel header="{{ 'comparison' | translate }}">
+						<div class="listbox tw-my-2">
+							<div class="spacing add-test">
+								<h3 class="spacing greyed">{{ 'purpose' | translate }}</h3>
+							</div>
+
+							<p-multiSelect
+								[styleClass]="'p-multiselect-icon-only'"
+								[tooltip]="'multiselect.filterByPurpose' | translate"
+								[tooltipPosition]="'bottom'"
+								[options]="purposes"
+								[placeholder]="'multiselect.placeholderPurpose' | translate"
+								selectedItemsLabel="{0} selected"
+								maxSelectedLabels="1"
+								optionLabel="label"
+								optionValue="value"
+								(onChange)="onSelectPurpose($event)"
+							>
+							</p-multiSelect>
+						</div>
+
+						<h3 class="spacing greyed" translate>event.test</h3>
+						<p-dropdown
+							[options]="filteredTests"
+							[(ngModel)]="selectedTest"
+							(onChange)="onSelectTest($event)"
+							[style]="{ width: '100%' }"
+							optionLabel="name"
+							filter="true"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+						>
+							<ng-template let-filteredTest pTemplate="item">
+								<div class="test-list">
+									<span>{{ filteredTest.name }}</span>
+									<div (click)="savePin($event, filteredTest)">
+										<div *ngIf="isTestPinned(filteredTest)" class="hide-solid-pin">
+											<i
+												class="fas fa-thumbtack"
+												pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+												tooltipPosition="bottom"
+											></i>
+										</div>
+										<div *ngIf="isTestPinned(filteredTest)" class="unpinned">
+											<i
+												class="fal fa-thumbtack"
+												pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+												tooltipPosition="bottom"
+											></i>
+										</div>
+										<div *ngIf="!isTestPinned(filteredTest)" class="pin">
+											<i
+												class="fas fa-thumbtack"
+												pTooltip=" {{ 'test.list.star.pin.icon' | translate }} "
+												tooltipPosition="bottom"
+											></i>
+										</div>
+									</div>
+								</div>
+							</ng-template>
+						</p-dropdown>
+
+						<h3 class="spacing greyed" translate>sidebar.date</h3>
+						<p-dropdown
+							[readonly]="!selectedTest"
+							[options]="instances"
+							filter="true"
+							[(ngModel)]="selectedInstance"
+							(onChange)="onSelectInstance()"
+							[style]="{ width: '100%' }"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+						>
+							<ng-template let-item pTemplate="selectedItem">
+								{{ item.date | formatDateBySetting }}
+							</ng-template>
+							<ng-template let-item pTemplate="item">
+								{{ item.date | formatDateBySetting }}
+							</ng-template>
+						</p-dropdown>
+
+						<h3 class="spacing greyed" translate>sidebar.metrics</h3>
+						<p-multiSelect
+							appendTo="body"
+							[selectionLimit]="2"
+							[disabled]="!selectedTest || !selectedInstance"
+							[options]="metrics"
+							[(ngModel)]="selectedMetricsComparison"
+							(onChange)="onSelectMetrics($event)"
+							[placeholder]="'multiselect.placeholder' | translate"
+						></p-multiSelect>
+
+						<h3 class="spacing greyed" translate>players</h3>
+						<p-multiSelect
+							appendTo="body"
+							[disabled]="
+								!playersLoaded || !selectedTest || !selectedInstance || selectedMetricsComparison.length === 0
+							"
+							[options]="players"
+							[(ngModel)]="selectedPlayers"
+							(onChange)="onSelectPlayers()"
+							[style]="{ width: '100%' }"
+							maxSelectedLabels="1"
+							selectedItemsLabel="{0} selected"
+							optionLabel="displayName"
+							placeholder="{{ 'multiselect.placeholder' | translate }}"
+						></p-multiSelect>
+					</p-tabPanel>
+
+					<!-- PERIOD -->
+					<p-tabPanel header="{{ 'sidebar.period' | translate }}" [disabled]="!playersLoaded">
+						<h3 class="spacing greyed">{{ 'players' | translate }}</h3>
+
+						<div>
+							<!-- Players -->
+							<p-multiSelect
+								appendTo="body"
+								[disabled]="!playersPeriodLoaded"
+								[options]="playersPeriod"
+								[(ngModel)]="selectedPlayersPeriod"
+								(onChange)="onSelectPlayerPeriod()"
+								optionLabel="displayName"
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								[placeholder]="'multiselect.placeholder' | translate"
+							></p-multiSelect>
+
+							<!-- Period -->
+							<h3 class="spacing greyed">{{ 'sidebar.period' | translate }}</h3>
+							<p-calendar
+								class="calendar-width-215"
+								showButtonBar="true"
+								[(ngModel)]="periodRange"
+								(onSelect)="onSelectPeriod()"
+								selectionMode="range"
+								[maxDate]="today"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+
+							<!-- Days -->
+							<h3 class="spacing greyed">{{ 'sidebar.counterDays' | translate }}</h3>
+							<span>{{ days }}</span>
+						</div>
+
+						<p-divider></p-divider>
+
+						<!-- TEST 1 -->
+						<div class="tw-mb-4" [ngClass]="{ disabled: selectedMetricsPeriod2.length === 2 }">
+							<!-- TEST 1 -->
+							<h3 class="spacing greyed" style="font-weight: bold">Test 1</h3>
+
+							<h3 class="spacing greyed">{{ 'purpose' | translate }}</h3>
+							<p-multiSelect
+								[disabled]="periodRange?.length < 2"
+								[styleClass]="'p-multiselect-icon-only'"
+								[tooltip]="'multiselect.filterByPurpose' | translate"
+								[tooltipPosition]="'bottom'"
+								[options]="purposes"
+								[placeholder]="'multiselect.placeholderPurpose' | translate"
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								optionLabel="label"
+								optionValue="value"
+								(onChange)="onSelectPurpose1($event)"
+							>
+							</p-multiSelect>
+
+							<h3 class="spacing greyed">{{ 'event.test' | translate }}</h3>
+							<p-dropdown
+								*ngIf="periodRange"
+								[readonly]="periodRange?.length < 2"
+								[options]="filteredTests1"
+								[(ngModel)]="selectedTest1"
+								(onChange)="onSelectTest1($event)"
+								filter="true"
+								optionLabel="name"
+								[placeholder]="'dropdown.placeholder' | translate"
+							>
+							</p-dropdown>
+
+							<h3 class="spacing greyed">{{ 'sidebar.metrics' | translate }}</h3>
+							<p-multiSelect
+								*ngIf="periodRange"
+								appendTo="body"
+								[selectionLimit]="metrics1Limit"
+								[disabled]="periodRange?.length < 2 || !selectedTest || selectedMetricsPeriod2.length === 2"
+								[options]="metrics"
+								[(ngModel)]="selectedMetricsPeriod1"
+								[placeholder]="'multiselect.placeholder' | translate"
+								(onChange)="onSelectMetricsPeriod1($event)"
+							></p-multiSelect>
+						</div>
+
+						<p-divider></p-divider>
+
+						<!-- TEST 2 -->
+						<div class="tw-mb-4" [ngClass]="{ disabled: selectedMetricsPeriod1.length === 2 }">
+							<h3 class="spacing greyed" style="font-weight: bold">Test 2</h3>
+							<h3 class="spacing greyed">{{ 'purpose' | translate }}</h3>
+
+							<p-multiSelect
+								*ngIf="periodRange"
+								[disabled]="periodRange?.length < 2 || selectedMetricsPeriod1.length > 1"
+								[styleClass]="'p-multiselect-icon-only'"
+								[tooltip]="'multiselect.filterByPurpose' | translate"
+								[tooltipPosition]="'bottom'"
+								[options]="purposes"
+								[placeholder]="'multiselect.placeholderPurpose' | translate"
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								optionLabel="label"
+								optionValue="value"
+								(onChange)="onSelectPurpose2($event)"
+							>
+							</p-multiSelect>
+
+							<h3 class="spacing greyed">{{ 'event.test' | translate }}</h3>
+							<p-dropdown
+								*ngIf="periodRange"
+								[readonly]="periodRange?.length < 2 || selectedMetricsPeriod1.length > 1"
+								[options]="filteredTests2"
+								[(ngModel)]="selectedTest2"
+								(onChange)="onSelectTest2($event)"
+								filter="true"
+								optionLabel="name"
+								[placeholder]="'dropdown.placeholder' | translate"
+								[showClear]="true"
+							></p-dropdown>
+
+							<h3 class="spacing greyed">{{ 'sidebar.metrics' | translate }}</h3>
+							<p-multiSelect
+								*ngIf="periodRange"
+								appendTo="body"
+								[selectionLimit]="metrics2Limit"
+								[disabled]="periodRange?.length < 2 || !selectedTest || selectedMetricsPeriod1.length === 2"
+								[options]="metrics2"
+								[(ngModel)]="selectedMetricsPeriod2"
+								[placeholder]="'multiselect.placeholder' | translate"
+								(onChange)="onSelectMetricsPeriod2($event)"
+							></p-multiSelect>
+						</div>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+</div>

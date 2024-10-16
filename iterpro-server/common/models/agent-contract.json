@@ -1,0 +1,39 @@
+{
+	"name": "AgentContract",
+	"plural": "AgentContracts",
+	"base": "Contract",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"conflict": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "contractId",
+				"discriminator": "contractType"
+			},
+			"description": "Agent contract belongs to either an Employment or a Transfer contract"
+		},
+		"agent": {
+			"type": "belongsTo",
+			"model": "Agent",
+			"foreignKey": "agentId"
+		},
+		"fee": {
+			"type": "hasMany",
+			"model": "BasicWage",
+			"property": "fee",
+			"polymorphic": "contract"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

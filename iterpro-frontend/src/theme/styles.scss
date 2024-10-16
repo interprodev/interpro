@@ -1,0 +1,36 @@
+/** Base **/
+@import './base/normalize';
+@import './base/variables';
+@import './base/typography';
+
+/** Layout **/
+@import './layout/custom';
+@import './layout/sport-theme';
+
+/** Vendor **/
+@import './vendor/fresh-widget';
+@import './vendor/primeng';
+@import './vendor/primeflex';
+@import './vendor/override-primeng';
+
+/** Components **/
+@import './components/buttons';
+@import './components/chart';
+@import './components/color-picker';
+@import './components/splash';
+@import './components/tooltip';
+@import './components/badge';
+@import './components/panel';
+
+/** Tailwind **/
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	.iterpro-item-container {
+		@apply tw-rounded tw-border-0.3 tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2;
+	}
+	.iterpro-item-container:has(.ng-dirty.ng-invalid.ng-touched) {
+		@apply tw-border-red-500;
+	}
+}

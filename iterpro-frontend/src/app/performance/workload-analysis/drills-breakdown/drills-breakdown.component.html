@@ -1,0 +1,16 @@
+<div class="tw-block tw-p-2 tw-mb-10 tw-mt-8">
+	<p-chart class="tw-block tw-h-full" *ngIf="data" [height]="'400px'" [data]="data" [options]="options" type="bar"></p-chart>
+</div>
+
+<div class="tw-block">
+	<h4 *ngIf="dataComposition" class="tw-uppercase">{{ 'workload.sessionComposition' | translate }}</h4>
+	<div class="tw-max-w-[800px]">
+		<p-chart
+			class="tw-block"
+			*ngIf="dataComposition"
+			[data]="dataComposition"
+			[options]="optionsComposition"
+			type="bar"
+		></p-chart>
+	</div>
+</div>

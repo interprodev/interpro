@@ -1,0 +1,88 @@
+{
+	"name": "DrillInstance",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"theme": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"sets": {
+			"type": "number"
+		},
+		"reps": {
+			"type": "string"
+		},
+		"count": {
+			"type": "number"
+		},
+		"rest": {
+			"type": "string"
+		},
+		"duration": {
+			"type": "number"
+		},
+		"videoUrl": {
+			"type": "string"
+		},
+		"drillId": {
+			"type": "string"
+		},
+		"index": {
+			"type": "number"
+		},
+		"letter": {
+			"type": "string"
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"event": {
+			"type": "belongsTo",
+			"model": "Event",
+			"foreignKey": ""
+		},
+		"participants": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "participantsIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sharedPlayers": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "sharedPlayerIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sharedStaffs": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"foreignKey": "sharedStaffIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

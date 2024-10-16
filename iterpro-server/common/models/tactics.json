@@ -1,0 +1,85 @@
+{
+	"name": "Tactics",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string",
+			"id": true,
+			"required": true
+		},
+		"p1x": {
+			"type": "number"
+		},
+		"p1y": {
+			"type": "number"
+		},
+		"p2x": {
+			"type": "number"
+		},
+		"p2y": {
+			"type": "number"
+		},
+		"p3x": {
+			"type": "number"
+		},
+		"p3y": {
+			"type": "number"
+		},
+		"p4x": {
+			"type": "number"
+		},
+		"p4y": {
+			"type": "number"
+		},
+		"p5x": {
+			"type": "number"
+		},
+		"p5y": {
+			"type": "number"
+		},
+		"p6x": {
+			"type": "number"
+		},
+		"p6y": {
+			"type": "number"
+		},
+		"p7x": {
+			"type": "number"
+		},
+		"p7y": {
+			"type": "number"
+		},
+		"p8x": {
+			"type": "number"
+		},
+		"p8y": {
+			"type": "number"
+		},
+		"p9x": {
+			"type": "number"
+		},
+		"p9y": {
+			"type": "number"
+		},
+		"p10x": {
+			"type": "number"
+		},
+		"p10y": {
+			"type": "number"
+		},
+		"p11x": {
+			"type": "number"
+		},
+		"p11y": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

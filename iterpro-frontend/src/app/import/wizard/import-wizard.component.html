@@ -1,0 +1,102 @@
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" [class.import-provider]="(provider$ | async) !== 'gps'">
+	<div class="wizard-container">
+		<div class="wizard-line"></div>
+		<div class="wizard-nav-buttons">
+			<div *ngFor="let item of wizardConfiguration; let index = index"
+				[class.unclickable]="(maxNavigablePhase$ | async) < index" (click)="clickPhaseNavigationButtonAction(index)">
+				<i class="circle" type="button" [ngClass]="{
+						activeCircle: (phase$ | async) === index,
+						completedCircle: index <= (maxNavigablePhase$ | async) && (phase$ | async) !== index
+					}">
+					{{ index + 1 }}
+				</i>
+				<span class="label-container" translate>
+					{{ item.label }}
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<ng-container *ngIf="(hasConfigurationProblem$ | async) === false">
+		<div class="top" *ngIf="wizardConfiguration[phase$ | async].description?.length > 0">
+			{{ wizardConfiguration[phase$ | async].description | translate }}
+		</div>
+
+		<div *ngIf="(phase$ | async) === 0">
+			<!-- PHASE 1 -->
+			<ng-container [ngSwitch]="provider$ | async">
+				<iterpro-gps-csv-importer *ngSwitchCase="'gps'" (sessions)="importSessionInfoSourcesAction($event)"
+					(messages)="updateMessagesAction($event)" (cancelImport)="clickCancelButtonAction($event)" />
+
+				<iterpro-import-team-stats *ngSwitchCase="'teamStats'" />
+
+				<iterpro-import-players-stats *ngSwitchCase="'playersStats'" (sessions)="importSessionInfoSourcesAction($event)"
+					(messages)="updateMessagesAction($event)" />
+
+				<iterpro-gps-api-importer *ngSwitchDefault [team]="team" [provider]="provider$ | async"
+					(sessions)="importSessionInfoSourcesAction($event)" />
+			</ng-container>
+		</div>
+		<!-- PHASE 2 -->
+		<div *ngIf="(phase$ | async) === 1" class="top">
+			<iterpro-import-table [table]="source$ | async" [provider]="provider$ | async" [expandable]="true"
+				(update)="updateSessionAssociatedEventAction($event)" />
+		</div>
+		<!-- PHASE 2 -->
+		<div *ngIf="(phase$ | async) === 2" class="file-upload">
+			<iterpro-drill-mapper [drills]="drills$ | async" [splits]="splits$ | async"
+				(update)="updateSplitToDrillAssociationsAction($event)" />
+		</div>
+		<!-- PHASE 3 -->
+		<div *ngIf="(phase$ | async) === 3" class="top finish-message">
+			<i class="success-icon fas fa-check"></i>
+			<br />
+			{{ 'import.imported.success' | translate }}
+		</div>
+	</ng-container>
+
+	<div class="top">
+		<iterpro-import-messages [messages]="messages$ | async" />
+	</div>
+
+	<div class="tw-mt-6 tw-flex tw-items-center tw-justify-end tw-gap-4 tw-border-t-primary-500">
+		<ng-container *ngIf="(hasConfigurationProblem$ | async) === false; else clubSettingsRedirect">
+			<ng-container
+				*ngIf="(provider$ | async) !== 'teamStats' && (provider$ | async) !== 'playersStats'; else tacticalButtons">
+				<button pButton *ngIf="nextEnabled$ | async" [class.disabled-button]="(nextEnabled$ | async) === false"
+								[size]="'small'"
+								class="p-button p-button-danger" type="button" label="{{ 'cancel' | translate }}"
+					(click)="clickCancelButtonAction()"></button>
+				<button pButton *ngIf="(phase$ | async) > 0 && (phase$ | async) < 3" type="button"
+								[outlined]="true"
+					icon="fas fa-chevron-left" label="{{ 'previous' | translate }}"
+								[size]="'small'"
+								class="p-button"
+					(click)="clickPreviousButtonAction()"></button>
+				<button pButton *ngIf="(phase$ | async) < 2" type="button" icon="fas fa-chevron-right"
+					iconPos="right" label="{{ 'next' | translate }}" [size]="'small'" class="p-button"
+					[disabled]="(nextEnabled$ | async) === false" [class.disabled-button]="(nextEnabled$ | async) === false"
+					(click)="clickNextButtonAction()"></button>
+				<button pButton *ngIf="(phase$ | async) === 2" type="button"
+								[size]="'small'"
+								class="p-button p-button-primary"
+					icon="fas fa-cloud-upload" iconPos="right" label="{{ 'upload' | translate }}"
+					(click)="clickUploadAction()"></button>
+			</ng-container>
+		</ng-container>
+		<ng-template #clubSettingsRedirect>
+			<div class="tw-flex tw-items-center tw-gap-4">
+				<button *ngIf="hasGpsConfigurationProblem$ | async" pButton type="button"
+								label="{{ 'home.preferences' | translate }}" [routerLink]="'/settings/teams/integrations'"></button>
+				<button *ngIf="hasSeasonConfigurationProblem$ | async" pButton type="button"
+								label="{{ 'home.clubSettings' | translate }}" routerLink="/settings/club-preferences/general"></button>
+			</div>
+		</ng-template>
+	</div>
+</div>
+
+<ng-template #tacticalButtons>
+	<button pButton class="wizard-button grey-button" type="button"
+		[class.disabled-button]="(nextEnabled$ | async) === false" icon="fas fa-cloud-upload" iconPos="right"
+		label="{{ 'upload' | translate }}" (click)="clickUploadAction()"></button>
+</ng-template>

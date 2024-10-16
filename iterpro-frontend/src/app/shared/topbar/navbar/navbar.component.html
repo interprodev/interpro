@@ -1,0 +1,46 @@
+<ul class="tw-z-50 tw-m-0 tw-flex tw-gap-1 tw-select-none tw-list-none tw-flex-col tw-p-0 lg:tw-flex-row lg:tw-items-center">
+	@for (item of items; track item.id) {
+		@if (item.visible) {
+			<li class="tw-group">
+				<a
+					pRipple
+					class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-12 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+					[routerLink]="item.routerLink"
+					[routerLinkActive]="'selected'"
+					[class.disabled-link]="item.disabled"
+				>
+					<span class="tw-font-medium tw-text-sm">{{ item.label | translate }}</span>
+					@if (item.disabled) {
+						<i class="fas fa-lock tw-ml-1"></i>
+					}
+				</a>
+				<ul
+					class="tw-z-50 tw-m-0 tw-hidden tw-w-full tw-origin-top tw-cursor-pointer tw-list-none tw-rounded
+					tw-bg-shark-950 tw-border-solid tw-border-0.3 tw-border-shark-900 tw-px-12 tw-py-4 tw-shadow-none lg:tw-absolute lg:tw-w-60 lg:tw-px-0 lg:tw-py-0 lg:tw-shadow-lg"
+					[ngClass]="{ 'group-hover:tw-block': !item.disabled }"
+					[class.disabled-link]="item.disabled"
+				>
+					@for (child of item.items[0]; track child.id) {
+						@if (child.visible) {
+							<li class="tw-relative">
+								<a
+									pRipple
+									class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-2 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+									href="#"
+									[routerLink]="child.routerLink"
+									[routerLinkActive]="'selected'"
+									[class.disabled-link]="child.disabled"
+								>
+									<span class="tw-font-medium tw-text-sm">{{ child.label | translate }}</span>
+									@if (child.disabled) {
+										<i class="fas fa-lock tw-ml-1"></i>
+									}
+								</a>
+							</li>
+						}
+					}
+				</ul>
+			</li>
+		}
+	}
+</ul>

@@ -1,0 +1,425 @@
+{
+	"name": "PlayerTransfer",
+	"plural": "PlayerTransfers",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": [
+				"lastName",
+				"name",
+				"firstName",
+				"displayName",
+				"passport",
+				"altPassport",
+				"nationality",
+				"altNationality",
+				"facebook",
+				"twitter",
+				"instagram",
+				"linkedin",
+				"snapchat",
+				"mobilePhone",
+				"otherMobile",
+				"birthDate",
+				"birthPlace",
+				"phone",
+				"email",
+				"school",
+				"education",
+				"address.street",
+				"address.city",
+				"address.state",
+				"address.nation",
+				"address.zipCode",
+				"domicile.street",
+				"domicile.city",
+				"domicile.state",
+				"domicile.nation",
+				"domicile.zipCode",
+				"fiscalIssue",
+				"federalId",
+				"bankAccount.bank",
+				"bankAccount.accountNumber",
+				"bankAccount.routingNumber",
+				"bankAccount.iban",
+				"bankAccount.swift"
+			]
+		}
+	},
+	"properties": {
+		"wyscoutId": {
+			"type": "number"
+		},
+		"wyscoutTeamId": {
+			"type": "number"
+		},
+		"wyscoutSecondaryTeamId": {
+			"type": "number"
+		},
+		"instatId": {
+			"type": "number"
+		},
+		"instatSecondaryTeamId": {
+			"type": "number"
+		},
+		"firstName": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"altNationality": {
+			"type": "string"
+		},
+		"education": {
+			"type": "string"
+		},
+		"school": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date"
+		},
+		"birthPlace": {
+			"type": "string"
+		},
+		"phone": {
+			"type": "string"
+		},
+		"mobilePhone": {
+			"type": "string"
+		},
+		"otherMobile": {
+			"type": "array"
+		},
+		"email": {
+			"type": "string"
+		},
+		"address": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"domicile": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"nationalityOrigin": {
+			"type": "string"
+		},
+		"fiscalIssue": {
+			"type": "string"
+		},
+		"bankAccount": {
+			"type": "object"
+		},
+		"archived": {
+			"type": "boolean",
+			"default": false
+		},
+		"archivedDate": {
+			"type": "date"
+		},
+		"archivedMotivation": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"displayName": {
+			"type": "string"
+		},
+		"shoeSize": {
+			"type": "string"
+		},
+		"captain": {
+			"type": "boolean"
+		},
+		"additionalInfo": {
+			"type": "string"
+		},
+		"inTeamFrom": {
+			"type": "date"
+		},
+		"inTeamTo": {
+			"type": "date"
+		},
+		"facebook": {
+			"type": "string"
+		},
+		"twitter": {
+			"type": "string"
+		},
+		"instagram": {
+			"type": "string"
+		},
+		"linkedin": {
+			"type": "string"
+		},
+		"snapchat": {
+			"type": "string"
+		},
+		"weight": {
+			"type": "number"
+		},
+		"height": {
+			"type": "number"
+		},
+		"position": {
+			"type": "string"
+		},
+		"role1": {
+			"type": ["string"]
+		},
+		"position2": {
+			"type": "string"
+		},
+		"role2": {
+			"type": ["string"]
+		},
+		"position3": {
+			"type": "string"
+		},
+		"role3": {
+			"type": ["string"]
+		},
+		"foot": {
+			"type": "string"
+		},
+		"jersey": {
+			"type": "number"
+		},
+		"valueField": {
+			"type": "string"
+		},
+		"value": {
+			"type": "number"
+		},
+		"transfermarktValue": {
+			"type": "number"
+		},
+		"clubValue": {
+			"type": "number"
+		},
+		"agentValue": {
+			"type": "number"
+		},
+		"wage": {
+			"type": "number"
+		},
+		"contractStart": {
+			"type": "date"
+		},
+		"contractEnd": {
+			"type": "date"
+		},
+		"ageGroup": {
+			"type": "string"
+		},
+		"biography": {
+			"type": "string"
+		},
+		"federalId": {
+			"type": "string"
+		},
+		"federalMembership": {
+			"type": ["object"]
+		},
+		"sportPassport": {
+			"type": ["object"]
+		},
+		"maritalStatus": {
+			"type": "string"
+		},
+		"firstFederalMembership": {
+			"type": "date"
+		},
+		"transferNotesThreads": {
+			"type": ["object"]
+		},
+		"documents": {
+			"type": ["object"]
+		},
+		"notesThreads": {
+			"type": ["object"]
+		},
+		"agent": {
+			"type": "string"
+		},
+		"agentEmail": {
+			"type": "string"
+		},
+		"agentPhone": {
+			"type": "string"
+		},
+		"lastUpdate": {
+			"type": "date"
+		},
+		"lastAuthor": {
+			"type": "string"
+		},
+		"feeFrom": {
+			"type": "number"
+		},
+		"feeTo": {
+			"type": "number"
+		},
+		"wageFrom": {
+			"type": "number"
+		},
+		"wageTo": {
+			"type": "number"
+		},
+		"currentTeam": {
+			"type": "string"
+		},
+		"currentLeague": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		},
+		"clubTransfer": {
+			"type": "belongsTo",
+			"model": "ClubTransfer",
+			"foreignKey": ""
+		},
+		"employmentContracts": {
+			"type": "hasMany",
+			"model": "EmploymentContract",
+			"property": "employmentContracts",
+			"polymorphic": "person"
+		},
+		"transferContracts": {
+			"type": "hasMany",
+			"model": "TransferContract",
+			"property": "transferContracts",
+			"polymorphic": "person"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getAmortizationData": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns values for amortization forecast",
+			"http": {
+				"path": "/:id/amortization",
+				"verb": "get"
+			}
+		},
+		"getActiveContract": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "type",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/current-contract",
+				"verb": "get"
+			},
+			"description": "Returns the current contract of the player, provided the contract type (employment or transfer)"
+		},
+		"getBonuses": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "filters",
+					"type": "object",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/bonuses",
+				"verb": "get"
+			},
+			"description": "Returns all the bonuses of the player transfer"
+		}
+	},
+	"indexes": {
+		"clubTransferId_1": {
+			"keys": {
+				"clubTransferId": 1
+			}
+		}
+	}
+}

@@ -1,0 +1,162 @@
+{
+	"name": "PlayerNotification",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"message": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"date": {
+			"type": "date"
+		},
+		"playerId": {
+			"type": "string"
+		},
+		"read": {
+			"type": "boolean",
+			"default": false
+		},
+		"eventId": {
+			"type": "string"
+		},
+		"img": {
+			"type": "string"
+		},
+		"messageEn": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"customer": {
+			"type": "belongsTo",
+			"model": "CustomerPlayer",
+			"foreignKey": "customerId"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"checkVideoCommentsNotifications": {
+			"accepts": [
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkVideoCommentsNotifications",
+				"verb": "post"
+			}
+		},
+		"checkVideoSharingNotifications": {
+			"accepts": [
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkVideoSharingNotifications",
+				"verb": "post"
+			}
+		},
+		"checkVideoCommentsNotificationsFromPlayerApp": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkVideoCommentsNotificationsFromPlayerApp",
+				"verb": "post"
+			}
+		}
+	}
+}

@@ -1,0 +1,42 @@
+<div>
+	<span *ngIf="!isNew" class="item" [ngClass]="{ current: current, hovered: isHovered(contract.id) }">
+		<iterpro-tiered-menu
+			[iconOnly]="true"
+			[icon]="'fas fa-ellipsis-h'"
+			[menuItems]="dropdownItems"
+		></iterpro-tiered-menu>
+		<div class="contract-container" (click)="itemClicked()" (mouseenter)="onHoverContract(true)"
+			(mouseleave)="onHoverContract(false)">
+			<span class="item-text">
+				<span>{{ 'admin.contracts.contractType' | translate }}:
+					<span style="font-weight: bold">{{
+						contract.personStatus ? ('admin.contracts.type.' + contract.personStatus | translate) : ''
+						}}</span></span>
+			</span>
+			<span class="item-text">
+				<span>{{ 'admin.contracts.from' | translate }}:
+					<span style="font-weight: bold">{{ contract.dateFrom || contract.on | formatDateBySetting }}</span></span>
+			</span>
+			<span *ngIf="contractType === 'employment'" class="item-text">
+				<span>{{ 'admin.contracts.to' | translate }}:
+					<span style="font-weight: bold">{{ contract.dateTo | formatDateBySetting }}</span></span>
+			</span>
+			<span class="item-text" *ngIf="personType !== 'Staff'">
+				<span>{{ 'admin.contracts.agent' | translate }}:
+					<span style="font-weight: bold">{{ contractAgentsLabel }}</span>
+				</span>
+			</span>
+			<span class="bottom-icon">
+				<span *ngIf="isHovered(contract.id)" class="renew-label" translate>renewed</span>
+				<i *ngIf="contract.renew" class="fas fa-paste" style="margin-left: 1em"
+					[pTooltip]="'admin.contracts.renew' | translate"></i>
+				<span class="invalid-contract" *ngIf="!valid" [pTooltip]="'admin.contracts.incomplete' | translate">
+					<i class="fas fa-exclamation-triangle"></i>
+				</span>
+			</span>
+		</div>
+	</span>
+	<span *ngIf="isNew" (click)="itemClicked()" class="item" style="justify-content: center; align-items: center">
+		<i class="fas fa-plus" style="font-size: 3em"></i>
+	</span>
+</div>

@@ -1,0 +1,92 @@
+<div [formGroup]="seasonForm" class="tw-relative tw-h-full">
+	<div class="tw-flex tw-items-center tw-justify-between tw-py-8">
+		<iterpro-dialog-header [title]="header"></iterpro-dialog-header>
+		<iterpro-action-buttons [buttonTypes]="clubSeason?.id ? (seasonForm.dirty ? ['delete'] : ['discard', 'delete']) : (seasonForm.dirty ? [] : ['discard'])"
+														[editMode]="true" [discardLabel]="'buttons.close'" [discardIcon]="null"
+														[deleteAskConfirmation]="true"
+														[deleteConfirmationMessage]="'confirm.deleteSeason'"
+														(discard)="onDiscard()" (delete)="onDelete()">
+		</iterpro-action-buttons>
+	</div>
+	@if (seasonForm) {
+		<!-- General -->
+		<div class="tw-flex tw-justify-between tw-mb-4">
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>season.name</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<input class="tw-w-min" pInputText formControlName="name">
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'name'" [label]="'season.name' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>season.start</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-calendar class="tw-w-min" formControlName="start"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback class="tw-mt-1" [clickedCondition]="saveClicked" [field]="'start'" [label]="'season.start' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>season.end</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-calendar class="tw-w-min" formControlName="end" [minDate]="seasonForm.controls.start.value"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback class="tw-mt-1" [clickedCondition]="saveClicked" [field]="'end'" [label]="'season.end' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+		</div>
+	}
+	@if (orgType !== 'agent') {
+		<!-- Market Windows -->
+		<div>
+			<div class="tw-text-sm iterpro-text-color-900" translate>club.season.marketWindows</div>
+			<div class="tw-mt-2">
+				<p-table [value]="seasonForm.controls._transferWindows.controls" [scrollable]="true" [styleClass]="'overflowVisibleTable p-datatable-gridlines'">
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th translate>Name</th>
+							<th class="table-header" translate>season.start</th>
+							<th class="table-header" translate>season.end</th>
+							<th class="table-header" translate>Budget</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-control>
+						<tr [formGroup]="control" class="tw-h-10 tw-cursor-pointer">
+							<td>
+								<input class="tw-w-min" pInputText formControlName="name">
+								<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'name'" [label]="'Name' | translate"></iterpro-form-feedback>
+							</td>
+							<td>
+								<p-calendar class="tw-w-min" formControlName="start"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+								<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'start'" [label]="'season.start' | translate"></iterpro-form-feedback>
+							</td>
+							<td>
+								<p-calendar class="tw-w-min" formControlName="end" [minDate]="control.get('start').value"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+								<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'end'" [label]="'season.end' | translate"></iterpro-form-feedback>
+							</td>
+							<td>
+								<span>{{ currencyCode }}</span>
+								<input class="tw-w-min" pInputText formControlName="budget" type="text" iterproMask>
+								<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'budget'" [label]="'Budget' | translate"></iterpro-form-feedback>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</div>
+	}
+	@if (seasonForm.dirty) {
+		<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()" [confirmAskConfirmation]="true"></iterpro-dialog-footer-buttons>
+	}
+</div>

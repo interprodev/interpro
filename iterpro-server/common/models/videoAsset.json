@@ -1,0 +1,148 @@
+{
+	"name": "VideoAsset",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"category": {
+			"type": "string"
+		},
+		"title": {
+			"type": "string"
+		},
+		"subtitle": {
+			"type": "string"
+		},
+		"tags": {
+			"type": "array"
+		},
+		"notesThreads": {
+			"type": ["object"],
+			"default": []
+		},
+		"duration": {
+			"type": "number"
+		},
+		"tacticType": {
+			"type": "string"
+		},
+		"creationDate": {
+			"type": "date"
+		},
+		"authorId": {
+			"type": "string"
+		},
+		"author": {
+			"type": "any"
+		},
+		"linkedModel": {
+			"type": "string"
+		},
+		"linkedId": {
+			"type": "any"
+		},
+		"linkedObject": {
+			"type": "any"
+		},
+		"teamId": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"players": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "playerIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sharedPlayers": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "sharedPlayerIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"staffs": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"foreignKey": "staffIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sharedStaffs": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"foreignKey": "sharedStaffIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"videoFile": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"property": "videoFile",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"thumb": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"property": "thumb",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getPlayerVideos": {
+			"accepts": [
+				{
+					"arg": "linkedId",
+					"type": "string"
+				},
+				{
+					"arg": "linkedModel",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/playerVideos",
+				"verb": "post"
+			}
+		}
+	}
+}

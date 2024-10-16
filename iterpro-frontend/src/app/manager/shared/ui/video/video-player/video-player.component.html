@@ -1,0 +1,147 @@
+<header class="header">
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<h2>
+			{{ video.title }}
+		</h2>
+		<div *ngIf="video.category === 'GAMES'" class="tw-flex tw-items-baseline tw-gap-4">
+			<p-button
+				size="small"
+				[rounded]="true"
+				icon="fas fa-calendar"
+				pTooltip="{{ 'to.planning.redirect' | translate }}"
+				(click)="goToPlanning()"
+			></p-button>
+			<div *ngIf="!isInTactics()">
+				<iterpro-redirect-icon path="/manager/tactics" [params]="getLinkParams()" tooltip="to.tactics.redirect" />
+			</div>
+		</div>
+		<div *ngIf="video.category === 'TRAINING' && !!video.linkedId" class="tw-flex tw-items-center tw-gap-4">
+			<p-button
+				size="small"
+				[rounded]="true"
+				icon="fas fa-calendar"
+				pTooltip="{{ 'to.planning.redirect' | translate }}"
+				(click)="goToPlanning()"
+			></p-button>
+			<div class="redirect-icon redirect-icon-bg">
+				<iterpro-redirect-icon
+					path="/performance/session-analysis"
+					[params]="getLinkParams()"
+					tooltip="to.sessionAnalysis.redirect"
+				/>
+			</div>
+			<div class="redirect-icon redirect-icon-bg">
+				<img
+					class="workload-icon"
+					pTooltip="{{ 'to.workloadAnalysis.redirect' | translate }}"
+					src="/assets/img/custom-icons/workload_analysis_icon.png"
+					alt="workload analysis"
+					[routerLink]="['/performance/workload-analysis', getLinkParams()]"
+				/>
+			</div>
+			<p-button
+				size="small"
+				[rounded]="true"
+				icon="fas fa-folder-open"
+				(click)="uploadDialogVisibility = true"
+				[pTooltip]="
+					video?._attachments?.length > 0
+						? ('dialog.file.showDialog' | translate) + ' (' + video?._attachments?.length + ')'
+						: ('dialog.file.noFileAttached' | translate)
+				"
+			></p-button>
+		</div>
+	</div>
+	<div class="header-buttons">
+		<p-button size="small" styleClass="p-button-contrast" (click)="editVideo()" class="spaced-right" [label]="'buttons.edit' | translate"></p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="closePlayer()" type="button" [label]="'buttons.back' | translate"></p-button>
+	</div>
+</header>
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg tw-p-2">
+	<div class="video-data spaced-bottom">
+		<p-button
+			[rounded]="true"
+			icon="fa-solid fa-chevron-left"
+			class="left-arrow p-button-raised"
+			(click)="previousVideo()"
+		></p-button>
+		<div class="info-container">
+			<div class="flex-baseline chip-container" style="width: 100%; justify-content: space-between">
+				<div class="flex-baseline" *ngIf="!!video?.subtitle">
+					<span class="chip-label"> <span translate>videogallery.form.label.description</span>: </span>
+					<span class="video-subtitle">{{ video.subtitle }}</span>
+				</div>
+				<div class="flex-baseline">
+					<span class="chip-label"> <span translate>tooltip.author</span>: </span>
+					<span class="video-subtitle">{{ video?.authorId | customerName: customers }}</span>
+				</div>
+			</div>
+			<div class="flex-baseline chip-container" *ngIf="videoPlayers.length > 0">
+				<span translate class="chip-label"><span translate>videogallery.form.label.players</span>:</span>
+				<span *ngFor="let player of videoPlayers" class="video-chip" [class.selected]="videoHasPlayerTagged(player)">
+					{{ player.displayName }}
+				</span>
+			</div>
+			<div class="flex-baseline chip-container themed-chips" *ngIf="videoTags.length > 0">
+				<span translate class="chip-label"><span translate>videogallery.form.label.tags</span>:</span>
+				<span *ngFor="let tag of videoTags" class="video-chip" [class.selected]="videoHasTag(tag)">
+					{{ tag }}
+				</span>
+			</div>
+			<div class="flex-baseline chip-container themed-chips" *ngIf="sharedPeople.length > 0">
+				<span translate class="chip-label"><span translate>videogallery.category.sharedwith</span>:</span>
+				<span *ngFor="let people of sharedPeople" class="video-chip shared-with">
+					{{ people }}
+				</span>
+			</div>
+		</div>
+		<p-button
+			[rounded]="true"
+			icon="fa-solid fa-chevron-right"
+			class="right-arrow p-button-raised"
+			(click)="nextVideo()"
+		></p-button>
+	</div>
+	<div class="main-container">
+		<div class="video-container">
+			<div class="download-container">
+				<i class="fas fa-download" [title]="'dialog.file.link' | translate" (click)="downloadVideo()"></i>
+			</div>
+			<vg-player (onPlayerReady)="onVideoPlayerReady($event)" *ngIf="!reloading">
+				<vg-buffering></vg-buffering>
+
+				<video
+					[vgMedia]="media"
+					class="player"
+					#media
+					preload="auto"
+					autoplay="true"
+					crossorigin
+					controls
+					controlsList="nodownload"
+				>
+					<source [src]="source | azureUrl" id="myvideo" />
+					Sorry, your browser doesn't support HTML5 <code>video</code>.
+				</video>
+			</vg-player>
+		</div>
+
+		<div class="comments-container" translate>
+			<h4>{{ 'tactics.videoplayer.comments' | translate }} ({{ getNumberOfComments() }})</h4>
+			<iterpro-vertical-comment-threaded
+				[comments]="video.notesThreads"
+				[editMode]="true"
+				(onUpdate)="updateComments($event)"
+			/>
+		</div>
+	</div>
+</div>
+
+<iterpro-multiple-file-upload
+	*ngIf="uploadDialogVisibility"
+	[visible]="uploadDialogVisibility"
+	[editMode]="true"
+	[attachmentModel]="video._attachments"
+	(save)="saveAttachments($event)"
+	(discard)="uploadDialogVisibility = false"
+/>

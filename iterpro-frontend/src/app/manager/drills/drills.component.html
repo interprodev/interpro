@@ -1,0 +1,235 @@
+<div class="main tw-mt-8">
+	<div>
+		<header>
+			<!-- Toolbar -->
+			<div class="tw-mb-4 tw-flex tw-items-center tw-justify-between">
+				<!-- Main Title -->
+				<h1 translate>drills</h1>
+				@if (!selectedDrill) {
+					<div class="tw-flex tw-gap-4">
+						@if (activeViewType.id === viewModes.Card) {
+							<!-- Search Bar -->
+							<div class="tw-flex tw-items-center tw-gap-4 tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2">
+								<div class="tw-relative tw-w-full tw-rounded tw-shadow-lg">
+									<input
+										type="text"
+										class="tw-w-80 tw-border-shark-800 tw-text-shark-200 tw-placeholder-shark-200 tw-transition-colors"
+										[placeholder]="'drillSearch.title' | translate"
+										[(ngModel)]="searchFilterWords"
+										(input)="searchDrills($event)"
+									/>
+									<i class="fas fa-search tw-absolute tw-right-0 tw-top-0 tw-m-1 tw-text-shark-200"></i>
+								</div>
+							</div>
+						}
+						@if (activeViewType.id !== viewModes.Stats) {
+							<!-- Download Csv / Filters / Legend -->
+							<div class="tw-flex tw-items-center tw-gap-6 tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2">
+								<iterpro-report-download
+									(downloadCSV)="downloadCSV()"
+								/>
+								<iterpro-csv-upload-download
+									(downloadEmptyCSV)="downloadEmptyCsv()"
+									(uploadCSV)="inputjson.click()"
+									*ngIf="activeViewType.id !== viewModes.Stats"
+								/>
+								<input
+									type="file"
+									#inputjson
+									accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+									style="display: none"
+									(change)="fileChanged($event)"
+								/>
+								<iterpro-icon-button
+									[icon]="showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+									[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+									(click)="showFilters = !showFilters"
+								>
+								</iterpro-icon-button>
+							</div>
+						}
+						<!-- Card View / List View -->
+						<div class="tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1">
+							<p-tabMenu [model]="viewTypes" [activeItem]="activeViewType">
+								<ng-template pTemplate="item" let-item>
+									@if (item.id === viewModes.Canvas) {
+										<a class="p-menuitem-link tw-px-2 tw-py-1" [pTooltip]="item.label | translate">
+											<svg class="drill-canvas-svg" viewBox="0 0 297 297" [pTooltip]="item.label | translate">
+												<g>
+													<path
+														d="m16.173,92.554l24.624-24.624 24.623,24.624c1.85,1.849 4.274,2.774 6.699,2.774s4.849-0.925 6.699-2.774c3.7-3.7 3.7-9.699 0-13.399l-24.622-24.623 24.623-24.623c3.7-3.7 3.7-9.699 0-13.399-3.701-3.699-9.698-3.699-13.399,0l-24.623,24.623-24.624-24.624c-3.701-3.699-9.698-3.699-13.399,0-3.7,3.7-3.7,9.699 0,13.399l24.623,24.623-24.622,24.624c-3.7,3.7-3.7,9.699 1.33227e-15,13.399 1.85,1.849 4.274,2.774 6.699,2.774s4.849-0.925 6.699-2.774z"
+													/>
+													<path
+														d="m204.11,204.446c-3.701-3.699-9.698-3.699-13.399,0l-24.623,24.623-24.624-24.623c-3.701-3.699-9.698-3.699-13.399,0-3.7,3.701-3.7,9.699 0,13.399l24.624,24.623-24.624,24.624c-3.7,3.7-3.7,9.699 0,13.399 1.85,1.849 4.274,2.774 6.699,2.774 2.425,0 4.849-0.925 6.699-2.774l24.624-24.624 24.623,24.623c1.85,1.849 4.274,2.774 6.699,2.774 2.425,0 4.849-0.925 6.699-2.774 3.7-3.701 3.7-9.699 0-13.399l-24.623-24.623 24.623-24.623c3.702-3.7 3.702-9.7 0.002-13.399z"
+													/>
+													<path
+														d="m204.848,71.597l-38.207-33.213c-3.949-3.434-9.933-3.013-13.365,0.935-3.433,3.949-3.014,9.932 0.935,13.365l20.262,17.614c-59.804,7.822-95.214,39.074-114.899,65.49-18.186,24.404-26.156,48.415-29.026,59 1.891-0.251 3.815-0.394 5.773-0.394 4.696,0 9.217,0.755 13.459,2.136 3.162-10.426 10.559-30.26 25.443-50.029 24.639-32.726 58.867-51.999 101.926-57.48l-18.88,21.719c-3.433,3.949-3.014,9.932 0.935,13.365 1.794,1.56 4.008,2.324 6.211,2.324 2.648,0 5.281-1.104 7.154-3.259l33.213-38.208c3.434-3.949 3.015-9.932-0.934-13.365z"
+													/>
+													<path
+														d="m36.322,209.998c-15.436,0-27.995,12.558-27.995,27.995 0,15.437 12.558,27.996 27.995,27.996 15.437,0 27.996-12.559 27.996-27.996 0-15.437-12.559-27.995-27.996-27.995z"
+													/>
+													<path
+														d="m269.005,48.91c-15.437,0-27.996,12.558-27.996,27.995 0,15.437 12.558,27.996 27.996,27.996 15.436,0 27.995-12.558 27.995-27.996 0-15.436-12.558-27.995-27.995-27.995z"
+													/>
+												</g>
+											</svg>
+										</a>
+									} @else {
+										<a class="p-menuitem-link tw-px-2 tw-py-1" [pTooltip]="item.label | translate">
+											<fa-icon [icon]="item.faIcon"></fa-icon>
+										</a>
+									}
+								</ng-template>
+							</p-tabMenu>
+						</div>
+					</div>
+				} @else {
+					@if (!getEditMode()) {
+						<div class="tw-flex tw-gap-4">
+							<p-button
+								[size]="'small'"
+								styleClass="p-button-contrast"
+								(click)="back()"
+								[label]="'buttons.close' | translate"
+							></p-button>
+						</div>
+					}
+				}
+			</div>
+		</header>
+		<!-- Add Drill -->
+		<div
+			class="tw-mb-4 tw-flex tw-items-center tw-justify-end"
+			*ngIf="!selectedDrill && !getEditMode() && activeViewType.id !== viewModes.Stats"
+		>
+			<p-button
+				size="small"
+				[icon]="'fas fa-plus'"
+				[label]="'buttons.addNew' | translate"
+				styleClass="p-button-contrast"
+				(click)="newDrill()"
+			></p-button>
+		</div>
+
+		<div
+			class="tw-grid tw-grid-cols-12 tw-gap-4"
+			*ngIf="activeViewType.id === viewModes.Card || activeViewType.id === viewModes.List"
+		>
+			<!-- Main Content -->
+			<div class="tw-col-span-10" [class.tw-col-span-12]="!selectedDrill">
+				<div
+					class="tw-mb-4 tw-rounded tw-bg-shark-950 tw-bg-opacity-85 tw-p-4"
+					[class.filters-container-opened]="showFilters"
+					[hidden]="!(activeViewType.id === viewModes.Card && !selectedDrill && showFilters)"
+				>
+					<iterpro-drills-filters
+						*ngIf="drillsMapping && drillFiltersListMapping"
+						[config]="drillFiltersConfig"
+						[drillsMapping]="drillsMapping"
+						[drillFiltersListMapping]="drillFiltersListMapping"
+						(filtersChanged)="applyDrillFilters($event)"
+					/>
+				</div>
+				<div
+					[class.card-list-detail-container-filters-opened]="showFilters && activeViewType.id === viewModes.Card"
+					*ngIf="isLoading || filteredDrillsList.length > 0 || selectedDrill; else emptyDrillList"
+				>
+					<div class="tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-5" [hidden]="!selectedDrill">
+						<iterpro-drill-detail
+							*ngIf="selectedDrill"
+							[class.view-mode]="!getEditMode()"
+							[isLoading]="isLoading$ | async"
+							[customers]="customers"
+							[currentDrill]="selectedDrill"
+							[radarData]="radarData$ | async"
+							[radarOptions]="radarOptions$ | async"
+							[drillsNumber]="drillsNumber$ | async"
+							[drillsMapping]="drillsMapping"
+							[drills]="drillListBackup"
+							(closeClicked)="back()"
+							(loadDrills)="getDrills($event?.selectedDrill)"
+						/>
+					</div>
+					<div [hidden]="selectedDrill">
+						<div
+							class="drill-card-view-grid tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-5"
+							*ngIf="activeViewType.id === viewModes.Card"
+						>
+							<ng-container *ngIf="!isLoading; else showCardLoading">
+								<iterpro-drill-card
+									*ngFor="let drill of filteredDrillsList"
+									[item]="drill.value"
+									(click)="selectDrill(drill)"
+									[customers]="customers"
+								/>
+							</ng-container>
+							<ng-template #showCardLoading>
+								<iterpro-drill-card *ngFor="let item of 50 | arrayFromNumber" [isLoading]="true" />
+							</ng-template>
+						</div>
+						<div *ngIf="activeViewType.id === viewModes.List">
+							<iterpro-drills-search
+								*ngIf="drillsMapping && drillFiltersListMapping"
+								[isDialog]="false"
+								[rowSelectable]="false"
+								[showFilters]="showFilters"
+								[showColumnFilters]="true"
+								[drills]="drillListBackup"
+								[drillsMapping]="drillsMapping"
+								[drillFiltersConfig]="drillFiltersConfig"
+								(rowClicked)="selectDrill({ value: $event })"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Empty Drill List -->
+			<ng-template #emptyDrillList>
+				<div
+					class="content"
+					style="min-height: 250px; background-color: var(--color-bg-600); padding: 1em; min-width: 300px"
+				>
+					<div style="width: 100%; align-items: center; display: flex; justify-content: center; height: 100%">
+						<div class="text-center">{{ 'drills.emptyList' | translate }}</div>
+						&nbsp;
+						<i style="cursor: pointer; float: right; display: flex; justify-content: center" (click)="newDrill()">{{
+							'drills.createNewOne' | translate
+						}}</i>
+					</div>
+				</div>
+			</ng-template>
+			<!-- Siderbar Listbox -->
+			<div class="tw-col-span-2 tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-2" *ngIf="selectedDrill">
+				<p-accordion expandIcon="fas fa-filter">
+					<p-accordionTab
+						[header]="'videogallery.filters' | translate"
+						[pTooltip]="'buttons.showFilters' | translate"
+						[tooltipPosition]="'bottom'"
+					>
+						<iterpro-drills-filters
+							*ngIf="drillsMapping && drillFiltersListMapping"
+							[cols]="1"
+							[config]="drillFiltersConfig"
+							[drillsMapping]="drillsMapping"
+							[drillFiltersListMapping]="drillFiltersListMapping"
+							(filtersChanged)="applyDrillFilters($event)"
+						/>
+					</p-accordionTab>
+				</p-accordion>
+				<div>
+					<p-listbox
+						[options]="filteredDrillsList"
+						[listStyle]="{ 'max-height': '70vh' }"
+						[style]="{ width: '100%' }"
+						(onChange)="selectDrill($event.value)"
+						[(ngModel)]="selectedDrill"
+						optionLabel="label"
+						[filter]="true"
+						class="drillList"
+					>
+					</p-listbox>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

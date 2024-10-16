@@ -1,0 +1,8 @@
+.disabled-link {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.selected {
+	@apply tw-bg-shark-800 tw-text-white #{!important};
+}

@@ -1,0 +1,150 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.userPreferences'" [title]="'profile.personal'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="contactsForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+@if (!isLoading) {
+	<div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-12 tw-gap-8 tw-mt-8">
+		<div class="sm:tw-col-span-12 lg:tw-col-span-3 xl:tw-col-span-3 2xl:tw-col-span-2">
+			<div class="profile-picture tw-rounded tw-flex tw-justify-center">
+				<iterpro-picture [photoUrl]="contactsForm.get('downloadUrl').value" class="tw-block tw-w-40 lg:tw-h-full" (click)="onProfilePictureClicked()"/>
+				@if (editMode && contactsForm.get('downloadUrl').value) {
+					<div class="profile-picture-overlay">
+						<iterpro-icon-button [icon]="'fas fa-trash'" [tooltip]="'buttons.delete' | translate" (click)="deleteImage()"></iterpro-icon-button>
+					</div>
+				}
+			</div>
+			@if (editMode) {
+				<div class="tw-mt-2">
+					<iterpro-cloud-upload [crop]="true" (completedEmitter)="onUpload($event)"
+																[label]="'upload' | translate" [maxFileSize]="1000000" [spinner]="true" accept="image/*" />
+				</div>
+			}
+		</div>
+		<div class="sm:tw-col-span-12 lg:tw-col-span-9 xl:tw-col-span-6 2xl:tw-col-span-4">
+			<form [formGroup]="contactsForm">
+				<div class="tw-mb-6">
+					<h4 class="tw-pb-3 tw-uppercase" translate>profile.personal</h4>
+					<div class="tw-flex tw-flex-col">
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.general.personal.name</span>
+							</div>
+							<div class="tw-col-span-2">
+								<input class="tw-text-sm" type="text" pInputText formControlName="firstName" />
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'firstName'" [label]="'settings.general.personal.name' | translate"></iterpro-form-feedback>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.general.personal.surname</span>
+							</div>
+							<div class="tw-col-span-2">
+								<input class="tw-text-sm" type="text" pInputText formControlName="lastName" />
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'lastName'" [label]="'settings.general.personal.surname' | translate"></iterpro-form-feedback>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container" formGroupName="teamSettings">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.general.pesonal.position</span>
+							</div>
+							<div class="tw-col-span-2">
+								<label class="tw-text-sm" translate>{{ contactsForm.get('teamSettings.position').value }}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tw-mb-6">
+					<h4 class="tw-pb-3 tw-uppercase" translate>settings.contacts</h4>
+					<div class="tw-flex tw-flex-col">
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.contacts.telephone</span>
+							</div>
+							<div class="tw-col-span-2">
+								<input class="tw-text-sm" type="text" pInputText formControlName="telephone" />
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'telephone'" [label]="'settings.contacts.telephone' | translate"></iterpro-form-feedback>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>permissions.email</span>
+							</div>
+							<div class="tw-col-span-2">
+								<input class="tw-text-sm" type="email" pInputText formControlName="email" />
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'email'" [label]="'Email' | translate"></iterpro-form-feedback>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<h4 class="tw-pb-3 tw-uppercase" translate>settings.preferences</h4>
+					<div class="tw-flex tw-flex-col tw-gap-2">
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.preferences.language</span>
+							</div>
+							<div class="tw-col-span-2">
+								<p-dropdown formControlName="currentLanguage"
+														[options]="languagesOptions"
+														(onChange)="onLanguageSelect($event)"
+														[filter]="true" filterBy="label,value.value"
+														[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+														[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+									<ng-template let-lang pTemplate="selectedItem">
+										<span class="fi" [ngClass]="lang.value | langToFlag"></span>
+										<span class="tw-ml-2">{{ lang.label | translate }}</span>
+									</ng-template>
+									<ng-template let-lang pTemplate="item">
+										<span class="fi" [ngClass]="lang.value | langToFlag"></span>
+										<span class="tw-ml-2">{{ lang.label | translate }}</span>
+									</ng-template>
+								</p-dropdown>
+							</div>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.preferences.dateFormat</span>
+							</div>
+							<div class="tw-col-span-2">
+								<p-dropdown formControlName="currentDateFormat"
+														[class]="'dateFormat-dropdown'"
+														[options]="dateFormatOptions"
+														[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+														[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+								</p-dropdown>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+}
+@else {
+	<div class="tw-grid tw-grid-cols-12 tw-gap-8 tw-mt-8">
+		<div class="tw-col-span-2">
+			<p-skeleton size="10rem"></p-skeleton>
+		</div>
+		<div class="tw-col-span-4 tw-flex tw-flex-col tw-gap-8">
+			<iterpro-skeleton-grid [columns]="2" [rows]="3" [showTitle]="true"></iterpro-skeleton-grid>
+			<iterpro-skeleton-grid [columns]="2" [rows]="2" [showTitle]="true"></iterpro-skeleton-grid>
+			<iterpro-skeleton-grid [columns]="2" [rows]="2" [showTitle]="true"></iterpro-skeleton-grid>
+		</div>
+	</div>
+}

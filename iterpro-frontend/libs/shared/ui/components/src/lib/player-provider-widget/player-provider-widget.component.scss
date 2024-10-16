@@ -1,0 +1,15 @@
+.provider-widget {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	color: var(--color-primary-500);
+	rotate: 45deg;
+	font-size: 0.9rem;
+}
+.size-small {
+	font-size: 0.5rem;
+}
+
+.isMappedForAllProviders {
+	color: var(--color-primary-600);
+}

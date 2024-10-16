@@ -1,0 +1,76 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.clubPreferences'" [title]="'admin.dashboard.finance'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="financeForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="confirmSave()"></iterpro-action-buttons>
+</div>
+@if (!isLoading) {
+	<div class="tw-grid tw-grid-cols-12 tw-mt-8">
+		<div class="tw-col-span-12 lg:tw-col-span-6" [formGroup]="financeForm">
+			<h4 class="tw-pb-3 tw-uppercase" translate>club.settings.financial</h4>
+			<div class="tw-flex tw-flex-col">
+				<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-1">
+						<span class="tw-text-sm iterpro-text-color-900" translate>club.currency</span>
+					</div>
+					<div class="tw-col-span-2">
+						<p-dropdown
+							formControlName="currency"
+							[options]="currencies"
+							[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+							[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</div>
+				</div>
+				<div class="tw-my-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'currency'" [label]="'club.currency' | translate"></iterpro-form-feedback>
+				</div>
+
+				<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-1">
+						<span class="tw-text-sm iterpro-text-color-900" translate>club.taxes</span>
+					</div>
+					<div class="tw-col-span-2">
+						<input class="tw-text-sm" type="number" pInputText formControlName="taxes" />
+					</div>
+				</div>
+				<div class="tw-my-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'taxes'" [label]="'club.taxes' | translate"></iterpro-form-feedback>
+				</div>
+
+				<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-1">
+						<span class="tw-text-sm iterpro-text-color-900" translate>club.vat</span>
+					</div>
+					<div class="tw-col-span-2">
+						<input class="tw-text-sm" type="number" pInputText formControlName="vat" />
+					</div>
+				</div>
+				<div class="tw-my-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'vat'" [label]="'club.vat' | translate"></iterpro-form-feedback>
+				</div>
+
+				<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-1">
+						<span class="tw-text-sm iterpro-text-color-900" translate>club.paymentFrequency</span>
+					</div>
+					<div class="tw-col-span-2">
+						<p-dropdown
+							formControlName="paymentFrequency"
+							[options]="frequencies"
+							[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+							[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</div>
+				</div>
+				<div class="tw-my-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'paymentFrequency'" [label]="'settings.landingPage' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+		</div>
+	</div>
+} @else {
+	<div class="tw-mt-8">
+		<iterpro-skeleton-grid [columns]="2" [rows]="4" [span]="3" [showTitle]="true"></iterpro-skeleton-grid>
+	</div>
+}

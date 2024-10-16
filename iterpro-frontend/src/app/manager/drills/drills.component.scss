@@ -1,0 +1,29 @@
+.col-main {
+	position: relative;
+}
+.sidebar {
+	padding: 0.5em 0 1em 0;
+}
+.drillList {
+	width: 100%;
+}
+
+.filters-container-opened {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.card-list-detail-container-filters-opened {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+.drill-card-view-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	row-gap: 6px;
+	column-gap: 6px;
+}
+
+.drill-canvas-svg {
+	@apply tw-w-[1.2rem] tw-text-[1.2rem] tw-text-white tw-fill-white;
+}

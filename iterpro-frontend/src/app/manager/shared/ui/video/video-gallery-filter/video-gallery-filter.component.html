@@ -1,0 +1,81 @@
+<ng-container>
+	<div class="tw-mt-2 tw-mb-2 tw-px-4 tw-py-2 tw-bg-shark-900 tw-opacity-85 tw-rounded">
+		<div class="tw-flex tw-items-center tw-justify-start tw-flex-wrap tw-gap-2.5">
+			<div class="tw-flex tw-items-center" *ngIf="controls?.text">
+				<input
+					pInputText
+					type="text"
+					placeholder="{{ 'videogallery.search.placeholder' | translate }}"
+					[iterproAutofocus]="focus"
+					[(ngModel)]="searchText"
+					(input)="onInput($event)"
+					class="tw-text-sm"
+				/>
+			</div>
+			<span class="filter-check" *ngIf="controls?.home">
+				<label translate>sidebar.homeValue</label>
+				<p-checkbox [ngModel]="status.home" (onChange)="filterHome($event)" binary="true"></p-checkbox>
+			</span>
+			<span class="filter-check" *ngIf="controls?.away">
+				<label translate>sidebar.awayValue</label>
+				<p-checkbox [ngModel]="status.away" (onChange)="filterAway($event)" binary="true"></p-checkbox>
+			</span>
+			<span class="filter-switch" *ngIf="controls?.opponents">
+				<label translate>sidebar.opponent</label>
+				<p-multiSelect
+					[options]="opponentOptions"
+					optionLabel="opponent"
+					[(ngModel)]="status.opponents"
+					placeholder="{{ 'multiselect.placeholder' | translate }}"
+					(onChange)="emitFilterValues()"
+					class="video-filter"
+					appendTo="body"
+				></p-multiSelect>
+			</span>
+			<span class="filter-switch" *ngIf="controls?.date">
+				<label translate>date</label>
+				<p-multiSelect
+					optionLabel="formattedDate"
+					[options]="dateOptions"
+					[(ngModel)]="status.dates"
+					placeholder="{{ 'multiselect.placeholder' | translate }}"
+					(onChange)="emitFilterValues()"
+					class="video-filter"
+					appendTo="body"
+				>
+				</p-multiSelect>
+			</span>
+			<span class="filter-switch" *ngIf="controls?.tags">
+				<label>Tags</label>
+				<p-multiSelect
+					[options]="tagOptions"
+					[(ngModel)]="status.tags"
+					placeholder="{{ 'multiselect.placeholder' | translate }}"
+					(onChange)="emitFilterValues()"
+					class="video-filter"
+					appendTo="body"
+				></p-multiSelect>
+			</span>
+			<span class="filter-switch" *ngIf="controls?.players">
+				<label translate>home.players</label>
+				<p-multiSelect
+					[options]="playerOptions"
+					[(ngModel)]="status.players"
+					placeholder="{{ 'multiselect.placeholder' | translate }}"
+					(onChange)="emitFilterValues()"
+					class="video-filter"
+					appendTo="body"
+				></p-multiSelect>
+			</span>
+			<!-- <span class="filter-switch" *ngIf="controls?.staffs">
+        <label translate>admin.staff</label>
+        <p-multiSelect [options]="staffFilters" [(ngModel)]="status.staffs"
+          placeholder="{{ 'multiselect.placeholder' | translate }}" (onChange)="emitFilterValues($event)"
+          class="video-filter" appendTo="body"></p-multiSelect>
+      </span> -->
+		</div>
+	</div>
+	<div class="resetFiltersBtn">
+		<p-button size="small" (click)="resetFilters()" [label]="'buttons.resetFilters' | translate"></p-button>
+	</div>
+</ng-container>

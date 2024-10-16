@@ -1,0 +1,141 @@
+{
+	"name": "Injury",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"createdBy": {
+			"type": "string"
+		},
+		"issue": {
+			"type": "string"
+		},
+		"date": {
+			"type": "date",
+			"required": true
+		},
+		"endDate": {
+			"type": "date",
+			"default": null
+		},
+		"admissionDate": {
+			"type": "date"
+		},
+		"system": {
+			"type": "array"
+		},
+		"location": {
+			"type": "string",
+			"required": true
+		},
+		"anatomicalDetails": {
+			"type": "array"
+		},
+		"type": {
+			"type": "array"
+		},
+		"reinjury": {
+			"type": "boolean",
+			"default": false
+		},
+		"category": {
+			"type": "string"
+		},
+		"contact": {
+			"type": "boolean",
+			"default": false
+		},
+		"mechanism": {
+			"type": "string"
+		},
+		"occurrence": {
+			"type": "string"
+		},
+		"severity": {
+			"type": "string"
+		},
+		"expectedReturn": {
+			"type": "date"
+		},
+		"diagnosis": {
+			"type": "string"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"surgery": {
+			"type": "boolean"
+		},
+		"surgeryNotes": {
+			"type": "string"
+		},
+		"treatInstruction": {
+			"type": "string"
+		},
+		"currentStatus": {
+			"type": "string"
+		},
+		"chronicInjuryId": {
+			"type": "string"
+		},
+		"statusHistory": {
+			"type": [
+				{
+					"phase": "string",
+					"date": "date",
+					"author": "string"
+				}
+			]
+		},
+		"osics": {
+			"type": "string"
+		},
+		"pitch": {
+			"type": "string"
+		},
+		"boots": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		},
+		"injuryAssessments": {
+			"type": "embedsMany",
+			"model": "injuryAssessment",
+			"property": "_injuryAssessments",
+			"options": {
+				"persistent": true,
+				"forceId": true,
+				"validate": false
+			}
+		},
+		"injuryExams": {
+			"type": "embedsMany",
+			"model": "InjuryExam",
+			"property": "_injuryExams",
+			"options": {
+				"persistent": true,
+				"forceId": true,
+				"validate": false
+			}
+		},
+		"treatments": {
+			"type": "hasMany",
+			"model": "MedicalTreatment"
+		},
+		"event": {
+			"type": "belongsTo",
+			"model": "Event",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

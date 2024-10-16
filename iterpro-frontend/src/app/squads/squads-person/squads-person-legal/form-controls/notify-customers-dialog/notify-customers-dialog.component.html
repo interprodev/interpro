@@ -1,0 +1,31 @@
+<p-dialog
+	[(visible)]="visible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[style]="{ width: '800px' }"
+	modal="modal"
+>
+	<p-header>{{ 'notifyContract.label' | translate }}</p-header>
+	<div style="display: flex; flex-direction: column">
+		<div class="row-header">
+			<span translate>notifyContract.select</span>
+		</div>
+		<div class="row-header" style="margin-top: 1em">
+			<p-multiSelect
+				appendTo="body"
+				[style]="{ 'z-index': '99' }"
+				maxSelectedLabels="1"
+				[options]="customerOptions"
+				[(ngModel)]="selectedCustomers"
+				placeholder="{{ 'dropdown.placeholder' | translate }}"
+			></p-multiSelect>
+		</div>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="save()" label="{{ 'buttons.confirm' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

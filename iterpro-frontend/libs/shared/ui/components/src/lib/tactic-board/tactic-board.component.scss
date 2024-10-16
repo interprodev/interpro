@@ -1,0 +1,48 @@
+$color-turf: #000000;
+$color-clay: #7f7c5d;
+$color-line: #ffffff;
+
+svg {
+	width: 100%;
+	& .turf {
+		fill: $color-turf;
+	}
+	& .cell-free {
+		fill: $color-clay;
+	}
+	& .cell-reserved,
+	& .cell-free:hover {
+		fill: url(#striped);
+	}
+	& .cell-sold {
+		fill: transparent;
+	}
+	& .stripe {
+		stroke: $color-clay;
+		stroke-width: 1;
+	}
+	& .line {
+		stroke: $color-line;
+		stroke-width: 1.2;
+		fill: none;
+	}
+	& .curve {
+		stroke: $color-line;
+		stroke-width: 1.2;
+		fill: none;
+	}
+	& .dot {
+		stroke: $color-line;
+		fill: $color-line;
+		r: 1.5;
+	}
+	& .goal {
+		stroke: $color-line;
+		stroke-width: 0.75;
+		fill: url(#goal);
+	}
+	& .goal-stripe {
+		stroke: $color-line;
+		stroke-width: 1;
+	}
+}

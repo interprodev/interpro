@@ -1,0 +1,145 @@
+{
+	"name": "Person",
+	"plural": "Persons",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": [
+				"lastName",
+				"firstName",
+				"passport",
+				"altPassport",
+				"nationality",
+				"altNationality",
+				"facebook",
+				"twitter",
+				"instagram",
+				"linkedin",
+				"snapchat",
+				"mobilePhone",
+				"otherMobile",
+				"birthDate",
+				"birthPlace",
+				"phone",
+				"email",
+				"school",
+				"education",
+				"address.street",
+				"address.city",
+				"address.state",
+				"address.nation",
+				"address.zipCode",
+				"domicile.street",
+				"domicile.city",
+				"domicile.state",
+				"domicile.nation",
+				"domicile.zipCode",
+				"fiscalIssue",
+				"federalId",
+				"bankAccount.bank",
+				"bankAccount.accountNumber",
+				"bankAccount.routingNumber",
+				"bankAccount.iban",
+				"bankAccount.swift"
+			]
+		}
+	},
+	"properties": {
+		"firstName": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"altNationality": {
+			"type": "string"
+		},
+		"education": {
+			"type": "string"
+		},
+		"school": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date"
+		},
+		"birthPlace": {
+			"type": "string"
+		},
+		"phone": {
+			"type": "string"
+		},
+		"mobilePhone": {
+			"type": "string"
+		},
+		"otherMobile": {
+			"type": "array"
+		},
+		"email": {
+			"type": "string"
+		},
+		"address": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"domicile": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"nationalityOrigin": {
+			"type": "string"
+		},
+		"fiscalIssue": {
+			"type": "string"
+		},
+		"maritalStatus": {
+			"type": "string"
+		},
+		"bankAccount": {
+			"type": "object"
+		},
+		"archived": {
+			"type": "boolean",
+			"default": false
+		},
+		"archivedDate": {
+			"type": "date"
+		},
+		"archivedMotivation": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

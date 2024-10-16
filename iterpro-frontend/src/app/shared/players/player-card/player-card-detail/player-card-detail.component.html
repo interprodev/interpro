@@ -1,0 +1,33 @@
+@if (tipssMode) {
+		@for (avgItem of player.reportDataAvg; track avgItem) {
+			@if (avgItem.key === 'Performance' || avgItem.key === 'Potential') {
+				<div class="tw-flex tw-items-center tw-justify-between">
+					<div class="tw-text-2xs">{{ avgItem.label | translate }}:</div>
+					<div class="tw-flex tw-items-center">
+						<div class="iterpro-point" [style.background-color]="avgItem.color"></div>
+						<div class="tw-text-2xs">{{avgItem.avg || '-'}}</div>
+					</div>
+				</div>
+			}
+		}
+		<div class="tw-flex tw-items-center">
+			<div class="tw-text-2xs">{{ 'prognosis' | translate }}:</div>
+			<div class="tw-flex tw-items-center tw-justify-between">
+				<div class="iterpro-point"
+						 [class.tw-bg-[#009900]="player.prognosisColor === 'green'"
+						 [class.tw-bg-[#ffcc00]]="player.prognosisColor === 'yellow'"
+						 [class.tw-bg-[#ff0000]]="player.prognosisColor === 'red'"
+				></div>
+				<div class="tw-text-2xs">{{player.prognosis || '-'}}</div>
+			</div>
+		</div>
+} @else {
+	<div class="tw-flex tw-items-center">
+		<span class="label">{{'profile.overview.transferfee' | translate}}:</span>
+		<span class="value">{{ player.feeFrom }} - {{ player.feeTo }}</span>
+	</div>
+	<div class="tw-flex tw-items-center tw-justify-center">
+		<span class="label">{{'profile.overview.transferwage' | translate}}:</span>
+		<span class="value">{{ player.wageFrom }} - {{ player.wageTo }}</span>
+	</div>
+}

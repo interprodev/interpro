@@ -1,0 +1,91 @@
+.card {
+	transition: opacity 0.2s ease;
+	@apply tw-bg-shark-1000 tw-rounded-lg tw-cursor-pointer;
+	&:hover {
+		box-shadow: rgba(178, 186, 192, 0.6) 0 8px 24px;
+	}
+	.image-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		min-height: 220px;
+		padding-top: 6px;
+		img {
+			max-height: 200px;
+			max-width: 100%;
+		}
+	}
+	.shine-effect {
+		position: relative;
+		overflow: hidden;
+		svg {
+			height: 100px;
+			max-width: 100%;
+		}
+		svg {
+			fill: #303030;
+		}
+		svg path {
+			transition: 0.86s;
+		}
+		&:hover {
+			svg path {
+				fill: var(--iterpro-text-color-white);
+			}
+			&::before {
+				animation: shine 0.85s;
+			}
+		}
+
+		&::before {
+			background: linear-gradient(to right, fade_out(#fff, 1) 0%, fade_out(#fff, 0.7) 100%);
+			content: '';
+			display: block;
+			height: 100%;
+			left: -75%;
+			position: absolute;
+			top: 0;
+			transform: skewX(-25deg);
+			width: 50%;
+			z-index: 2;
+		}
+	}
+	.card-content {
+		font-size: 0.8rem;
+		padding: 6px;
+		.title {
+			text-transform: uppercase;
+			font-size: 1rem;
+			font-weight: bold;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			margin-bottom: 6px;
+			padding-left: 6px;
+			padding-top: 12px;
+		}
+		.footer {
+			.footer-row {
+				display: flex;
+				.footer-item {
+					width: 100%;
+					display: flex;
+					align-items: baseline;
+					font-size: 0.9rem;
+					padding: 6px;
+					i {
+						margin-right: 6px;
+						font-size: 0.9rem;
+					}
+				}
+			}
+		}
+	}
+}
+
+@keyframes shine {
+	100% {
+		left: 125%;
+	}
+}

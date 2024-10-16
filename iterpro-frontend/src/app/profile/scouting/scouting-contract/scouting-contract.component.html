@@ -1,0 +1,128 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3 class="h3-myteam-player">{{ player.displayName }}</h3>
+					<div class="profile-picture">
+						<img
+							class="player-pic"
+							[src]="player.downloadUrl | azureUrl"
+							onError="this.src='assets/img/default_icon.png';"
+						/>
+					</div>
+				</div>
+				<div class="col-right-profile-thre">
+					<div class="row">
+						<div class="form-container">
+							<div class="header-buttons">
+								<div class="flexed">
+									<h3 translate>admin.contracts</h3>
+								</div>
+							</div>
+							<table
+								*ngIf="player.contractDetails"
+								class="fields-table"
+								style="width: 100%; border-spacing: 0.5em 0.8em"
+							>
+								<tr>
+									<th translate>admin.contracts.agent</th>
+									<td>
+										<div class="inline-group">
+											<input [disabled]="!editMode" pInputText [(ngModel)]="player.contractDetails.agent" type="text" />
+											<span class="inline-label" translate>admin.contracts.phone</span>
+											<input [disabled]="!editMode" pInputText [(ngModel)]="player.contractDetails.phone" type="text" />
+											<span class="inline-label" translate>admin.contracts.email</span>
+											<input
+												[disabled]="!editMode"
+												pInputText
+												[(ngModel)]="player.contractDetails.email"
+												type="email"
+											/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th translate>scouting.owner</th>
+									<td>
+										<div class="inline-group">
+											<input [disabled]="!editMode" pInputText [(ngModel)]="player.contractDetails.owner" type="text" />
+											<span class="inline-label" style="width: 100%" translate>scouting.currentlyPlaying</span>
+											<input
+												[disabled]="!editMode"
+												pInputText
+												[(ngModel)]="player.contractDetails.currentlyPlaying"
+												type="text"
+											/>
+											<span class="inline-label" translate>scouting.league</span>
+											<input
+												[disabled]="!editMode"
+												pInputText
+												[(ngModel)]="player.contractDetails.league"
+												type="text"
+											/>
+											<span class="inline-label" translate>scouting.nation</span>
+											<input
+												[disabled]="!editMode"
+												pInputText
+												[(ngModel)]="player.contractDetails.nation"
+												type="text"
+											/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th translate>admin.contracts.contractType</th>
+									<td>
+										<span class="inline-group">
+											<p-dropdown
+												[readonly]="!editMode"
+												[(ngModel)]="player.contractDetails.type"
+												[required]="true"
+												[options]="types"
+												placeholder="{{ 'dropdown.placeholder' | translate }}"
+												autoWidth="false"
+												[style]="{ width: '100%' }"
+											></p-dropdown>
+											<span class="inline-label" style="width: 30%" translate>admin.contracts.basicWage</span>
+											<span class="inline-label" style="width: 30%" translate>{{ currency }}</span>
+											<input
+												[disabled]="!editMode"
+												pInputText
+												[(ngModel)]="player.contractDetails.wage"
+												type="number"
+											/>
+											<span class="inline-label" style="width: 40%" translate>profile.overview.contractUntil</span>
+											<p-calendar
+												appendTo="body"
+												showButtonBar="true"
+												[disabled]="!editMode"
+												[(ngModel)]="player.contractDetails.expirationDate"
+												[style.width]="'100%'"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'"
+											></p-calendar>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<th translate>scouting.marketValue</th>
+									<td>
+										<span>{{ currency }}</span>
+										<input
+											style="width: 20%"
+											[disabled]="!editMode"
+											pInputText
+											[(ngModel)]="player.contractDetails.marketValue"
+											type="number"
+										/>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

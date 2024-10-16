@@ -1,0 +1,13 @@
+{
+	"name": "shared-data-access-sand-box",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/data-access/sand-box/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:shared", "type:data-access"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
+}

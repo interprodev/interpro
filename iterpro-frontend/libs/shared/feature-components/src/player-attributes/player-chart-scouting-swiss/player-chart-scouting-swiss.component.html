@@ -1,0 +1,47 @@
+<div class="pflex-grid pflex-m-0 pflex-gap-2 pflex-justify-content-between">
+	<div>
+		<h5><span translate>scouting.scouts</span>:</h5>
+		<p-multiSelect
+			appendTo="body"
+			[placeholder]="'dropdown.placeholder' | translate"
+			[options]="authorOptions"
+			[ngModel]="filters.customersIds"
+			(onChange)="onUpdateOrCompareTipssChart()"
+		>
+		</p-multiSelect>
+	</div>
+
+	<div>
+		<h5 translate>scouting.compare.player</h5>
+		<div class="pflex-flex pflex-gap-3">
+			<p-multiSelect
+				appendTo="body"
+				[placeholder]="'scouting.scouted.players' | translate"
+				[options]="scoutingPlayerOptions"
+				[(ngModel)]="filters.scoutingPlayerIds"
+				[selectionLimit]="10"
+				(onChange)="onScoutingPlayerIdsChange()"
+			>
+			</p-multiSelect>
+			<p-multiSelect
+				appendTo="body"
+				[placeholder]="'profile.position' | translate"
+				[options]="positionOptions"
+				[ngModel]="filters.positions"
+				(onChange)="onUpdateOrCompareTipssChart()"
+			>
+			</p-multiSelect>
+			<p-multiSelect
+				appendTo="body"
+				[placeholder]="'profile.overview.age' | translate"
+				[options]="ageOptions"
+				[ngModel]="filters.ages"
+				(onChange)="onUpdateOrCompareTipssChart()"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+</div>
+<div>
+	<p-chart type="scatter" [options]="tipssOptions" [data]="tipssChartData" [style.height]="'300px'"> </p-chart>
+</div>

@@ -1,0 +1,14 @@
+{
+	"name": "common-utils",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/utils/common-utils/src",
+	"prefix": "iterpro",
+	"tags": ["scope:shared", "type:util"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

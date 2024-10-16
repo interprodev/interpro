@@ -1,0 +1,402 @@
+<div *ngIf="mode === 'multiple'" class="tw-text-right tw-font-light tw-mb-2 tw-text-sm">
+	<span translate>prevention.treatmentMulti.info</span>
+</div>
+<!-- Filters -->
+<div class="tw-p-4 tw-bg-shark-900 tw-bg-opacity-85 tw-rounded tw-mb-4" *ngIf="mode === 'single' && showFilters">
+	<div class="tw-flex tw-justify-between tw-items-center">
+		<h3 translate>Filters</h3>
+		<div>
+			<p-button size="small" (click)="resetFilters()">RESET</p-button>
+		</div>
+	</div>
+	<div class="tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4" *ngIf="tableFilters">
+		<div class="tw-col-span-2">
+			<label translate>sidebar.period</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-calendar
+					class="calendar-width-215"
+					showButtonBar="true"
+					[(ngModel)]="tableFilters.period.model"
+					(onSelect)="applyGenericFilters()"
+					(onClearClick)="applyGenericFilters()"
+					selectionMode="range"
+					[clearButtonStyleClass]="'p-button-sm'"
+					[todayButtonStyleClass]="'p-button-sm'"
+				></p-calendar>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<label translate>Treatment Type</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.treatmentType.options"
+					[(ngModel)]="tableFilters.treatmentType.model"
+					(onChange)="applyGenericFilters()"
+					placeholder="{{ 'multiselect.placeholder' | translate }}"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				>
+				</p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<label translate>medical.infirmary.details.category</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.treatmentCategory.options"
+					[(ngModel)]="tableFilters.treatmentCategory.model"
+					(onChange)="applyGenericFilters()"
+					appendTo="body"
+					[placeholder]="'multiselect.placeholder' | translate"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				></p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<label translate>prevention.treatments.treatment</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.treatment.options"
+					[(ngModel)]="tableFilters.treatment.model"
+					(onChange)="applyGenericFilters()"
+					appendTo="body"
+					[placeholder]="'multiselect.placeholder' | translate"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				></p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<label translate>prevention.treatments.author</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.author.options"
+					[(ngModel)]="tableFilters.author.model"
+					(onChange)="applyGenericFilters()"
+					appendTo="body"
+					[placeholder]="'multiselect.placeholder' | translate"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				></p-multiSelect>
+			</div>
+		</div>
+		<div class="tw-col-span-2">
+			<label translate>prevention.treatments.prescription</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.prescriptor.options"
+					[(ngModel)]="tableFilters.prescriptor.model"
+					(onChange)="applyGenericFilters()"
+					appendTo="body"
+					[placeholder]="'multiselect.placeholder' | translate"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				></p-multiSelect>
+			</div>
+		</div>
+		<ng-container *ngIf="section === 'prevention'">
+			<div class="tw-col-span-2">
+				<label translate>medical.infirmary.details.issue.injury</label>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-multiSelect
+						[options]="tableFilters.injury.options"
+						[(ngModel)]="tableFilters.injury.model"
+						(onChange)="applyGenericFilters()"
+						appendTo="body"
+						[placeholder]="'multiselect.placeholder' | translate"
+						maxSelectedLabels="1"
+						selectedItemsLabel="{0} selected"
+					></p-multiSelect>
+				</div>
+			</div>
+			<div class="tw-col-span-2">
+				<label translate>medical.infirmary.details.location</label>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-multiSelect
+						[options]="tableFilters.injuryLocation.options"
+						[(ngModel)]="tableFilters.injuryLocation.model"
+						(onChange)="applyGenericFilters()"
+						appendTo="body"
+						[placeholder]="'multiselect.placeholder' | translate"
+						maxSelectedLabels="1"
+						selectedItemsLabel="{0} selected"
+					></p-multiSelect>
+				</div>
+			</div>
+			<div class="tw-col-span-2">
+				<label translate>Injury Type</label>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-multiSelect
+						[options]="tableFilters.injuryType.options"
+						[(ngModel)]="tableFilters.injuryType.model"
+						(onChange)="applyGenericFilters()"
+						appendTo="body"
+						[placeholder]="'multiselect.placeholder' | translate"
+						maxSelectedLabels="1"
+						selectedItemsLabel="{0} selected"
+					></p-multiSelect>
+				</div>
+			</div>
+		</ng-container>
+		<div class="tw-col-span-2">
+			<label translate>prevention.treatments.complete</label>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					[options]="tableFilters.completion.options"
+					[(ngModel)]="tableFilters.completion.model"
+					(onChange)="applyGenericFilters()"
+					appendTo="body"
+					[placeholder]="'multiselect.placeholder' | translate"
+					maxSelectedLabels="1"
+					selectedItemsLabel="{0} selected"
+				></p-multiSelect>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Table -->
+<div>
+	<div class="tw-flex tw-items-center tw-justify-end tw-mb-4" *ngIf="!readonlyMode">
+		<iterpro-action-buttons *ngIf="!isInjuryClosed()" [buttonTypes]="['addNew']" [addNewLabel]="'buttons.addTreatment'" [editMode]="false" (create)="add()"></iterpro-action-buttons>
+	</div>
+	<p-table
+		[value]="filteredRows"
+		[columns]="allColumns"
+		[scrollable]="true"
+		dataKey="date"
+		[scrollHeight]="tableScrollHeight"
+		styleClass="p-datatable-striped"
+		*ngIf="!isLoading; else showTableLoading"
+	>
+		<ng-template pTemplate="header" let-columns>
+			<tr class="tw-h-10">
+				<th
+					*ngIf="!readonlyMode"
+					[ngClass]="{'tw-w-min-[170px] tw-w-[170px] tw-w-max-[170px]': section === 'prevention'}"
+					pFrozenColumn
+				>
+				</th>
+				<th
+					*ngFor="let col of columns"
+					[pTooltip]="col.tooltip | translate"
+					[tooltipDisabled]="!col.tooltip || col.tooltip.length === 0"
+					[ngStyle]="{ width: col.minWidth + 'px', textAlign: !!col.align ? col.align : 'left' }"
+					translate
+				>
+					{{ col.header }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns">
+			<tr class="tw-h-10" [class.view-mode]="true" [ngClass]="{'tw-bg-red-900': rowData.injuryId, 'tw-bg-opacity-85': rowData.injuryId && rowIndex % 2 === 0}">
+				<td
+					*ngIf="!readonlyMode"
+					[ngClass]="{'tw-w-min-[170px] tw-w-[170px] tw-w-max-[170px]': section === 'prevention'}"
+					pFrozenColumn
+				>
+					<div class="tw-flex tw-items-center tw-justify-end tw-gap-4" *ngIf="instantCreationMode(); else multipleRowsActions">
+						<i
+							*ngIf="showRedirectToEventButton(rowData)"
+							class="fas fa-calendar"
+							[pTooltip]="
+									'dialog.redirectTo' | translate : { value: ('dialog.file.sectionParent.event' | translate) }
+								"
+							style="cursor: pointer"
+							(click)="goToPlanning(rowData)"
+						></i>
+						<p-multiSelect
+							*ngIf="showCheckButton()"
+							appendTo="body"
+							[pTooltip]="'buttons.applyTo' | translate"
+							[tooltipPosition]="'bottom'"
+							[dropdownIcon]="'fas fa-check-square'"
+							maxSelectedLabels="1"
+							selectedItemsLabel="{0} selected"
+							optionLabel="displayName"
+							[options]="players"
+							[(ngModel)]="playersApplyTo"
+							[styleClass]="'p-multiselect-icon-only p-multiselect-icon-only-white'"
+							[style]="{ width: '100%', maxWidth: '15px' }"
+							(onPanelHide)="onCloseApplyToMenu(rowData)"
+						>
+						</p-multiSelect>
+						<i
+							*ngIf="isEditMode()"
+							class="fas fa-pencil-alt"
+							[pTooltip]="'buttons.edit' | translate"
+							style="cursor: pointer"
+							(click)="edit(rowData, rowIndex)"
+						></i>
+						<i
+							*ngIf="showCloneButton()"
+							class="fas fa-clone"
+							[pTooltip]="'buttons.repeat' | translate"
+							style="cursor: pointer"
+							(click)="clone(rowData)"
+						></i>
+						<i
+							*ngIf="showDeleteButton()"
+							class="fas fa-trash"
+							[pTooltip]="'buttons.delete' | translate"
+							style="cursor: pointer"
+							(click)="openDeleteRowDialog(rowData)"
+						></i>
+					</div>
+					<ng-template #multipleRowsActions>
+						<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+							<div>{{ rowIndex + 1 }}</div>
+							<i
+								*ngIf="isEditMode()"
+								class="fas fa-pencil-alt"
+								[pTooltip]="'buttons.edit' | translate"
+								style="cursor: pointer"
+								(click)="edit(rowData, rowIndex)"
+							></i>
+							<i
+								*ngIf="showCloneButton()"
+								class="fas fa-clone"
+								[pTooltip]="'buttons.repeat' | translate"
+								style="cursor: pointer"
+								(click)="clone(rowData)"
+							></i>
+							<i
+								*ngIf="isEditMode()"
+								class="fas fa-trash"
+								[pTooltip]="'buttons.delete' | translate"
+								style="cursor: pointer"
+								(click)="openDeleteRowDialog(rowData, rowIndex)"
+							></i>
+						</div>
+					</ng-template>
+				</td>
+				<td style="min-width: 100px; text-align: center">
+						<span
+							[style.color]="(rowData | treatmentComplete).color"
+							[pTooltip]="(rowData | treatmentComplete).label"
+							class="fas"
+							[ngClass]="(rowData | treatmentComplete).class"
+						></span>
+				</td>
+				<td style="min-width: 120px">
+					<span>{{ rowData.date | formatDateBySetting }}</span>
+				</td>
+				<td style="min-width: 80px">
+						<span [pTooltip]="rowData.date | date : 'HH:mm'">
+							{{ rowData.date | date : 'HH:mm' }}
+						</span>
+				</td>
+				<td style="min-width: 180px">
+					<span translate>{{ rowData.treatmentType | treatmentTypeLabel }}</span>
+				</td>
+				<td style="min-width: 180px">
+					<ng-container *ngIf="rowData.treatmentType === 'physiotherapy'; else emptyCol">
+						<span>{{ rowData.category | treatmentCategoriesTooltip : physiotherapyMetrics }}</span>
+					</ng-container>
+				</td>
+				<td style="min-width: 180px">
+					<ng-container *ngIf="rowData.treatmentType !== 'medicationSupplements'; else emptyCol">
+						<ng-container *ngIf="rowData.treatmentType === 'physiotherapy'">
+							<span>{{ rowData | treatmentsTooltip : physiotherapyMetrics }}</span>
+						</ng-container>
+						<ng-container *ngIf="rowData.treatmentType === 'SeC'">
+							<span>{{ rowData | treatmentsTooltip : secMetrics }}</span>
+						</ng-container>
+					</ng-container>
+				</td>
+
+				<td style="min-width: 180px" [pTooltip]="rowData.drug | medicationLabel : team">
+					<ng-container *ngIf="rowData.treatmentType === 'medicationSupplements'; else emptyCol">
+						<span *ngIf="rowData?.drug">{{ rowData.drug | medicationLabel : team }}</span>
+					</ng-container>
+				</td>
+				<td style="min-width: 180px" [pTooltip]="rowData.drugDose | translate">
+					<ng-container *ngIf="rowData.treatmentType === 'medicationSupplements'; else emptyCol">
+						<span>{{ rowData.drugDose }}</span>
+					</ng-container>
+				</td>
+				<td style="min-width: 200px">
+					<span>{{ rowData?.prescriptor | customerNameSelectItems : customerOptions }}</span>
+				</td>
+				<td style="min-width: 200px">
+					<span>{{ rowData?.author | customerNameSelectItems : customerOptions }}</span>
+				</td>
+				<td style="min-width: 150px">
+					<iterpro-table-attachment
+						accept="*"
+						[editable]="false"
+						[deletable]="false"
+						[attachment]="rowData._attachment"
+					/>
+				</td>
+				<td style="min-width: 200px">
+					<span>{{ rowData?.injuryId | treatmentInjuryLabel : injuries }}</span>
+				</td>
+				<td style="min-width: 100px">
+					<span translate>{{ rowData?.location | selectItemLabel : locationOptions }}</span>
+				</td>
+				<td style="min-width: 200px">
+					<span translate>{{ rowData?.injuryType | selectItemLabel : injuryTypeOptions }}</span>
+				</td>
+				<td style="min-width: 250px">
+					<span>{{ rowData?.lastUpdateAuthorId | customerNameSelectItems : customerOptions }}</span>
+					<span style="margin-left: 3px; margin-right: 3px"> - </span>
+					<span>{{ rowData?.lastUpdateDate | formatDateBySetting }}</span>
+				</td>
+				<td style="min-width: 100px; text-align: center">
+					<i
+						(click)="openDialogNote(rowData)"
+						aria-hidden="true"
+						class="fas fa-search"
+						style="cursor: pointer"
+						[pTooltip]="'tooltip.add.notes' | translate"
+					></i>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr>
+				<td colspan="7" class="tw-p-2"><span>{{'alert.noRecordsFound' | translate}}</span> </td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<ng-template #emptyCol>
+		<span>-</span>
+	</ng-template>
+</div>
+
+<p-dialog
+	[(visible)]="deleteRowDialog.visible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div>
+		<span translate>confirm.eventRelated</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="deleteFromEventConfirm(true)" [label]="'yes' | translate"></p-button>
+		<p-button size="small" (click)="deleteFromEventConfirm(false)" [label]="'no' | translate"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discardDeleteRowDialog()" [label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>
+<ng-template #showTableLoading>
+	<p-table [value]="3 | arrayFromNumber" responsiveLayout="scroll">
+		<ng-template pTemplate="header">
+			<tr>
+				<th *ngFor="let col of 15 | arrayFromNumber" style="height: 46px">
+					<p-skeleton width="120px"></p-skeleton>
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body">
+			<tr>
+				<td *ngFor="let col of 15 | arrayFromNumber"><p-skeleton></p-skeleton></td>
+			</tr>
+		</ng-template>
+	</p-table>
+</ng-template>

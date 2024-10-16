@@ -1,0 +1,176 @@
+.section {
+  width: 100%;
+}
+
+.rowProfile{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.col-left-profile {
+  width: 14%;
+  padding-right: 2rem;
+  flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	width: 86%;
+  flex-grow: 1;
+  display:flex;
+	margin-left:1em;
+	flex-direction: column;
+}
+
+h3 {
+	text-transform: uppercase;
+}
+
+.profile-picture {
+  width: 100%;
+  margin-top: 1em;
+  overflow: hidden;
+  position: relative;
+}
+
+.player-pic {
+	width: 100%;
+  box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+  opacity: 1;
+  display: block;
+  transition: .5s ease;
+	backface-visibility: hidden;
+	background-color:white;
+}
+
+.data-col {
+  padding: 0 1rem;
+}
+
+.profile-data-column {
+  width: 50%;
+}
+
+.form-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.form-selector {
+	width: 15%;
+	display: flex;
+	flex-direction: column;
+	padding: 0 1.5em 0 1.5em;
+}
+
+.inline-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.inline-label {
+	margin-left: 2em;
+	margin-right: 1em;
+	font-weight: normal;
+  color: #bbbbbb;
+}
+
+.repeated-group {
+	width: 100%;
+}
+
+.fields-table th {
+	width: 20%;
+}
+
+.fields-table td {
+	width: 80%;
+}
+
+.header-buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+.header-buttons .fas {
+	margin-left: 1em;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+.upload {
+	margin-top: 2em;
+}
+
+.flex-end {
+	display: flex;
+}
+
+.form-invalid{
+  /* width: 50%; */
+  font-size: 12px;
+  color: #e62a10;
+  padding-left: 1em;
+}
+
+.link {
+	background-color: var(--color-bg-700);
+}
+
+.header-section {
+	width: 100%;
+	margin-bottom:2em;
+	background-color:var(--color-bg-700);
+}
+
+.header-row {
+	width: 60%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.report-download {
+  position: relative;
+}
+
+.report-submenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 5px;
+  background-color: var(--color-neutral-300);
+    z-index: 100;
+}
+.report-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.report-item:hover {
+  background-color: #171717;
+}
+.report-item .fas {
+  margin-right: 0.5rem;
+}
+
+.contract-title {
+	text-transform: uppercase;
+	font-family: 'Gotham';
+  /* font-weight: bold; */
+}
+
+.point {
+	margin-left: 1em;
+	position: static;
+	right: 10%;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}

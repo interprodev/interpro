@@ -1,0 +1,37 @@
+<div class="thread-cols">
+	<div class="thread-comments">
+		<div class="filter">
+			<i class="fas fa-search"></i>
+			<input (input)="filter()" [(ngModel)]="searchstring" type="text" placeholder="{{ 'Search' | translate }}"
+						 pInputText />
+		</div>
+		<div class="top-input-section">
+			<iterpro-comment-input [editMode]="editMode" (onAdd)="addComment($event)" />
+		</div>
+		<div *ngIf="filteredComments?.length > 0" class="thread-detail-container comment-list-container">
+			<ul class="comments-list">
+				<li *ngFor="let comment of filteredComments">
+					<iterpro-comment [editMode]="editMode" [comment]="comment" [customer]="customer" [focused]="false" [showReply]="true"
+						(commentEdited)="onCommentEdited(comment)" (commentDeleted)="onCommentDeleted({comment: comment})"
+						(commentReply)="onViewThread(comment)">
+					</iterpro-comment>
+					<div *ngIf="comment.notesThreads && comment.notesThreads.length" class="comment-show-replies"
+						[class.show-replies-active]="currentThread && currentThread.id === comment.id"
+						(click)="onViewThread(comment)">
+						<b>{{ comment.notesThreads.length }} <span translate>comments.replies</span></b>
+						<span *ngIf="!currentThread || currentThread.id !== comment.id" translate>comments.viewThread</span>
+						<span *ngIf="currentThread && currentThread.id === comment.id" translate>comments.hideThread</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="thread-detail">
+		<div class="thread-scrollable">
+			<div class="thread-detail-container" *ngIf="currentThread">
+				<iterpro-single-comment-threaded [comment]="currentThread" [customer]="customer" [editMode]="editMode"
+					(reply)="onReplyComment($event)" (edit)="onCommentEdited($event)" (remove)="onCommentDeleted($event)" />
+			</div>
+		</div>
+	</div>
+</div>

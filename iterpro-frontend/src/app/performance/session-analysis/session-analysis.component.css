@@ -1,0 +1,259 @@
+/* CUSTOM STYLE */
+
+.col-main.no-max {
+	overflow: auto;
+	position: relative;
+}
+
+.row-spaced {
+	margin: 0 -0.25rem;
+}
+.col-spaced {
+	padding: 0 0.25rem;
+}
+.col-main {
+	padding-right: 0.5rem;
+}
+
+.col-sidebar p-tabview {
+  padding-bottom: 1rem;
+}
+
+.data-analysis-row {
+	margin-bottom: 0.5rem;
+}
+.data-analysis-row .content {
+	width: 100%;
+}
+
+.col-left {
+	width: 35%;
+	margin-bottom: 0;
+}
+.col-right {
+	width: 65%;
+	margin-bottom: 0;
+}
+
+.col-left .content + .content {
+	margin-top: 0.5rem;
+}
+.drills-graph {
+	height: 300px;
+}
+.graph-actions {
+	top: 10px;
+	right: 50px;
+	display: flex;
+	flex-direction: row-reverse;
+	padding-right: 2em;
+}
+.actions-summary {
+	padding-right: 0;
+}
+.graph-actions > * {
+	cursor: pointer;
+	font-style: normal;
+	margin-left: 20px;
+}
+.graph-actions i {
+	font-family: 'Font Awesome 5 Pro';
+}
+
+.calendar {
+	font-size: 0.9rem;
+}
+.select-button-flex {
+	margin-top: 1em;
+}
+
+chart {
+	width: 100% !important;
+	display: block;
+}
+
+.row-child {
+	margin: 0 -0.3rem !important;
+	display: flex;
+	flex-wrap: wrap;
+	width: 90% !important;
+	background-color: var(--color-bg-600) !important;
+}
+
+.dataAnalysisCalendar > span {
+	width: 4em;
+}
+
+.dataAnalysisLabel {
+	display: inherit;
+}
+
+.content-padded {
+	padding: 1rem;
+	background-color: var(--color-bg-600);
+}
+
+.ui-g-1,
+.ui-g-2,
+.ui-g-3,
+.ui-g-4,
+.ui-g-5,
+.ui-g-6,
+.ui-g-7,
+.ui-g-8,
+.ui-g-9,
+.ui-g-10,
+.ui-g-11,
+.ui-g-12 {
+	float: left;
+	box-sizing: border-box;
+	padding: 0em 0.5em 0.5em 0.5em;
+}
+
+.p-inputtext {
+	background: transparent;
+	border-width: 0;
+	padding: 2px 2px 1px 2px;
+	font-size: 0.85em;
+	/* border-color: #bdbdbd; */
+	/* border-style: solid; */
+}
+
+.section-title {
+	margin-bottom: 1rem;
+}
+
+.section-title h3 {
+	flex-grow: 2;
+}
+
+.center-title {
+	text-align: center;
+}
+
+.summary-table td,
+.summary-table th {
+	height: 30px;
+	padding: 0.5rem 0.5rem 0.5rem 0;
+	vertical-align: top;
+}
+
+.fields-table {
+	border-spacing: 0 3px;
+}
+.fields-table th,
+.fields-table td {
+	font-size: 0.8rem;
+}
+.session-summary-table th {
+	width: 60%;
+	text-transform: capitalize;
+}
+.session-summary-table td {
+	width: 20%;
+	text-align: center;
+}
+.closed {
+	display: none;
+}
+.open {
+	width: 20rem;
+}
+
+.sidebar-handler {
+	position: absolute;
+	right: 1rem;
+	top: 0.7rem;
+	cursor: pointer;
+	width: 25px;
+	height: 25px;
+	border-radius: 2px;
+	color: #fff;
+	font-weight: bold;
+	/* font-size: 12px; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.data-analysis-row + .drills-graph-container .graph-actions {
+	right: 10px;
+}
+
+body .ui-dropdown-panel .ui-dropdown-item {
+	text-transform: none;
+}
+
+body .p-dropdown .p-dropdown-label.p-inputtext {
+	text-transform: none;
+}
+
+.inline {
+	display: inline;
+}
+
+.inline-cont {
+	display: flex;
+	/* justify-content: space-between; */
+	align-items: baseline;
+}
+
+.justified {
+	justify-content: space-between;
+}
+
+p {
+	line-height: 1.4rem;
+}
+
+.no-padded-right {
+	padding: 1rem 0 1rem 1rem !important;
+}
+
+.rel {
+	position: static;
+}
+
+.fa-rotate-90 {
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
+}
+
+@keyframes ui-progress-spinner-color {
+	100%,
+	0% {
+		stroke: white;
+	}
+	40% {
+		stroke: white;
+	}
+	66% {
+		stroke: white;
+	}
+	80%,
+	90% {
+		stroke: white;
+	}
+}
+
+.sidebar-col {
+	display: flex;
+}
+.sidebar-col > div {
+	width: 50%;
+}
+
+.custom-date {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	justify-content: center;
+	display: flex;
+	align-items: center;
+}
+.custom-date.highlight {
+	border: 2px solid #fffcfcb8;
+}

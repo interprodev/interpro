@@ -1,0 +1,23 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-x-4 tw-gap-y-2 tw-mt-4">
+	<div class="tw-col-span-2" *ngFor="let option of columns">
+		<div class="tw-text-sm iterpro-text-color-900 tw-capitalize">{{ option.label | translate }}</div>
+		<div class="iterpro-item-container tw-mt-1">
+			<p-multiSelect
+				[options]="option.options"
+				[(ngModel)]="option.model"
+				(onChange)="updateFilters()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				[maxSelectedLabels]="0"
+				selectedItemsLabel="{0} selected"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+	@if (!hideReset) {
+		<div class="tw-col-span-2">
+			<p-button type="button"
+								[outlined]="true" [size]="'small'"
+								[label]="'RESET' | translate" (click)="resetFilters()"></p-button>
+		</div>
+	}
+</div>

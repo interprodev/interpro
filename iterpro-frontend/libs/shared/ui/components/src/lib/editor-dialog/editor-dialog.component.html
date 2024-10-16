@@ -1,0 +1,48 @@
+<ng-container *ngIf="content || editable; else showNoDataTemplate">
+	<div style="display: flex; flex-direction: column">
+		<ng-container *ngIf="noMarkdown; else showMarkdownEditor">
+			<textarea
+				[rows]="10"
+				[disabled]="!editable"
+				[(ngModel)]="content"
+				style="background-color: var(--color-bg-600); width: 100%"
+				class="p-inputtext p-component custom-textarea"
+				pInputTextarea
+			></textarea>
+		</ng-container>
+		<ng-template #showMarkdownEditor>
+			<editor
+				*ngIf="editable; else readOnlyEditor"
+				name="notes"
+				ngModel
+				[initialValue]="'input-text.placeholder' | translate"
+				[inline]="false"
+				[(ngModel)]="content"
+				[init]="tinyEditorInit"
+			>
+			</editor>
+			<ng-template #readOnlyEditor>
+				<span [innerHTML]="content | marked"></span>
+			</ng-template>
+		</ng-template>
+	</div>
+	<div class="tw-flex tw-items-center tw-justify-end tw-gap-4" *ngIf="editable">
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			(click)="onConfirm()"
+			[disabled]="content?.length === 0"
+			[label]="'buttons.confirm' | translate"
+		></p-button>
+		<p-button
+			size="small"
+			[outlined]="true"
+			(click)="onDiscard()"
+			[label]="(editable ? 'buttons.discard' : 'buttons.close') | translate"
+		></p-button>
+	</div>
+</ng-container>
+
+<ng-template #showNoDataTemplate>
+	<div>No data</div>
+</ng-template>

@@ -1,0 +1,53 @@
+@if (transfer()) {
+<div class="pflex-flex">
+	<!-- Left -->
+	<div class="pflex-h-full pflex-w-6rem pflex-relative">
+		<iterpro-picture class="pflex-bg-white pflex-block pflex-w-full pflex-h-full" [photoUrl]="transfer().player.downloadUrl" />
+
+		<div
+			class="pflex-absolute pflex-p-1 pflex-line-height-1 pflex-align-items-center tw-bg-shark-900 pflex-bottom-0 pflex-left-0 pflex-w-full pflex-flex pflex-align-items-center pflex-justify-content-between"
+		>
+			<small *ngIf="transfer().player.position">{{ transfer().player.position + '.short' | translate }}</small>
+			<small>
+				{{ transfer().player.birthDate | date : 'yyyy' }}
+				<iterpro-player-flag [lang]="transfer().player.nationality" />
+			</small>
+		</div>
+	</div>
+
+	<!-- Right -->
+	<div class="grid-box-right">
+		<h4 class="overflow-name">{{ transfer().player.displayName }}</h4>
+		<div class="info-container">
+			<div>
+				<span style="color: #bbb">{{ 'admin.transfers.type' | translate }}</span
+				>:
+				<span>{{ transfer().player | transferPersonStatus : 'outward' | translate }}</span>
+			</div>
+			<div>
+				<span style="color: #bbb">{{ 'admin.squads.player.salary' | translate }}</span
+				>:
+				<span>{{ transfer().player | netSalary }}</span>
+			</div>
+			<div>
+				<span style="color: #bbb">{{ 'admin.transfers.trading.cost' | translate }}</span
+				>:
+				<span>{{ transfer | dealValue }}</span>
+			</div>
+
+			@if (transferType() === 'sales') {
+			<div>
+				<span style="color: #bbb">{{ 'admin.squads.player.purchaseCost' | translate }}</span
+				>:
+				<span>{{ transfer | purchaseCost }}</span>
+			</div>
+			<div>
+				<span style="color: #bbb">{{ 'admin.contracts.capitalGain' | translate }}</span
+				>:
+				<span>{{ transfer | percentageDiff }}</span>
+			</div>
+			}
+		</div>
+	</div>
+</div>
+}

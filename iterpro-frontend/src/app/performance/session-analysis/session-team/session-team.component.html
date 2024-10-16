@@ -1,0 +1,80 @@
+<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+	<!-- FOLDER -->
+	<i
+		class="fas fa-folder-open tw-cursor-pointer"
+		*ngIf="selectedSession"
+		[ngClass]="{ 'fa-active': viewFlags?.uploadDialog }"
+		(click)="showUploadDialog()"
+		[pTooltip]="
+						selectedSession?._attachments?.length > 0
+							? ('dialog.file.showDialog' | translate) + ' (' + selectedSession?._attachments?.length + ')'
+							: ('dialog.file.noFileAttached' | translate)
+					"
+	>
+	</i>
+	<!-- BUBBLE -->
+	<i
+		class="fas fa-braille tw-cursor-pointer"
+		[ngClass]="{ 'fa-active': chartFlags?.bubble }"
+		[pTooltip]="'sessionAnalysis.bubble' | translate"
+		(click)="toggleBubble()"
+	>
+	</i>
+	<!-- LABELS -->
+	<i
+		class="fas fa-tag tw-cursor-pointer"
+		[ngClass]="{ 'fa-active': chartFlags?.labels }"
+		[pTooltip]="'sessionAnalysis.labels' | translate"
+		(click)="toggleLabels()"
+	>
+	</i>
+	<!-- ORDER -->
+	<i
+		class="fas fa-sort-amount-up tw-cursor-pointer"
+		[ngClass]="{ 'fa-active': chartFlags?.order }"
+		[pTooltip]="'sessionAnalysis.order' | translate"
+		(click)="toggleOrder()"
+	>
+	</i>
+	<!-- PERCENTAGE -->
+	<i
+		class="fas fa-percentage tw-cursor-pointer"
+		[ngClass]="{ 'fa-active': chartFlags?.percent }"
+		[pTooltip]="'sessionAnalysis.percentage' | translate"
+		(click)="togglePercentage()"
+	>
+	</i>
+	<!-- THRESHOLDS -->
+	<i
+		class="fas fa-sliders-h tw-cursor-pointer"
+		[ngClass]="{ 'fa-active': chartFlags?.thresholds, 'icon-disabled': !chartFlagsEnable?.thresholds }"
+		[pTooltip]="
+						(chartFlagsEnable?.thresholds ? 'profile.tabs.thresholds' : 'seasonAnalysis.missingThresholds') | translate
+					"
+		(click)="toggleThresholds($event)"
+	>
+	</i>
+	<!-- PDF REPORT -->
+	<iterpro-report-download (downloadPDF)="downloadPDF()" (downloadCSV)="downloadCSV()" />
+	<!-- CALENDAR ICON -->
+	<i
+		class="fas fa-calendar-day tw-cursor-pointer"
+		[pTooltip]="'profile.tabs.openPlanning' | translate"
+		href="#"
+		(click)="goToCalendar()"
+	>
+	</i>
+	<!-- SIDEBAR -->
+	<i
+		[class]="viewFlags?.sidebar ? 'fas fa-expand tw-cursor-pointer' : 'fas fa-compress fa-active tw-cursor-pointer'"
+		[pTooltip]="viewFlags?.sidebar ? ('button.expand' | translate) : ('button.collapse' | translate)"
+		(click)="toggleSidebar()"
+	>
+	</i>
+</div>
+
+<!-- CHART -->
+<iterpro-session-analysis-chart
+	[viewFlags]="viewFlags"
+	[chartData]="selectedAdvanced ? advancedChartData : chartData"
+/>

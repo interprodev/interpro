@@ -1,0 +1,311 @@
+[
+	{
+		"name": "Switzerland. U16 Cup",
+		"instatId": 5372
+	},
+	{
+		"name": "Switzerland. U18 Cup",
+		"instatId": 5371
+	},
+	{
+		"name": "Switzerland. U21 League Elite",
+		"instatId": 5087
+	},
+	{
+		"name": "Switzerland. U18 League Group B",
+		"instatId": 5088
+	},
+	{
+		"name": "Switzerland. U16 League Elite",
+		"instatId": 1915
+	},
+	{
+		"name": "Switzerland. U16 League Group B",
+		"instatId": 4903
+	},
+	{
+		"name": "Switzerland. U15 League Nazional",
+		"instatId": 4904
+	},
+	{
+		"name": "U15 Group Elite East",
+		"instatId": 4906
+	},
+	{
+		"name": "U15 Group Elite West",
+		"instatId": 4905
+	},
+	{
+		"name": "U15 Group Regional East",
+		"instatId": 5375
+	},
+	{
+		"name": "U15 Group Regional West",
+		"instatId": 5374
+	},
+	{
+		"name": "Liga Promotion",
+		"instatId": 1305
+	},
+	{
+		"name": "U18 League",
+		"instatId": 1615
+	},
+	{
+		"name": "Schweizer Pokal",
+		"instatId": 313
+	},
+	{
+		"name": "Erste Liga Cup",
+		"instatId": 4795
+	},
+	{
+		"name": "Liga Interregional Cup",
+		"instatId": 4796
+	},
+	{
+		"name": "Super League",
+		"instatId": 78
+	},
+	{
+		"name": "Nationalliga A Women",
+		"instatId": 954
+	},
+	{
+		"name": "Play-offs 1/2",
+		"instatId": 987
+	},
+	{
+		"name": "Nationalliga B Women",
+		"instatId": 995
+	},
+	{
+		"name": "1. Liga Classic",
+		"instatId": 1045
+	},
+	{
+		"name": "2. Liga Interregiona",
+		"instatId": 1094
+	},
+	{
+		"name": "Schweizer Pokal Frauen",
+		"instatId": 1112
+	},
+	{
+		"name": "Challenge League",
+		"instatId": 139
+	},
+	{
+		"name": "UEFA U21 Championship Qualification",
+		"instatId": 5056
+	},
+	{
+		"name": "UEFA U21 Championship 2023",
+		"instatId": 5056
+	},
+	{
+		"name": "UEFA U19 Championship Qualification",
+		"instatId": 4952
+	},
+	{
+		"name": "European Championship U19",
+		"instatId": 68
+	},
+	{
+		"name": "UEFA Development Tournament U18",
+		"instatId": 2150
+	},
+	{
+		"name": "UEFA U17 Championship Qualification",
+		"instatId": 4960
+	},
+	{
+		"name": "European Championship U17",
+		"instatId": 54
+	},
+	{
+		"name": "Europe. UEFA U21 Championship",
+		"instatId": 34
+	},
+	{
+		"name": "Under 21 Friendlies",
+		"instatId": 2461
+	},
+	{
+		"name": "Under 19 Friendlies",
+		"instatId": 2467
+	},
+	{
+		"name": "Under 18 Friendlies",
+		"instatId": 2468
+	},
+	{
+		"name": "Under 16 Friendlies",
+		"instatId": 2470
+	},
+	{
+		"name": "World. Friendlies",
+		"instatId": 8
+	},
+	{
+		"name": "Youth Club Friendlies",
+		"instatId": 1500
+	},
+	{
+		"name": "World. Youth Friendlies",
+		"instatId": 1479
+	},
+	{ "name": "Liga Portugal 2", "instatId": 120 },
+	{ "name": "France. Ligue 1", "instatId": 37 },
+	{ "name": "France. Championnat National 2 Group B", "instatId": 2007 },
+	{ "name": "France. Championnat National 2 Group C", "instatId": 2008 },
+	{ "name": "Austria. 2. Liga", "instatId": 49 },
+	{ "name": "England. Football League Trophy", "instatId": 514 },
+	{ "name": "Germany. 3. Liga", "instatId": 464 },
+	{ "name": "Germany. U-19 Bundesliga. Sud - Sudwest", "instatId": 1835 },
+	{ "name": "Germany. U-19 Bundesliga. West", "instatId": 1836 },
+	{ "name": "Germany. U-19 Bundesliga. Nord - Nordost", "instatId": 1245 },
+	{ "name": "Germany. Bundesliga U17. West", "instatId": 1837 },
+	{ "name": "Germany. Bundesliga U17. Nord - Nordost", "instatId": 1838 },
+	{ "name": "Germany. Bundesliga U17. Sud - Sudwest", "instatId": 1628 },
+	{ "name": "Italy. Seria A U17", "instatId": 4963 },
+	{ "name": "Italy. Primavera", "instatId": 411 },
+	{
+		"name": "Other Teams",
+		"instatId": -1,
+		"teams": [
+			{
+				"name": "Arsenal",
+				"instatId": 242
+			},
+			{
+				"name": "Borussia Mönchengladbach",
+				"instatId": 304
+			},
+			{
+				"name": "Almere City",
+				"instatId": 2817
+			},
+			{
+				"name": "Parma",
+				"instatId": 283
+			},
+			{
+				"name": "RB Salzburg",
+				"instatId": 357
+			},
+			{
+				"name": "SC Freiburg",
+				"instatId": 310
+			},
+			{
+				"name": "Hertha BSC",
+				"instatId": 549
+			},
+			{
+				"name": "Benfica",
+				"instatId": 313
+			},
+			{
+				"name": "FC Sochaux",
+				"instatId": 297
+			},
+			{
+				"name": "Juventus",
+				"instatId": 52
+			},
+			{
+				"name": "BV Borussia Dortmund",
+				"instatId": 183
+			},
+			{
+				"name": "Olympique de Marseille 17",
+				"instatId": 17
+			},
+			{
+				"name": "FC Girondins de Bordeaux",
+				"instatId": 287
+			},
+			{
+				"name": "TSV 1860 München",
+				"instatId": 602
+			},
+			{
+				"name": "Rot Weiss Essen",
+				"instatId": 1713
+			},
+			{
+				"name": "Greuther Fürth",
+				"instatId": 606
+			},
+			{
+				"name": "Almere U-21",
+				"instatId": 33573
+			},
+			{
+				"name": "SL Benfica U23",
+				"instatId": 107975
+			},
+			{
+				"name": "Juventus U23",
+				"instatId": 157874
+			},
+			{
+				"name": "FC Sochaux B",
+				"instatId": 3162
+			},
+			{
+				"name": "Juventus U19",
+				"instatId": 9801
+			},
+			{
+				"name": "FC Girondins Bordeaux U19",
+				"instatId": 16883
+			},
+			{
+				"name": "BV Borussia Dortmund U19",
+				"instatId": 11772
+			},
+			{
+				"name": "FC Liefering",
+				"instatId": 6587
+			},
+			{
+				"name": "SC Freiburg U19",
+				"instatId": 12635
+			},
+			{
+				"name": "Red Bull Salzburg U19",
+				"instatId": 25076
+			},
+			{
+				"name": "Switzerland NT",
+				"instatId": 22
+			},
+			{
+				"name": "Switzerland U23",
+				"instatId": 8384
+			},
+			{
+				"name": "Switzerland U21",
+				"instatId": 533
+			},
+			{
+				"name": "Switzerland U20",
+				"instatId": 9762
+			},
+			{
+				"name": "Switzerland U19",
+				"instatId": 4780
+			},
+			{
+				"name": "Switzerland U18",
+				"instatId": 10576
+			},
+			{
+				"name": "Switzerland U17",
+				"instatId": 4647
+			}
+		]
+	}
+]

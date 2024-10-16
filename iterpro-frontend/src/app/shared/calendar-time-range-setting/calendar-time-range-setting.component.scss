@@ -1,0 +1,11 @@
+.trigger-time {
+	display: flex;
+	column-gap: 1rem;
+	div {
+		width: 90px;
+	}
+}
+
+.favorite {
+	color: var(--color-primary-500);
+}

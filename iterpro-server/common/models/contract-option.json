@@ -1,0 +1,141 @@
+{
+	"name": "ContractOption",
+	"plural": "ContractOptions",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"type": {
+			"type": "string",
+			"required": true
+		},
+		"transferType": {
+			"type": "string"
+		},
+		"amount": {
+			"type": "number",
+			"required": true
+		},
+		"grossAmount": {
+			"type": "number"
+		},
+		"installments": {
+			"type": ["object"],
+			"default": []
+		},
+		"asset": {
+			"type": "boolean",
+			"default": false
+		},
+		"mechanismSolidarity": {
+			"type": "number"
+		},
+		"mechanismSolidarityType": {
+			"type": "string",
+			"default": "add"
+		},
+		"reachable": {
+			"type": "boolean",
+			"default": true
+		},
+		"reached": {
+			"type": "boolean",
+			"default": false
+		},
+		"confirmed": {
+			"type": "boolean",
+			"default": false
+		},
+		"paid": {
+			"type": "boolean",
+			"default": false
+		},
+		"achievedDate": {
+			"type": "date"
+		},
+		"confirmedDate": {
+			"type": "date"
+		},
+		"paidDate": {
+			"type": "date"
+		},
+		"within": {
+			"type": "date"
+		},
+		"withinDays": {
+			"type": "number"
+		},
+		"withinMode": {
+			"type": "string",
+			"default": "days"
+		},
+		"reachedCustomerId": {
+			"type": "string"
+		},
+		"confirmedCustomerId": {
+			"type": "string"
+		},
+		"paidCustomerId": {
+			"type": "string"
+		},
+		"conditionRelationFlag": {
+			"type": "string",
+			"default": "and"
+		},
+		"manualEvaluation": {
+			"type": "boolean",
+			"default": false
+		},
+		"notes": {
+			"type": "string"
+		},
+		"progress": {
+			"type": {
+				"count": "number",
+				"count2": "number",
+				"total": "number",
+				"percentage": "number"
+			},
+			"default": {
+				"count": 0,
+				"count2": 0,
+				"total": 0,
+				"percentage": 0
+			}
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "contractId",
+				"discriminator": "contractType"
+			}
+		},
+		"person": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "personId",
+				"discriminator": "personType"
+			}
+		},
+		"agent": {
+			"type": "belongsTo",
+			"model": "Agent"
+		},
+		"_conditions": {
+			"type": "embedsMany",
+			"model": "ContractOptionCondition",
+			"property": "conditions",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

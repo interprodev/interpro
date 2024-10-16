@@ -1,0 +1,251 @@
+<p-dialog
+	[(visible)]="visible"
+	[responsive]="true"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="true"
+	[draggable]="false"
+	[resizable]="false"
+	[blockScroll]="true"
+	[modal]="true"
+	[style]="{ width: '900px' }"
+>
+	<p-header *ngIf="editable && !newMetric">{{ 'preferences.treatments.edit' | translate }}</p-header>
+	<p-header *ngIf="editable && newMetric">{{ 'preferences.treatments.add' | translate }}</p-header>
+	<div *ngIf="treatment" style="margin: 1em">
+		<form id="form" (ngSubmit)="f.form.valid && saveTreatment()" #f="ngForm" novalidate>
+			<table class="fields-table inj-det-table" style="width: 100%">
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>
+							preferences.treatments.label
+						</span>
+					</th>
+					<td colspan="3">
+						<span>
+							<input
+								pInputText
+								type="text"
+								class="form-control"
+								style="width: 90%"
+								name="label"
+								[(ngModel)]="treatment.label"
+								#label="ngModel"
+								[ngClass]="{ 'ng-dirty ng-invalid': (f.submitted || label.touched) && label.invalid }"
+								required
+								autocomplete="new-password"
+								[disabled]="!editable"
+							/>
+							<i
+								*ngIf="editable"
+								style="margin-right: 0.8em"
+								class="fa fa-question-circle"
+								[pTooltip]="'preferences.treatments.label.desc' | translate"
+							></i>
+						</span>
+						<div *ngIf="(f.submitted || label.touched) && label.invalid" class="invalid-feedback">
+							<div *ngIf="label.errors?.['required']">Name is required</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>
+							preferences.treatments.value
+						</span>
+					</th>
+					<td colspan="3">
+						<span>
+							<input
+								pInputText
+								type="text"
+								class="form-control"
+								style="width: 90%"
+								name="value"
+								[(ngModel)]="treatment.value"
+								#value="ngModel"
+								[ngClass]="{ 'ng-dirty ng-invalid': (f.submitted || value.touched) && value.invalid }"
+								required
+								autocomplete="new-password"
+								[disabled]="!editable"
+							/>
+							<i
+								*ngIf="editable"
+								style="margin-right: 0.8em"
+								class="fa fa-question-circle"
+								pTooltip="{{ 'preferences.treatments.value.desc' | translate }}"
+							></i>
+						</span>
+						<div *ngIf="(f.submitted || value.touched) && value.invalid" class="invalid-feedback">
+							<div *ngIf="value.errors?.['required']">Value is required</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>
+							medical.infirmary.details.type
+						</span>
+					</th>
+					<td class="half-width-td">
+						<p-dropdown
+							[(ngModel)]="treatment.type"
+							[options]="treatmentTypes"
+							name="treatmentType"
+							#treatmentType="ngModel"
+							placeholder="{{ 'dropdown.placeholder' | translate }}"
+							[ngClass]="{ 'ng-dirty ng-invalid': (f.submitted || treatmentType.touched) && treatmentType.invalid }"
+							appendTo="body"
+							[required]="true"
+							[readonly]="!editable"
+						></p-dropdown>
+						<div *ngIf="(f.submitted || treatmentType.touched) && treatmentType.invalid" class="invalid-feedback">
+							<div *ngIf="treatmentType.errors?.['required']">Type is required</div>
+						</div>
+					</td>
+					<th class="half-width-th">
+						<span
+							*ngIf="treatment.type !== 'sec'"
+							style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em"
+							translate
+						>
+							category
+						</span>
+					</th>
+					<td class="half-width-td">
+						<ng-container *ngIf="treatment.type !== 'sec'">
+							<p-dropdown
+								[(ngModel)]="treatment.category"
+								[options]="treatmentCategories"
+								name="category"
+								#category="ngModel"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								[ngClass]="{ 'ng-dirty ng-invalid': (f.submitted || category.touched) && category.invalid }"
+								appendTo="body"
+								[required]="true"
+								[readonly]="!editable"
+							></p-dropdown>
+
+							<!-- Category required hint -->
+							<div *ngIf="(f.submitted || category.touched) && category.invalid" class="invalid-feedback">
+								<div *ngIf="category?.errors?.['required']">Category is required</div>
+							</div>
+						</ng-container>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>protocol</span>
+					</th>
+					<td colspan="3">
+						<textarea
+							[rows]="4"
+							class="p-inputtext p-component form-control textAreaInjury"
+							pInputTextarea
+							name="description"
+							[(ngModel)]="treatment.description"
+							#description="ngModel"
+							[ngClass]="{ 'ng-dirty ng-invalid': (f.submitted || description.touched) && description.invalid }"
+							[disabled]="!editable"
+						></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>
+							buttons.video
+						</span>
+					</th>
+					<td colspan="3">
+						<span *ngIf="!editable || !!treatment.video; else videoUpload">
+							<iterpro-icon-modal-preview
+								[url]="treatment.video?.downloadUrl | azureUrl"
+								[name]="treatment.video?.name"
+							/>
+							{{ treatment.video?.name }}
+							<i *ngIf="editable" class="button-icon fas fa-trash" (click)="deleteVideo()"></i>
+						</span>
+						<ng-template #videoUpload>
+							<span class="upload">
+								<iterpro-cloud-upload
+									[style]="{ width: 'auto' }"
+									(onStartEmitter)="startUploadVideo()"
+									(completedEmitter)="addVideo($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+									[area]="false"
+									[spinner]="false"
+									accept="video/*"
+								/>
+								<p-progressSpinner
+									*ngIf="isLoadingVideo"
+									[style]="{ width: '20px', height: '20px', 'margin-left': '5px', 'margin-top': '5px' }"
+								>
+								</p-progressSpinner>
+							</span>
+						</ng-template>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<span style="color: var(--color-neutral-900); width: 40%; margin-right: 0.8em" translate>
+							tooltip.attachment
+						</span>
+					</th>
+					<td colspan="3">
+						<span *ngIf="!editable || !!treatment.doc; else docUpload">
+							<iterpro-icon-modal-preview
+								[url]="treatment.doc?.downloadUrl | azureUrl"
+								[name]="treatment.doc?.name"
+							/>
+							{{ treatment.doc?.name }}
+							<i *ngIf="editable" class="button-icon fas fa-trash" (click)="deleteDocument()"></i>
+						</span>
+						<ng-template #docUpload>
+							<span class="upload">
+								<iterpro-cloud-upload
+									[style]="{ width: 'auto' }"
+									(onStartEmitter)="startUploadDoc()"
+									(completedEmitter)="addDocument($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+									[area]="false"
+									[spinner]="false"
+									accept="*"
+								/>
+								<p-progressSpinner
+									*ngIf="isLoadingDoc"
+									[style]="{ width: '20px', height: '20px', 'margin-left': '5px', 'margin-top': '5px' }"
+								>
+								</p-progressSpinner>
+							</span>
+						</ng-template>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div class="navigator" *ngIf="treatments.length > 1">
+			<i [class.disabledNavigation]="treatmentIndex < 1" class="fa-solid fa-chevron-left" (click)="previous()"></i>
+			{{ treatmentIndex + 1 }}/{{ treatments.length }}
+			<i
+				[class.disabledNavigation]="treatmentIndex >= treatments.length - 1"
+				class="fa-solid fa-chevron-right"
+				(click)="next()"
+			></i>
+		</div>
+	</div>
+	<p-footer>
+		<ng-container *ngIf="editable; else readOnlyFooter">
+			<button pButton size="small" styleClass="p-button-primary" type="submit" icon="fas fa-check" form="form" label="{{ 'buttons.save' | translate }}"></button>
+			<p-button size="small" [outlined]="true"
+				icon="fas fa-times"
+				(click)="discardTreatment()"
+				label="{{ 'buttons.discard' | translate }}"
+			></p-button>
+		</ng-container>
+		<ng-template #readOnlyFooter>
+			<p-button size="small"
+				type="button"
+				icon="fas fa-times"
+				(click)="discardTreatment()"
+				label="{{ 'buttons.close' | translate }}"
+			></p-button>
+		</ng-template>
+	</p-footer>
+</p-dialog>

@@ -1,0 +1,391 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3>{{ player.displayName }}</h3>
+					<div class="profile-picture tw-rounded">
+						<iterpro-player-provider-widget
+							[wyscoutId]="player?.wyscoutId"
+							[instatId]="player?.instatId"
+						/>
+						<img
+							style="background-color: white"
+							class="player-pic"
+							[src]="downloadUrl | azureUrl"
+							onError="this.src='assets/img/default_icon.png';"
+							alt="player picture"
+						/>
+					</div>
+					<ng-container *ngIf="!editMode">
+						<h4 class="spacing apply-title" translate>buttons.applyTo</h4>
+						<div class="spacing">
+							<p-multiSelect
+								*ngIf="applyOptions"
+								[style]="{ width: '100%' }"
+								[options]="applyOptions"
+								[(ngModel)]="selectedApplies"
+								appendTo="body"
+							></p-multiSelect>
+						</div>
+						<div class="spacing">
+							<p-radioButton
+								pTooltip="{{ 'thresholds.apply.customValues.tooltip' | translate }}"
+								name="applyGroup"
+								value="customValues"
+								label="{{ 'thresholds.apply.customValues' | translate }}"
+								[(ngModel)]="applyType"
+							>
+							</p-radioButton>
+						</div>
+						<div *ngIf="!admin" class="spacing">
+							<p-radioButton
+								pTooltip="{{ 'thresholds.apply.thresholdType.tooltip' | translate }}"
+								name="applyGroup"
+								value="thresholdType"
+								label="{{ 'thresholds.apply.thresholdType' | translate }}"
+								[(ngModel)]="applyType"
+							></p-radioButton>
+						</div>
+						<div class="spacing">
+							<p-button
+								size="small"
+								(click)="onApplyThresholdsConfirm(currentSelectedTab)"
+								[label]="'buttons.apply' | translate"
+							>
+							</p-button>
+						</div>
+					</ng-container>
+				</div>
+
+				<div class="col-right-profile-thre" *ngIf="currentTeam">
+					<iterpro-side-tabs (changeEmitter)="onChangeTab($event)">
+
+						<!-- GPS -->
+						<iterpro-side-tab
+							*ngIf="!admin"
+							[tabKey]="'gps'"
+							[tabTitle]="'thresholds.category.gps' | translate"
+							[tabDisabled]="!hasAccessToModule('import-data')"
+						>
+							<div class="flexed" style="align-items: flex-start">
+								<table class="gps-table" cellspacing="0" cellpadding="0">
+									<thead>
+										<tr>
+											<th>
+												<div class="gps-dd">
+													<span translate>thresholds.type</span>
+													<div class="gps-dd-action">
+														<p-dropdown
+															[readonly]="editMode"
+															[options]="gdOptions"
+															[(ngModel)]="selectedGdType"
+															[style]="{ width: '100%' }"
+															(onChange)="handleChangeGdType($event)"
+														>
+															<ng-template let-type pTemplate="selectedItem">
+																<div class="gps-flex gps-selected">
+																	<div class="point" [style.visibility]="type.exists ? 'visible' : 'hidden'"></div>
+																	<div class="gps-dd-label">{{ type.label }}</div>
+																</div>
+															</ng-template>
+															<ng-template let-type pTemplate="item">
+																<div class="gps-flex">
+																	<div class="point" [style.visibility]="type.exists ? 'visible' : 'hidden'"></div>
+																	<div class="gps-dd-label">{{ type.label }}</div>
+																</div>
+															</ng-template>
+														</p-dropdown>
+														<i *ngIf="editMode" class="fas fa-trash" (click)="deleteSelectedGdType()"></i>
+													</div>
+												</div>
+											</th>
+											<td
+												[class.selectedColumn]="isThresholdFormatSelected(gpsPerDay, 'customValue')"
+												class="thresholdHeader"
+											>
+												<iterpro-selectable-threshold-header
+													label="{{ 'thresholds.custom' | translate }}"
+													[selected]="isThresholdFormatSelected(gpsPerDay, 'customValue')"
+													[clickable]="editMode"
+													(click)="selectThresholdValueType('customValue', 'gps')"
+												>
+												</iterpro-selectable-threshold-header>
+											</td>
+											<td
+												[class.selectedColumn]="isThresholdFormatSelected(gpsPerDay, 'last30Value')"
+												class="thresholdHeader"
+											>
+												<iterpro-selectable-threshold-header
+													label="{{ 'thresholds.lastMonth' | translate }}"
+													[selected]="isThresholdFormatSelected(gpsPerDay, 'last30Value')"
+													[clickable]="editMode"
+													(click)="selectThresholdValueType('last30Value', 'gps')"
+												>
+												</iterpro-selectable-threshold-header>
+												<i
+													class="fas fa-copy"
+													*ngIf="editMode"
+													(click)="copyGpsThresholdToCustom('last30Value')"
+													pTooltip="{{ 'buttons.copyThresholds' | translate }}"
+												></i>
+											</td>
+											<td
+												class="thresholdHeader gps-last"
+												[class.selectedColumn]="isThresholdFormatSelected(gpsPerDay, 'seasonValue')"
+											>
+												<iterpro-selectable-threshold-header
+													label="{{ 'thresholds.season' | translate }}"
+													[selected]="isThresholdFormatSelected(gpsPerDay, 'seasonValue')"
+													[clickable]="editMode"
+													(click)="selectThresholdValueType('seasonValue', 'gps')"
+												>
+												</iterpro-selectable-threshold-header>
+												<i
+													class="fas fa-copy"
+													*ngIf="editMode"
+													(click)="copyGpsThresholdToCustom('seasonValue')"
+													pTooltip="{{ 'buttons.copyThresholds' | translate }}"
+												></i>
+											</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr
+											*ngFor="
+												let thr of gpsPerDay | activeThrFilter : (getTeamSettings(user))?.metricsPerformance;
+												let isLast = last
+											"
+										>
+											<th>{{ etlGpsService.getMetricLabel(thr.name) }}</th>
+											<td
+												[ngClass]="{
+													selectedColumn: thr.format === 'customValue',
+													box: !isLast,
+													last: isLast
+												}"
+											>
+												<div
+													*ngIf="showPointToGpsAndTactical"
+													class="point inline-flex"
+													[style.visibility]="thr.format === 'customValue' ? 'visible' : 'hidden'"
+												></div>
+												<input [disabled]="!editMode" pInputText type="number" [(ngModel)]="thr.customValue" />
+											</td>
+											<td
+												[ngClass]="{
+													selectedColumn: thr.format === 'last30Value',
+													box: !isLast,
+													last: isLast
+												}"
+											>
+												<div
+													*ngIf="showPointToGpsAndTactical"
+													class="point inline-flex"
+													[style.visibility]="thr.format === 'last30Value' ? 'visible' : 'hidden'"
+												></div>
+												{{ thr.last30Value ? thr.last30Value.toFixed(1) : '-' }}
+											</td>
+											<td
+												class="gps-last"
+												[ngClass]="{
+													selectedColumn: thr.format === 'seasonValue',
+													box: !isLast,
+													last: isLast
+												}"
+											>
+												<div
+													*ngIf="showPointToGpsAndTactical"
+													class="point inline-flex"
+													[style.visibility]="thr.format === 'seasonValue' ? 'visible' : 'hidden'"
+												></div>
+												{{ thr.seasonValue ? thr.seasonValue.toFixed(1) : '-' }}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</iterpro-side-tab>
+
+						<!-- TACTICAL -->
+						<iterpro-side-tab
+							*ngIf="!admin"
+							[tabKey]="'tactical'"
+							[tabTitle]="'thresholds.category.tactical' | translate"
+							[tabDisabled]="!hasAccessToModule('tactics')"
+						>
+							<table class="gps-table" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<th></th>
+										<td
+											[class.selectedColumn]="isThresholdFormatSelected(player._thresholdsPlayer, 'customValue')"
+											class="thresholdHeader"
+										>
+											<iterpro-selectable-threshold-header
+												label="{{ 'thresholds.custom' | translate }}"
+												[selected]="isThresholdFormatSelected(player._thresholdsPlayer, 'customValue')"
+												[clickable]="editMode"
+												(click)="selectThresholdValueType('customValue', 'tactical')"
+											>
+											</iterpro-selectable-threshold-header>
+										</td>
+										<td
+											[class.selectedColumn]="isThresholdFormatSelected(player._thresholdsPlayer, 'last30Value')"
+											class="thresholdHeader"
+										>
+											<iterpro-selectable-threshold-header
+												label="{{ 'thresholds.lastMonth' | translate }}"
+												[selected]="isThresholdFormatSelected(player._thresholdsPlayer, 'last30Value')"
+												[clickable]="editMode"
+												(click)="selectThresholdValueType('last30Value', 'tactical')"
+											>
+											</iterpro-selectable-threshold-header>
+											<i
+												class="fas fa-copy"
+												*ngIf="editMode"
+												(click)="copyTacticalThresholdToCustom('last30Value')"
+												pTooltip="{{ 'buttons.copyThresholds' | translate }}"
+											></i>
+										</td>
+										<td
+											[class.selectedColumn]="isThresholdFormatSelected(player._thresholdsPlayer, 'seasonValue')"
+											class="thresholdHeader gps-last"
+										>
+											<iterpro-selectable-threshold-header
+												label="{{ 'thresholds.season' | translate }}"
+												[selected]="isThresholdFormatSelected(player._thresholdsPlayer, 'seasonValue')"
+												[clickable]="editMode"
+												(click)="selectThresholdValueType('seasonValue', 'tactical')"
+											>
+											</iterpro-selectable-threshold-header>
+											<i
+												class="fas fa-copy"
+												*ngIf="editMode"
+												(click)="copyTacticalThresholdToCustom('seasonValue')"
+												pTooltip="{{ 'buttons.copyThresholds' | translate }}"
+											></i>
+										</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr
+										*ngFor="
+											let thr of player._thresholdsPlayer
+												| activeThrFilter : (getTeamSettings(user))?.metricsIndividualTactical;
+											let isLast = last
+										"
+									>
+										<th>{{ etlPlayerService.getMetricLabel(thr.name) }}</th>
+										<td
+											[ngClass]="{
+												selectedColumn: thr.format === 'customValue',
+												box: !isLast,
+												last: isLast
+											}"
+										>
+											<div
+												*ngIf="showPointToGpsAndTactical"
+												class="point inline-flex"
+												[style.visibility]="thr.format === 'customValue' ? 'visible' : 'hidden'"
+											></div>
+											<input [disabled]="!editMode" pInputText type="number" [(ngModel)]="thr.customValue" />
+										</td>
+										<td
+											[ngClass]="{
+												selectedColumn: thr.format === 'last30Value',
+												box: !isLast,
+												last: isLast
+											}"
+										>
+											<div
+												*ngIf="showPointToGpsAndTactical"
+												class="point inline-flex"
+												[style.visibility]="thr.format === 'last30Value' ? 'visible' : 'hidden'"
+											></div>
+											{{ thr.last30Value ? thr.last30Value.toFixed(1) : '-' }}
+										</td>
+										<td
+											class="gps-last"
+											[ngClass]="{
+												selectedColumn: thr.format === 'seasonValue',
+												box: !isLast,
+												last: isLast
+											}"
+										>
+											<div
+												*ngIf="showPointToGpsAndTactical"
+												class="point inline-flex"
+												[style.visibility]="thr.format === 'seasonValue' ? 'visible' : 'hidden'"
+											></div>
+											{{ thr.seasonValue ? thr.seasonValue.toFixed(1) : '-' }}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</iterpro-side-tab>
+
+						<!-- TEST -->
+						<iterpro-side-tab
+							*ngIf="!admin"
+							[tabKey]="'test'"
+							[tabTitle]="'thresholds.category.test' | translate"
+							[tabDisabled]="!hasAccessToModule('tests')"
+						>
+							<iterpro-threshold-test
+								[editMode]="editMode"
+								[playerThresholdsTests]="player._thresholdsTests"
+								[teamMetricsTests]="currentTeam.metricsTests"
+								[teamGoSettings]="currentTeam.goSettings"
+								(save)="saveThresholdTestDialog($event)"
+							/>
+						</iterpro-side-tab>
+
+						<!-- FINANCIAL -->
+						<iterpro-side-tab
+							*ngIf="admin"
+							[tabKey]="'financial'"
+							[tabTitle]="'thresholds.category.financial' | translate"
+						>
+							<table class="gps-table" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr>
+										<th></th>
+										<td>{{ 'thresohlds.custom' | translate }}</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let thr of player._thresholdsFinancial">
+										<th translate>{{ thr.name }}</th>
+										<td><input [disabled]="!editMode" pInputText type="number" [(ngModel)]="thr.value" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</iterpro-side-tab>
+					</iterpro-side-tabs>
+
+					<i
+						*ngIf="checkForQuestionMarkVisibilityTests()"
+						class="fas fa-question icon"
+						style="color: white; cursor: pointer; font-size: 1rem"
+						(click)="op.toggle($event, overlayPanelAnchor)"
+					></i>
+					<p-overlayPanel #op2 appendTo="body" [style]="{ 'background-color': 'transparent' }">
+						<img class="info-fin-img" src="assets/img/thresholds_info_financial.png" />
+					</p-overlayPanel>
+					<i
+						*ngIf="checkForQuestionMarkVisibilityFinancial()"
+						class="fas fa-question icon"
+						style="color: white; cursor: pointer; font-size: 1rem"
+						(click)="op2.toggle($event)"
+					></i>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-overlayPanel #op appendTo="body" [style]="{ 'background-color': 'transparent' }">
+	<img height="40%" src="assets/img/thresholds_info.png" />
+</p-overlayPanel>

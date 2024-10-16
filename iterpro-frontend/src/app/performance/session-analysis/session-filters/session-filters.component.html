@@ -1,0 +1,197 @@
+<ng-container>
+	<!-- IF: SELECTED SESSION -->
+	<ng-container>
+		<div class="sidebar-col">
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.date</h3>
+				<span class="label--small">{{ selectedSession?.start | formatDateBySetting }}</span>
+			</div>
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.time</h3>
+				<span class="label--small">{{ selectedSession?.start | date: 'HH:mm' }}</span>
+			</div>
+		</div>
+		<div class="sidebar-col">
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.duration</h3>
+				<span class="label--small">{{ selectedSessionDuration || '-' }}</span>
+			</div>
+			<div>
+				<h3 class="spacing greyed" translate>sidebar.gdType</h3>
+				<span class="label--small">{{ selectedSessionGDType || '-' }}</span>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- SEASON -->
+	<h3 class="spacing greyed" translate>profile.season</h3>
+	<p-dropdown optionLabel="name" [options]="teamSeasons" [ngModel]="selectedSeason" (onChange)="onChangeSeason($event)">
+	</p-dropdown>
+
+	<!-- SESSION -->
+	<h3 class="spacing greyed" translate>sidebar.session</h3>
+	<p-dropdown [options]="sessions" [(ngModel)]="selectedSession" (onChange)="onChangeSession($event)">
+		<ng-template pTemplate="selectedItem">
+			<ng-container *ngIf="selectedSession">
+				{{ selectedSession | sessionGD }}
+			</ng-container>
+		</ng-template>
+		<ng-template let-session pTemplate="item">
+			{{ session | sessionGD }}
+		</ng-template>
+	</p-dropdown>
+
+	<!-- IF: TEAM SESSION (PLAYERS, FILTERS, SPLIT) -->
+	<ng-container *ngIf="sessionAnalysisState === SESSION_VIEWS.Team; else individual">
+		<h3 class="spacing greyed" translate>sidebar.partecipants</h3>
+		<p-multiSelect
+			appendTo="body"
+			selectedItemsLabel="{0} selected"
+			maxSelectedLabels="1"
+			optionLabel="label"
+			dataKey="label"
+			[placeholder]="'dropdown.placeholder' | translate"
+			[options]="partecipants"
+			[(ngModel)]="selectedPlayersOptions"
+			(onChange)="onChangePlayers($event)"
+		/>
+
+		<h3 class="greyed spacing" translate>sidebar.filter</h3>
+		<p-dropdown
+			[style]="{ width: '100%' }"
+			[options]="filtersOptions"
+			[(ngModel)]="selectedFilter"
+			(onChange)="onChangeFilter($event)"
+		>
+		</p-dropdown>
+
+		<h3 class="spacing greyed" translate>sidebar.split</h3>
+		<p-dropdown optionLabel="label" [options]="splits" [ngModel]="selectedTeamSplit" (onChange)="onChangeSplit($event)">
+		</p-dropdown>
+	</ng-container>
+
+	<!-- IF: INDIVIDUAL SESSION -->
+	<ng-template #individual>
+		<h3 class="spacing greyed" translate>sidebar.partecipants</h3>
+		<iterpro-player-dropdown
+			[options]="playersInSession"
+			[playerId]="selectedIndividualPlayer?.id"
+			(playerIdChanged)="onChangeIndividualPlayer($event)"
+			[style]="{ width: '100%', display: 'flex', 'align-items': 'center' }"
+		/>
+		<h3 class="spacing greyed" translate>sidebar.split</h3>
+		<p-multiSelect
+			appendTo="body"
+			[style]="{ 'z-index': 'auto !important' }"
+			optionLabel="label"
+			selectedItemsLabel="{0} selected"
+			maxSelectedLabels="1"
+			[options]="splits"
+			[(ngModel)]="selectedIndividualSplits"
+			(onChange)="onChangeSplit($event)"
+		>
+		</p-multiSelect>
+	</ng-template>
+
+	<!-- IF: NOT BUBBLE CHART -->
+	<ng-container *ngIf="!chartFlags.bubble; else bubble">
+		<h3 class="spacing greyed" translate>sidebar.metrics</h3>
+		<p-multiSelect
+			[selectionLimit]="2"
+			appendTo="body"
+			[optionLabel]="'metricLabel'"
+			[options]="metrics"
+			[(ngModel)]="selectedMetrics"
+			(onChange)="onChangeMetrics($event)"
+		>
+		</p-multiSelect>
+	</ng-container>
+
+	<ng-template #bubble>
+		<h3 class="spacing greyed" translate>sidebar.xAxis</h3>
+		<p-dropdown
+			appendTo="body"
+			[options]="metrics"
+			[optionLabel]="'metricLabel'"
+			[(ngModel)]="bubbleMetrics['xAxis']"
+			(onChange)="onChangeBubbleMetrics($event, 'xAxis')"
+		>
+		</p-dropdown>
+
+		<h3 class="spacing greyed" translate>sidebar.yAxis</h3>
+		<p-dropdown
+			appendTo="body"
+			[options]="metrics"
+			[optionLabel]="'metricLabel'"
+			(onChange)="onChangeBubbleMetrics($event, 'yAxis')"
+		>
+		</p-dropdown>
+
+		<h3 class="spacing greyed" translate>sidebar.size</h3>
+		<p-dropdown
+			appendTo="body"
+			[options]="metrics"
+			[optionLabel]="'metricLabel'"
+			[(ngModel)]="bubbleMetrics['size']"
+			(onChange)="onChangeBubbleMetrics($event, 'size')"
+		>
+		</p-dropdown>
+	</ng-template>
+
+	<ng-container
+		*ngIf="sessionAnalysisState === SESSION_VIEWS.Team && !!playersInSession && canLoadAdvanced && !chartFlags.bubble"
+	>
+		<div class="icon-heading">
+			<h3 class="spacing greyed" translate>sidebar.advanced</h3>
+			<div class="icon" *ngIf="!advancedFlags?.inProgress">
+				<i
+					class="fas fa-check fa-active"
+					*ngIf="!(advancedFlags?.noData || advancedFlags?.wrongSelection) && !chartFlags.bubble"
+					[pTooltip]="'alert.advancedAnalysisAvailable' | translate"
+				></i>
+				<i
+					class="fas fa-times"
+					*ngIf="advancedFlags?.noData && !chartFlags.bubble"
+					[pTooltip]="'alert.noAdvancedAnalysis' | translate"
+				></i>
+				<i
+					class="fas fa-exclamation"
+					*ngIf="advancedFlags?.wrongSelection && !chartFlags.bubble"
+					[pTooltip]="'alert.advancedAnalysisWrongSelection' | translate"
+				></i>
+			</div>
+		</div>
+
+		<ng-container *ngIf="!advancedFlags?.inProgress && !advancedFlags?.wrongSelection">
+			<p-dropdown
+				[options]="advancedOptions"
+				[tooltip]="moduleError | translate"
+				[readonly]="!canAccessToModule || chartFlags.bubble"
+				[placeholder]="'dropdown.placeholder' | translate"
+				[(ngModel)]="selectedAdvanced"
+				(onChange)="onChangeAdvanced($event)"
+			>
+			</p-dropdown>
+		</ng-container>
+
+		<p-progressSpinner
+			*ngIf="advancedFlags?.inProgress"
+			[pTooltip]="'alert.advancedLoading' | translate"
+			[style]="{ width: '15px', height: '15px' }"
+			strokeWidth="6"
+		>
+		</p-progressSpinner>
+	</ng-container>
+
+	<div class="tw-mt-4">
+		<p-button
+			size="small"
+			type="text"
+			styleClass="tw-w-full"
+			[disabled]="!selectedSession"
+			[routerLink]="['/manager/video-gallery', { id: selectedSession?.id, from: 'session' }]"
+			[label]="'buttons.video' | translate"
+		>
+		</p-button>
+	</div>
+</ng-container>

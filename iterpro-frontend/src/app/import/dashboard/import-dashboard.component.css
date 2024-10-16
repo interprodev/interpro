@@ -1,0 +1,23 @@
+.sessionPlayerContainer {
+	padding: 0.2em;
+}
+.sessionImportContainer {
+	padding: 0.2em;
+}
+
+.ui-accordion .ui-accordion-content {
+	display: block;
+	overflow: auto !important;
+}
+
+.ui-g-12 {
+	padding: 0;
+}
+
+.importTable .ui-table-tbody > tr:nth-child(even) {
+	background-color: var(--color-neutral-300);
+}
+
+.disabled-events {
+	pointer-events: none;
+}

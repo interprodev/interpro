@@ -1,0 +1,115 @@
+.container {
+	/* padding-left: 1em;
+	padding-right: 1em; */
+}
+
+.row {
+	display: flex;
+	/* justify-content: space-between; */
+	align-items: center;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.row-header {
+	width: 20%;
+}
+
+.row-cell {
+	width: 80%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.inner-cell {
+	display: flex;
+	align-items: center;
+}
+
+.inner-cell > * {
+	margin-right: 1em;
+}
+
+.inline-label {
+	font-weight: normal;
+	color: #bbbbbb;
+}
+
+table {
+	width: 100%;
+	padding: 0 1.2em 0 1.2em;
+}
+
+tr {
+	margin: 1em 0 1em 0;
+	height: 30px;
+}
+
+.row-table:hover {
+	background-color: #111;
+}
+
+td {
+	display: flex;
+	align-items: center;
+	/* justify-content: space-between; */
+	/* width: 60%; */
+}
+
+td > p-radioButton {
+	margin-right: 4em;
+}
+
+td > p-calendar {
+	margin-right: 1em;
+}
+
+th {
+	text-align: left !important;
+	/* vertical-align: top; */
+}
+
+.conditions-box {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.conditions-box-header {
+	display: flex;
+	margin-bottom: 0.5em;
+	margin-top: 0.5em;
+	width: 100%;
+	justify-content: space-between;
+}
+
+.condition-row-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-left: 1em;
+}
+
+.condition-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.condition-label {
+	width: 20%;
+	display: flex;
+	margin-bottom: 0.5em;
+}
+
+.condition-value {
+	width: 80%;
+	display: flex;
+	margin-bottom: 0.5em;
+}
+
+.fa-exclamation {
+	color: red;
+}

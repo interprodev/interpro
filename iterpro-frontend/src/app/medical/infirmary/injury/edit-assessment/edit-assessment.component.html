@@ -1,0 +1,228 @@
+<ng-container *ngIf="assessmentForm">
+	<form [formGroup]="assessmentForm" class="pflex-pb-8">
+		<div class="pflex-grid">
+			<div class="pflex-col-12 md:pflex-pr-4 md:pflex-col-6">
+				<!-- Date -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.date</h3>
+					<p-calendar
+						showButtonBar="true"
+						formControlName="date"
+						showTime="true"
+						hourFormat="24"
+						[maxDate]="today"
+						[minDate]="injury.date"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					>
+					</p-calendar>
+				</div>
+
+				<!-- Author -->
+				<div class="pflex-my-4">
+					<h5 class="pflex-mb-1" translate>prevention.treatments.author</h5>
+					<p-dropdown
+						[filter]="true"
+						[options]="customers | customersToSelectItems"
+						[placeholder]="'dropdown.placeholder' | translate"
+						formControlName="authorId"
+					></p-dropdown>
+				</div>
+
+				<!-- ROM -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.rom</h3>
+					<p-dropdown [options]="levelItems" [showClear]="true" [placeholder]="'dropdown.placeholder' | translate" formControlName="rom">
+					</p-dropdown>
+				</div>
+
+				<!--- STRENGTH -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.strength</h3>
+					<p-dropdown
+						[options]="levelItems"
+						[showClear]="true"
+						[placeholder]="'dropdown.placeholder' | translate"
+						formControlName="strength"
+					></p-dropdown>
+				</div>
+
+				<!-- STABILITY -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.stability</h3>
+					<p-dropdown
+						[options]="levelItems"
+						[showClear]="true"
+						[placeholder]="'dropdown.placeholder' | translate"
+						formControlName="stability"
+					></p-dropdown>
+				</div>
+
+				<!-- SWELLING -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.swelling</h3>
+					<p-dropdown
+						[options]="swellingItems"
+						[showClear]="true"
+						[placeholder]="'dropdown.placeholder' | translate"
+						formControlName="swelling"
+					></p-dropdown>
+				</div>
+
+				<!-- PAIN -->
+				<div class="pflex-my-4 pflex-my-4--range">
+					<h3 class="pflex-mb-1">
+						<span>{{ 'medical.infirmary.assessments.pain' | translate }}: &nbsp;</span>
+						<span>{{ assessmentForm.value.pain }}</span>
+					</h3>
+					<div
+						class="label-range pflex-mt-2 pflex-flex pflex-align-items-center pflex-justify-content-between pflex-w-full"
+					>
+						<span>0</span>
+						<div class="pflex-mx-4 pflex-w-full">
+							<input
+								class="slider range color-range"
+								type="range"
+								[min]="0"
+								[max]="10"
+								[step]="1"
+								formControlName="pain"
+							/>
+						</div>
+						<span>10</span>
+					</div>
+				</div>
+
+				<!-- FUNCTIONALITY -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1">
+						<span>{{ 'medical.infirmary.assessments.functionality' | translate }}: &nbsp;</span>
+						<span>{{ assessmentForm.value.functionality }}</span>
+					</h3>
+					<div
+						class="label-range pflex-mt-2 pflex-flex pflex-align-items-center pflex-justify-content-between pflex-w-full"
+					>
+						<span>0</span>
+						<div class="pflex-mx-4 pflex-w-full">
+							<input
+								class="slider range color-range-inverted"
+								type="range"
+								[min]="0"
+								[max]="100"
+								[step]="1"
+								formControlName="functionality"
+							/>
+						</div>
+						<span>100</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="pflex-col-12 md:pflex-pl-4 md:pflex-col-6">
+				<!-- NEXT ASSESSMENT -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.nextAssessment</h3>
+					<p-calendar
+						showButtonBar="true"
+						showTime="true"
+						hourFormat="24"
+						[minDate]="tomorrow"
+						formControlName="next"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					></p-calendar>
+				</div>
+
+				<!-- HIGH PRIORITY -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.hightPriority</h3>
+					<p-inputSwitch formControlName="highPriority"></p-inputSwitch>
+				</div>
+
+				<!-- AVAILABLE -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.available</h3>
+					<div class="pflex-flex pflex-flex-column">
+						<p-radioButton
+							class="pflex-mb-2"
+							name="available"
+							value="no"
+							[label]="'no' | translate"
+							formControlName="available"
+						></p-radioButton>
+
+						<p-radioButton
+							class="pflex-mb-2"
+							name="available"
+							value="yes"
+							[label]="'yes' | translate"
+							formControlName="available"
+						></p-radioButton>
+
+						<p-radioButton
+							class="pflex-mb-2"
+							name="available"
+							value="careful"
+							[label]="'beCareful' | translate"
+							formControlName="available"
+						></p-radioButton>
+					</div>
+
+					<!-- (onClick)="checkAvailable(assessment)" -->
+				</div>
+
+				<!-- EXPECTATION -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.expectation</h3>
+					<div>
+						<div class="pflex-mb-2 pflex-flex pflex-flex-column">
+							<label class="pflex-mb-2" translate>medical.infirmary.assessments.further</label>
+							<p-inputSwitch formControlName="further"></p-inputSwitch>
+						</div>
+
+						<p-calendar
+							*ngIf="!assessmentForm.value.further"
+							showButtonBar="true"
+							[disabled]="assessmentForm.value.further"
+							[minDate]="tomorrow"
+							formControlName="expectation"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+					</div>
+				</div>
+
+				<!-- NOTES -->
+				<div class="pflex-my-4">
+					<h3 class="pflex-mb-1" translate>medical.infirmary.assessments.notes</h3>
+					<textarea
+						pInputTextarea
+						[pTooltip]="assessment ? assessment.notes : '...'"
+						[autoResize]="true"
+						class="expandable"
+						formControlName="notes"
+					></textarea>
+					<!-- (focusout)="putAtBeginning()" -->
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<p-footer class="tw-bg-shark-950 tw-border-solid tw-border-transparent tw-border-t-shark-900 tw-gap-4">
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			[label]="'buttons.save' | translate"
+			[disabled]="!assessmentForm.valid"
+			(click)="save()"
+		></p-button>
+		<p-button
+			size="small"
+			[outlined]="true"
+			icon="fas fa-times"
+			[label]="'buttons.discard' | translate"
+			(click)="discard()"
+		></p-button>
+	</p-footer>
+</ng-container>

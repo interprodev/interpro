@@ -1,0 +1,67 @@
+{
+	"name": "ClubSeason",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"start": {
+			"type": "date",
+			"required": true
+		},
+		"end": {
+			"type": "date",
+			"required": true
+		},
+		"active": {
+			"type": "boolean",
+			"default": false
+		},
+		"operatingCashFlow": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": ""
+		},
+		"teamSeasons": {
+			"type": "hasMany",
+			"model": "TeamSeason",
+			"foreignKey": ""
+		},
+		"teamBonus": {
+			"type": "hasMany",
+			"model": "TeamBonus",
+			"foreignKey": ""
+		},
+		"_teamBonus": {
+			"type": "embedsMany",
+			"model": "TeamBonus",
+			"property": "_teamBonus",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"transferWindows": {
+			"type": "embedsMany",
+			"model": "TransferWindow",
+			"property": "_transferWindows",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

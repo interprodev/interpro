@@ -1,0 +1,19 @@
+:host ::ng-deep p-dropdown-item {
+	height: fit-content !important;
+	padding: 0 0 0 0 !important;
+}
+
+:host ::ng-deep .p-dropdown-trigger {
+	position: unset;
+}
+
+:host ::ng-deep .ui-player-dropdown {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.p-dropdown-panel {
+  position: absolute;
+  height: auto;
+}

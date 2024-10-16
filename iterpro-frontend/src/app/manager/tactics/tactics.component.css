@@ -1,0 +1,67 @@
+.buttons-panel {
+	width: 100%;
+	margin-bottom: 1em;
+}
+
+.greyed {
+	color: #bbbbbb;
+	font-weight: normal;
+}
+.event-name {
+	margin-left: 10px;
+	white-space: pre-wrap;
+}
+.crest {
+	justify-content: center;
+	align-items: center;
+	margin-left: 10px;
+}
+
+.crest > img {
+	width: 20px;
+	height: 20px;
+}
+.point {
+	background-color: var(--color-primary-500);
+	width: 10px;
+	height: 10px;
+	max-height: 10px;
+	border-radius: 5px;
+	max-width: 10px;
+	min-height: 10px;
+	min-width: 10px;
+}
+
+.videogallery-button-container {
+  margin-bottom: 1em;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.videogallery-button {
+  background: none !important;
+  padding-right: 0.4em;
+}
+.videogallery-button-container .icon-disabled {
+  opacity: 0.5;
+}
+
+.videogallery-icon {
+  width: 20px;
+  min-width: 25px;
+}
+
+.side {
+	font-size: 0.9rem;
+}
+.side-by-side {
+	display: flex;
+	justify-content: space-between;
+}
+.side-col {
+	padding: 0 0 1rem 0;
+}
+.side-col h3 {
+	font-size: 0.9rem;
+}

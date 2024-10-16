@@ -1,0 +1,218 @@
+<ng-container *ngIf="isDialog; else showDrillsTable">
+	<p-dialog
+		[visible]="true"
+		[showHeader]="true"
+		[closable]="false"
+		[closeOnEscape]="false"
+		[draggable]="false"
+		[resizable]="false"
+		[blockScroll]="true"
+		[modal]="true"
+		[style]="{ width: '80vw', 'max-height': '80vh', height: '80vh' }"
+	>
+		<p-header><span translate>drillSearch.title</span></p-header>
+		<ng-container *ngTemplateOutlet="showDrillsTable, context: { scrollable: true }"></ng-container>
+		<p-footer>
+			<p-button
+				type="button"
+				icon="fas fa-times"
+				size="small"
+				(click)="discard()"
+				label="{{ 'buttons.close' | translate }}"></p-button>
+			<p-button
+				size="small"
+				icon="fas fa-check"
+				styleClass="p-button-primary"
+				(click)="save()"
+				label="{{ 'buttons.import' | translate }}"
+				[disabled]="selectedDrills.length < 1"
+			></p-button>
+		</p-footer>
+	</p-dialog>
+</ng-container>
+
+<ng-template #showDrillsTable let-scrollable="scrollable">
+	<div
+		class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded"
+		[class.tw-hidden]="!showFilters"
+		[style.height]="!showFilters ? '0' : 'unset'"
+	>
+		@if (filtersTabTypes && filtersTabTypes?.length > 1) {
+			<div class="tw-w-full tw-flex tw-justify-end tw-mb-4">
+				<!-- Filters / Table Columns -->
+				<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+					<ng-template pTemplate="item" let-item>
+						<a class="p-menuitem-link tw-px-2 tw-py-1">
+							<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+							<i class="tw-ml-2" [class]="item.icon"></i>
+						</a>
+					</ng-template>
+				</p-tabMenu>
+			</div>
+		}
+		@switch (activeFilterTabType) {
+			@case (filtersTabTypes[0]) {
+				<iterpro-drills-filters
+					*ngIf="drillsMapping && drillFiltersListMapping"
+					[config]="drillFiltersConfig"
+					[drillsMapping]="drillsMapping"
+					[drillFiltersListMapping]="drillFiltersListMapping"
+					(filtersChanged)="applyDrillFilters($event)"
+				/>
+			}
+			@case (filtersTabTypes[1]) {
+				<iterpro-drills-column-filter *ngIf="showColumnFilters" (columnsChanged)="applyColumnsChanged($event)" />
+			}
+		}
+	</div>
+	<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg" *ngIf="drills && drills.length > 0; else showEmptyDrills">
+		<p-table
+			[value]="drills"
+			[(selection)]="selectedDrills"
+			[paginator]="true"
+			[rows]="isDialog ? 10 : 50"
+			[globalFilterFields]="['name']"
+			[rowHover]="true"
+			[scrollable]="scrollable"
+			[scrollHeight]="'350px'"
+			styleClass="p-datatable-striped"
+			dataKey="name"
+			responsiveLayout="scroll"
+		>
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th *ngIf="rowSelectable"></th>
+					<th>
+						<div class="header-with-search-container">
+							<span translate>drills.name</span>
+							<p-columnFilter [field]="'name'" matchMode="contains" [showMenu]="false">
+								<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+									<input
+										type="text"
+										pInputText
+										[ngModel]="value"
+										(ngModelChange)="filter($event)"
+										[placeholder]="'Search' | translate"
+									/>
+								</ng-template>
+							</p-columnFilter>
+						</div>
+					</th>
+
+					<th translate *ngIf="drillFiltersConfig.includes('theme')">drills.theme</th>
+					<th translate style="text-align: center" *ngIf="drillFiltersConfig.includes('technicalGoal')">drills.technicalGoal</th>
+					<th translate style="text-align: center" *ngIf="drillFiltersConfig.includes('tacticalGoal')">drills.tacticalGoals</th>
+					<th translate style="text-align: center" *ngIf="drillFiltersConfig.includes('physicalGoal')">drills.physicalGoal</th>
+					<th translate style="text-align: center" *ngIf="drillFiltersConfig.includes('goal')">drills.goal</th>
+					<th translate *ngIf="drillFiltersConfig.includes('duration')">drills.duration</th>
+					<th translate *ngIf="drillFiltersConfig.includes('numberOfPlayers')">drills.nPlayers</th>
+					<th translate *ngIf="drillFiltersConfig.includes('pitchSize')">drills.pitchSize</th>
+					<th translate *ngIf="drillFiltersConfig.includes('ageGroup')">drills.ageGroup</th>
+					<th translate style="text-align: center" *ngIf="drillFiltersConfig.includes('attachments')">test.attachments</th>
+					<th></th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-drill let-rowIndex="rowIndex">
+				<tr class="tw-h-10">
+					<td *ngIf="rowSelectable">
+						<p-tableCheckbox
+							[value]="drill"
+							[disabled]="(maxSelectableRows && selectedDrills.length >= maxSelectableRows) && selectedDrills.indexOf(drill) === -1"
+							[pTooltip]="'drill.select' | translate"
+						></p-tableCheckbox>
+					</td>
+					<td (click)="rowClicked.emit(drill)">{{ drill.name }}</td>
+					<td (click)="rowClicked.emit(drill)" *ngIf="drillFiltersConfig.includes('theme')">
+						{{ getThemeLabel(drill.theme) }}
+					</td>
+					<td
+						(click)="rowClicked.emit(drill)"
+						style="text-align: center"
+						*ngIf="drillFiltersConfig.includes('technicalGoal')"
+					>
+						<i
+							*ngIf="drill.technicalGoals"
+							aria-hidden="true"
+							class="fas fa-search"
+							style="cursor: pointer"
+							[pTooltip]="getGoalsTooltip(drill.technicalGoals, drillsMapping.technicalGoals)"
+							tooltipStyleClass="longTooltip"
+						></i>
+					</td>
+					<td
+						(click)="rowClicked.emit(drill)"
+						style="text-align: center"
+						*ngIf="drillFiltersConfig.includes('tacticalGoal')"
+					>
+						<i
+							*ngIf="drill.tacticalGoals"
+							aria-hidden="true"
+							class="fas fa-search"
+							style="cursor: pointer"
+							[pTooltip]="getGoalsTooltip(drill.tacticalGoals, drillsMapping.tacticalGoals)"
+							tooltipStyleClass="longTooltip"
+						></i>
+					</td>
+					<td
+						(click)="rowClicked.emit(drill)"
+						style="text-align: center"
+						*ngIf="drillFiltersConfig.includes('physicalGoal')"
+					>
+						<i
+							*ngIf="drill.physicalGoals"
+							aria-hidden="true"
+							class="fas fa-search"
+							style="cursor: pointer"
+							[pTooltip]="getGoalsTooltip(drill.physicalGoals, drillsMapping.physicalGoals)"
+							tooltipStyleClass="longTooltip"
+						></i>
+					</td>
+					<td (click)="rowClicked.emit(drill)" style="text-align: center" *ngIf="drillFiltersConfig.includes('goal')">
+						<i
+							*ngIf="
+								(drillsMapping?.goals && drill?.technicalGoals?.length > 0) || drill?.tacticalGoals?.length > 0 || drill?.physicalGoals?.length > 0
+							"
+							aria-hidden="true"
+							class="fas fa-search"
+							style="cursor: pointer"
+							[pTooltip]="getUppercaseAllGoals(drill)"
+							tooltipStyleClass="longTooltip"
+						></i>
+					</td>
+					<td (click)="rowClicked.emit(drill)" *ngIf="drillFiltersConfig.includes('duration')">
+						{{ drill.duration }}
+					</td>
+					<td (click)="rowClicked.emit(drill)" *ngIf="drillFiltersConfig.includes('numberOfPlayers')">
+						{{ drill.players }}
+					</td>
+					<td (click)="rowClicked.emit(drill)" *ngIf="drillFiltersConfig.includes('pitchSize')">
+						<span *ngIf="drill.pitchSizeX && drill.pitchSizeY">Width: {{ drill.pitchSizeX }}, Heigth: {{ drill.pitchSizeY }}</span>
+					</td>
+					<td (click)="rowClicked.emit(drill)" *ngIf="drillFiltersConfig.includes('ageGroup')">
+						{{ drill.ageGroup }}
+					</td>
+					<td style="text-align: center; z-index: 10000" *ngIf="drillFiltersConfig.includes('attachments')">
+						<i
+							*ngIf="drill._attachments && drill._attachments.length > 0"
+							aria-hidden="true"
+							class="fas fa-search"
+							[pTooltip]="'comments.showAttach' | translate : { value: drill?._attachments.length }"
+							(click)="selectedAttachments = drill._attachments"
+							translate
+						></i>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+	<ng-template #showEmptyDrills>
+		<div translate>No results found</div>
+	</ng-template>
+</ng-template>
+<iterpro-multiple-file-upload
+	*ngIf="selectedAttachments"
+	[visible]="!!selectedAttachments"
+	[editMode]="false"
+	[attachmentModel]="selectedAttachments"
+	(discard)="selectedAttachments = undefined"
+/>

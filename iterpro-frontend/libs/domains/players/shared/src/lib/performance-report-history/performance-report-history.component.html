@@ -1,0 +1,8 @@
+<!-- Last Update Author -->
+<div class="tw-flex tw-items-center tw-gap-2">
+	<div class="iterpro-text-color-900 tw-text-xs" translate>lastUpdate</div>
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<div class="tw-text-xs">{{ lastUpdateDate | formatDateBySetting : 'HH:mm' }} -</div>
+		<div class="tw-text-xs">{{ lastUpdateAuthor | selectItemLabel : authorOptions }}</div>
+	</div>
+</div>

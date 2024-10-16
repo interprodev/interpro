@@ -1,0 +1,176 @@
+<!-- Header -->
+<div class="tw-mb-4 tw-flex tw-items-center tw-justify-between">
+	<!-- Title -->
+	<div class="tw-flex tw-gap-4 tw-items-center">
+		<h1 class="tw-text-white">
+			{{ 'drillCanvas.title' | translate }}
+		</h1>
+		<!-- Beta badge label only -->
+		<div class="tw-flex tw-items-center tw-gap-2">
+			<span class="tw-text-white tw-bg-[#008CFF] tw-px-2 tw-py-1 tw-rounded-full">
+				{{ 'Beta' | translate }}
+			</span>
+		</div>
+
+	</div>
+
+	<div class="tw-flex tw-items-center tw-gap-3">
+		@if (filteredCanvas?.length) {
+			<!-- Search if Card Type -->
+			@if (activeViewType.id === viewModes.Card) {
+				<div class="tw-flex tw-items-center tw-gap-4 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+					<div class="tw-relative tw-w-full tw-rounded tw-shadow-lg">
+						<input
+							type="text"
+							class="tw-w-80 tw-text-shark-200 tw-placeholder-shark-200 tw-border-shark-800 tw-transition-colors"
+							[placeholder]="'Search' | translate"
+							(input)="searchTemplates($event)"
+						/>
+						<i class="fas fa-search tw-absolute tw-top-0 tw-right-0 tw-m-1 tw-text-shark-200"></i>
+					</div>
+				</div>
+			}
+			<!-- View Modes -->
+			<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+				<!-- Card View / List View -->
+				<p-tabMenu [model]="viewTypes" [activeItem]="activeViewType" (activeItemChange)="changeView()">
+					<ng-template pTemplate="item" let-item>
+						<a class="p-menuitem-link tw-px-2 tw-py-1">
+							<fa-icon [icon]="item.faIcon" [pTooltip]="item.label | translate"></fa-icon>
+						</a>
+					</ng-template>
+				</p-tabMenu>
+			</div>
+		}
+		<p-button
+			[size]="'small'"
+			styleClass="p-button-contrast"
+			(click)="location.back()"
+			[label]="'buttons.close' | translate"
+		></p-button>
+	</div>
+</div>
+<!-- Gallery -->
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-min-h-full tw-rounded-lg tw-p-5">
+	<div class="tw-mb-4">
+		<!-- Actions -->
+		<iterpro-action-buttons
+			[editMode]="selectedCanvas?.length > 0"
+			(discard)="discard()"
+			(create)="addCanvas.emit()"
+			(delete)="askToDelete()"
+			[deleteCounter]="selectedCanvas?.length"
+			[showDiscard]="selectedCanvas?.length > 0"
+			[buttonTypes]="['discard', 'addNew', 'delete']"
+		></iterpro-action-buttons>
+	</div>
+
+	@if (filteredCanvas) {
+		@if (filteredCanvas.length) {
+			@switch (activeViewType.id) {
+				<!-- Card view -->
+				@case (viewModes.Card) {
+					<div class="tw-col-1 tw-mt-4 tw-grid tw-gap-6 tw-overflow-hidden md:tw-grid-cols-2 xl:tw-grid-cols-4">
+						@for (canvas of filteredCanvas; track $index) {
+							<iterpro-drill-canvas-card
+								class="tw-cursor-pointer"
+								[template]="canvas"
+								[editMode]="true"
+								(cardClicked)="openTemplateDetails(canvas)"
+								(cardSelected)="handleSelected($event, canvas.id)"
+							/>
+						}
+					</div>
+				}
+				<!-- List view -->
+				@case (viewModes.List) {
+					<div class="tw-p-4 tw-rounded">
+						<p-table
+							[value]="filteredCanvas"
+							[scrollable]="true"
+							[(selection)]="selectedCanvas"
+							[scrollHeight]="'70vh'"
+							[styleClass]="'p-datatable-striped'"
+						>
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10 tw-px-2 tw-py-4">
+									@if (true) {
+										<th>
+											<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+										</th>
+									}
+									<th>{{ 'drillCanvas.editor.actions' | translate }}</th>
+									<th>{{ 'drillCanvas.preview' | translate }}</th>
+									<th [pSortableColumn]="'name'">
+										<div class="tw-flex tw-items-baseline tw-gap-2">
+											<div>
+												<p-sortIcon></p-sortIcon>
+												{{ 'drillCanvas.name' | translate }}
+											</div>
+											<!-- Search -->
+											<p-columnFilter [class]="'tw-flex-1'" [field]="'name'" matchMode="contains" [showMenu]="false">
+												<ng-template pTemplate="filter" let-value let-filter="filterCallback">
+													<input
+														pInputText
+														type="text"
+														[ngModel]="value"
+														(ngModelChange)="filter($event)"
+														[placeholder]="'Search' | translate"
+													/>
+												</ng-template>
+											</p-columnFilter>
+										</div>
+									</th>
+									<th>{{ 'drillCanvas.version' | translate }}</th>
+									<th [pSortableColumn]="'lastUpdated.authorName'">
+										<p-sortIcon></p-sortIcon>
+										{{ 'drillCanvas.author' | translate }}
+									</th>
+									<th [pSortableColumn]="'lastUpdated.timestamp'">
+										<p-sortIcon></p-sortIcon>
+										{{ 'drillCanvas.updateDate' | translate }}
+									</th>
+								</tr>
+							</ng-template>
+							<!-- Table Body -->
+							<ng-template pTemplate="body" let-canvas>
+								<tr class="tw-h-10 tw-cursor-pointer" (click)="openTemplateDetails(canvas)">
+									<td>
+										<p-tableCheckbox [value]="canvas" (click)="$event.stopPropagation()"></p-tableCheckbox>
+									</td>
+									<td>
+										<div class="tw-flex tw-gap-4">
+											<fa-icon
+												class="tw-transition-all hover:tw-text-primary-500"
+												[icon]="icons.faCopy"
+												[pTooltip]="'buttons.copy' | translate"
+												(click)="askToClone($event, canvas.id)"
+											></fa-icon>
+											<fa-icon
+												class="tw-transition-all hover:tw-text-primary-500"
+												[icon]="icons.faTrash"
+												[pTooltip]="'buttons.delete' | translate"
+												(click)="askToDelete($event, canvas.id)"
+											></fa-icon>
+										</div>
+									</td>
+									<td>
+										<img class="tw-rounded-md" width="80" [src]="canvas.previewUrl | azureUrl" [alt]="canvas.name" />
+									</td>
+									<td>{{ canvas.name }}</td>
+									<td>{{ canvas.version }}</td>
+									<td>{{ canvas.lastUpdated?.authorName }}</td>
+									<td>{{ canvas.lastUpdated?.timestamp | formatDateBySetting: 'HH:mm' }}</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</div>
+				}
+			}
+		} @else {
+			<p class="tw-mt-32 tw-text-center tw-text-lg">{{ 'primeng.emptyMessage' | translate }}</p>
+		}
+	} @else {
+		<iterpro-skeleton-grid [columns]="4" [rows]="4" [span]="3" [skeletonStyleClass]="'tw-w-full tw-h-[250px]'" />
+	}
+</div>

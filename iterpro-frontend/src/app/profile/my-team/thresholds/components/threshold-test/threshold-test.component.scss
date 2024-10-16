@@ -1,0 +1,64 @@
+.test-table tr:nth-child(even) {
+	background-color: rgba(100, 100, 100, 0.24);
+}
+
+.test-table {
+	text-transform: uppercase;
+}
+
+.test-table thead {
+	font-size: 0.9rem;
+	text-align: left !important;
+}
+.test-table tbody {
+	font-size: 0.8rem;
+	text-align: left !important;
+}
+.test-table thead td,
+.test-table thead th {
+	padding-bottom: 10px;
+	padding-right: 20px;
+	padding-left: 5px;
+	white-space: nowrap;
+}
+
+.test-table tbody tr {
+	line-height: 1.5rem;
+}
+.test-table tbody td,
+.test-table tbody th {
+	padding: 5px 20px 5px 5px;
+	white-space: nowrap;
+}
+.test-table tbody th {
+	font-size: 0.7rem;
+}
+
+.threshold-item-hover:hover {
+	background-color: #585c5d !important;
+	cursor: pointer;
+}
+
+.threshold-item-left {
+	flex-grow: 1;
+	padding-right: 10%;
+	font-weight: bold;
+	font-size: 0.8em;
+}
+
+.threshold-item-left-orange {
+	flex-grow: 1;
+	padding-right: 10%;
+	font-weight: bold;
+	font-size: 0.8em;
+	color: orange !important;
+}
+
+.threshold-item-left-orange > * {
+	color: orange !important;
+}
+
+.inline-flex {
+	display: inline-flex;
+  margin-right: 0.5em;
+}

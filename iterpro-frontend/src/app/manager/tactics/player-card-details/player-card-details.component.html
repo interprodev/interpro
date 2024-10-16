@@ -1,0 +1,280 @@
+<header class="header" style="justify-content: space-between">
+	<h2>
+		{{ phase }}
+		<span style="font-weight: normal"
+			>{{ match.opponent }} {{ match.date | formatDateBySetting }} ({{
+				match.home === true ? 'home' : ('away' | translate)
+			}})</span
+		>
+	</h2>
+	<div class="header-buttons">
+		<p-button size="small" styleClass="p-button-contrast" (click)="closeDetails()" [label]="'buttons.close' | translate"></p-button>
+	</div>
+</header>
+
+<div class="row row-sidebar">
+	<div class="col col-main">
+		<div *ngIf="player">
+			<div class="infoContainer tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg">
+				<div class="infoPlayer">
+					<h4 style="padding-left: 1em">{{ player?.displayName }}</h4>
+					<iterpro-picture [photoUrl]="player?.downloadUrl" [baseClass]="'tw-max-h-[120px]'" class="tw-bg-white tw-rounded tw-overflow-hidden tw-m-2"></iterpro-picture>
+				</div>
+				<div class="infoReadiness">
+					<h4 style="padding-left: 17px" translate>readiness</h4>
+					<div class="go-score">
+						<div class="go-score-progress">
+							<div class="go-score-round">
+								<div class="go-score-text">
+									<i class="circle-icon fas" [ngClass]="getStatusClass()" aria-hidden="true"></i>
+								</div>
+								<round-progress
+									[current]="getCircleScore(player)"
+									[max]="100"
+									[stroke]="10"
+									[color]="getCircleColor(player)"
+									[background]="'#dddddd'"
+									[radius]="100"
+									[responsive]="true"
+								>
+								</round-progress>
+							</div>
+						</div>
+						<div class="go-score-data">
+							<span class="go-label">GO Score: </span>
+							<span *ngIf="getScoreValue(player)" class="go-data">{{ getScoreValue(player) }}</span>
+							<span *ngIf="!getScoreValue(player)" class="go-data">-</span>
+						</div>
+					</div>
+				</div>
+				<div class="infoHealth">
+					<h4 style="flex-grow: 1" translate>readiness.healthStatus</h4>
+					<table class="fields-table">
+						<tr *ngFor="let injury of injuries">
+							<th translate>{{ injury?.issue }}</th>
+							<td>
+								<i *ngIf="injury.chronicInjuryId" class="fas fa-fire" style="color: var(--color-primary-500)"></i>
+								<iterpro-injury-icon class="float-left" [injury]="injury" />
+								<span style="margin-left: 0.5em" translate>{{ injury?.location }}</span> -
+								<span translate>{{ injury?.currentStatus }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th translate>readiness.healthStatus.availability</th>
+							<td>
+								<span
+									[style.color]="getColorAvailable(available)"
+									translate
+									style="text-transform: uppercase; font-weight: bold"
+									>{{ available?.available }}</span
+								>
+							</td>
+						</tr>
+						<tr *ngIf="available && available.available === 'no'">
+							<th translate>readiness.healthStatus.expectation</th>
+							<td>
+								<span *ngIf="available.available === 'no'">{{ expectation }}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="compact">
+			<p-tabView class="colView mainMenuInner">
+				<p-tabPanel header="{{ 'tactics.phase.organization' | translate }}">
+					<div class="content video-comments" *ngIf="player">
+						<div class="data">
+							<div>
+								<div>
+									<h5 class="tags">TAGS</h5>
+									<p-multiSelect
+										[style]="{ 'margin-bottom': '2rem', 'margin-top': '1rem' }"
+										appendTo="body"
+										[ngModel]="tacticData.organizationVideoTags"
+										(ngModelChange)="saveOrganizationTags($event)"
+										[options]="tags"
+									></p-multiSelect>
+								</div>
+								<div
+									*ngIf="!currentTeam.videoExternalPlatform && (uploading || !tacticData.organizationVideoUrl)"
+									class="loading"
+								>
+									<i *ngIf="!uploading" class="fas fa-video-slash"></i>
+									<p-progressSpinner *ngIf="uploading" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+								</div>
+								<video
+									style="width: 30vw"
+									*ngIf="
+										!reloading && !uploading && tacticData.organizationVideoUrl && !currentTeam.videoExternalPlatform
+									"
+									[muted]="true"
+									controls
+									controlsList="fullscreen"
+									[style]="{ width: '100%' }"
+								>
+									<source [src]="tacticData.organizationVideoUrl | azureUrl" type="video/mp4" />
+									Your browser does not support the video tag.
+								</video>
+								<video
+									style="width: 30vw"
+									*ngIf="!reloading && tacticData.organizationAlternateVideoUrl && currentTeam.videoExternalPlatform"
+									[muted]="true"
+									controls
+									controlsList="fullscreen"
+								>
+									<source [src]="tacticData.organizationAlternateVideoUrl | azureUrl" type="video/mp4" />
+									Your browser does not support the video tag.
+								</video>
+								<div *ngIf="!currentTeam.videoExternalPlatform" class="fullwidth-upload small-sized-button">
+									<iterpro-cloud-upload
+										[tooltip]="'tooltip.videoUpload'"
+										(completedEmitter)="completedOrg($event)"
+										(onStartEmitter)="start()"
+										[spinner]="false"
+										accept="video/*"
+										[sizeError]="onSizeError"
+										label="UPLOAD VIDEO"
+									/>
+								</div>
+								<div *ngIf="currentTeam.videoExternalPlatform">
+									<h5 class="tags">Organization Video Link</h5>
+									<input pInputText type="text" [(ngModel)]="tacticData.organizationAlternateVideoUrl" />
+								</div>
+							</div>
+						</div>
+
+						<div class="data comments-section">
+							<h3 translate>Comments</h3>
+							<iterpro-vertical-comment-threaded
+								[comments]="tacticData.organizationComments"
+								[editMode]="true"
+								(onUpdate)="updateCommentsOrg($event)"
+							/>
+						</div>
+					</div>
+				</p-tabPanel>
+				<p-tabPanel header="{{ 'tactics.phase.transition' | translate }}">
+					<div class="content video-comments" *ngIf="player">
+						<div class="data">
+							<div>
+								<h5 class="tags">TAGS</h5>
+								<p-multiSelect
+									[style]="{ 'margin-bottom': '2rem', 'margin-top': '1rem' }"
+									appendTo="body"
+									[ngModel]="tacticData.transitionVideoTags"
+									(ngModelChange)="saveTransitionTags($event)"
+									[options]="tags"
+								></p-multiSelect>
+							</div>
+							<div
+								*ngIf="!currentTeam.videoExternalPlatform && (uploading || !tacticData.transitionVideoUrl)"
+								class="loading"
+							>
+								<i *ngIf="!uploading" class="fas fa-video-slash"></i>
+								<p-progressSpinner *ngIf="uploading" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+							</div>
+							<video
+								style="width: 30vw"
+								*ngIf="!reloading && !uploading && tacticData.transitionVideoUrl && !currentTeam.videoExternalPlatform"
+								[muted]="true"
+								controls
+								controlsList="fullscreen"
+							>
+								<source [src]="tacticData.transitionVideoUrl | azureUrl" type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+							<video
+								style="width: 30vw"
+								*ngIf="!reloading && currentTeam.videoExternalPlatform && tacticData.transitionAlternateVideoUrl"
+								[muted]="true"
+								controls
+								controlsList="fullscreen"
+							>
+								<source [src]="tacticData.transitionAlternateVideoUrl | azureUrl" type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+							<div *ngIf="!currentTeam.videoExternalPlatform" class="fullwidth-upload small-sized-button">
+								<iterpro-cloud-upload
+									[tooltip]="'tooltip.videoUpload'"
+									(completedEmitter)="completedTran($event)"
+									(onStartEmitter)="start()"
+									[spinner]="false"
+									accept="video/*"
+									[sizeError]="onSizeError"
+									label="UPLOAD VIDEO"
+								/>
+							</div>
+							<div *ngIf="currentTeam.videoExternalPlatform">
+								<h5 class="tags">Transition Video Link</h5>
+								<input pInputText type="text" [(ngModel)]="tacticData.transitionAlternateVideoUrl" />
+							</div>
+						</div>
+						<div class="data comments-section">
+							<h3 translate>Comments</h3>
+							<iterpro-vertical-comment-threaded
+								[comments]="tacticData.transitionComments"
+								[editMode]="true"
+								(onUpdate)="updateCommentsTran($event)"
+							/>
+						</div>
+					</div>
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+	</div>
+
+	<div class="col col-sidebar tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg">
+		<iterpro-tactic-board
+			[first]="player.position"
+			[second]="player.position2"
+			[third]="player.position3"
+			[sportType]="sportType"
+		/>
+
+		<h3 class="spacing greyed" translate>profile.overview.age</h3>
+		<span>{{ age || '-' }}</span>
+
+		<h3 class="spacing greyed" translate>Weight</h3>
+		<span>{{ player && player.weight ? player.weight : '-' }}</span>
+
+		<h3 class="spacing greyed" translate>Height</h3>
+		<span>{{ player && player.height ? player.height : '-' }}</span>
+
+		<h3 class="spacing greyed" translate>profile.position.{{ getLimb() }}</h3>
+		<span>{{ player && player.foot ? (player.foot | capitalize) : '-' }}</span>
+
+		<h3 class="spacing greyed" translate>player.robustness.apps</h3>
+		<span>{{ getRobustnessValue('apps') }}</span>
+
+		<span style="display: flex; align-items: center">
+			<h3 class="spacing greyed" translate>attendance.statistics.items.gameRate</h3>
+			<i
+				class="fas fa-question spacing"
+				style="margin-left: 1em; font-size: smaller"
+				pTooltip="{{ 'duration.season' | translate }}"
+			></i>
+		</span>
+		<span>{{ getPipedRobustValue('game_rate', '1.0-0') }}</span>
+
+		<span style="display: flex; align-items: center">
+			<h3 class="spacing greyed" translate>attendance.statistics.items.performanceReliability</h3>
+			<i
+				class="fas fa-question spacing"
+				style="margin-left: 1em; font-size: smaller"
+				pTooltip="{{ 'duration.season' | translate }}"
+			></i>
+		</span>
+		<span>{{ getPipedRobustValue('performance_reliability', '1.0-0') }}</span>
+
+		<h3 class="spacing greyed" translate>profile.attributes.offensive</h3>
+		<span>{{ offensiveScore || offensiveScore === 0 ? (offensiveScore | number : '1.0-0') : '-' }}</span>
+		<h3 class="spacing greyed" translate>profile.attributes.defensive</h3>
+		<span>{{ defensiveScore || defensiveScore === 0 ? (defensiveScore | number : '1.0-0') : '-' }}</span>
+		<h3 class="spacing greyed" translate>profile.attributes.attitude</h3>
+		<span>{{ attitudeScore || attitudeScore === 0 ? (attitudeScore | number : '1.0-0') : '-' }}</span>
+
+		<h3 class="spacing greyed" translate>playerCard.bestRole</h3>
+		<span>{{ player && player.position ? (player.position | translate) : '-' }}</span>
+	</div>
+</div>

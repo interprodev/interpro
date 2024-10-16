@@ -1,0 +1,117 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.clubPreferences'" [title]="'settings.general'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="generalForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+@if (!isLoading) {
+	<div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-12 tw-gap-8 tw-mt-8">
+		<div class="sm:tw-col-span-12 lg:tw-col-span-2 xl:tw-col-span-2 2xl:tw-col-span-2">
+			<div class="profile-picture tw-rounded tw-flex tw-justify-center">
+				<iterpro-picture [photoUrl]="generalForm.get('crest').value" [type]="'team'" class="tw-block tw-w-40 lg:tw-h-full"/>
+				@if (editMode && generalForm.get('crest').value) {
+					<div class="profile-picture-overlay">
+						<iterpro-icon-button [icon]="'fas fa-trash'" [tooltip]="'buttons.delete' | translate" (click)="deleteImage()"></iterpro-icon-button>
+					</div>
+				}
+			</div>
+			@if (editMode) {
+				<div class="tw-mt-2">
+					<iterpro-cloud-upload [crop]="true" (completedEmitter)="onUpload($event)"
+																[label]="'upload' | translate" [maxFileSize]="1000000" [spinner]="true" accept="image/*" />
+				</div>
+			}
+		</div>
+		<div class="sm:tw-col-span-12 lg:tw-col-span-10 xl:tw-col-span-6 2xl:tw-col-span-4">
+			<form [formGroup]="generalForm">
+				<div class="tw-mb-4">
+					<h4 class="tw-pb-3 tw-uppercase" translate>club.settings.generalSettings</h4>
+					<div class="tw-flex tw-flex-col">
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>club.name</span>
+							</div>
+							<div class="tw-col-span-2">
+								<input class="tw-text-sm" type="text" pInputText formControlName="name" />
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'name'" [label]="'club.name' | translate"></iterpro-form-feedback>
+						</div>
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>club.nation</span>
+							</div>
+							<div class="tw-col-span-2">
+								<p-dropdown
+									appendTo="body"
+									formControlName="nation"
+									[options]="nationalities"
+									[filter]="true"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								>
+									<ng-template let-lang pTemplate="selectedItem">
+										<iterpro-player-flag [lang]="lang.value" />
+										<span class="tw-ml-2">{{lang.label}}</span>
+									</ng-template>
+									<ng-template let-lang pTemplate="item">
+										<iterpro-player-flag [lang]="lang.value" />
+										<span class="tw-ml-2">{{lang.label}}</span>
+									</ng-template>
+								</p-dropdown>
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'nation'" [label]="'club.nation' | translate"></iterpro-form-feedback>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>club.foundation</span>
+							</div>
+							<div class="tw-col-span-2">
+								<p-calendar
+									formControlName="foundation"
+									[maxDate]="today"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'foundation'" [label]="'club.foundation' | translate"></iterpro-form-feedback>
+						</div>
+
+						<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+							<div class="tw-col-span-1">
+								<span class="tw-text-sm iterpro-text-color-900" translate>settings.landingPage</span>
+							</div>
+							<div class="tw-col-span-2">
+								<p-dropdown
+									formControlName="landingPage"
+									[options]="landingPages"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								></p-dropdown>
+							</div>
+						</div>
+						<div class="tw-my-1">
+							<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'landingPage'" [label]="'settings.landingPage' | translate"></iterpro-form-feedback>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+} @else {
+	<div class="tw-grid tw-grid-cols-12 tw-gap-8 tw-mt-8">
+		<div class="tw-col-span-2">
+			<h4 class="tw-pb-3 tw-uppercase" translate><p-skeleton width="150px"></p-skeleton></h4>
+			<p-skeleton size="12rem"></p-skeleton>
+		</div>
+		<div class="tw-col-span-4 tw-flex tw-flex-col tw-gap-8">
+			<iterpro-skeleton-grid [columns]="2" [rows]="4" [span]="10" [showTitle]="true"></iterpro-skeleton-grid>
+		</div>
+	</div>
+}

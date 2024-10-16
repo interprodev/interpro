@@ -1,0 +1,116 @@
+<ng-container *ngIf="!existingVideoAttachment; else showExistingVideoTemplate">
+	<p-fileUpload
+		accept="video/*"
+		[chooseLabel]="'buttons.addNew' | translate"
+		[uploadLabel]="'fileUploader.uploadLabel' | translate"
+		[cancelLabel]="'fileUploader.clearList' | translate"
+		[previewWidth]="50"
+		[invalidFileSizeMessageSummary]="'attributes.videoTooBig' | translate"
+		[fileLimit]="limitToOne ? 1 : undefined"
+		[multiple]="!limitToOne"
+		[customUpload]="true"
+		[showUploadButton]="false"
+		[showCancelButton]="false"
+		(onSelect)="onSelect($event)"
+		(uploadHandler)="uploadHandler()"
+		(onError)="onUploadError($event)"
+	>
+		<ng-template let-file pTemplate="file"></ng-template>
+		<ng-template pTemplate="content" let-files>
+			<ng-container *ngIf="files && files.length > 0; else showEmptyFiles">
+				<p-table
+					[value]="files"
+					[(selection)]="selectedFiles"
+					styleClass="p-datatable-striped"
+					dataKey="name"
+					responsiveLayout="scroll"
+				>
+					<ng-template pTemplate="header">
+						<tr>
+							<th style="width: 3rem">
+								<p-tableHeaderCheckbox
+									[disabled]="(queueFiles | filterByField : 'status' : uploadStatuses.NotStarted)?.length > 0 || (queueFiles | filterByField : 'status' : uploadStatuses.Uploading)?.length > 0"
+									[pTooltip]="'Select all' | translate"
+								></p-tableHeaderCheckbox>
+							</th>
+							<th translate>Nr.</th>
+							<th translate>fileUploader.fileName</th>
+							<th translate>fileUploader.fileLength</th>
+							<th translate>fileUploader.fileSize</th>
+							<th translate>fileUploader.uploadStatus</th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+						<tr>
+							<td>
+								<p-tableCheckbox
+									[value]="file"
+									[disabled]="getUploadStatus(file) !== uploadStatuses.NotInQueue"
+									[pTooltip]="'fileUploader.toUpload' | translate"
+								></p-tableCheckbox>
+							</td>
+							<td>{{ rowIndex + 1 }}</td>
+							<td>{{ file.name }}</td>
+							<td>
+								<div *ngIf="getFileDuration(file); else showEmptyThumb">
+									{{ getFileDuration(file) }}
+								</div>
+								<ng-template #showEmptyThumb>
+									<div class="upload-status-label" translate>fileUploader.availableAfterUpload</div>
+								</ng-template>
+							</td>
+							<td>{{ bytesToMegaBytes(file.size) }}</td>
+							<td>
+								<ng-container *ngIf="isFileInQueue(file); else notInQueueTemplate">
+									<p-progressBar
+										[mode]="getUploadStatus(file) === uploadStatuses.Uploading ? 'indeterminate' : 'determinate'"
+										[value]="getUploadProgress(file)"
+										[pTooltip]="getUploadStatusLabel(file)"
+										[showValue]="true"
+										[style]="{ position: 'relative' }"
+									></p-progressBar>
+								</ng-container>
+								<ng-template #notInQueueTemplate>
+									<div class="upload-status-label" translate>fileUploader.notInQueue</div>
+								</ng-template>
+							</td>
+							<td>
+								<p-button
+									size="small"
+									icon="fas fa-trash"
+									(click)="removeFile($event, rowIndex, file)"
+									[disabled]="getUploadStatus(file) !== uploadStatuses.NotInQueue"
+								></p-button>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</ng-container>
+			<ng-template #showEmptyFiles>
+				<div translate>fileUploader.noFilesAdded</div>
+			</ng-template>
+		</ng-template>
+	</p-fileUpload>
+</ng-container>
+<ng-template #showExistingVideoTemplate>
+	<div class="thumb-container">
+		<video style="width: 50%" preload="true" crossorigin>
+			<source [src]="existingVideoAttachment?.url | azureUrl" />
+			Sorry, your browser doesn't support HTML5 <code>video</code>.
+		</video>
+		<div class="action-container">
+			<iterpro-icon-modal-preview
+				[url]="existingVideoAttachment?.url | azureUrl"
+				[name]="existingVideoAttachment?.name"
+			/>
+			<p-button
+				size="small"
+				[text]="true"
+				icon="fas fa-trash"
+				[rounded]="true"
+				(click)="existingVideoAttachment = undefined"
+			></p-button>
+		</div>
+	</div>
+</ng-template>

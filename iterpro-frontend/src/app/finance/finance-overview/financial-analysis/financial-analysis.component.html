@@ -1,0 +1,144 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+	<!-- CHART AND STATS-->
+	<div class="tw-col-span-1" [ngClass]="{ 'lg:tw-col-span-9': !isFullscreen }">
+		<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg tw-p-5">
+			<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+				<ng-container *ngIf="serverData && view === 0">
+					<i class="fas fa-sort-amount-up" [ngClass]="{ 'fa-active': order }"
+						 [pTooltip]="'sessionAnalysis.order' | translate" (click)="onToggleOrder()"></i>
+					<i class="fas fa-braille" [ngClass]="{ 'fa-active': roa }" [pTooltip]="'sessionAnalysis.bubble' | translate"
+						 (click)="onToggleBubble()"></i>
+					<i class="fas fa-tag" [ngClass]="{ 'fa-active': labels }" [pTooltip]="'sessionAnalysis.labels' | translate"
+						 (click)="onToggleLabels()"></i>
+					<i class="fas fa-question" [pTooltip]="'legend' | translate" (click)="op1.toggle($event)"></i>
+					<iterpro-report-download (downloadPDF)="financialAnalysisCurrentComponent?.downloadFinanceAnalysisCurrentPdf()"
+																	 (downloadCSV)="financialAnalysisCurrentComponent?.downloadFinanceAnalysisCurrentCsv()">
+					</iterpro-report-download>
+				</ng-container>
+				<i [class]="!isFullscreen ? 'fas fa-expand' : 'fas fa-compress fa-active'"
+					 [pTooltip]="!isFullscreen ? ('button.expand' | translate) : ('button.collapse' | translate)"
+					 (click)="isFullscreen = !isFullscreen">
+				</i>
+			</div>
+
+			<iterpro-financial-analysis-current *ngIf="view === 0 && serverData" [serverData]="serverData"
+																					[selectedMetrics]="selectedMetrics" [order]="order" [labels]="labels" [roa]="roa"
+																					[selectedPlayers]="selectedPlayers" [allPlayers]="playerOptions" [metric1]="metric1" [metric2]="metric2"
+																					[metric3]="metric3" (downloadReportEmitter)="downloadCurrentPDF($event)"
+																					(downloadCsvEmitter)="downloadCurrentCSV()">
+			</iterpro-financial-analysis-current>
+		</div>
+		<!-- Table STATS -->
+		<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+			<iterpro-table-stats [headers]="financialAnalysisCurrentComponent?.headers" [rows]="financialAnalysisCurrentComponent?.rows">
+				<ng-template #headersTemplate let-headers>
+					<th pFrozenColumn [style.width]="'200px'" [style.min-width]="'200px'">{{ 'general.player' | translate }}</th>
+					<th *ngFor="let header of headers; let i = index" [style.width]="'130px'" [style.min-width]="'130px'">
+						{{ header }}
+					</th>
+				</ng-template>
+
+				<ng-template #rowsTemplate let-row>
+					<td *ngFor="let field of row; let i = index" pFrozenColumn [frozen]="i === 0">
+						{{ i === 0 ? field : (field | shortNumber : true) }}
+					</td>
+				</ng-template>
+			</iterpro-table-stats>
+		</div>
+	</div>
+
+	<!-- SIDEBAR -->
+	<div class="tw-col-span-10" [ngClass]="{ 'lg:tw-col-span-3': !isFullscreen }">
+		<p-tabView>
+			<p-tabPanel>
+				<ng-template pTemplate="header">
+					<span>{{'sidebar.comparison' | translate}}</span>
+				</ng-template>
+				<h3 class="spacing greyed" translate>sidebar.partecipants</h3>
+				<p-multiSelect appendTo="body" [style]="{ 'z-index': 'auto !important' }" [options]="playerOptions"
+					[(ngModel)]="selectedPlayers" selectedItemsLabel="{0} selected">
+				</p-multiSelect>
+				<ng-template #analysis>
+					<h3 class="spacing greyed" translate>sidebar.analysis</h3>
+					<p-multiSelect appendTo="body" [style]="{ width: '100%', 'z-index': 'auto !important' }"
+						[options]="metrics" [selectionLimit]="2" [(ngModel)]="selectedMetrics" selectedItemsLabel="{0} selected">>
+					</p-multiSelect>
+				</ng-template>
+				<ng-container *ngIf="roa; else analysis">
+					<h3 class="spacing greyed" translate>sidebar.xAxis</h3>
+					<p-dropdown appendTo="body"
+											[style]="{ width: '100%', 'z-index': 'auto !important' }" [options]="metrics" [(ngModel)]="metric1"></p-dropdown>
+					<h3 class="spacing greyed" translate>sidebar.yAxis</h3>
+					<p-dropdown appendTo="body"
+											[style]="{ width: '100%', 'z-index': 'auto !important' }" [options]="metrics" [(ngModel)]="metric2"></p-dropdown>
+					<h3 class="spacing greyed" translate>sidebar.size</h3>
+					<p-dropdown appendTo="body"
+											[style]="{ width: '100%', 'z-index': 'auto !important' }" [options]="metrics" [(ngModel)]="metric3"></p-dropdown>
+				</ng-container>
+			</p-tabPanel></p-tabView>
+	</div>
+</div>
+
+<!-- MODAL -->
+<p-overlayPanel #op1 appendTo="body">
+	<div class="content-overlay tw-p-5">
+		<ul class="tw-list-disc">
+			<li class="tw-mb-4">
+				<h4 translate>marketValue</h4>
+				<span translate>marketValue.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>purchaseCost</h4>
+				<span translate>purchaseCost.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>contractCost</h4>
+				<span translate>contractCost.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>totalInvestmentValue</h4>
+				<span translate>financial.dashboard.tooltip.total</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>financialLossesByInjury</h4>
+				<span translate>financialLossesByInjury.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>contractLength</h4>
+				<span translate>contractLength.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>productivity</h4>
+				<span translate>productivity.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>availability</h4>
+				<span translate>availability.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>roi</h4>
+				<span translate>financial.dashboard.tooltip.roi</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>investmentPerformance</h4>
+				<span translate>investmentPerformance.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>seasonBalance</h4>
+				<span translate>seasonBalance.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>tradingBalance</h4>
+				<span translate>tradingBalance.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>teamValue</h4>
+				<span translate>teamValue.description</span>
+			</li>
+			<li class="tw-mb-4">
+				<h4 translate>teamCostForecast</h4>
+				<span translate>teamCostForecast.description</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>

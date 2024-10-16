@@ -1,0 +1,131 @@
+<!-- Main content -->
+<div class="main">
+	<div>
+
+		<!-- Header -->
+		<header class="header">
+			<h1>{{ 'navigator.medicalStatistics' | translate }}</h1>
+		</header>
+
+		<!-- Chart and statistics -->
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+			<!-- Chart -->
+			<div class="tw-col-span-12 lg:tw-col-span-9">
+				<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg">
+					<!-- Actions -->
+					<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+						<iterpro-report-download
+							class="tw-cursor-pointer"
+							(downloadPDF)="downloadReport()"
+							(downloadCSV)="downloadCsv()"
+						/>
+						<i
+							class="fas fa-tag tw-cursor-pointer"
+							[ngClass]="{ 'fa-active': datalabels }"
+							[pTooltip]="'sessionAnalysis.labels' | translate"
+							(click)="onToggleLabels()"
+						></i>
+						<i
+							class="fas fa-question tw-cursor-pointer"
+							[ngClass]="{ 'fa-active': showHelper }"
+							(click)="op.toggle($event)"
+						></i>
+					</div>
+					<div class="tw-my-4">
+						<p-chart [height]="'400px'" *ngIf="chart === 'bar'" [data]="data" [options]="options" type="bar"></p-chart>
+						<p-chart
+							*ngIf="chart === 'doughnut'"
+							[data]="data"
+							[options]="options"
+							[height]="'400px'"
+							type="doughnut"
+						></p-chart>
+					</div>
+				</div>
+				<!-- Team Stats -->
+				<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+					<iterpro-table-stats [headers]="headers" [rows]="rows">
+						<ng-template #headersTemplate let-headers>
+							<th pFrozenColumn >{{ 'general.player' | translate }}</th>
+							<th *ngFor="let header of headers; let i = index" [style.width]="'130px'" [style.min-width]="'130px'">
+								{{ header }}
+							</th>
+						</ng-template>
+
+						<ng-template #rowsTemplate let-row>
+							<td
+								*ngFor="let field of row; let i = index"
+								pFrozenColumn
+								[frozen]="i === 0"
+							>
+								{{ field }}
+							</td>
+						</ng-template>
+					</iterpro-table-stats>
+				</div>
+			</div>
+
+			<!-- SIDEBAR -->
+			<div class="tw-col-span-12 lg:tw-col-span-3">
+				<p-tabView>
+					<p-tabPanel>
+						<ng-template pTemplate="header">{{'sidebar.statistics' | translate}}</ng-template>
+						<h3 class="spacing greyed">{{ 'sidebar.period' | translate }}</h3>
+						<p-calendar
+							class="calendar-width-215"
+							showButtonBar="true"
+							*ngIf="period"
+							[(ngModel)]="period"
+							(onSelect)="onChangePeriod($event)"
+							selectionMode="range"
+							[maxDate]="today"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+
+						<h3 class="spacing greyed">{{ 'sidebar.counterDays' | translate }}</h3>
+						<div class="text">{{ days }}</div>
+						<h3 class="spacing greyed" translate>{{ 'sidebar.trainingCounter' | translate }}</h3>
+						<span class="tw-text-xs">{{ trainingCounter }}</span>
+						<h3 class="spacing greyed">{{ 'sidebar.gamesCounter' | translate }}</h3>
+						<span class="tw-text-xs">{{ gameCounter }}</span>
+
+						<h3 class="spacing greyed">{{ 'sidebar.player' | translate }}</h3>
+						<p-multiSelect
+							appendTo="body"
+							[options]="players"
+							selectedItemsLabel="{0} selected"
+							maxSelectedLabels="2"
+							optionLabel="displayName"
+							[(ngModel)]="selectedPlayers"
+							(onChange)="onChangePlayers($event)"
+						>
+						</p-multiSelect>
+
+						<h3 class="spacing greyed">{{ 'sidebar.metrics' | translate }}</h3>
+						<p-dropdown
+							appendTo="body"
+							[placeholder]="'dropdown.placeholder' | translate"
+							[options]="metrics"
+							[(ngModel)]="selectedMetric"
+							(onChange)="onChangeMetrics($event)"
+						></p-dropdown>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<!-- Overlay Panel -->
+<p-overlayPanel #op (onHide)="this.showHelper = false" (onShow)="this.showHelper = true">
+	<div class="tw-overflow-auto tw-p-4 tw-bg-shark-900 tw-max-h-[30rem]">
+		<ul>
+			<li *ngFor="let pos of legend" class="tw-my-2">
+				<p class="tw-font-bold">{{ pos.label | translate }}</p>
+				<span>{{ pos.tooltip | translate }}</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>

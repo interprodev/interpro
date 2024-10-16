@@ -1,0 +1,287 @@
+<div class="details-container" *ngIf="game">
+	<span class="cannot-edit-info" *ngIf="isOnEdit && !isEditable">only Admins can edit these Event Details</span>
+	<div class="icons-container">
+		<i
+			class="fas fa-folder-open iterpro-clickable-icon"
+			style="margin-right: 1em; font-size: 1em"
+			(click)="onAttachmentDialogButtonClick()"
+			pTooltip="{{ 'dialog.file.showDialog' | translate }}"
+		></i>
+		<i
+			[class]="isLeftPanelMaximized ? 'fas fa-compress iterpro-clickable-icon' : 'fas fa-expand iterpro-clickable-icon'"
+			(click)="toggleLeftPanelMaximize.emit()"
+			[pTooltip]="isLeftPanelMaximized ? ('button.collapse' | translate) : ('button.expand' | translate)"
+		></i>
+	</div>
+
+	<div class="tw-flex tw-flex-col tw-gap-2">
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>event.name</div>
+			<div>
+				<input
+					pInputText
+					style="font-weight: bold"
+					[ngModel]="game.title"
+					(ngModelChange)="onUpdateGameModel('title', $event)"
+					type="text"
+					name="title"
+					[disabled]="!isEditable"
+				/>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				sidebar.date
+			</div>
+			<div class="tw-flex tw-flex-gap-4 tw-items-center">
+				<div class="tw-flex tw-flex-col tw-gap-1">
+					<p-calendar
+						class="calendar-width-150"
+						[showButtonBar]="true"
+						[ngModelOptions]="{ standalone: true }"
+						[ngModel]="game.start"
+						(ngModelChange)="onChangeGameStartDate($event)"
+						name="startDate"
+						[disabled]="!isEditable"
+						[required]="true"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					></p-calendar>
+					<div class="error-message" *ngIf="game?.start | invalidDate">
+						{{ 'formField.isRequired' | translate : { value: 'sidebar.date' | translate } }}
+					</div>
+				</div>
+				<iterpro-timepicker [disabled]="!isEditable"
+														[ngModel]="game.startTime"
+														(timeChanged)="onUpdateGameModel('startTime', $event)"
+														name="startTime"
+				></iterpro-timepicker>
+				<div>-</div>
+				<iterpro-timepicker [disabled]="!isEditable"
+														[ngModel]="game.endTime"
+														[minTime]="game.startTime"
+														(timeChanged)="onUpdateGameModel('endTime', $event)"
+														name="endTime"
+				></iterpro-timepicker>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.duration
+			</div>
+			<div>
+				{{ gameDuration }}
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.where
+			</div>
+			<div>
+				<input
+					[ngModelOptions]="{ standalone: true }"
+					[ngModel]="game.location"
+					(ngModelChange)="onUpdateGameModel('location', $event)"
+					name="where"
+					pInputText
+					[disabled]="!isEditable"
+				/>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				medical.infirmary.assessments.notes
+			</div>
+			<div>
+				<i
+					class="fas iterpro-clickable-icon"
+					[class.fa-pen]="isEditable"
+					[class.fa-search]="!isEditable"
+					[pTooltip]="isEditable ? ('tooltip.add.notes' | translate) : ('tooltip.view.notes' | translate)"
+					(click)="openNotesDialog()"
+				></i>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.subformat
+			</div>
+			<div>
+				<p-dropdown
+					[filter]="true"
+					appendTo="body"
+					name="subformat"
+					[filterBy]="'label'"
+					[optionLabel]="'label'"
+					[optionValue]="'value'"
+					[dropdownIcon]="isEditable ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="isEditable ? ('dropdown.placeholder' | translate) : null"
+					[options]="competitions$ | async"
+					[disabled]="!isEditable"
+					[ngModelOptions]="{ standalone: true }"
+					[ngModel]="game.thirdPartyProviderCompetitionId"
+					(onChange)="onSelectCompetition($event.value)"
+				>
+				</p-dropdown>
+				<p-dropdown
+					*ngIf="(teamsWithoutCompetitions$ | async)?.length > 0"
+					[filter]="true"
+					appendTo="body"
+					name="teamWithoutCompetition"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					[options]="(teamsWithoutCompetitions$ | async) || []"
+					[dropdownIcon]="isEditable ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="isEditable ? ('dropdown.placeholder' | translate) : null"
+					[ngModelOptions]="{ standalone: true }"
+					[ngModel]="teamWithoutCompetition"
+					(onChange)="onSelectTeamWithoutCompetition($event.value)"
+				>
+				</p-dropdown>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.format.game
+			</div>
+			<div>
+				<p-dropdown
+					*ngIf="
+					isEditable && (game.thirdPartyProviderCompetitionId > 0 || gamesInCompetitions.length > 1);
+					else readonlyGameFormat
+				"
+					[filter]="true"
+					[optionLabel]="'label'"
+					[optionValue]="'value'"
+					appendTo="body"
+					name="game"
+					[dropdownIcon]="isEditable ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="isEditable ? ('dropdown.placeholder' | translate) : null"
+					[options]="gamesInCompetitions"
+					[disabled]="!isEditable"
+					[ngModelOptions]="{ standalone: true }"
+					[ngModel]="game.thirdPartyProviderMatchId"
+					(onChange)="onSelectGameFromCompetition($event.value)"
+				>
+				</p-dropdown>
+				<ng-template #readonlyGameFormat>
+					<ng-container *ngIf="gameName.length > 0; else customCompetition">
+						{{ gameName }}
+					</ng-container>
+					<ng-template #customCompetition>Custom Game</ng-template>
+				</ng-template>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.team.home
+			</div>
+			<div>
+				<iterpro-third-party-team-seeker
+					[provider]="$any(game.thirdPartyProvider)"
+					[teamGender]="homeTeamGender"
+					[currentTeamGender]="currentTeamGender"
+					[teamName]="game.homeTeam"
+					[competitionIds]="competitionIds"
+					[editable]="isCustomTeamEditable"
+					(teamSelect)="selectClubGameTeam($event, 'home')"
+					(setTeamCrest)="setTeamCrest($event, 'home')"
+				/>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				event.team.away
+			</div>
+			<div>
+				<iterpro-third-party-team-seeker
+					[provider]="$any(game.thirdPartyProvider)"
+					[teamGender]="awayTeamGender"
+					[currentTeamGender]="currentTeamGender"
+					[teamName]="game.awayTeam"
+					[competitionIds]="competitionIds"
+					[editable]="isCustomTeamEditable"
+					(teamSelect)="selectClubGameTeam($event, 'away')"
+					(setTeamCrest)="setTeamCrest($event, 'away')"
+				/>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				matchAnalysis.result
+			</div>
+			<div>
+				<input
+					[ngModelOptions]="{ standalone: true }"
+					[ngModel]="game.result"
+					(ngModelChange)="onUpdateGameModel('result', $event)"
+					name="result"
+					pInputText
+					style="width: 25%"
+					[disabled]="!isEditable"
+				/>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>complete</div>
+			<div>
+				<p-inputSwitch
+					name="completed"
+					[disabled]="!isEditable || isFuture"
+					[ngModel]="game.completed"
+					(onChange)="onUpdateGameModel('completed', $event.checked)"
+				>
+				</p-inputSwitch>
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row">
+			<div class="tw-w-[150px] mid-label" translate>
+				Last update
+			</div>
+			<div>
+				{{ game.history[0]?.updatedAt | formatDateBySetting : 'HH:mm' }} - {{ lastAuthor }}
+			</div>
+		</div>
+
+		<div class="tw-flex tw-items-center tw-gap-2 tw-p-2 main-row" *ngIf="isScoutingAdmin">
+			<div class="tw-w-[150px] mid-label" translate>
+				scouting.assignedTo
+			</div>
+			<div class="tw-flex-1 tw-flex tw-justify-between tw-gap-2">
+				<div class="tw-flex tw-gap-2 tw-flex-wrap">
+					<ng-container *ngIf="game?.assignedTo?.length > 0">
+						<p-chip *ngFor="let scout of game.assignedTo">
+							{{ getCustomerName(scout) }}
+						</p-chip>
+					</ng-container>
+				</div>
+				<div class="tw-flex tw-justify-center tw-items-center">
+					<i
+						class="fas fa-paper-plane iterpro-clickable-icon"
+						[class.icon-disabled]="game.assignedTo?.length === 0"
+						(click)="onSendEmailIconClick()"
+						[pTooltip]="'scouting.event.sendEmail' | translate"
+					></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<iterpro-multiple-file-upload
+	[visible]="attachmentDialogVisibility"
+	[editMode]="isEditable"
+	[attachmentModel]="game._attachments"
+	(save)="onSaveAttachmentDialogButtonClick($event)"
+	(discard)="onDiscardAttachmentDialogButtonClick()"
+/>

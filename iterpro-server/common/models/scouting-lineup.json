@@ -1,0 +1,68 @@
+{
+	"name": "ScoutingLineup",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"tactic": {
+			"type": "string"
+		},
+		"freezed": {
+			"type": "boolean"
+		},
+		"selectedDirectorAppScenario": {
+			"type": "boolean"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"players": {
+			"type": "embedsMany",
+			"model": "ScoutingLineupPlayerData",
+			"property": "_players",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"roles": {
+			"type": "embedsMany",
+			"model": "ScoutingLineupRoleData",
+			"property": "_roles",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"dataReports": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"sharedWith": {
+			"type": "referencesMany",
+			"model": "Customer",
+			"foreignKey": "sharedWithIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,162 @@
+@if (!isReportsLoading) {
+	<div class="tw-bg-shark-1000 tw-rounded-lg tw-p-4 tw-relative">
+		<!-- Player Report Card Header -->
+		<iterpro-player-performance-report
+			[clubId]="clubId"
+			[editMode]="isOnEditMode"
+			[editable]="isScoutingAdmin || currentScout.id === reportPlayer.scoutId"
+			[wyscoutId]="reportPlayer?.playerScouting?.wyscoutId"
+			[instatId]="reportPlayer?.playerScouting?.instatId"
+			[photoUrl]="reportPlayer?.playerScouting.downloadUrl"
+			[position]="reportPlayer?.playerScouting.position"
+			[birthDate]="reportPlayer?.playerScouting.birthDate"
+			[nationality]="reportPlayer?.playerScouting.nationality"
+			[weight]="reportPlayer?.playerScouting.weight"
+			[height]="reportPlayer?.playerScouting.height"
+			[foot]="reportPlayer?.playerScouting.foot"
+			[displayName]="reportPlayer?.playerScouting?.displayName ? getPlayerName(reportPlayer.playerScouting) : reportPlayer.displayName"
+			[showRedirectIcon]="!isOnEditMode && reportPlayer.playerScoutingId && reportPlayer.tempObserved"
+			[authorOptions]="scoutsOptions"
+			[globalHistory]="reportPlayer.history | lastAuthor"
+			[currentUserId]="currentScout.id"
+			[notes]="reportPlayer.report"
+			[videoAttachments]="reportPlayer._videos"
+			[docAttachments]="reportPlayer._documents"
+			[redirectTooltip]="'backTo.scoutingProfile' | translate"
+			[showDeleteAttachment]="true"
+			(deleteClicked)="deleteReport(reportPlayer)"
+			(addAttachment)="addAttachment($event.attachment, $event.type)"
+			(deleteAttachment)="deleteAttachment($event.attachment, $event.type)"
+			(redirectClicked)="onClickPlayerLens(reportPlayer)"
+			(reportNotesChanged)="onGameReportChange('report', $event)"
+		>
+			<!-- Schema -->
+			<iterpro-custom-report-template
+				[disabled]="!isOnEditMode || currentScout.id !== reportPlayer.scoutId"
+				[schema]="schema"
+				[reportData]="reportPlayer.reportData"
+				(reportDataChange)="onReportDataChange($event)"
+			></iterpro-custom-report-template>
+		</iterpro-player-performance-report>
+		<!-- Footer -->
+		<div class="tw-flex tw-justify-between tw-mt-4 tw-text-sm">
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<span class="iterpro-text-color-900" translate>scouting.game.level</span>
+				<p-dropdown
+					name="level"
+					appendTo="body"
+					[disabled]="!isOnEditMode || currentScout.id !== reportPlayer.scoutId"
+					[dropdownIcon]="!isOnEditMode || currentScout.id !== reportPlayer.scoutId ? 'none' : 'fas fa-chevron-down'"
+					[placeholder]="
+						!isOnEditMode || currentScout?.id !== reportPlayer.scoutId ? null : ('dropdown.placeholder' | translate)
+					"
+					[style]="{ width: '120px' }"
+					[options]="levels | selectItem : true"
+					[ngModel]="reportPlayer.level"
+					(onChange)="onGameReportChange('level', $event.value)"
+				>
+				</p-dropdown>
+			</div>
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<span class="iterpro-text-color-900" translate>scouting.assignedTo</span>
+				<p-dropdown
+					name="scoutId"
+					appendTo="body"
+					[filter]="true"
+					[disabled]="!isScoutingAdmin || (isScoutingAdmin && !isOnEditMode)"
+					[dropdownIcon]="!isScoutingAdmin || !isOnEditMode ? 'none' : 'fas fa-chevron-down'"
+					[placeholder]="!isScoutingAdmin || !isOnEditMode ? null : ('dropdown.placeholder' | translate)"
+					[options]="scoutsOptions"
+					[ngModel]="reportPlayer.scoutId"
+					(onChange)="onScoutChange(reportPlayer, $event.value)"
+				>
+					<ng-template let-scout pTemplate="selectedItem">
+						<span>{{ scout?.label }}</span>
+					</ng-template>
+					<ng-template let-scout pTemplate="item">
+						<span
+							[ngClass]="{
+								disabled:
+									scout?.assignedPlayersIds.includes(reportPlayer?.playerScoutingId) &&
+									scout.value !== reportPlayer?.scoutId
+							}"
+							[pTooltip]="
+								scout?.assignedPlayersIds.includes(reportPlayer?.playerScoutingId) &&
+								scout.value !== reportPlayer?.scoutId
+									? 'This player has already a report with this Scout assigned'
+									: ''
+							"
+						>
+							{{ scout.label }}
+						</span>
+					</ng-template>
+				</p-dropdown>
+			</div>
+			<div class="tw-flex tw-items-center tw-gap-2">
+				<span class="iterpro-text-color-900" translate>complete</span>
+				<p-inputSwitch
+					name="completed"
+					[disabled]="!isOnEditMode || currentScout?.id !== reportPlayer.scoutId || isFutureEvent()"
+					[ngModel]="reportPlayer.completed"
+					(onChange)="onGameReportChange('completed', $event.checked)"
+				>
+				</p-inputSwitch>
+			</div>
+		</div>
+	</div>
+} @else {
+	<!-- Report Loading -->
+	<div class="tw-bg-shark-1000 tw-rounded-lg tw-p-4 tw-relative">
+		<!-- Player Report Card Header -->
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+			<!-- SX Container -->
+			<div class="tw-col-span-2 tw-gap-4 tw-relative tw-rounded tw-w-[120px] tw-h-[120px] tw-overflow-hidden">
+				<!-- Player img -->
+				<p-skeleton width="120px" height="120px"></p-skeleton>
+			</div>
+			<!-- DX Container -->
+			<div class="tw-col-span-10 tw-p-3 tw-flex tw-flex-col tw-gap-4">
+				<!-- Player Name and Actions -->
+				<div class="tw-flex tw-items-center tw-justify-between">
+					<!-- Player Name-->
+					<div><p-skeleton height="20px" width="150px"></p-skeleton></div>
+					<!-- Report Actions-->
+					<div class="tw-flex tw-items-center tw-gap-4">
+						<div><p-skeleton height="20px" width="20px" shape="circle"></p-skeleton></div>
+						<div><p-skeleton height="20px" width="20px" shape="circle">></p-skeleton></div>
+					</div>
+				</div>
+				<!-- Last Update Author -->
+				<div class="tw-flex tw-justify-end tw-gap-2">
+					<div class="iterpro-text-color-900 tw-text-xs" translate>lastUpdate</div>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div><p-skeleton height="10px" width="70px"></p-skeleton></div>
+					</div>
+				</div>
+				<!-- Notes / Video / Document Actions -->
+				<div class="tw-flex tw-justify-around tw-items-center">
+					<!-- Notes -->
+					<div><p-skeleton height="20px" width="20px" shape="circle"></p-skeleton></div>
+					<!-- Video -->
+					<div><p-skeleton height="20px" width="20px" shape="circle"></p-skeleton></div>
+					<!-- Document -->
+					<div><p-skeleton height="20px" width="20px" shape="circle"></p-skeleton></div>
+				</div>
+			</div>
+		</div>
+		<!-- Schema -->
+		<div class="tw-mt-2">
+			<iterpro-custom-report-template
+				[disabled]="true"
+				[schema]="undefined"
+				[reportData]="{}">
+			</iterpro-custom-report-template>
+		</div>
+		<!-- Footer -->
+		<div class="tw-flex tw-justify-between tw-mt-4 tw-text-sm">
+			<div><p-skeleton height="10px" width="99px"></p-skeleton></div>
+			<div><p-skeleton height="10px" width="90px"></p-skeleton></div>
+			<div><p-skeleton height="10px" width="90px"></p-skeleton></div>
+		</div>
+	</div>
+}

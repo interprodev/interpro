@@ -1,0 +1,18 @@
+<div class="tw-h-full tw-relative">
+	<p-pickList [disabled]="!editMode" [showSourceControls]="false" [showTargetControls]="false"
+							[source]="sourceItems" [target]="targetItems" [responsive]="true" [filterBy]="'label'"
+							[sourceHeader]="sourceHeader"
+							[targetHeader]="targetHeader">
+		<ng-template let-item pTemplate="item">
+			<div class="tw-flex tw-items-center tw-p-2">
+				@if (item?.imageUrl) {
+					<iterpro-picture [photoUrl]="item.imageUrl" class="tw-block tw-w-12 tw-bg-white tw-rounded tw-overflow-hidden" />
+				}
+				<div class="tw-ml-2">{{ item.label }}</div>
+			</div>
+		</ng-template>
+	</p-pickList>
+	@if (editMode) {
+		<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()"></iterpro-dialog-footer-buttons>
+	}
+</div>

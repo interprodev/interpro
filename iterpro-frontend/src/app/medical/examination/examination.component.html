@@ -1,0 +1,64 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>examination</h1>
+		</header>
+
+		<div class="row row-sidebar" *blockUI="'containerExamination'">
+			<div class="col col-main col-no-scroll">
+				<iterpro-test *ngIf="selectedTest" [test]="selectedTest" [instanceId]="instanceIdParam" [newGeneric]="newTest"
+					(updateEmitter)="loadPinnedAndTests($event)" (destroyEvent)="loadPinnedAndTests(null)"
+					(discardAdd)="onDiscardAdd()" [medical]="true" (tabIndexEmitter)="tabIndex($event)"></iterpro-test>
+			</div>
+
+			<div class="col col-sidebar">
+				<p-tabView>
+					<p-tabPanel header="{{ 'sidebar.tests' | translate }}">
+						<div class="listbox">
+							<div class="spacing add-test">
+								<h3 class="greyed" translate>sidebar.testList</h3>
+								<div style="display: flex; align-items: baseline">
+									<p-multiSelect [disabled]="editService.editMode" [styleClass]="'p-multiselect-icon-only p-multiselect-icon-only-white'"
+										[tooltip]="'multiselect.filterByPurpose' | translate" [tooltipPosition]="'bottom'"
+										[dropdownIcon]="'fas fa-filter'" [options]="purposeList" maxSelectedLabels="1"
+										selectedItemsLabel="{0} selected" optionLabel="label" optionValue="value"
+										(onChange)="handlePurposeChange($event)">
+									</p-multiSelect>
+									<i *ngIf="receivedTabIndex === 0" class="fas fa-plus" (click)="addNewTest()"
+										disabled="editService.editMode" pTooltip="{{ 'test.buttons.addNewTest' | translate }}"></i>
+								</div>
+							</div>
+						</div>
+						<div class="listbox">
+							<!-- <p-multiSelect maxSelectedLabels="1000" [options]="purposeList" [disabled]="editService.editMode" [style]="{'width':'100%'}"  placeholder="{{'multiselect.placeholderPurpose' | translate}}" (onChange)="handlePurposeChange($event)"></p-multiSelect> -->
+							<p-listbox [listStyle]="{ 'max-height': '80vh', 'max-width': '100%' }" [options]="filteredTests"
+								class="tests" [disabled]="editService.editMode" [style]="{ width: '100%' }" [(ngModel)]="selectedTest"
+								optionLabel="label" [filter]="true" (onChange)="selectTest($event.value.value)">
+								<ng-template let-filteredTest let-i="index" pTemplate="item">
+									<div class="test-list">
+										<span>{{filteredTest.label}}</span>
+										<div (click)="savePin($event, filteredTest)">
+											<div *ngIf="isTestPinned(filteredTest)" class="hide-solid-pin">
+												<i class="fas fa-thumbtack" pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+													tooltipPosition="bottom"></i>
+											</div>
+											<div *ngIf="isTestPinned(filteredTest)" class="unpinned">
+												<i class="fal fa-thumbtack" pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+													tooltipPosition="bottom"></i>
+											</div>
+											<div *ngIf="!isTestPinned(filteredTest)" class="pin">
+												<i class="fas fa-thumbtack" pTooltip=" {{ 'test.list.star.pin.icon' | translate }} "
+													tooltipPosition="bottom"></i>
+											</div>
+										</div>
+									</div>
+								</ng-template>
+							</p-listbox>
+							<br />
+						</div>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+</div>

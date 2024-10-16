@@ -1,0 +1,84 @@
+{
+	"name": "PlayerMatchStat",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true,
+		"remoting": {
+			"sharedMethods": {
+				"*": false
+			}
+		}
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"enabled": {
+			"type": "boolean"
+		},
+		"playerId": {
+			"type": "string"
+		},
+		"playerName": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"position": {
+			"type": "string"
+		},
+		"minutesPlayed": {
+			"type": "number"
+		},
+		"substituteInMinute": {
+			"type": "number"
+		},
+		"substituteOutMinute": {
+			"type": "number"
+		},
+		"yellowCard": {
+			"type": "boolean"
+		},
+		"doubleYellowCard": {
+			"type": "boolean"
+		},
+		"redCard": {
+			"type": "boolean"
+		},
+		"score": {
+			"type": "number"
+		},
+		"assists": {
+			"type": "number"
+		},
+		"conversion": {
+			"type": "number"
+		},
+		"startingRoster": {
+			"type": "boolean"
+		},
+		"scoreSet1": {
+			"type": "number"
+		},
+		"scoreSet2": {
+			"type": "number"
+		},
+		"scoreSet3": {
+			"type": "number"
+		},
+		"scoreSet4": {
+			"type": "number"
+		},
+		"scoreSet5": {
+			"type": "number"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

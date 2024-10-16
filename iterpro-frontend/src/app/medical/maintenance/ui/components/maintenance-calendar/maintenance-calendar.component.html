@@ -1,0 +1,235 @@
+<div
+	class="tw-mb-4 tw-flex tw-items-center tw-justify-end tw-gap-4"
+	*ngIf="medicalRecordsViewType === medicalRecordsViewTypes.EventDetail"
+>
+	<ng-container *iterproTeleportTo="'.event-buttons'">
+		<ng-container *ngIf="!editService.editMode; else editModeButtons">
+			<p-button
+				size="small"
+				(click)="child.confirmDiscard()"
+				type="button"
+				[label]="'buttons.back' | translate"
+			></p-button>
+			<p-button
+				size="small"
+				*ngIf="event.format === 'medical' || isMedicalAssessment(event)"
+				(click)="child.edit()"
+				[label]="'buttons.edit' | translate"
+			>
+			</p-button>
+			<p-button
+				size="small"
+				styleClass="p-button-danger"
+				*ngIf="event.format === 'medical' || isMedicalAssessment(event)"
+				(click)="
+					event.format === 'medical' || isMedicalAssessment(event) ? confirmDeleteInstance() : child.confirmDelete()
+				"
+				[label]="'buttons.delete' | translate"
+			>
+			</p-button>
+		</ng-container>
+		<ng-template #editModeButtons>
+			<button
+				pButton
+				size="small"
+				class="p-button-primary"
+				type="submit"
+				form="form"
+				[label]="'buttons.save' | translate"
+			></button>
+			<p-button
+				styleClass="p-button-contrast"
+				size="small"
+				(click)="child.discard()"
+				[label]="'buttons.discard' | translate"
+			></p-button>
+		</ng-template>
+	</ng-container>
+</div>
+
+<ng-container *ngIf="medicalRecordsViewType === medicalRecordsViewTypes.Calendar">
+	<div class="calendar-header">
+		<div class="trigger-calendar" *ngIf="currentView.type !== 'resourceTimelineDay'">
+			<label translate>general.date</label>
+			<p-calendar
+				*ngIf="currentView.type !== 'timeGridDay' && currentView.type !== 'listMonth'"
+				id="monthCalendar"
+				showButtonBar="true"
+				view="month"
+				dateFormat="mm/yy"
+				appendTo="body"
+				(onSelect)="gotoDate($event)"
+				[(ngModel)]="updatedDate"
+				[clearButtonStyleClass]="'p-button-sm'"
+				[todayButtonStyleClass]="'p-button-sm'"
+			></p-calendar>
+			<p-calendar
+				*ngIf="currentView.type === 'timeGridDay' || currentView.type === 'listMonth'"
+				showButtonBar="true"
+				appendTo="body"
+				(onSelect)="gotoDate($event)"
+				[(ngModel)]="updatedDate"
+				[clearButtonStyleClass]="'p-button-sm'"
+				[todayButtonStyleClass]="'p-button-sm'"
+			></p-calendar>
+		</div>
+		<div class="date-time-container" *ngIf="currentView.type === 'resourceTimelineDay'">
+			<div class="trigger-calendar">
+				<label translate>general.date</label>
+				<p-calendar
+					showButtonBar="true"
+					appendTo="body"
+					(onSelect)="gotoDate($event)"
+					[(ngModel)]="updatedDate"
+					[clearButtonStyleClass]="'p-button-sm'"
+					[todayButtonStyleClass]="'p-button-sm'"
+				></p-calendar>
+			</div>
+			<iterpro-calendar-time-range-setting
+				[calendarId]="'maintenance'"
+				[slotMinTime]="calendarOptions.slotMinTime"
+				[slotMaxTime]="calendarOptions.slotMaxTime"
+				(slotMinTimeChange)="onSlotMinTimeChange($event)"
+				(slotMaxTimeChange)="onSlotMaxTimeChange($event)"
+			/>
+		</div>
+
+		<div class="filters">
+			<div>
+				<div class="filter-label" translate>general.player</div>
+				<p-multiSelect
+					(onChange)="updateEvents()"
+					[options]="options.players"
+					[(ngModel)]="filters.player"
+					appendTo="body"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					selectedItemsLabel="{0} selected"
+					maxSelectedLabels="1"
+				></p-multiSelect>
+			</div>
+			<div>
+				<div class="filter-label" translate>tooltip.author</div>
+				<p-multiSelect
+					(onChange)="updateEvents()"
+					[options]="options.author"
+					[(ngModel)]="filters.author"
+					appendTo="body"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					selectedItemsLabel="{0} selected"
+					maxSelectedLabels="1"
+				></p-multiSelect>
+			</div>
+			<div>
+				<div class="filter-label" translate>sidebar.type</div>
+				<p-multiSelect
+					(onChange)="updateEvents()"
+					[options]="eventTypeOptions"
+					[(ngModel)]="filters.types"
+					appendTo="body"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					selectedItemsLabel="{0} selected"
+					maxSelectedLabels="1"
+					[dropdownIcon]="'fa-solid fa-chevron-down'"
+				></p-multiSelect>
+			</div>
+			<iterpro-report-download
+				*ngIf="
+					currentView &&
+					['timeGridDay', 'timeGridWeek', 'listMonth', 'resourceTimelineDay'].indexOf(currentView.type) > -1
+				"
+				(downloadPDF)="downloadReport()"
+			/>
+		</div>
+	</div>
+	<div class="row row-sidebar">
+		<div class="col col-main no-max">
+			<div
+				class="content content-padded"
+				*blockUI="'full-calendar'; message: 'Please wait, we are checking your schedule...'"
+			>
+				<full-calendar [options]="calendarOptions"></full-calendar>
+			</div>
+		</div>
+	</div>
+</ng-container>
+
+<!-- Event Detail -->
+<div class="tw-w-full" *ngIf="medicalRecordsViewType === medicalRecordsViewTypes.EventDetail">
+	<div class="tw-flex tw-justify-center tw-gap-4" *blockUI="'event-view'">
+		<!-- Previous Event Button -->
+		<div class="tw-flex tw-w-[30px] tw-min-w-[30px] tw-items-start tw-justify-center">
+			<div class="tw-mt-[200px]">
+				<p-button
+					[disabled]="!hasPrev"
+					[size]="'large'"
+					[rounded]="true"
+					[icon]="'fas fa-chevron-left'"
+					(click)="prev()"
+					[pTooltip]="'planning.previousEvent' | translate"
+				></p-button>
+			</div>
+		</div>
+		<!-- Event Viewer Component -->
+		<div class="tw-flex-1">
+			<iterpro-event
+				[customers]="customers"
+				[event]="event"
+				[events]="events"
+				[newEvent]="newEvent"
+				[tests]="testList"
+				[teams]="allTeams"
+				[prefilledPlayerIds]="prefilledPlayerIds"
+				[isFromResourceTimelineDay]="currentView.type === 'resourceTimelineDay'"
+				(closeClicked)="closePanel($event)"
+				(saveClicked)="saveEvent($event)"
+				(deleteClicked)="handleDeleteEvent($event)"
+			/>
+		</div>
+		<!-- Next Event Button -->
+		<div class="tw-flex tw-w-[30px] tw-min-w-[30px] tw-items-start tw-justify-center">
+			<div class="tw-mt-[200px]">
+				<p-button
+					[disabled]="!hasNext"
+					[size]="'large'"
+					[rounded]="true"
+					[icon]="'fas fa-chevron-right'"
+					(click)="next()"
+					[pTooltip]="'planning.nextEvent' | translate"
+				></p-button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-dialog
+	*ngIf="event"
+	[(visible)]="confirmDeleteFlag"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div>
+		<span *ngIf="event.format === 'assessment'" translate>confirm.instanceRelated</span>
+		<span *ngIf="event.format === 'medical' && event.medicalType === 'exam'" translate>confirm.medicalExam</span>
+		<span *ngIf="event.format === 'medical' && event.medicalType === 'treatment'" translate>
+			confirm.medicalTreatment
+		</span>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			(click)="handleDeleteEvent(event, true, event.format)"
+			label="{{ 'yes' | translate }}"
+		></p-button>
+		<p-button
+			size="small"
+			(click)="handleDeleteEvent(event, false, event.format)"
+			label="{{ 'no' | translate }}"
+		></p-button>
+		<p-button size="small" [outlined]="true" (click)="discard()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

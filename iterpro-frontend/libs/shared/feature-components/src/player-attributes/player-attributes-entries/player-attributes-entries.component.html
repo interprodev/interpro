@@ -1,0 +1,179 @@
+<ng-container *ngIf="!isLoading">
+	<div *ngIf="playerAttributesEntry" class="historical-records-header">
+		<div class="container">
+			<ng-container>
+				<span class="container-label" translate>records</span>
+				<p-dropdown
+					*ngIf="!editService.editMode && getId(playerAttributesEntry)"
+					appendTo="body"
+					[style]="{ 'min-width': '200px' }"
+					[options]="historicalRecordsOptions"
+					[ngModel]="getId(playerAttributesEntry)"
+					[readonly]="editService.editMode"
+					[placeholder]="'dropdown.placeholder' | translate"
+					(ngModelChange)="onSelectHistoricalRecord($event)"
+				></p-dropdown>
+				<p-calendar
+					*ngIf="editService.editMode"
+					[showButtonBar]="true"
+					[(ngModel)]="playerAttributesEntry.date"
+					[readonlyInput]="true"
+					[clearButtonStyleClass]="'p-button-sm'"
+					[todayButtonStyleClass]="'p-button-sm'"
+				>
+				</p-calendar>
+			</ng-container>
+			<i class="fas fa-plus iterpro-clickable-icon" (click)="onAddNewEntry()"></i>
+			<ng-container *ngIf="!editService.editMode">
+				<i class="fas fa-edit iterpro-clickable-icon" (click)="onEdit()"></i>
+				<iterpro-report-download (downloadCSV)="downloadCSV()" />
+			</ng-container>
+			<ng-container *ngIf="editService.editMode">
+				<i
+					class="fas fa-save iterpro-clickable-icon"
+					(click)="saveEntry()"
+					[class.icon-disabled]="hasEmptyFields()"
+				></i>
+				<i class="fas fa-trash iterpro-clickable-icon" (click)="onDeleteEntry()"></i>
+				<i class="fas fa-close iterpro-clickable-icon" (click)="onDiscard()"></i>
+			</ng-container>
+		</div>
+	</div>
+
+	<div *ngIf="playerAttributesEntry; else noRowsFound" class="main-container">
+		<ng-container *ngIf="playerDescriptionSetting === 'attributes'; else swissPlayerAttributes">
+			<div class="attributes-container" *ngFor="let attributeCategory of attributeCategories">
+				<div class="progress-wrapper">
+					<div class="current">
+						{{ getAvgValue(attributeCategory.category, 10) }}
+					</div>
+					<round-progress
+						[current]="getAvgValueForSpinner(attributeCategory.category)"
+						[max]="100"
+						[stroke]="5"
+						[color]="getSpinnerColor(attributeCategory.category)"
+						[background]="'#dddddd'"
+						[radius]="50"
+						[semicircle]="true"
+						[responsive]="true"
+					></round-progress>
+				</div>
+				<div class="main-field-title">
+					<h3 translate>{{ attributeCategory.title }}</h3>
+				</div>
+				<div class="attributes-table fields-table">
+					<ng-container
+						*ngFor="let field of playerAttributesEntry.values | filterByField : 'category' : attributeCategory.category"
+					>
+						<div class="attribute-row iterpro-item-container">
+							<div class="table-left-title" pTooltip="{{ field.metricDescription | translate }}">
+								{{ field.metricName | translate }}
+							</div>
+							<div class="values-container">
+								<span class="fas arrow" [ngClass]="getArrow(field.metric)"></span>
+								<input
+									[ngStyle]="getStyleForInputNumber(field.value)"
+									[(ngModel)]="field.value"
+									[disabled]="!editService.editMode"
+									(blur)="blurValidator($event, field.metricName, field.category)"
+									(input)="inputValidator($event, field.metricName, field.category)"
+									placeholder="-"
+									type="number"
+									pInputText
+								/>
+							</div>
+						</div>
+						<div
+							*ngIf="editService.editMode && errorField?.metricName === field.metricName && errorField?.categoryName === field.category && errorField.errorMessage !== null"
+							style="color: red; font-size: small; width: fit-content"
+						>
+							{{ errorField.errorMessage }}
+						</div>
+					</ng-container>
+				</div>
+			</div>
+		</ng-container>
+
+		<ng-template #swissPlayerAttributes>
+			<div class="attributes-container" *ngFor="let attributeCategory of swissAttributesCategories">
+				<div class="progress-wrapper">
+					<div class="current">
+						{{ getAvgValue(attributeCategory.category, 1) }}
+					</div>
+					<round-progress
+						[current]="getAvgValueForSpinner(attributeCategory.category)"
+						[max]="100"
+						[stroke]="5"
+						[color]="getSpinnerColor(attributeCategory.category)"
+						[background]="'#dddddd'"
+						[radius]="50"
+						[semicircle]="true"
+						[responsive]="true"
+					></round-progress>
+				</div>
+				<div class="main-field-title">
+					<h3 translate>{{ attributeCategory.title }}</h3>
+				</div>
+				<div class="attributes-table fields-table">
+					<ng-container
+						*ngFor="let field of playerAttributesEntry.values | filterByField : 'category' : attributeCategory.category"
+					>
+						<div class="attribute-row iterpro-item-container" [class.prognosisDescriptionRow]="field.metric === 'prognosisDescription'">
+							<div class="table-left-title" pTooltip="{{ field.metricDescription | translate }}">
+								{{ field.metricName | translate }}
+							</div>
+							<div class="flexed values-container">
+								<span class="fas arrow" [ngClass]="getArrow(field.value)"></span>
+								<input
+									*ngIf="attributeCategory.category === 'tipss'"
+									[ngStyle]="getStyleForInputNumber(field.value)"
+									[(ngModel)]="field.value"
+									[disabled]="!editService.editMode"
+									(blur)="blurValidator($event, field.metricName, field.category)"
+									(input)="inputValidator($event, field.metricName, field.category)"
+									placeholder="-"
+									type="number"
+									pInputText
+								/>
+								<p-inputSwitch
+									*ngIf="attributeCategory.category === 'potential'"
+									[(ngModel)]="field.value"
+									[disabled]="!editService.editMode"
+								></p-inputSwitch>
+								<ng-container *ngIf="attributeCategory.category === 'prognosis'">
+									<input
+										*ngIf="field.metric === 'prognosisScore'"
+										[(ngModel)]="field.value"
+										[disabled]="!editService.editMode"
+										[pKeyFilter]="inputValidatorPrognosis"
+										pInputText
+										type="text"
+										style="text-transform: uppercase"
+									/>
+									<textarea
+										*ngIf="field.metric === 'prognosisDescription'"
+										[(ngModel)]="field.value"
+										[disabled]="!editService.editMode"
+										pInputTextarea
+										class="p-inputtext p-component box-dark"
+										rows="13"
+									></textarea>
+								</ng-container>
+							</div>
+						</div>
+						<div
+							*ngIf="editService.editMode && errorField?.metricName === field.metricName && errorField?.categoryName === field.category && errorField.errorMessage !== null"
+							style="color: red; font-size: small; width: fit-content"
+						>
+							{{ errorField.errorMessage }}
+						</div>
+					</ng-container>
+				</div>
+			</div>
+		</ng-template>
+	</div>
+</ng-container>
+
+<ng-template #noRowsFound>
+	<div class="no-rows-found" translate (click)="onAddNewEntry()">profile.attributes.noAttributes</div>
+</ng-template>

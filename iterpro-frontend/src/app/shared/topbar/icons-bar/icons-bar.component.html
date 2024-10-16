@@ -1,0 +1,111 @@
+<ul
+	class="tw-border-top-2 tw-surface-border tw-z-50 tw-m-0 tw-flex tw-select-none tw-list-none tw-flex-col tw-justify-center tw-gap-1 tw-p-0 lg:tw-flex-row lg:tw-items-center lg:tw-border-t-0"
+>
+	<iterpro-support-widget></iterpro-support-widget>
+	<li>
+		<a
+			pRipple
+			class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-6 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+			[routerLink]="'/manager/planning'"
+			[routerLinkActive]="'selected'"
+			[pTooltip]="'navigator.planning' | translate"
+		>
+			<i class="fas fa-calendar tw-mr-2 tw-text-base lg:tw-mr-0"></i>
+			<span class="tw-block tw-font-medium lg:tw-hidden">{{ 'navigator.planning' | translate }}</span>
+		</a>
+	</li>
+
+	<li>
+		<a
+			pRipple
+			class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-6 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+			[routerLink]="'/repository'"
+			[routerLinkActive]="'selected'"
+			[pTooltip]="'home.fileRepository' | translate"
+		>
+			<i class="fas fa-folder-open tw-mr-2 tw-text-base lg:tw-mr-0"></i>
+			<span class="tw-block tw-font-medium lg:tw-hidden">{{ 'home.fileRepository' | translate }}</span>
+		</a>
+	</li>
+
+	@if ((orgType$ | async) !== 'agent') {
+		<li>
+			<a
+				pRipple
+				class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-6 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+				[routerLink]="'/import-data'"
+				[routerLinkActive]="'selected'"
+				[class.disabled-link]="!canAccessToRoute('/import-data')"
+				[pTooltip]="'home.import' | translate"
+			>
+				<i class="fas fa-upload tw-mr-2 tw-text-base lg:tw-mr-0"></i>
+				<span class="tw-block tw-font-medium lg:tw-hidden">{{ 'home.import' | translate }}</span>
+			</a>
+		</li>
+	}
+
+	<li>
+		<a
+			pRipple
+			class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-6 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+			[class.disabled-link]="!(canAccessChat$ | async)"
+			[routerLink]="'/inbox'"
+			[routerLinkActive]="'selected'"
+			[pTooltip]="'chat.title' | translate"
+		>
+			<div>
+				<i class="fas fa-comments tw-mr-2 tw-text-base lg:tw-mr-0"></i>
+				@if (unreadConversations > 0) {
+					<div
+						class="tw-absolute tw-right-1 tw-top-0 tw-h-4 tw-min-w-4 tw-rounded-full tw-bg-primary-500 tw-p-0.5 tw-text-center tw-text-white"
+						style="font-size: 0.7rem"
+					>
+						{{ unreadConversations }}
+					</div>
+				}
+			</div>
+			<span class="tw-block tw-font-medium lg:tw-hidden">{{ 'chat.title' | translate }}</span>
+		</a>
+	</li>
+
+	<li class="tw-relative">
+		<a
+			pRipple
+			class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-6 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-4 lg:tw-py-2"
+			pStyleClass="@next"
+			enterFromClass="tw-hidden"
+			enterActiveClass="pflex-scalein"
+			leaveToClass="tw-hidden"
+			leaveActiveClass="pflex-fadeout"
+			[hideOnOutsideClick]="true"
+			[class.selected]="isAtNotification()"
+			[pTooltip]="'notifications' | translate"
+		>
+			<div>
+				<i class="fas fa-bell tw-mr-2 tw-text-base lg:tw-mr-0"></i>
+				@if ((notificationsToRead$ | async)?.length) {
+					<div
+						class="tw-absolute tw-right-1 tw-top-0 tw-h-4 tw-min-w-4 tw-rounded-full tw-bg-primary-500 tw-p-0.5 tw-text-center tw-text-white"
+						style="font-size: 0.7rem"
+					>
+						{{ (notificationsToRead$ | async)?.length }}
+					</div>
+				}
+			</div>
+			<span class="tw-block tw-font-medium lg:tw-hidden">{{ 'notifications' | translate }}</span>
+		</a>
+		<div
+			class="tw-top-100 tw-static tw-left-0 tw-z-50 tw-hidden tw-w-full tw-origin-top tw-rounded tw-pl-4 tw-shadow-none lg:tw-absolute lg:tw-pl-0 lg:tw-shadow-lg"
+			[class.tw-hideen]="notificationsListVisible"
+		>
+			<div class="notifications-menu tw-mt-2 tw-overflow-y-auto tw-rounded-lg">
+				<iterpro-notifications-menu [club]="selectedClub$ | async" (notificationClicked)="closeNotificationsList()" />
+			</div>
+		</div>
+	</li>
+
+	<!-- User Picture Profile -->
+	<li class="tw-relative tw-border-t-2 lg:tw-border-t-0">
+		<iterpro-user-menu [customer]="customer$ | async" />
+	</li>
+</ul>

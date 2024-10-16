@@ -1,0 +1,225 @@
+<style type="text/css">
+	.lost {
+		width: auto;
+	}
+
+	.login-label {
+		display: block;
+		text-transform: uppercase;
+		margin: 0.5rem 0 1.5rem 0;
+		font-size: 0.85em;
+		font-weight: bold;
+	}
+
+	.start-inputs input {
+		height: 30px;
+		border-color: #ddd;
+		background-color: #ddd;
+		padding: 0 0.5rem;
+		border-radius: 2px;
+		color: #000;
+	}
+
+	.password-requirements h4 {
+		text-align: center;
+	}
+
+	.start-inputs input:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 300px #ddd inset;
+		-webkit-text-fill-color: #000 !important;
+	}
+
+	.start-inputs {
+		padding: 2rem;
+		background-color: rgba(0, 0, 0, 0.8);
+	}
+
+	.auth-actions {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.linkPwd {
+		cursor: pointer;
+	}
+
+	.start {
+		/*
+    background: -moz-linear-gradient(#161616 0%, #1a1a1a 54%, #404040 100%);
+    background: -webkit-linear-gradient(#161616 0%, #1a1a1a 54%, #404040 100%);
+    background: linear-gradient(#161616 0%, #1a1a1a 74%, #404040 130%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#161616', endColorstr='#404040', GradientType=0);
+    */
+		height: 100vh;
+		margin: 0;
+		font-family: 'Gotham', 'Open Sans';
+	}
+
+	.start-content {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		min-height: 100%;
+	}
+
+	.start-content img {
+		width: 300px;
+		margin: 1.5rem 0;
+	}
+
+	.start-content form {
+		width: 100%;
+		max-width: 600px;
+		padding: 0 1rem;
+	}
+
+	.start input {
+		width: 100%;
+		border: none;
+	}
+
+	.start label {
+		/* display: block;
+    text-transform: uppercase; */
+		/*margin: 0.5rem 0 1.5rem 0;*/
+		font-size: 0.85em;
+	}
+
+	.start-buttons {
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap-reverse;
+		margin: 1.5rem 0;
+		text-align: right;
+	}
+
+	.start-buttons button {
+		margin-left: 1rem;
+		margin-bottom: 1rem;
+		text-transform: uppercase;
+	}
+
+	.start-inputs.wrong-credentials {
+		animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+		transform: translate3d(0, 0, 0);
+		backface-visibility: hidden;
+		perspective: 1000px;
+	}
+
+	html {
+		height: 100%;
+	}
+
+	body {
+		font-family: 'Gotham';
+		background-color: #161616;
+		color: #fafafa;
+		background-image: url('/static/football-3.jpg');
+		background-size: cover;
+		background-attachment: fixed;
+		background-position: center;
+		margin: 0;
+		padding: 0;
+	}
+
+	@font-face {
+		font-family: 'Gotham';
+		src: url('/static/Gotham-Bold.otf');
+		font-weight: 900;
+		font-style: normal;
+	}
+
+	@font-face {
+		font-family: 'Gotham';
+		src: url('/static/Gotham-medium-Regular.ttf');
+		font-weight: bold;
+		font-style: normal;
+	}
+
+	@font-face {
+		font-family: 'Gotham';
+		src: url('/static/Gotham-Book-Regular.otf');
+		font-weight: normal;
+		font-style: normal;
+	}
+
+	input[type='button'],
+	input[type='submit'],
+	input[type='reset'],
+	input[type='file']::-webkit-file-upload-button,
+	button {
+		border-radius: 0;
+	}
+
+	button.info {
+		width: 12em;
+		overflow: hidden;
+		text-transform: uppercase;
+	}
+
+	.grey-button {
+		background-color: #555;
+	}
+
+	button {
+		outline-color: none !important;
+	}
+
+	h1,
+	h2,
+	button {
+		font-family: 'Gotham', 'Open Sans';
+		font-weight: 900;
+		letter-spacing: 0.1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1rem;
+		/* margin-top: 1em; */
+	}
+
+	button {
+		height: 30px;
+		line-height: 32px;
+		border: 0px solid #000;
+		background-color: rgba(0, 0, 0, 0.6);
+		padding: 0 1.4rem;
+		color: #fafafa;
+		font-weight: bold;
+		cursor: pointer;
+		transition: background-color 0.3s;
+		border-radius: 2px;
+	}
+
+	.expired-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: rgb(32 36 39 / 0.85);
+		padding: 2em;
+		border-radius: 0.5rem !important;
+	}
+
+	.expired-title {
+		display: block;
+		margin-block-end: 1.33em;
+		margin-inline-start: 0px;
+		margin-inline-end: 0px;
+		font-weight: bold;
+		unicode-bidi: isolate;
+	}
+</style>
+
+<div class="start">
+	<div class="start-content">
+		<img src="/static/logo-text.svg" />
+		<div class="expired-container">
+			<span class="expired-title">This link is <%= TYPE %>.</span>
+			<% if(WELCOME){ %>
+			<span>Please ask your workspace administrator to send another welcome email.</span>
+			<% } else { %>
+			<span>Please make another reset password request from the login page.</span>
+			<% } %>
+		</div>
+	</div>
+</div>

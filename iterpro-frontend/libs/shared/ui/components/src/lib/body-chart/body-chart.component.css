@@ -1,0 +1,99 @@
+:host {
+	display: block;
+	width: 100%;
+}
+
+svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+svg path {
+	fill: #4c4c4c;
+	stroke: #1b1b1b;
+	stroke-width: 5px;
+	cursor: pointer;
+  background: repeating-linear-gradient( 90deg, #fff, #fff 20px, #000 20px, #000 40px);
+}
+
+.body-svg {
+	position: relative;
+}
+
+.popup-svg {
+	position: absolute;
+	margin-left: -11px;
+	width: 25px;
+	height: 25px;
+	color: #282828;
+	background-color: #ddd;
+	border: 2px solid var(--color-neutral-300);
+	border-radius: 15px;
+	line-height: 22px;
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+	pointer-events: none;
+}
+
+.body-side-container {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	display: flex;
+	gap: 0.5rem;
+}
+
+.legend-row {
+  padding: 0.5em 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.legend-rectangle {
+  height: 20px;
+  width: 50px;
+  margin-left: 24px;
+}
+
+.sorenessPattern {
+  background: repeating-linear-gradient(45deg, #4c4c4c 0px, #ffffff 5px);
+}
+.sorenessInjuryPattern {
+  background: repeating-linear-gradient(45deg, #4c4c4c 0px, #c1272d 5px);
+}
+.sorenessComplaintPattern {
+  background: repeating-linear-gradient(45deg, #4c4c4c 0px, #fcee21 5px);
+}
+.sorenessChronicPattern {
+  background: repeating-linear-gradient(45deg, #4c4c4c 0px, var(--color-primary-500) 5px);
+}
+.sorenessClosedPattern {
+  background: repeating-linear-gradient(45deg, #4c4c4c 0px, #6f6f6f 5px);
+}
+
+.legend-general {
+  border: 2px solid darkslateblue;
+}
+
+.switch {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	opacity: 0.5;
+}
+.switch i:hover {
+	opacity: 0.4;
+}
+.tooltip {
+	font-size: 0.8rem;
+	padding: 0.5rem;
+	position: absolute;
+	z-index: 3;
+	color: #000;
+	background-color: #ddd;
+	border: 2px solid var(--color-neutral-300);
+	pointer-events: none;
+	white-space: nowrap;
+}

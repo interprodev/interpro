@@ -1,0 +1,10 @@
+<div class="main">
+	<div *blockUI="'chart'">
+		<iterpro-admin-dashboard-team
+			*ngIf="selectedTeam"
+			[team]="selectedTeam"
+			[teams]="teams"
+			[selectedPlayerId]="selectedPlayerId"
+		/>
+	</div>
+</div>

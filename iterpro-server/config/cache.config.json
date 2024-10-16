@@ -1,0 +1,62 @@
+{
+	"models": [
+		{
+			"name": "ProfilePlayers",
+			"methods": [
+				{
+					"name": "getPlayerFinancialProfile",
+					"invalidation": {
+						"ttl": 25200
+					}
+				}
+			]
+		},
+		{
+			"name": "Wyscout",
+			"methods": [
+				{
+					"name": "getStandingsLeaderboard",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "getStandingsMatchList",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "getStandingsMatchStats",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "dashboard",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "dashboardSingleTeamStat",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "wyscoutCompetitionTeams",
+					"invalidation": {
+						"ttl": 25200
+					}
+				},
+				{
+					"name": "careerTransfers",
+					"invalidation": {
+						"ttl": 25200
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "useDefineForClassFields": false,
+    "forceConsistentCasingInFileNames": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": false,
+    "strict": false,
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+		"suppressImplicitAnyIndexErrors": true,
+    "noImplicitAny": false,
+    "ignoreDeprecations": "5.0"
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.editor.json"
+    }
+  ],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": false,
+    "strictInputAccessModifiers": false,
+    "strictTemplates": false
+  },
+  "extends": "./tsconfig.base.json"
+}

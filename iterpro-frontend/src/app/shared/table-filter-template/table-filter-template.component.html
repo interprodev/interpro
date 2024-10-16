@@ -1,0 +1,14 @@
+<div class="filters-container">
+	<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-rounded">
+		<iterpro-table-filter-template-selection
+			[templates]="tableFilterTemplates"
+			[favoriteTemplate]="favoriteTableFilterTemplate"
+			[selectedTemplate]="selectedTableFilterTemplate"
+			[editMode]="editMode"
+			(savedEmitter)="onSaveTemplateConfirm($event)"
+			(deletedEmitter)="onDeleteTemplateConfirm($event)"
+			(selectedEmitter)="onSelectTemplate($event)"
+			(markAsFavoriteEmitter)="onMarkAsFavoriteTemplate($event)"
+		/>
+	</div>
+</div>

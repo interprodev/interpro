@@ -1,0 +1,16 @@
+<div class="top-input-section top-container-input">
+	<iterpro-comment-input
+		(onAdd)="addNewComment($event)"
+		[editMode]="editMode"
+		[placeholder]="'comments.writeComment' | translate" />
+</div>
+
+<div *ngIf="comments?.length > 0">
+	<ul class="comments-list">
+		<li *ngFor="let comment of comments">
+			<iterpro-comment [comment]="comment" [customer]="customer" [editMode]="editMode"
+				(commentEdited)="onCommentEdited(comment, $event)" (commentDeleted)="onCommentDeleted(comment)">
+			</iterpro-comment>
+		</li>
+	</ul>
+</div>

@@ -1,0 +1,26 @@
+<p-dialog
+	[visible]="visible"
+	[showHeader]="false"
+	[closeOnEscape]="true"
+	[focusOnShow]="true"
+	[draggable]="false"
+	[resizable]="false"
+	[modal]="true"
+	[style]="{ width: '700px' }">
+	<div>
+		<p-header>
+			<h4>{{'sendToTransfers.title' | translate}}</h4>
+		</p-header>
+		<div style="display:flex;flex-direction:column;margin-top:1em">
+			<span class="text">{{'sendToTransfers.text' | translate}}</span>
+			<p-multiSelect appendTo="body" [options]="seasonsItem" [(ngModel)]="selectedTransferWindows"
+				placeholder="{{ 'multiselect.placeholder' | translate }}">
+			</p-multiSelect>
+		</div>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="confirm()" [disabled]="selectedTransferWindows.length === 0"
+			label="{{'buttons.confirm' | translate}}"></p-button>
+		<p-button styleClass="small" [outlined]="true" (click)="discard()" label="{{'buttons.discard' | translate}}"></p-button>
+	</p-footer>
+</p-dialog>

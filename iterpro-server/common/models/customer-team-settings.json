@@ -1,0 +1,193 @@
+{
+	"name": "CustomerTeamSettings",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"admin": {
+			"type": "boolean",
+			"default": false
+		},
+		"position": {
+			"type": "string"
+		},
+		"debug": {
+			"type": "boolean",
+			"default": false
+		},
+		"permissions": {
+			"type": "array"
+		},
+		"mobilePermissions": {
+			"type": "array"
+		},
+		"pinnedTestsIds": {
+			"type": "array",
+			"default": []
+		},
+		"notificationRehab": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationImport": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationReadiness": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationEwma": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationInjury": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationAppearanceFee": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationPerformanceFee": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationAppearanceBonuses": {
+			"type": "array",
+			"default": []
+		},
+		"notificationPerformanceBonuses": {
+			"type": "array",
+			"default": []
+		},
+		"notificationStandardTeamBonuses": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationValorization": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationClinicalRecords": {
+			"type": "number",
+			"default": 0
+		},
+		"notificationContractExpiration": {
+			"type": "number",
+			"default": 0
+		},
+		"notificationCostItemExpiration": {
+			"type": "number",
+			"default": 0
+		},
+		"notificationDocumentsDays": {
+			"type": "number",
+			"default": 0
+		},
+		"notificationPlayerOperations": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationBonusPaidOverdue": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationClubBonusPaidOverdue": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationClubBonus": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationFinancialCapitalGainLoss": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationFinancialLossesByInjury": {
+			"type": "array",
+			"default": []
+		},
+		"notificationFinancialRoi": {
+			"type": "array",
+			"default": []
+		},
+		"notificationInstallments": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationPlayerVideoComment": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationEventInvitation": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationEventReminder": {
+			"type": {
+				"active": "boolean",
+				"minutes": "number",
+				"formats": "array"
+			}
+		},
+		"notificationVideoSharing": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationVideoComment": {
+			"type": "boolean",
+			"default": false
+		},
+		"metricsPerformance": {
+			"type": "array",
+			"min": 10,
+			"max": 16
+		},
+		"metricsTeamTactical": {
+			"type": "array",
+			"min": 10,
+			"max": 16
+		},
+		"metricsIndividualTactical": {
+			"type": "array",
+			"min": 10,
+			"max": 16
+		},
+		"landingPage": {
+			"type": "string"
+		},
+		"tableFilterTemplateIds": {
+			"type": "array",
+			"default": []
+		},
+		"calendarSettings": {
+			"type": "object",
+			"description": "Settings for the calendar",
+			"default": {},
+			"required": false
+		},
+		"notificationWorkloadScore": {
+			"type": "array",
+			"default": []
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		},
+		"customer": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": "customerId"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,60 @@
+<table class="fields-table player-table" cellpadding="0" cellspacing="0" [ngClass]="{ left: left }">
+	<tr>
+		<th *ngIf="left">Team</th>
+		<td>{{ team.name.toUpperCase() }}</td>
+		<th *ngIf="!left">Team</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.nationality</th>
+		<td>{{ player.nationality }}</td>
+		<th *ngIf="!left" translate>profile.overview.nationality</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.birth</th>
+		<td>{{ player.birthDate | date : 'shortDate' }}</td>
+		<th *ngIf="!left" translate>profile.overview.birth</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.position.{{ getLimb() }}</th>
+		<td>{{ player.foot ? ('foot.' + player.foot | translate) : '' }}</td>
+		<th *ngIf="!left" translate>profile.position.{{ getLimb() }}</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.height</th>
+		<td>{{ player.height || '-' }}</td>
+		<th *ngIf="!left" translate>profile.overview.height</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.weight</th>
+		<td>{{ player.weight || '-' }}</td>
+		<th *ngIf="!left" translate>profile.overview.weight</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.position</th>
+		<td>{{ player.position | translate }}</td>
+		<th *ngIf="!left" translate>profile.position</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.contract.playerValue</th>
+		<td>
+			<span *ngIf="player.marketValue; else noValue">{{ currency }}{{ player.marketValue | shortNumber : true }}</span>
+		</td>
+		<th *ngIf="!left" translate>profile.contract.playerValue</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.monthlyWage</th>
+		<td>
+			<span *ngIf="player.monthlyWage; else noValue">{{ currency }}{{ player.monthlyWage | shortNumber : true }}</span>
+		</td>
+		<th *ngIf="!left" translate>profile.overview.monthlyWage</th>
+	</tr>
+	<tr>
+		<th *ngIf="left" translate>profile.overview.contractUntil</th>
+		<td>{{ (player.contractExpiry | formatDateBySetting) || '-' }}</td>
+		<th *ngIf="!left" translate>profile.overview.contractUntil</th>
+	</tr>
+</table>
+
+<ng-template #noValue>
+	<span>-</span>
+</ng-template>

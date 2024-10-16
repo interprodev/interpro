@@ -1,0 +1,45 @@
+{
+	"name": "PlayerDescriptionEntry",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date"
+		},
+		"description": {
+			"type": "string"
+		},
+		"strengths": {
+			"type": "string"
+		},
+		"weaknesses": {
+			"type": "string"
+		},
+		"recommendations": {
+			"type": "string"
+		},
+		"relevantLinks": {
+			"type": ["object"]
+		},
+		"notesThreads": {
+			"type": ["object"]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"polymorphic": true
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

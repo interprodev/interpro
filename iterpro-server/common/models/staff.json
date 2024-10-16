@@ -1,0 +1,245 @@
+{
+	"name": "Staff",
+	"plural": "Staffs",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": [
+				"lastName",
+				"firstName",
+				"passport",
+				"altPassport",
+				"nationality",
+				"altNationality",
+				"facebook",
+				"twitter",
+				"instagram",
+				"linkedin",
+				"snapchat",
+				"mobilePhone",
+				"otherMobile",
+				"birthDate",
+				"birthPlace",
+				"phone",
+				"email",
+				"school",
+				"education",
+				"address.street",
+				"address.city",
+				"address.state",
+				"address.nation",
+				"address.zipCode",
+				"domicile.street",
+				"domicile.city",
+				"domicile.state",
+				"domicile.nation",
+				"domicile.zipCode",
+				"fiscalIssue",
+				"federalId",
+				"bankAccount.bank",
+				"bankAccount.accountNumber",
+				"bankAccount.routingNumber",
+				"bankAccount.iban",
+				"bankAccount.swift",
+				"position"
+			]
+		}
+	},
+	"properties": {
+		"firstName": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"profilePhotoUrl": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"profilePhotoName": {
+			"type": "string"
+		},
+		"gender": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"altNationality": {
+			"type": "string"
+		},
+		"facebook": {
+			"type": "string"
+		},
+		"twitter": {
+			"type": "string"
+		},
+		"instagram": {
+			"type": "string"
+		},
+		"linkedin": {
+			"type": "string"
+		},
+		"snapchat": {
+			"type": "string"
+		},
+		"mobilePhone": {
+			"type": "string"
+		},
+		"otherMobile": {
+			"type": "array"
+		},
+		"education": {
+			"type": "string"
+		},
+		"school": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date"
+		},
+		"birthPlace": {
+			"type": "string"
+		},
+		"wage": {
+			"type": "number"
+		},
+		"contractStart": {
+			"type": "date"
+		},
+		"contractEnd": {
+			"type": "date"
+		},
+		"phone": {
+			"type": "string"
+		},
+		"email": {
+			"type": "string"
+		},
+		"address": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"domicile": {
+			"type": {
+				"street": "string",
+				"city": "string",
+				"state": "string",
+				"nation": "string",
+				"zipCode": "string"
+			}
+		},
+		"currentStatus": {
+			"type": "string"
+		},
+		"statusDetails": {
+			"type": "object"
+		},
+		"documents": {
+			"type": ["object"]
+		},
+		"federalId": {
+			"type": "string"
+		},
+		"federalMembership": {
+			"type": ["object"]
+		},
+		"coachingBadges": {
+			"type": ["object"]
+		},
+		"fiscalIssue": {
+			"type": "string"
+		},
+		"biography": {
+			"type": "string"
+		},
+		"_statusHistory": {
+			"type": ["object"]
+		},
+		"activeTeams": {
+			"type": "array"
+		},
+		"position": {
+			"type": "string"
+		},
+		"bankAccount": {
+			"type": "object"
+		},
+		"archived": {
+			"type": "boolean",
+			"default": false
+		},
+		"archivedDate": {
+			"type": "date"
+		},
+		"archivedMotivation": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		},
+		"costItems": {
+			"type": "hasMany",
+			"model": "PersonCostItem",
+			"polymorphic": "person"
+		},
+		"employmentContracts": {
+			"type": "hasMany",
+			"model": "EmploymentContract",
+			"property": "employmentContracts",
+			"polymorphic": "person"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getBonuses": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "filters",
+					"type": "object",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/bonuses",
+				"verb": "get"
+			},
+			"description": "Returns all the bonuses of the staff"
+		}
+	}
+}

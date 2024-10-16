@@ -1,0 +1,16 @@
+<ng-container *ngIf="isLoading && !!isLoading; else chart">
+	<div class="pflex-flex pflex-justify-content-center pflex-align-items pflex-center">
+		<p-progressSpinner class="pflex-my-8" strokeWidth="6"></p-progressSpinner>
+	</div>
+</ng-container>
+
+<ng-template #chart>
+	<iterpro-chart
+		type="bar"
+		class="pflex-block pflex-mt-5"
+		[data]="chartData"
+		[options]="chartOptions"
+		[plugins]="chartPlugins"
+		height="400px"
+	/>
+</ng-template>

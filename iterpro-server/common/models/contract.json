@@ -1,0 +1,152 @@
+{
+	"name": "Contract",
+	"plural": "Contracts",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"number": {
+			"type": "string"
+		},
+		"status": {
+			"type": "boolean",
+			"default": true
+		},
+		"validated": {
+			"type": "boolean",
+			"default": false
+		},
+		"currency": {
+			"type": "string"
+		},
+		"personStatus": {
+			"type": "string"
+		},
+		"signatureDate": {
+			"type": "date"
+		},
+		"extension": {
+			"type": "boolean",
+			"default": false
+		},
+		"extensionNotes": {
+			"type": "string"
+		},
+		"additionalClauses": {
+			"type": ["object"]
+		},
+		"contractCloudUrl": {
+			"type": "string"
+		},
+		"contractUrl": {
+			"type": "string"
+		},
+		"contractPublicId": {
+			"type": "string"
+		},
+		"contractFilename": {
+			"type": "string"
+		},
+		"bonusCap": {
+			"type": "number"
+		},
+		"notes": {
+			"type": "string"
+		},
+		"renew": {
+			"type": "boolean",
+			"default": false
+		},
+		"changeHistory": {
+			"type": ["object"]
+		},
+		"valid": {
+			"type": "boolean"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"bonuses": {
+			"type": "hasMany",
+			"model": "Bonus",
+			"property": "bonuses",
+			"polymorphic": "contract"
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"options": {
+				"persistent": true,
+				"validate": false,
+				"forceId": false,
+				"required": true
+			}
+		}
+	},
+	"acls": [],
+	"methods": {
+		"isValid": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/is-valid",
+				"verb": "get"
+			}
+		},
+		"clone": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "contractType",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "isRenewal",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "copyDataForRenewal",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/clone",
+				"verb": "post"
+			}
+		}
+	}
+}

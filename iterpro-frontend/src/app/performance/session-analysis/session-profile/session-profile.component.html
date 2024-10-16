@@ -1,0 +1,9 @@
+<ng-container>
+  <h3 translate>sessionAnalysis.sessionProfile</h3>
+  <p-chart
+    *ngIf="radarChart && radarChart.data"
+    type="radar"
+    [data]="radarChart.data"
+    [options]="radarChart.options">
+  </p-chart>
+</ng-container>

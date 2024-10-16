@@ -1,0 +1,64 @@
+<!-- Filter toggle button -->
+<div class="tw-flex tw-items-center tw-justify-end tw-mt-8">
+	<div class="tw-px-4 tw-py-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+		<iterpro-icon-button
+			[icon]="showFilters || showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+			[tooltip]="(showFilters || showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+			(click)="showFilters = !showFilters">
+		</iterpro-icon-button>
+	</div>
+</div>
+<!-- Filters -->
+@if (showFilters) {
+	<div class="tw-flex tw-justify-between tw-items-center tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg tw-mt-2">
+		<iterpro-table-column-filter [options]="columnOptions" [hideReset]="true"
+																 (onChange)="changeViewableColumns($event)" />
+		<div>
+			<p-button size="small" (click)="requestViewableColumnsReset()" [label]="'RESET' | translate"></p-button>
+		</div>
+	</div>
+}
+<!-- Table -->
+<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded tw-mt-2">
+	@if (!scenarioRoles) {
+		<p-table [value]="players" dataKey="id" [scrollable]="true" styleClass="p-datatable-striped">
+			<ng-template pTemplate="body" let-player let-expanded="expanded">
+				<tr class="tw-h-10">
+					<td class="tw-flex tw-items-center">
+						<p-button size="small" [pRowToggler]="player" [text]="true" [icon]="expanded ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'"></p-button>
+						<span>{{ player?.displayName }} - {{ player?.position }}</span>
+					</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="rowexpansion" let-player>
+				<tr class="tw-h-10">
+					<td>
+						<iterpro-scouting-table-view [players]="getMappedScoutingPlayers(player)"
+							[isSwissGameReport]="isPlayerDescriptionTipss" [isWatford]="isWatfordGameReport" [visibleColumns]="visibleColumns" [sportType]="sportType" [isTableLoading]="false"
+							(onPlayerClick)="selectedPlayer.emit($event)" />
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	} @else {
+		<p-table [value]="roles" dataKey="role" [scrollable]="true" styleClass="p-datatable-striped">
+			<ng-template pTemplate="body" let-role let-expanded="expanded">
+				<tr class="tw-h-10">
+					<td class="tw-flex tw-items-center">
+						<p-button size="small" [pRowToggler]="role" [text]="true" [icon]="expanded ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-right'"></p-button>
+						<span>{{ role?.role }}</span>
+					</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="rowexpansion" let-role>
+				<tr class="tw-h-10">
+					<td>
+							<iterpro-scouting-table-view [players]="getMappedScoutingPlayers(role)"
+													[isSwissGameReport]="isPlayerDescriptionTipss" [isWatford]="isWatfordGameReport" [visibleColumns]="visibleColumns" [sportType]="sportType" [isTableLoading]="false"
+													(onPlayerClick)="selectedPlayer.emit($event)" />
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	}
+</div>

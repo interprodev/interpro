@@ -1,0 +1,30 @@
+<div class="tw-flex tw-justify-between tw-bg-shark-1000 tw-py-2 tw-px-4 tw-rounded tw-gap-4 tw-items-center">
+	<div class="tw-flex tw-gap-4 tw-items-center tw-text-sm">
+		<i class="fas fa-info-circle tw-text-xs" aria-hidden="true"></i>
+		<div>{{attachment.name}}</div>
+	</div>
+	<div class="tw-flex tw-gap-4 tw-items-center">
+		@if (sharedWithTooltip) {
+			<iterpro-icon-button
+				[icon]="'fas fa-users'"
+				[tooltip]="sharedWithTooltip"
+			></iterpro-icon-button>
+		}
+		@if (isSupportedMediaForPreview(attachment)) {
+			<iterpro-icon-modal-preview [url]="attachment.downloadUrl | azureUrl" [name]="attachment.name" />
+		}
+		@if (attachment.downloadUrl | azureUrl) {
+			<iterpro-icon-button
+				[icon]="'fas fa-download'"
+				[tooltip]="'dialog.file.link' | translate"
+				(click)="onDownloadAttachment(attachment)">
+			</iterpro-icon-button>
+		}
+		@if (showEditButton) {
+			<iterpro-icon-button [icon]="'fas fa-edit'" [tooltip]="'buttons.edit' | translate" (click)="editClicked.emit()"></iterpro-icon-button>
+		}
+		@if (showDeleteButton) {
+			<iterpro-icon-button [icon]="'fas fa-trash'" [tooltip]="'buttons.delete' | translate" (click)="deleteClicked.emit()"></iterpro-icon-button>
+		}
+	</div>
+</div>

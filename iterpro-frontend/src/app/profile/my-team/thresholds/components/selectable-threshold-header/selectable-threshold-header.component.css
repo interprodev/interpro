@@ -1,0 +1,7 @@
+.selectedColumn {
+	color: var(--color-primary-600);
+	pointer-events: none;
+}
+.clickableColumn {
+	cursor: pointer;
+}

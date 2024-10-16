@@ -1,0 +1,505 @@
+<p-dialog *ngIf="bonus" [(visible)]="visible" [showHeader]="true" [closable]="false"
+	[closeOnEscape]="true" [blockScroll]="true" [draggable]="true" [resizable]="false" modal="modal"
+	[style]="{ width: '1300px', 'max-height': '80vh', 'overflow-y': 'auto' }">
+	<div class="header-row">
+		<span>
+			<span *ngIf="newBonus" translate>buttons.add</span>
+			<span *ngIf="!newBonus" translate>buttons.edit</span>
+			<span> {{ 'admin.contracts.' + type | translate }}</span>
+		</span>
+		<span *ngIf="isTypeTransferContract || agent" style="display: flex; align-items: center">
+			<span style="margin-right: 1em" translate>assetValue</span>
+			<p-inputSwitch [(ngModel)]="advancedView" pTooltip="{{ 'admin.contracts.allFieldsTooltip' | translate }}">
+			</p-inputSwitch>
+		</span>
+	</div>
+	<div class="container">
+		<div class="row">
+			<form style="width: 100%">
+				<table class="fields-table">
+					<tbody>
+						<tr class="row-table" *ngIf="type === 'privateWriting'">
+							<th translate>bonus.team.related</th>
+							<td>
+								<p-dropdown [options]="terminationItems" [(ngModel)]="bonus.type"
+									[readonly]="disabled" appendTo="body" name="privateWriting_type" #privateWriting_type="ngModel"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"></p-dropdown>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'loanOption'">
+							<th translate>bonus.team.related</th>
+							<td>
+								<p-dropdown [options]="optionItems" [(ngModel)]="bonus.option" name="bonusOption" #bonusOption="ngModel"
+									[readonly]="disabled" [dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)">
+								</p-dropdown>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'loanOption'">
+							<th translate>profile.archive.option</th>
+							<td>
+								<p-dropdown [options]="optionActions" [(ngModel)]="bonus.action" name="bonusRelated"
+									#bonusRelated="ngModel" [readonly]="disabled"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)">
+								</p-dropdown>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'benefits'">
+							<th translate>bonus.enabled</th>
+							<td>
+								<p-checkbox [disabled]="disabled" [(ngModel)]="bonus.enabled" (onChange)="onEnableBenefit($event)"
+									name="benefit_enabled" #benefit_enabled="ngModel" binary="true">
+								</p-checkbox>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'benefits'">
+							<th translate>bonus.team.related</th>
+							<td>
+								<span style="white-space: nowrap" *ngIf="index <= 5">{{
+									'admin.contracts.benefits.' + bonus.name | translate
+									}}</span>
+								<input *ngIf="index > 5" [disabled]="disabled" style="width: 70%; white-space: nowrap"
+									[ngStyle]="{ color: bonus.enabled === true ? '#ddd' : '#bbb' }" [(ngModel)]="bonus.name"
+									name="benefit_B" #benefit_B="ngModel" type="text" pInputText />
+							</td>
+						</tr>
+						<tr class="row-table th-width-20"
+							*ngIf="type !== 'additionalClauses' && type !== 'options' && type !== 'commercialRights'">
+							<th *ngIf="!isTypeTransferContract && !agent" translate>bonus.amount</th>
+							<th *ngIf="isTypeTransferContract && !agent" translate>bonus.amountTransfer</th>
+							<th *ngIf="agent" translate>bonus.amountAgent</th>
+							<td>
+								<span *ngIf="type !== 'sellOnFee' && type !== 'buyBack'">{{ currency }}</span>
+								<p-dropdown *ngIf="type === 'sellOnFee' || type === 'buyBack'" appendTo="body" [readonly]="disabled"
+									[options]="optionOptionsItems" [(ngModel)]="bonus.percentage" name="percentage" #percentage="ngModel"
+									[style]="{ width: '100%', 'min-width': '100%' }"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"></p-dropdown>
+								<div class="amount-container">
+									<input [disabled]="disabled" style="width: auto; margin-right: 1em" [(ngModel)]="bonusAmount"
+										name="amount" #amount="ngModel" iterproMask pInputText type="text" required
+										[class.ng-invalid]="amount.invalid" (input)="updateBonusAmount()" />
+									<div class="form-invalid fas fa-exclamation" *ngIf="amount.invalid"
+										[pTooltip]="'password.errors.required' | translate"></div>
+									<div class="suggested-amount"
+										*ngIf="!disabled && bonusGrossAmount > 0 && bonusAmount !== getVirtualNet(bonusGrossAmount)">
+										<span translate>buttons.suggested <span translate>based on </span>
+											<span translate>admin.contracts.grossAmountTransfer</span></span>:
+										<p-chip [label]="toStringTooltip(getVirtualNet(bonusGrossAmount))" (click)="onClickChip()"></p-chip>
+									</div>
+									<span *ngIf="handlePaymentFrequency" style="margin-left: 2em; color: var(--color-neutral-900)">per {{
+										club.paymentFrequency | translate }} ({{ currency }}{{ getBonusAmount(bonus) }} per
+										{{ 'year' | translate }})</span>
+								</div>
+
+								<span *ngIf="advancedView && (isTypeTransferContract || agent)" class="asset-cost">
+									<span style="margin-right: 1em; color: #bbb" translate>bonus.asset</span>
+									<span>
+										<p-checkbox *ngIf="type === 'transferFee'" [(ngModel)]="bonus.amountAsset" [disabled]="disabled"
+											title="{{ (bonus.amountAsset === true ? 'toAnnual' : 'toAsset') | translate }}" name="amountAsset"
+											#amountAsset="ngModel" binary="true">
+										</p-checkbox>
+
+										<p-checkbox *ngIf="type !== 'transferFee'" [(ngModel)]="bonus.asset" [disabled]="disabled"
+											title="{{ (bonus.asset === true ? 'toAnnual' : 'toAsset') | translate }}" binary="true"
+											name="asset" #asset="ngModel"></p-checkbox>
+									</span>
+								</span>
+							</td>
+						</tr>
+						<tr class="row-table"
+							*ngIf="type !== 'additionalClauses' && type !== 'options' && type !== 'commercialRights'">
+							<th *ngIf="!isTypeTransferContract" translate>admin.contracts.grossAmount</th>
+							<th *ngIf="isTypeTransferContract" translate>admin.contracts.grossAmountTransfer</th>
+							<td>
+								<span *ngIf="!bonus.percentage">{{ currency }}</span>
+								<span *ngIf="bonus.percentage">%</span>
+								<div class="amount-container">
+									<input [disabled]="disabled" style="width: auto; margin-right: 1em" [(ngModel)]="bonusGrossAmount"
+										name="grossAmount" #grossAmount="ngModel" iterproMask [class.ng-invalid]="grossAmount.invalid" required (ngModelChange)="updateBonusGrossAmount()"
+										pInputText type="text" />
+									<div class="form-invalid fas fa-exclamation" *ngIf="grossAmount.invalid"
+										[pTooltip]="'password.errors.required' | translate"></div>
+									<div class="suggested-amount"
+										*ngIf="!disabled && bonusAmount > 0 && bonusGrossAmount !== getVirtualGross(bonusAmount)">
+										<span translate>buttons.suggested <span translate>based on </span> <span
+												translate>bonus.amount</span></span>:
+										<p-chip [label]="toStringTooltip(getVirtualGross(bonusAmount))"
+											(click)="onClickChipGross()"></p-chip>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								isTypeTransferContract &&
+								(type === 'transferFee' ||
+									type === 'appearanceFee' ||
+									type === 'appearance' ||
+									type === 'performance' ||
+									type === 'performanceFee' ||
+									type === 'standardTeam' ||
+									type === 'signing' ||
+									type === 'custom' ||
+									type === 'sellOnFee' ||
+									type === 'buyBack' ||
+									type === 'loanOption')
+							">
+							<th translate>bonus.solidarityMechanism</th>
+							<td>
+								<span>{{ currency }}</span>
+								<input [disabled]="disabled" style="width: auto; margin-right: 1em"
+									[(ngModel)]="bonus.mechanismSolidarity" name="mechanismSolidarity" #mechanismSolidarity="ngModel" iterproMask pInputText type="text" />
+								<p-dropdown appendTo="body" [readonly]="disabled" [options]="solidarityOptions"
+									[(ngModel)]="bonus.mechanismSolidarityType" name="mechanismSolidarityType"
+									#mechanismSolidarityType="ngModel" [style]="{ width: '100%', 'min-width': '100%' }"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"></p-dropdown>
+								<span style="margin-right: 1em; color: #bbb">{{
+									(bonus.mechanismSolidarityType === 'add' ? 'admin.evaluation.from' : 'admin.evaluation.to')
+									| translate
+									}}
+									{{ 'bonus.amountTransfer' | translate | lowercase }}</span>
+								<span *ngIf="advancedView && (isTypeTransferContract || agent)" class="asset-cost">
+									<span style="margin-right: 1em; color: #bbb" translate>bonus.asset</span>
+									<span>
+										<p-checkbox [(ngModel)]="bonus.mechanismSolidarityAsset" [disabled]="disabled"
+											title="{{ (bonus.mechanismSolidarityAsset === true ? 'toAnnual' : 'toAsset') | translate }}"
+											name="mechanismSolidarityAsset" #mechanismSolidarityAsset="ngModel" binary="true">
+										</p-checkbox>
+									</span>
+								</span>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam' ||
+								type === 'signing' ||
+								type === 'custom'
+							">
+							<th>
+								<span translate>bonus.conditions</span>
+							</th>
+							<td>
+								<iterpro-conditions-table name="conditions" #conditions="ngModel" [(ngModel)]="bonus"
+									[currency]="currency" [disabled]="disabled" [seasonsItems]="seasonsItems" [teams]="teams"
+									[type]="type" [competitions]="competitions"></iterpro-conditions-table>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'basicWage' ||
+								type === 'valorization' ||
+								type === 'contribution' ||
+								(type === 'fee' && !isTypeTransferContract) ||
+								type === 'privateWriting' ||
+								type === 'benefits'
+							">
+							<th translate>club.settings.seasons</th>
+							<td>
+								<p-multiSelect maxSelectedLabels="1" selectedItemsLabel="{0} selected" [disabled]="disabled"
+									appendTo="body" [options]="seasonsItems" [(ngModel)]="bonus.season" name="season2" #season2="ngModel"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'" (onChange)="onChangeSeason($event)">
+								</p-multiSelect>
+								<div class="form-invalid fas fa-exclamation" *ngIf="bonus.season.length === 0"
+									pTooltip="{{ 'password.errors.required' | translate }}"></div>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								(type === 'basicWage' ||
+									type === 'valorization' ||
+									type === 'contribution' ||
+									type === 'fee' ||
+									type === 'privateWriting') &&
+								(bonus.season.length > 1 || bonus.season.includes('allContract'))
+							">
+							<th translate>admin.contracts.season.action.prefix</th>
+							<td>
+								<p-dropdown [readonly]="disabled" appendTo="body" [options]="seasonActions"
+									[(ngModel)]="bonus.repeat" name="seasonAction" #seasonAction="ngModel"
+									[style]="{ width: '100%', 'min-width': '100%' }"
+									[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"></p-dropdown>
+								<span style="margin-right: 0.5em">{{
+									(bonus.repeat ? 'admin.contracts.season.action.repeat' : 'admin.contracts.season.action.divide')
+									| translate
+									}}</span>
+								<span translate>admin.contracts.season.action.suffix</span>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'transferFee' ||
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam' ||
+								type === 'signing' ||
+								type === 'custom' ||
+								type === 'sellOnFee' ||
+								type === 'buyBack'
+							">
+							<th translate>admin.contracts.options.within</th>
+							<td class="within-date" [class.within-disabled]="disabled">
+								<i *ngIf="!disabled" class="fas fa-calendar" style="margin-right: 0.5em"
+									[class.within-selected]="!bonus.withinMode || bonus.withinMode === 'date'"
+									(click)="setWithinMode('date')" pTooltip="{{ 'contract.setWithinModeDate' | translate }}"></i>
+								<i *ngIf="!disabled" class="fas fa-hourglass-half" [class.within-selected]="bonus.withinMode === 'days'"
+									(click)="setWithinMode('days')" pTooltip="{{ 'contract.setWithinModeDays' | translate }}"></i>
+								<span class="within-input">
+									<p-calendar *ngIf="!bonus.withinMode || bonus.withinMode === 'date'" [(ngModel)]="bonus.within"
+										[disabled]="disabled" name="within" #within="ngModel" dateFormat="dd/mm/yy" appendTo="body"
+															[clearButtonStyleClass]="'p-button-sm'"
+															[todayButtonStyleClass]="'p-button-sm'">
+									</p-calendar>
+									<input *ngIf="bonus.withinMode === 'days'" [(ngModel)]="bonus.withinDays" [disabled]="disabled"
+										type="number" name="withinDays" #withinDays="ngModel" pInputText />
+								</span>
+								<span *ngIf="
+										bonus.withinMode === 'days' && type !== 'transferFee' && type !== 'sellOnFee' && type !== 'buyBack'
+									" class="within-label" translate>daysFromBonus</span>
+								<span *ngIf="
+										bonus.withinMode === 'days' &&
+										(type === 'transferFee' || type === 'sellOnFee' || type === 'buyBack')
+									" class="within-label" translate>daysFromTransfer</span>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'transferFee' ||
+								type === 'basicWage' ||
+								type === 'valorization' ||
+								type === 'fee' ||
+								type === 'privateWriting' ||
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam' ||
+								type === 'signing' ||
+								type === 'custom' ||
+								type === 'sellOnFee' ||
+								type === 'buyBack' ||
+								type === 'loanOption' ||
+								type === 'benefits' ||
+								type === 'contribution'
+							">
+							<th translate>notifications.installments</th>
+							<td style="display: table-cell">
+								<iterpro-installments-table name="installments" #installments="ngModel" [(ngModel)]="bonus"
+									[currency]="currency" [disabled]="disabled" [seasons]="seasons" [visible]="visible">
+								</iterpro-installments-table>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam' ||
+								type === 'signing' ||
+								type === 'custom'
+							">
+							<th translate>admin.contracts.bonusCap.subjected.label</th>
+							<td>
+								<div class="row">
+									<p-checkbox [(ngModel)]="bonus.cap" [disabled]="disabled"
+										title="{{ 'admin.contracts.bonusCap.subjected' | translate }}" binary="true" name="bonusCap"
+										#bonusCap="ngModel">
+									</p-checkbox>
+								</div>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam'
+							">
+							<th translate>admin.contracts.conditioned</th>
+							<td style="flex-direction: column; align-items: flex-start">
+								<div class="row" style="margin-bottom: 0.5em">
+									<p-checkbox binary="true" [disabled]="disabled" name="type" #type="ngModel" value="signed"
+										[(ngModel)]="signed" (onChange)="resetCondition($event, 'date')" required>
+									</p-checkbox>
+									<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em"
+										translate>admin.contracts.signed.label.dialog</span>
+									<div *ngIf="signed" class="cell">
+										<p-calendar [(ngModel)]="bonus.precondition.date" name="preconditionDate"
+											#preconditionDate="ngModel" [disabled]="disabled" dateFormat="dd/mm/yy" appendTo="body"
+																[clearButtonStyleClass]="'p-button-sm'"
+																[todayButtonStyleClass]="'p-button-sm'">
+										</p-calendar>
+									</div>
+								</div>
+
+								<div class="row">
+									<p-checkbox binary="true" [disabled]="disabled" name="type" #type="ngModel" value="signedCompetition"
+										[(ngModel)]="signedCompetition" (onChange)="resetCondition($event, 'competition')" required>
+									</p-checkbox>
+									<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em"
+										translate>admin.contracts.competitions.label.dialog</span>
+									<div *ngIf="signedCompetition" class="cell">
+										<p-multiSelect [style]="{ 'z-index': '99' }" maxSelectedLabels="1" selectedItemsLabel="{0} selected"
+											[disabled]="disabled" [options]="competitions" [(ngModel)]="bonus.precondition.competition"
+											name="signed_precompetition" #signed_precompetition="ngModel"
+											(onChange)="onChangeCompetitions('bonus.condition.competition', $event)"
+											placeholder="{{ 'dropdown.placeholder' | translate }}"
+											[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+											[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"></p-multiSelect>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'basicWage' ||
+								type === 'valorization' ||
+								type === 'fee' ||
+								type === 'privateWriting' ||
+								type === 'loanOption' ||
+								type === 'sellOnFee' ||
+								type === 'buyBack'
+							">
+							<th translate>admin.contracts.conditioned</th>
+							<td style="flex-direction: column; align-items: flex-start">
+								<iterpro-conditions-table name="preconditions" #preconditions="ngModel" [(ngModel)]="bonus"
+									[currency]="currency" [disabled]="disabled" [seasonsItems]="seasonsItems" [teams]="teams"
+									[type]="type" [competitions]="competitions"></iterpro-conditions-table>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'loanOption'">
+							<th translate>admin.contracts.payableFrom</th>
+							<td>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled" [(ngModel)]="bonus.dateFrom"
+									name="loan_from" #loan_from="ngModel" dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+								<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em"
+									translate>admin.contracts.payableTo</span>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled" [(ngModel)]="bonus.dateTo"
+									name="loan_to" #loan_to="ngModel" dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'loanOption'">
+							<th translate>admin.contracts.counterOption</th>
+							<td *ngIf="bonus?.counterOption">
+								<p-checkbox [disabled]="disabled" [(ngModel)]="bonus.counterOption.enabled" name="counterOption_enabled"
+									#counterOption_enabled="ngModel" [style.margin-right]="'1em'" binary="true">
+								</p-checkbox>
+								<span>{{ currency }}</span>
+								<input [disabled]="disabled || !bonus.counterOption.enabled" style="margin-left: 1em; width: 50%"
+									pInputText [(ngModel)]="bonus.counterOption.amount" name="counterOptionAmount"
+									#counterOptionAmount="ngModel" type="text" iterproMask />
+								<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em; white-space: nowrap"
+									translate>admin.contracts.payableFrom</span>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled || !bonus.counterOption.enabled"
+									[(ngModel)]="bonus.counterOption.dateFrom" name="counterOption_from" #counterOption_from="ngModel"
+									dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+								<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em"
+									translate>admin.contracts.payableTo</span>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled || !bonus.counterOption.enabled"
+									[(ngModel)]="bonus.counterOption.dateTo" name="counterOption_to" #counterOption_to="ngModel"
+									dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'buyout'">
+							<th translate>admin.contracts.where</th>
+							<td>
+								<input [disabled]="disabled" style="width: 60%" pInputText [(ngModel)]="bonus.where" name="buyout_where"
+									#buyout_where="ngModel" type="text" />
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'buyout'">
+							<th translate>admin.contracts.payableFrom</th>
+							<td>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled" [(ngModel)]="bonus.from"
+									name="buyout_from" #buyout_from="ngModel" dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+								<span style="color: var(--color-neutral-900); margin-left: 1em; margin-right: 1em"
+									translate>admin.contracts.payableTo</span>
+								<p-calendar appendTo="body" showButtonBar="true" [disabled]="disabled" [(ngModel)]="bonus.to"
+									name="buyout_to" #buyout_to="ngModel" dateFormat="dd/mm/yy"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'">
+								</p-calendar>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'insurance'">
+							<th translate>admin.contracts.frequency</th>
+							<td>
+								<p-dropdown [readonly]="disabled" appendTo="body"
+									[options]="frequencyOptions" [(ngModel)]="bonus.frequency" name="insurance_frequency"
+									#insurance_frequency="ngModel" [dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+									[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"></p-dropdown>
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="type === 'insurance'">
+							<th translate>admin.contracts.prize</th>
+							<td>
+								<span>{{ currency }}</span>
+								<input iterproMask [disabled]="disabled" style="width: 40%" pInputText [(ngModel)]="bonus.prize"
+									name="insurance_prize" #insurance_prize="ngModel" type="text" />
+							</td>
+						</tr>
+						<tr class="row-table" *ngIf="
+								type === 'benefits' ||
+								type === 'contribution' ||
+								type === 'appearanceFee' ||
+								type === 'appearance' ||
+								type === 'performance' ||
+								type === 'performanceFee' ||
+								type === 'standardTeam' ||
+								type === 'signing' ||
+								type === 'custom' ||
+								type === 'basicWage' ||
+								type === 'valorization' ||
+								type === 'privateWriting'
+							">
+							<th translate>admin.contracts.notes</th>
+							<td>
+								<input [disabled]="disabled" pInputText [(ngModel)]="bonus.notes" name="benefit_notes"
+									#benefit_notes="ngModel" type="text" />
+							</td>
+						</tr>
+						<tr class="row-table"
+							*ngIf="type === 'additionalClauses' || type === 'options' || type === 'commercialRights'">
+							<td>
+								<textarea [disabled]="disabled" [(ngModel)]="bonus.value" style="color: white" autoresize="false"
+									rows="5" cols="30" pInputTextarea style="background-color: #00000040"
+									class="ui-inputtext ui-corner-all ui-state-default ui-widget" name="other"
+									#other="ngModel"></textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+	<p-footer>
+		<p-button size="small" *ngIf="!disabled && newBonus" [disabled]="!isValid()" (click)="onSave()"
+			label="{{ 'buttons.add' | translate }}"></p-button>
+		<p-button size="small" *ngIf="!disabled && !newBonus" [disabled]="!isValid()" (click)="onSave()"
+			label="{{ 'buttons.save' | translate }}"></p-button>
+		<p-button size="small" *ngIf="!disabled" type="button" (click)="onDiscard()"
+			label="{{ 'buttons.discard' | translate }}"></p-button>
+		<p-button size="small" *ngIf="disabled" type="button" (click)="onDiscard()"
+			label="{{ 'buttons.close' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

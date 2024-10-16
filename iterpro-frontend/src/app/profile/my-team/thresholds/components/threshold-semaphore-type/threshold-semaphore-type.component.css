@@ -1,0 +1,22 @@
+.semaphore-container {
+	display: flex;
+}
+.semaphore-container > span {
+	margin: 0.2rem;
+}
+.circle {
+	width: 0.5rem;
+	height: 0.5rem;
+	min-width: 0.5rem;
+	min-height: 0.5rem;
+	border-radius: 50%;
+}
+.red {
+	background: #f00;
+}
+.yellow {
+	background: #ff0;
+}
+.green {
+	background: #0f0;
+}

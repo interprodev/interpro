@@ -1,0 +1,27 @@
+<div class="col col-main no-max col-no-scroll">
+	<iterpro-match-analysis-summary
+		*ngIf="selectedType === 'summary'"
+		[match]="match"
+		[playerView]="playerView"
+		[playerStat]="playerStat"
+		[metrics]="metrics"
+		[thresholds]="thresholds"
+		[matches]="matches"
+		[metricsTeam]="metricsTeam"
+		[metricsPlayer]="metricsPlayer"
+		[sidebarOpen]="sidebarOpen"
+		(sidebarEmitter)="sidebarEmitter.emit($event)"
+		(saveAttachmentsEmitter)="saveAttachmentsEmitter.emit()"
+	/>
+
+	<iterpro-match-analysis-comparison
+		*ngIf="selectedType === 'comparison'"
+		[match]="match"
+		[sidebarOpen]="sidebarOpen"
+		[metrics]="metricsPlayer"
+		[playerStats]="playerStatsForComparison"
+		[allPlayersStats]="allPlayersStats"
+		[thresholdsMap]="comparisonThresholdsMap"
+		(sidebarEmitter)="sidebarEmitter.emit($event)"
+	/>
+</div>

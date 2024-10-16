@@ -1,0 +1,80 @@
+<div class="comment-container" [class.focused]="focused">
+
+	<!-- Comment Image -->
+	<img
+		*ngIf="comment"
+		class="comment-pic"
+		[src]="comment.img ? (comment.img | azureUrl) : 'assets/img/default_icon.png'"
+		[alt]="comment.img ? 'User picture' : 'Default User picture'"
+		onError="this.src='assets/img/default_icon.png';"
+	/>
+
+	<!-- Comment Body -->
+	<div class="comment-body">
+
+		<!-- Header -->
+		<div class="comment-header">
+			<div class="comment-title">
+				<span class="comment-name" style="font-weight: bold">{{ comment?.user }}</span>
+				<span *ngIf="!isToday()" class="comment-time">
+					{{ comment?.time | formatDateBySetting : 'HH:mm' }}
+				</span>
+				<span *ngIf="isToday()" class="comment-time">
+					{{ comment?.time | fromNow }}
+				</span>
+			</div>
+			<div class="comment-icons">
+				<iterpro-tiered-menu
+					*ngIf="isAuthorized() && !edit && !showReply && editMode"
+					[iconOnly]="true"
+					[icon]="'fas fa-ellipsis-h'"
+					[isText]="true"
+					[menuItems]="items"
+				></iterpro-tiered-menu>
+				<iterpro-tiered-menu
+					*ngIf="!edit && showReply && editMode"
+					[icon]="'fas fa-ellipsis-h'"
+					[isText]="true"
+					[menuItems]="itemsReply"
+				></iterpro-tiered-menu>
+				<iterpro-tiered-menu
+					*ngIf="isAuthorized() && edit && editMode"
+					[iconOnly]="true"
+					[icon]="'fas fa-ellipsis-h'"
+					[isText]="true"
+					[menuItems]="itemsEdit"
+				></iterpro-tiered-menu>
+			</div>
+		</div>
+
+		<!-- Textarea -->
+		<textarea
+			*ngIf="comment && edit"
+			[(ngModel)]="comment.content"
+			(keydown.enter)="onSave()"
+			(keydown.escape)="onDiscard()"
+			class="p-inputtext p-component comment-edit"
+		></textarea>
+		<p *ngIf="comment && !edit && comment.content !== ''" class="comment-content">{{ comment.content }}</p>
+		<div *ngIf="comment.attachments && showAttachments" class="comment-attachments">
+			<div class="single-attachment" *ngFor="let attachment of comment.attachments">
+				<iterpro-attachment [attachment]="attachment" [preview]="true" />
+			</div>
+		</div>
+
+		<!-- Reply -->
+		<div class="reply" *ngIf="comment.attachments && comment.attachments.length">
+			<div (click)="onShowAttachments()" class="icon-button icon-view">
+				<i *ngIf="!showAttachments" class="fas fa-chevron-down"></i>
+				<span *ngIf="!showAttachments" [translateParams]="{ value: comment.attachments.length }" translate
+					>comments.showAttach</span
+				>
+				<i *ngIf="showAttachments" class="fas fa-chevron-up"></i>
+				<span *ngIf="showAttachments" [translateParams]="{ value: comment.attachments.length }" translate
+					>comments.hideAttach</span
+				>
+			</div>
+		</div>
+
+	</div>
+</div>

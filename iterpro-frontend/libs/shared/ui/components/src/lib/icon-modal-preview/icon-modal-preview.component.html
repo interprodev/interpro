@@ -1,0 +1,45 @@
+<ng-container *ngIf="isVideo() || isPdf() || isImage(); else notSupportedTemplate">
+
+	<!-- VIDEO  -->
+	<iterpro-modal-preview *ngIf="isVideo()">
+		<i
+			class="fas fa-search m-handler iterpro-clickable-icon"
+			handler
+			[pTooltip]="'dialog.file.showPreview' | translate"
+		></i>
+		<div class="m-content video-content" content>
+			<video controls controlsList="nodownload">
+				<source [src]="url" type="video/mp4" />
+			</video>
+		</div>
+	</iterpro-modal-preview>
+
+	<!-- PDF -->
+	<iterpro-modal-preview *ngIf="isPdf()">
+		<i
+			class="fas fa-search m-handler iterpro-clickable-icon"
+			handler
+			[pTooltip]="'dialog.file.showPreview' | translate"
+		></i>
+		<div class="m-content pdf-content" content>
+			<pdf-viewer [src]="url"></pdf-viewer>
+		</div>
+	</iterpro-modal-preview>
+
+	<!-- IMAGE -->
+	<iterpro-modal-preview *ngIf="isImage()">
+		<i
+			class="fas fa-search m-handler iterpro-clickable-icon"
+			handler
+			[pTooltip]="'dialog.file.showPreview' | translate"
+		></i>
+		<img content class="m-fullsize" [src]="url" />
+	</iterpro-modal-preview>
+</ng-container>
+
+<ng-template #notSupportedTemplate>
+	<i
+		class="fas fa-search m-handler icon-fake-disabled"
+		[pTooltip]="'previewer is not supported for this media type'"
+	></i>
+</ng-template>

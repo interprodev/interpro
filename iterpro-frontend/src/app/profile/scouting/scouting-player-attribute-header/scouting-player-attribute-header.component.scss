@@ -1,0 +1,70 @@
+.main-container {
+	display: flex;
+	padding: 0 1rem;
+	width: 100%;
+	justify-content: space-around;
+	.attribute-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 0 1rem;
+		.progress-wrapper {
+			position: relative;
+			margin: 0 0 25px 0;
+			font-size: 40px;
+			width: 15vw;
+			text-align: center;
+			.main-value {
+				position: absolute;
+				color: #fafafa;
+				top: 50%;
+				left: 50%;
+				font-size: 3.5rem;
+				font-weight: 400;
+				transform: translateX(-50%) translateY(-50%);
+				line-height: 1;
+			}
+			.attribute-label {
+				margin-top: 1rem;
+				text-transform: uppercase;
+				font-weight: 600;
+				font-size: 1.2rem;
+				i {
+					margin-left: 1rem;
+				}
+			}
+		}
+		textarea {
+			background-color: var(--color-bg-600);
+			padding: 12px;
+			width: 100%;
+			&:focus {
+				padding-bottom: 12px;
+			}
+		}
+		.attribute-table {
+			width: 100%;
+			text-transform: none;
+			font-size: 0.85rem;
+			th {
+				font-size: 0.8rem;
+				width: 75%;
+				text-transform: capitalize;
+				color: #ddd;
+			}
+			td {
+				width: 25%;
+			}
+			.table-left-title {
+				color: #bbbbbb;
+				text-transform: capitalize;
+				font-weight: normal;
+			}
+		}
+	}
+}
+.flexed {
+	display: flex;
+	width: 100%;
+	justify-content: right;
+}

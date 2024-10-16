@@ -1,0 +1,13 @@
+{
+	"name": "players-scouting-ui",
+	"$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/players/scouting/ui/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:scouting", "type:ui"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
+}

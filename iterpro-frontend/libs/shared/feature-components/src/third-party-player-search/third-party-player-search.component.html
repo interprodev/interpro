@@ -1,0 +1,21 @@
+<ng-container [ngSwitch]="provider | lowercase">
+	<!-- Instat -->
+	<iterpro-instat-player-search
+		*ngSwitchCase="'instat'"
+		[alreadyImportedPlayers]="alreadyImportedPlayers"
+		[selection]="selection"
+		(discardEmitter)="discard()"
+		(selectPlayersEmitter)="selectPlayers($event)"
+	/>
+	
+	<!-- Wyscout -->
+	<iterpro-wyscout-player-search
+		*ngSwitchDefault
+		[visible]="true"
+		[alreadyImportedPlayers]="alreadyImportedPlayers"
+		[selection]="selection"
+		(discardEmitter)="discard()"
+		(selectPlayersEmitter)="selectPlayers($event)"
+	/>
+
+</ng-container>

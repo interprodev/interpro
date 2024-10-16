@@ -1,0 +1,130 @@
+<div class="main tw-mt-8">
+	<div>
+		<!-- Header NOT Injury -->
+		<header>
+			@if (!selectedPlayer) {
+				<!-- Toolbar -->
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+					<!-- Main Title -->
+					<h1 translate>medical.infirmary</h1>
+					<div class="tw-flex tw-gap-4">
+						@if (activeViewType.id !== 'reportView') {
+							<!-- Download PDF / Filters -->
+							<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+								<div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
+									<iterpro-injuries-csv-downloader
+										(downloadActiveInjuries)="downloadActiveInjuries()"
+										(downloadAllInjuries)="downloadAllActiveInjuries()"
+										(downloadAllInjuriesAllPlayers)="downloadAllActiveInjuriesAllPlayers()"
+										(uploadCSV)="file.click()"
+									>
+									</iterpro-injuries-csv-downloader>
+									<input
+										type="file"
+										#inputjson
+										accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+										#file
+										style="display: none"
+										(change)="onFileChange($event)"
+									/>
+								</div>
+								@if (activeViewType.id == 'listView') {
+									<iterpro-report-download (downloadPDF)="downloadInjuredListPDF()" />
+									<iterpro-icon-button
+										[icon]="showListViewFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+										[tooltip]="(showListViewFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+										(click)="showListViewFilters = !showListViewFilters"
+									>
+									</iterpro-icon-button>
+								}
+							</div>
+						}
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<!-- Card View / List View -->
+							<p-tabMenu [model]="viewTypes" [activeItem]="activeViewType">
+								<ng-template pTemplate="item" let-item>
+									<a class="p-menuitem-link tw-px-2 tw-py-1">
+										<i [class]="item.icon" [pTooltip]="item.label | translate"></i>
+									</a>
+								</ng-template>
+							</p-tabMenu>
+						</div>
+					</div>
+				</div>
+				@if (activeViewType.id !== 'reportView') {
+					<!-- Add Injury From external -->
+					<div class="tw-flex tw-justify-end tw-gap-4 tw-items-center tw-mb-4">
+						<div class="tw-bg-shark-800 tw-bg-opacity-85 tw-px-1 tw-rounded" *ngIf="addInjuryTrigger">
+							<iterpro-player-dropdown
+								[style]="{ display: 'flex','align-items': 'center',	width: '200px', height: '30px'}"
+								[options]="players"
+								(playerIdChanged)="onSelectPlayerForNewInjury($event)"
+								[placeholder]="'dropdown.placeholderPlayer' | translate"
+							/>
+						</div>
+						<p-button size="small" styleClass="p-button-contrast" *ngIf="!addInjuryTrigger" (click)="triggerAddInjury()" [label]="'buttons.addInjury' | translate"></p-button>
+						<p-button size="small" styleClass="p-button-contrast" *ngIf="addInjuryTrigger" (click)="triggerAddInjury()" [label]="'buttons.discard' | translate"></p-button>
+					</div>
+				}
+			} @else {
+				<!-- Header Injury Detail -->
+				<div class="tw-relative tw-flex tw-justify-between tw-mb-8">
+					<!-- Player Dropdown -->
+					<iterpro-search-dropdown [selectedPerson]="selectedPlayer" [showCaretIcon]="true" (selectPerson)="onSelectPlayerFromDropdown($event)" [people]="searchDropdownElements" />
+					<div class="tw-flex tw-items-center tw-gap-4">
+						<p-button size="small" styleClass="p-button-contrast" *ngIf="selectedPlayer" (click)="onAddInjuryFromDetail()" [label]="'buttons.addInjury' | translate"></p-button>
+						<p-button [size]="'small'" styleClass="p-button-contrast" (click)="onSelectInjury(null)" [label]="'buttons.close' | translate"></p-button>
+					</div>
+				</div>
+			}
+		</header>
+
+		@if (!selectedPlayer) {
+			@switch (activeViewType.id) {
+				@case ('cardView') {
+					<!-- Kanban View -->
+					<iterpro-kanban
+						*ngIf="activeInjuries"
+						[injuries]="activeInjuries"
+						[medicalTreatments]="medicalTreatments"
+						(selectInjury)="onSelectInjury($event)"
+					/>
+				}
+				@case ('listView') {
+					<!-- Injured List -->
+					<iterpro-injured-list
+						*ngIf="activeInjuries"
+						[injuries]="activeInjuries"
+						[showFilters]="showListViewFilters"
+						[medicalTreatments]="medicalTreatments"
+						(editInjuryEmitter)="onSelectInjury($event)"
+					/>
+				}
+				@case ('reportView') {
+					<!-- Report View -->
+					<iterpro-report
+						*ngIf="activeInjuries"
+						[injuries]="activeInjuries"
+						[medicalTreatments]="medicalTreatments"
+						[customers]="customers"
+					/>
+				}
+			}
+		} @else {
+			<!-- Injury Detail -->
+			<iterpro-injury
+				*ngIf="players"
+				[customers]="customers"
+				[players]="players"
+				[selectedPlayer]="selectedPlayer"
+				[newInj]="isNew"
+				[selectedInjuryId]="selectedInjuryId"
+				(addInjuryEmitter)="onNewInjuryInserted()"
+				(saveEmitter)="onInjurySaved()"
+				(newInjuryDiscarded)="onNewInjuryDiscarded()"
+				(deleteEmitter)="onInjuryDeleted()"
+				(editExamClicked)="editExamFlag($event)"
+			/>
+		}
+	</div>
+</div>

@@ -1,0 +1,12 @@
+<div class="total" *blockUI="'general'">
+	<div class="main">
+		<div>
+			<h1>{{ 'notifications' | translate }}</h1>
+			<div class=content>
+				<iterpro-user-notifications-container [notifications]="notifications$ | async" [club]="selectedClub$ | async"
+					[teamList]="teamList$ | async" (markAllClicked)="onClickMarkAllAsRead()"
+					(markAsReadClicked)="setNotificationAsRead($event)" (notificationClicked)="onClickNotification($event)" />
+			</div>
+		</div>
+	</div>
+</div>

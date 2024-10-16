@@ -1,0 +1,47 @@
+<ng-container *ngIf="player">
+
+  <div [ngClass]="coordinates | playerTacticClass: isSelected : disabled : highlighted">
+
+    <!-- Card Content -->
+    <div class="player-card-content">
+  
+      <!-- Card Info -->
+      <div class="player-card-info">
+  
+        <!-- Image -->
+        <div class="player-card-info-pos" [style.background-color]="'white'" (click)="showDialog(player, $event)">
+          <img *ngIf="!azureImg" class="pflex-w-full player-pic" [src]="player?.downloadUrl"
+            alt="player default picture" onError="this.src='assets/img/default_icon.png';" />
+          <img *ngIf="azureImg" class="pflex-w-full player-pic" [src]="player?.downloadUrl | azureUrl"
+            alt="player picture" onError="this.src='assets/img/default_icon.png';" />
+          <div class="player-card-info-pos-text">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+          </div>
+        </div>
+  
+        <!-- Card Icon -->
+        <div class="player-card-info-min" [pTooltip]="player | playerCardTacticIconTitle: injuryMapObj" [escape]="false">
+          <svg height="3em" width="3em" class="radial-circle" overflow="visible">
+            <circle perc="0.75" r="35%" [attr.stroke]="player | playerCardTacticCircleColor" cx="50%" cy="50%"></circle>
+          </svg>
+          <div class="player-card-info-icon">
+            <i class="circle-icon fas" [ngClass]="player | playerCardTacticStatus: injuryMapObj" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Name -->
+      <div class="player-card-name">{{ player?.displayName }}</div>
+    </div>
+  
+    <!-- Arrow -->
+    <div class="player-card-arrow">
+      <svg viewBox="0 0 100 15">
+        <polygon points="0,0 50,15 100,0" fill="#222" />
+      </svg>
+      <div class="player-card-position">{{ position }}</div>
+    </div>
+  
+  </div>
+  
+</ng-container>

@@ -1,0 +1,33 @@
+@if (!isLoading) {
+	@if ((changelog$ | async); as changelog) {
+		@if (changelog.length > 0) {
+			<p-table [styleClass]="'p-datatable-striped'" [scrollable]="true" [scrollHeight]="'70vh'" [value]="changelog">
+				<ng-template pTemplate="header">
+					<tr class="tw-h-10">
+						<th translate>date</th>
+						<th translate>tooltip.author</th>
+						<th translate>tooltip.changes</th>
+						<th translate>tooltip.appliedTo</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-rowData>
+					<tr class="tw-h-10">
+						<td>{{ rowData.date | formatDateBySetting : 'HH:mm' }}</td>
+						<td>{{ rowData.authorId | customerName : customers }}</td>
+						<td>{{ rowData.description }}</td>
+						@if (rowData.entityType === 'Customer') {
+							<td>{{ rowData.entityId | customerName : customers }}</td>
+						}
+						@if (rowData.entityType === 'Team') {
+							<td>{{ rowData.entityId | teamName : teams }}</td>
+						}
+					</tr>
+				</ng-template>
+			</p-table>
+		} @else {
+			<p style="padding: 2rem 1rem">{{ 'alert.noRecordsFound' | translate }}</p>
+		}
+	}
+} @else {
+	<iterpro-skeleton-table [cols]="4" [rows]="30"></iterpro-skeleton-table>
+}

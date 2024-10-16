@@ -1,0 +1,53 @@
+<!-- Image crop -->
+<div *ngIf="crop" [hidden]="!cropping" class="cropper">
+	<image-cropper
+		[imageBase64]="imageBase64Source"
+		[maintainAspectRatio]="true"
+		[aspectRatio]="1"
+		(imageCropped)="updateCrop($event)"
+		format="png"
+	></image-cropper>
+</div>
+
+<div *ngIf="area" (click)="areaClick()" (dragover)="dragOver($event)" (drop)="drop($event)" class="drop-area">
+	<span *ngIf="areaLabel && !uploading">{{ areaLabel }}</span>
+	<span *ngIf="!areaLabel && !uploading" translate>fileUploader.dropFileHere</span>
+
+	<p-progressSpinner *ngIf="spinner && uploading" [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+</div>
+
+<ng-container *ngIf="icon && !area">
+	<i class="fas fa-upload upload-icon iterpro-clickable-icon" (click)="areaClick()"></i>
+	<p-progressSpinner *ngIf="spinner && uploading" [style]="{ width: '20px', height: '20px' }"></p-progressSpinner>
+</ng-container>
+
+<!-- Upload -->
+<p-fileUpload
+	#fileinput
+	[pTooltip]="tooltip"
+	mode="basic"
+	name="files[]"
+	invalidFileSizeMessageSummary="{0}: Invalid file size, "
+	invalidFileSizeMessageDetail="maximum upload size is {0}."
+	[chooseLabel]="label ? label : ('upload' | translate)"
+	[auto]="!crop"
+	[hidden]="area || icon"
+	[style]="style"
+	[accept]="accept"
+	[disabled]="uploading"
+	(onError)="error($event)"
+	(onSelect)="select($event)"
+	(onProgress)="updateProgress($event)"
+	[customUpload]="true"
+	(uploadHandler)="uploadHandler($event)"
+></p-fileUpload>
+
+<!-- Progress -->
+<div class="progress cloud-upload" *ngIf="spinner && (!area || !icon)">
+	<p-progressBar
+		*ngIf="uploading"
+		[value]="progress"
+		[showValue]="false"
+		[ngClass]="getBackgroundColor(progress)"
+	></p-progressBar>
+</div>

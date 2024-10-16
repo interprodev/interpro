@@ -1,0 +1,92 @@
+<div class="col-attachment">
+	<div *ngIf="isEditable()">
+		<iterpro-cloud-upload
+			[maxFileSize]="maxFileSize"
+			[area]="true"
+			(onStartEmitter)="start()"
+			[spinner]="true"
+			(completedEmitter)="onUpload($event.downloadUrl, $event.profilePhotoUrl, $event.profilePhotoName)"
+			[sizeError]="onSizeError"
+			[accept]="'video/*,image/*, .pdf'"
+		/>
+	</div>
+	<div class="attachment-preview" *ngIf="downloadUrl !== null">
+		<div class="attachment-title-container">
+			<div class="attachment-title">{{ fileName }}</div>
+		</div>
+		<div *ngIf="showPinnedLogic" class="pinned-container">
+			<i class="fas fa-thumbtack"></i>
+		</div>
+		<div *ngIf="fileExtension === 'png' || fileExtension === 'jpg' || fileExtension === 'jpeg'">
+			<a target="_blank" [href]="downloadUrl | azureUrl">
+				<img class="player-pic" src="{{ downloadUrl | azureUrl }}" />
+			</a>
+		</div>
+		<div *ngIf="fileExtension === 'mp4'">
+			<div *ngIf="uploading || !downloadUrl" class="loading">
+				<i *ngIf="!uploading" class="fas fa-video-slash"></i>
+				<p-progressSpinner *ngIf="uploading" [style]="{ width: '30px', height: '30px' }"> </p-progressSpinner>
+			</div>
+			<video
+				style="width: 100%"
+				*ngIf="!uploading && downloadUrl"
+				[muted]="true"
+				id="videoMain"
+				controls
+				disablePictureInPicture
+				controlsList="fullscreen"
+			>
+				<source [src]="downloadUrl | azureUrl" type="video/mp4" />
+				Your browser does not support the video tag.
+			</video>
+		</div>
+		<div *ngIf="isEditable()" class="overlay">
+			<i class="fas fa-trash" style="cursor: pointer" (click)="deleteUploadedFile(0)"></i>
+		</div>
+	</div>
+	<div *ngIf="attachments && attachments.length" class="data-reports">
+		<div *ngFor="let attachment of attachments; let i = index">
+			<div class="attachment-header">
+				<div style="margin-right: 3px">{{ i + 1 }}.</div>
+				<div class="att-label">
+					<input
+						*ngIf="isEditable()"
+						[(ngModel)]="attachment.name"
+						placeholder="{{ 'Title' | translate }}"
+						pInputText
+						type="text"
+					/>
+					<div *ngIf="!isEditable()" class="clickable" (click)="changePreview(attachment)">
+						{{ attachment.name }}
+					</div>
+				</div>
+				<div class="att-actions">
+					<span>{{ attachment.date | formatDateBySetting }}</span>
+					<iterpro-icon-modal-preview
+						style="margin-right: 0.4rem"
+						[url]="attachment.downloadUrl | azureUrl"
+						[name]="attachment.name"
+					/>
+					<i class="fas fa-download" (click)="downloadFile(attachment)" style="cursor: pointer"></i>
+					<i
+						*ngIf="isEditable()"
+						pTooltip="{{ 'buttons.deleteAttachment' | translate }}"
+						class="fas fa-trash attachment-trash-icon"
+						(click)="deleteUploadedFile(i)"
+					></i>
+
+					<div *ngIf="showPinnedLogic && attachment?.id" class="pin-actions">
+						<i
+							class="{{ isPinned(attachment.id) ? 'fas fa-thumbtack' : 'fa-regular fa-thumbtack' }}"
+							[pTooltip]="
+								isPinned(attachment.id) ? ('attachment.unpin.icon' | translate) : ('attachment.pin.icon' | translate)
+							"
+							tooltipPosition="bottom"
+							(click)="pinFile(attachment.id)"
+						></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

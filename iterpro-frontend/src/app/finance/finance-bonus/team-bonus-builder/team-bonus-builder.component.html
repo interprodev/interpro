@@ -1,0 +1,487 @@
+<p-dialog
+	[(visible)]="visible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="false"
+	[style]="{ width: '60vw', 'max-height': '60vw' }"
+>
+	<p-header
+		><span translate>{{ bonus?.id ? 'bonus.team.builder.edit' : 'bonus.team.builder' }}</span></p-header
+	>
+	<div class="container">
+		<form #form="ngForm" id="form" (ngSubmit)="save()">
+			<table class="fields-table">
+				<tbody>
+					<tr>
+						<th>
+							<span class="inline-label" translate>bonus.team.related</span>
+						</th>
+						<td>
+							<p-radioButton
+								name="type"
+								value="match"
+								label="Match"
+								[(ngModel)]="bonus.type"
+								inputId="opt1"
+								required
+								(ngModelChange)="onBonusTypeChange($event)"
+							>
+							</p-radioButton>
+							<p-radioButton
+								name="type"
+								value="performance"
+								label="Performance"
+								[(ngModel)]="bonus.type"
+								inputId="opt2"
+								required
+								(ngModelChange)="onBonusTypeChange($event)"
+							></p-radioButton>
+							<p-radioButton
+								name="type"
+								value="generic"
+								label="Generic"
+								[(ngModel)]="bonus.type"
+								inputId="opt3"
+								required
+								(ngModelChange)="onBonusTypeChange($event)"
+							>
+							</p-radioButton>
+						</td>
+					</tr>
+					<tr *ngIf="bonus.type">
+						<th>
+							<span translate>bonus.conditions</span>
+						</th>
+						<td>
+							<div class="conditions-box">
+								<span class="conditions-box-header">
+									<span style="display: flex">
+										<span style="margin-right: 1em; color: #bbb" translate>bonus.panel.conditionsRelationFlag</span>
+										<p-dropdown
+											appendTo="body"
+											[options]="booleanRelationOptions"
+											[(ngModel)]="bonus.conditionRelationFlag"
+											name="conditionRelationFlag"
+											#conditionRelationFlag="ngModel"
+											[style]="{ width: '100%', 'min-width': '100%' }"
+											[placeholder]="'dropdown.placeholder' | translate"
+										></p-dropdown>
+									</span>
+									<i class="fas fa-plus" (click)="addCondition()"></i>
+								</span>
+								<p-table
+									tableStyleClass="table-conditions"
+									[value]="bonus.conditions"
+									dataKey="id"
+									[scrollable]="true"
+									rowExpandMode="single"
+								>
+									<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+										<tr>
+											<td>
+												<a href="#" [pRowToggler]="rowData">
+													<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+												</a>
+												<span class="condition-row-header">
+													<span>{{ 'bonus.condition' | translate }} {{ rowIndex + 1 }}</span>
+													<span>
+														<i class="fas fa-clone" (click)="cloneCondition(rowIndex)"></i>
+														<i
+															class="fas fa-trash-alt"
+															style="margin-left: 1em"
+															(click)="removeCondition(rowIndex)"
+														></i>
+													</span>
+												</span>
+											</td>
+										</tr>
+									</ng-template>
+									<ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+										<tr style="width: 100%; height: 100%">
+											<th style="width: 100%">
+												<div class="condition-row">
+													<span class="condition-label">{{ 'bonus.condition' | translate }}</span>
+													<span *ngIf="bonus.type === 'match'" class="condition-value">
+														<span class="inline-label" style="margin-right: 1em" translate>bonus.team.match</span>
+														<p-dropdown
+															[options]="listMatches"
+															[(ngModel)]="rowData.matchId"
+															appendTo="body"
+															name="listMatches"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															[placeholder]="'dropdown.placeholder' | translate"
+														></p-dropdown>
+														<div class="inner-cell">
+															<span class="inline-label" style="margin-left: 2em; margin-right: 1em" translate
+																>bonus.team.condition</span
+															>
+															<p-dropdown
+																[options]="matchActions"
+																[(ngModel)]="rowData.action"
+																appendTo="body"
+																name="action"
+																[style]="{ width: '100%', 'min-width': '100%' }"
+																[placeholder]="'dropdown.placeholder' | translate"
+															></p-dropdown>
+														</div>
+													</span>
+													<span *ngIf="bonus.type === 'performance'" class="condition-value">
+														<span style="color: var(--color-neutral-900); margin-right: 1em" translate
+															>admin.contracts.teamBonus.label</span
+														>
+														<p-dropdown
+															appendTo="body"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															[options]="teamActions"
+															[(ngModel)]="rowData.action"
+															name="typeB4"
+															#typeB4="ngModel"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-dropdown>
+														<div
+															class="form-invalid fas fa-exclamation"
+															*ngIf="typeB4.invalid && typeB4.touched"
+															[pTooltip]="'password.errors.required' | translate"
+														></div>
+														<input
+															*ngIf="
+																rowData.action === 'achieves' && (rowData.goal === 'wins' || rowData.goal === 'points')
+															"
+															style="width: 5%; margin-left: 1em; margin-right: 1em"
+															pInputText
+															[(ngModel)]="rowData.count"
+															name="pBonus_count2"
+															#pBonus_count2="ngModel"
+															type="number"
+														/>
+														<p-dropdown
+															*ngIf="rowData.action === 'achieves'"
+															appendTo="body"
+															[options]="teamActionsGoal"
+															[(ngModel)]="rowData.goal"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															name="STBonus_actionAchieves"
+															#STBonus_actionAchieves="ngModel"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-dropdown>
+													</span>
+													<span *ngIf="bonus.type === 'generic'" class="condition-value">
+														<input type="text" [(ngModel)]="rowData.action" name="notes" pInputText />
+													</span>
+												</div>
+												<div *ngIf="bonus.type === 'performance'" class="condition-row">
+													<span class="condition-label" *ngIf="rowData.goal === 'calledUp'" translate
+														>profile.team</span
+													>
+													<span *ngIf="rowData.goal === 'calledUp'" class="condition-value">
+														<p-dropdown
+															appendTo="body"
+															[options]="teams"
+															[(ngModel)]="rowData.team"
+															name="team"
+															#team="ngModel"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-dropdown>
+													</span>
+												</div>
+												<div *ngIf="bonus.type === 'performance'" class="condition-row">
+													<span class="condition-label" *ngIf="rowData.goal !== 'calledUp'" translate
+														>admin.evaluation.competitions</span
+													>
+													<span *ngIf="rowData.goal !== 'calledUp'" class="condition-value">
+														<p-multiSelect
+															maxSelectedLabels="1"
+															selectedItemsLabel="{0} selected"
+															appendTo="body"
+															[options]="phases"
+															[(ngModel)]="rowData.phases"
+															name="phase"
+															#phase="ngModel"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-multiSelect>
+														<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate>of</span>
+														<p-multiSelect
+															maxSelectedLabels="1"
+															selectedItemsLabel="{0} selected"
+															appendTo="body"
+															[options]="competitions"
+															[(ngModel)]="rowData.competitions"
+															name="competition"
+															#competition="ngModel"
+															(onChange)="onChangeCompetitions('bonus.competition', rowIndex)"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-multiSelect>
+														<div
+															class="form-invalid fas fa-exclamation"
+															*ngIf="
+																(!rowData.competitions || rowData.competitions.length === 0) && competition.touched
+															"
+															[pTooltip]="'password.errors.required' | translate"
+														></div>
+														<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate
+															>bonus.panel.competitionsRelationFlag</span
+														>
+														<p-dropdown
+															appendTo="body"
+															[options]="booleanRelationOptions"
+															[(ngModel)]="rowData.competitionsRelationFlag"
+															name="competitionsRelationFlag"
+															#competitionsRelationFlag="ngModel"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															[placeholder]="'dropdown.placeholder' | translate"
+														>
+														</p-dropdown>
+													</span>
+												</div>
+												<div *ngIf="bonus.type === 'performance'" class="condition-row">
+													<span class="condition-label" translate>club.settings.seasons</span>
+													<span class="condition-value">
+														<p-multiSelect
+															maxSelectedLabels="1"
+															selectedItemsLabel="{0} selected"
+															appendTo="body"
+															[options]="seasonOptions"
+															[(ngModel)]="rowData.seasons"
+															name="season"
+															#season="ngModel"
+															[placeholder]="'dropdown.placeholder' | translate"
+															(onChange)="onChange('bonus.season', rowIndex)"
+														>
+														</p-multiSelect>
+														<div
+															class="form-invalid fas fa-exclamation"
+															*ngIf="rowData.seasons.length === 0 && season.touched"
+															[pTooltip]="'password.errors.required' | translate"
+														></div>
+														<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate
+															>bonus.panel.seasonsRelationFlag</span
+														>
+														<p-dropdown
+															appendTo="body"
+															[options]="booleanRelationOptions"
+															[(ngModel)]="rowData.seasonsRelationFlag"
+															name="seasonsRelationFlag"
+															#seasonsRelationFlag="ngModel"
+															[style]="{ width: '100%', 'min-width': '100%' }"
+															[placeholder]="'dropdown.placeholder' | translate"
+														></p-dropdown>
+													</span>
+												</div>
+												<div *ngIf="bonus.type === 'performance'" class="condition-row">
+													<span class="condition-label" translate>admin.contracts.startFrom</span>
+													<span class="condition-value">
+														<p-calendar
+															[(ngModel)]="rowData.startDate"
+															[style.width]="'15%'"
+															appendTo="body"
+															name="startDate"
+															#startDate="ngModel"
+															[clearButtonStyleClass]="'p-button-sm'"
+															[todayButtonStyleClass]="'p-button-sm'"
+														></p-calendar>
+													</span>
+												</div>
+												<div *ngIf="bonus.type === 'performance'" class="condition-row">
+													<span class="condition-label" translate>admin.contracts.until</span>
+													<span class="condition-value">
+														<p-calendar
+															[(ngModel)]="rowData.untilDate"
+															[style.width]="'15%'"
+															appendTo="body"
+															name="untilDate"
+															#untilDate="ngModel"
+															[clearButtonStyleClass]="'p-button-sm'"
+															[todayButtonStyleClass]="'p-button-sm'"
+														></p-calendar>
+													</span>
+												</div>
+											</th>
+										</tr>
+									</ng-template>
+								</p-table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<span class="inline-label" translate>bonus.team.people</span>
+						</th>
+						<td>
+							<div class="inner-cell">
+								<span class="inline-label" translate>bonus.team.players</span>
+								<p-multiSelect
+									appendTo="body"
+									[style]="{ 'z-index': '99' }"
+									[disabled]="!bonus.type"
+									[options]="listPlayers"
+									[(ngModel)]="selectedPlayersIds"
+									[ngModelOptions]="{ standalone: true }"
+									(onChange)="updatePeople()"
+									maxSelectedLabels="0"
+									selectedItemsLabel="{0} selected"
+									[placeholder]="'dropdown.placeholder' | translate"
+								></p-multiSelect>
+							</div>
+							<div class="inner-cell">
+								<span class="inline-label" translate>bonus.team.staff</span>
+								<p-multiSelect
+									appendTo="body"
+									[style]="{ 'z-index': '99' }"
+									[disabled]="!bonus.type"
+									[options]="listStaff"
+									[(ngModel)]="selectedStaffIds"
+									[ngModelOptions]="{ standalone: true }"
+									(onChange)="updatePeople()"
+									maxSelectedLabels="0"
+									selectedItemsLabel="{0} selected"
+									[placeholder]="'dropdown.placeholder' | translate"
+								></p-multiSelect>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<span class="inline-label" translate>bonus.team.amount</span>
+						</th>
+						<td>
+							<div class="inner-cell">
+								<span style="margin-right: 1em" translate>bonus.team.total</span>
+								{{ currency }}
+								<input
+									[disabled]="!bonus.type || (bonus.people && bonus.people.length === 0)"
+									style="width: 50%"
+									type="text"
+									[ngModel]="bonus.amount"
+									(ngModelChange)="onTotalInsert($event)"
+									placeholder="0"
+									name="total"
+									iterproMask
+									pInputText
+								/>
+							</div>
+							<div class="inner-cell">
+								<span style="margin-left: 1em; margin-right: 1em" translate>bonus.team.each</span>
+								{{ currency }}
+								<input
+									[disabled]="!bonus.type || (bonus.people && bonus.people.length === 0)"
+									placeholder="0"
+									style="width: 50%"
+									type="text"
+									[ngModel]="each"
+									(ngModelChange)="onEachInsert($event)"
+									[ngModelOptions]="{ standalone: true }"
+									iterproMask
+									pInputText
+								/>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<span class="inline-label" translate>bonus.team.due</span>
+						</th>
+						<td>
+							<p-calendar
+								[disabled]="!bonus.type"
+								showButtonBar="true"
+								appendTo="body"
+								[(ngModel)]="bonus.dueDate"
+								name="dueDate"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+							<div class="inner-cell">
+								<span class="inline-label" translate>bonus.reached</span>
+								<p-inputSwitch
+									[disabled]="!bonus.type || alreadyPaid()"
+									[(ngModel)]="bonus.reached"
+									name="reached"
+									(onChange)="updateToSave('reached', bonus)"
+								>
+								</p-inputSwitch>
+								<p-calendar
+									appendTo="body"
+									*ngIf="bonus.reached"
+									[disabled]="!bonus.reached || bonus.confirmed || bonus.paid"
+									[(ngModel)]="bonus.achievedDate"
+									[maxDate]="today"
+									name="reachedDate"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+							</div>
+							<div class="inner-cell">
+								<span class="inline-label" translate>bonus.confirmed</span>
+								<p-inputSwitch
+									[disabled]="!bonus.type || !bonus.reached || alreadyPaid()"
+									[(ngModel)]="bonus.confirmed"
+									name="confirmed"
+									(onChange)="updateToSave('confirmed', bonus)"
+								></p-inputSwitch>
+								<p-calendar
+									appendTo="body"
+									*ngIf="bonus.confirmed"
+									[disabled]="bonus.paid"
+									[(ngModel)]="bonus.confirmedDate"
+									[minDate]="bonus.achievedDate"
+									[maxDate]="today"
+									name="confirmedDate"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								>
+								</p-calendar>
+							</div>
+							<div class="inner-cell">
+								<span class="inline-label" translate>bonus.team.paid</span>
+								<p-inputSwitch
+									[disabled]="!bonus.type || !(bonus.reached && bonus.confirmed) || alreadyPaid()"
+									[(ngModel)]="bonus.paid"
+									name="paid"
+									(onChange)="updateToSave('paid', bonus)"
+								></p-inputSwitch>
+								<p-calendar
+									appendTo="body"
+									*ngIf="bonus.paid"
+									[(ngModel)]="bonus.paidDate"
+									[minDate]="bonus.confirmedDate"
+									[maxDate]="today"
+									name="paidDate"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								>
+								</p-calendar>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<p-footer>
+		<button pButton
+			size="small"
+			type="submit"
+			form="form"
+			class="p-button-primary"
+			icon="fas fa-check"
+			[label]="'buttons.save' | translate"
+			[disabled]="isDisabled(bonus)"
+		></button>
+		<p-button
+			size="small"
+			type="button"
+			icon="fas fa-times"
+			(click)="discard()"
+			[label]="'buttons.close' | translate"
+		></p-button>
+	</p-footer>
+</p-dialog>

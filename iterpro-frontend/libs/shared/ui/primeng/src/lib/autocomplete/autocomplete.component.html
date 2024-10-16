@@ -1,0 +1,124 @@
+<span
+	[ngClass]="{
+		'p-autocomplete p-component': true,
+		'p-autocomplete-dd': dropdown,
+		'p-autocomplete-multiple': multiple
+	}"
+	[ngStyle]="style"
+	[class]="styleClass"
+>
+	<input
+		*ngIf="!multiple"
+		#in
+		[attr.type]="type"
+		[attr.id]="inputId"
+		[ngStyle]="inputStyle"
+		[class]="inputStyleClass"
+		autocomplete="off"
+		[attr.required]="required"
+		[ngClass]="'p-inputtext p-component p-autocomplete-input'"
+		[value]="inputFieldValue"
+		(click)="onInputClick($event)"
+		(input)="onInput($event)"
+		(keydown)="onKeydown($event)"
+		(keyup)="onKeyup($event)"
+		[attr.autofocus]="autofocus"
+		(focus)="onInputFocus($event)"
+		(blur)="onInputBlur($event)"
+		(change)="onInputChange($event)"
+		(paste)="onInputPaste($event)"
+		[attr.placeholder]="placeholder"
+		[attr.size]="size"
+		[attr.maxlength]="maxlength"
+		[attr.tabindex]="tabindex"
+		[readonly]="readonly"
+		[disabled]="disabled"
+		[attr.aria-label]="ariaLabel"
+		[attr.aria-labelledby]="ariaLabelledBy"
+		[attr.aria-required]="required"
+	/>
+	<ul
+		*ngIf="multiple"
+		#multiContainer
+		class="p-autocomplete-multiple-container p-component p-inputtext"
+		[ngClass]="{ 'p-disabled': disabled, 'p-focus': focus }"
+		(click)="multiIn.focus()"
+	>
+		<li #token *ngFor="let val of value" class="p-autocomplete-token p-highlight">
+			<span class="p-autocomplete-token-icon fa-solid fa-circle-xmark" (click)="removeItem(token)" *ngIf="!disabled"></span>
+			<span *ngIf="!selectedItemTemplate" class="p-autocomplete-token-label">{{ resolveFieldData(val) }}</span>
+			<ng-container *ngTemplateOutlet="selectedItemTemplate; context: { $implicit: val }"></ng-container>
+		</li>
+		<li class="p-autocomplete-input-token">
+			<input
+				#multiIn
+				[attr.type]="type"
+				[attr.id]="inputId"
+				[disabled]="disabled"
+				[attr.placeholder]="value && value.length ? null : placeholder"
+				[attr.tabindex]="tabindex"
+				(input)="onInput($event)"
+				(click)="onInputClick($event)"
+				(keydown)="onKeydown($event)"
+				[readonly]="readonly"
+				(keyup)="onKeyup($event)"
+				[attr.autofocus]="autofocus"
+				(focus)="onInputFocus($event)"
+				(blur)="onInputBlur($event)"
+				(change)="onInputChange($event)"
+				(paste)="onInputPaste($event)"
+				autocomplete="off"
+				[ngStyle]="inputStyle"
+				[class]="inputStyleClass"
+				[attr.aria-label]="ariaLabel"
+				[attr.aria-labelledby]="ariaLabelledBy"
+				[attr.aria-required]="required"
+			/>
+		</li>
+	</ul>
+
+	<i *ngIf="loading" class="p-autocomplete-loader fa-solid fa-spinner-third fa-spin"></i>
+
+	<p-button
+		size="small"
+		#ddBtn
+		icon="fa-solid fa-caret-down"
+		class="p-autocomplete-dropdown"
+		[disabled]="disabled"
+		(click)="handleDropdownClick($event)"
+		*ngIf="dropdown"
+	></p-button>
+
+	<div
+		#panel
+		*ngIf="overlayVisible"
+		class="p-autocomplete-panel p-component p-shadow"
+		[style.max-height]="scrollHeight"
+		[@overlayAnimation]="{
+			value: 'visible',
+			params: { showTransitionParams: showTransitionOptions, hideTransitionParams: hideTransitionOptions }
+		}"
+		(@overlayAnimation.start)="onOverlayAnimationStart($event)"
+		(@overlayAnimation.done)="onOverlayAnimationDone($event)"
+	>
+		<ul class="p-autocomplete-items p-autocomplete-list p-component ui-helper-reset">
+			<li
+				*ngFor="let option of suggestions; let idx = index"
+				[ngClass]="{
+					'p-autocomplete-list-item': true,
+					'p-state-highlight': highlightOption === option,
+					'p-disabled': option.disabled
+				}"
+				(mouseenter)="highlightOption = option"
+				(mouseleave)="highlightOption = null"
+				(click)="selectItem(option)"
+			>
+				<span *ngIf="!itemTemplate">{{ resolveFieldData(option) }}</span>
+				<ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: option, index: idx }"></ng-container>
+			</li>
+			<li *ngIf="noResults && emptyMessage" (click)="addNewEl(inputVal)" class="p-autocomplete-list-item">
+				{{ emptyMessage }}
+			</li>
+		</ul>
+	</div>
+</span>

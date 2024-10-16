@@ -1,0 +1,9 @@
+<span class="csv-upload-download">
+  <a class="fas fa-file-csv csv-handler" (mouseenter)="setOpen(!isOpen)" (iterproClickOutside)="setOpen(false)">
+  </a>
+  <div class="csv-submenu" [ngStyle]="{ display: isOpen ? 'block' : 'none' }">
+    <div *ngFor="let item of items" class="csv-item" (click)="itemClick(item)">
+      <span class="fas {{ item.icon }}"></span><span translate>{{ item.label }}</span>
+    </div>
+  </div>
+</span>

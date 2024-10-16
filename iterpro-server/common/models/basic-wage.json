@@ -1,0 +1,44 @@
+{
+	"name": "BasicWage",
+	"plural": "BasicWages",
+	"base": "ContractOption",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"from": {
+			"type": "date"
+		},
+		"to": {
+			"type": "date"
+		},
+		"type": {
+			"type": "string",
+			"default": "basicWage"
+		},
+		"repeat": {
+			"type": "boolean",
+			"default": true
+		},
+		"season": {
+			"type": ["string"]
+		},
+		"conditioned": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "contractId",
+				"discriminator": "contractType"
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,37 @@
+{
+	"name": "TeamStat",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"gameName": {
+			"type": "string"
+		},
+		"teamId": {
+			"type": "object"
+		},
+		"rawFields": {
+			"type": [
+				{
+					"rawName": {
+						"type": "string"
+					},
+					"rawValue": {
+						"type": "string"
+					}
+				}
+			]
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

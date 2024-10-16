@@ -1,0 +1,162 @@
+<div class="tw-w-full tw-flex tw-items-center tw-justify-end tw-mb-4">
+	<iterpro-report-download class="download" (downloadPDF)="downloadReport()" />
+</div>
+<!-- Medical Exams -->
+<div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+	<h3>{{ 'prevention.assessments.medicalEvaluation' | translate | uppercase }}</h3>
+	<iterpro-action-buttons [buttonTypes]="['addNew']" [addNewLabel]="'Add Exam'" [editMode]="false" (create)="addExam()"></iterpro-action-buttons>
+</div>
+<div class="tw-w-full tw-min-h-[175px] tw-mb-2">
+	<p-table *ngIf="exams" [value]="exams" [rows]="20" [scrollable]="true" scrollHeight="200px" dataKey="date" styleClass="p-datatable-striped">
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th style="min-width: 100px;"></th>
+				<th style="min-width: 100px; text-align: center;" translate>
+					prevention.treatments.complete
+				</th>
+				<th style="min-width: 150px" translate>medical.infirmary.exam.date</th>
+				<th style="min-width: 75px" translate>medical.infirmary.exam.hour</th>
+				<th style="min-width: 300px" translate>medical.infirmary.exam.exam</th>
+				<th style="min-width: 400px" translate>medical.infirmary.report.description</th>
+				<th style="min-width: 150px" translate>medical.infirmary.exam.attachment</th>
+				<th style="min-width: 150px" translate>admin.contracts.linkToDocument</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10" [ngClass]="{'tw-bg-red-900': rowData.injuryId, 'tw-bg-opacity-85': rowData.injuryId && rowIndex % 2 === 0, 'view-mode': editService.editMode === false || (editService.editMode === true && selected?.id !== rowData.id)}">
+				<td class="tw-min-w-[100px] tw-text-center">
+					<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+						<i *ngIf="editService.editMode === false" class="fas fa-pencil-alt"
+							 pTooltip="{{ 'buttons.edit' | translate }}" style="cursor: pointer" (click)="edit(rowData)"></i>
+						<i *ngIf="editService.editMode === true && selected?.id === rowData.id" class="fas fa-save"
+							 pTooltip="{{ 'buttons.save' | translate }}" style="cursor: pointer"
+							 (click)="confirmSave(rowData, rowIndex)"></i>
+						<i *ngIf="editService.editMode === false" class="fas fa-trash" pTooltip="{{ 'buttons.delete' | translate }}"
+							 style="cursor: pointer" (click)="confirmDelete(rowData)"></i>
+						<i *ngIf="editService.editMode === true && selected?.id === rowData.id" class="fas fa-times"
+							 pTooltip="Discard" style="cursor: pointer" (click)="discard(rowData, rowIndex)"></i>
+						<i *ngIf="rowData?.history && rowData.history.length > 0" class="fas fa-history" (click)="op.toggle($event)"
+							 pTooltip="{{ 'contract.openHistory' | translate }}" translate></i>
+						<p-overlayPanel #op appendTo="body" [dismissable]="true"
+														[style]="{ 'background-color': '#1a1a1a', 'z-index': '1' }">
+							<div style="padding: 6px">
+								<div style="font-size: 1.2rem; text-transform: uppercase; font-weight: bold; margin-bottom: 6px">
+									Assessment Change History
+								</div>
+								<table *ngIf="rowData.history && rowData.history.length > 0; else no_history" style="min-width: 600px">
+									<tr *ngFor="let change of rowData.history" style="height: 1.5em">
+										<td>{{ change.updatedAt | formatDateBySetting : 'HH:mm' }}</td>
+										<td>{{ change.author | customerName : customers }}</td>
+									</tr>
+								</table>
+							</div>
+
+							<ng-template #no_history>
+								<span translate>contract.noHistory</span>
+							</ng-template>
+						</p-overlayPanel>
+					</div>
+				</td>
+				<td style="min-width: 100px; text-align: center">
+					<span [style.color]="getCompleteClass(rowData).color" pTooltip="{{ getCompleteTitle(rowData) }}"
+								[style.font-size]="'1.2em'" class="fas" [ngClass]="getCompleteClass(rowData).class"
+								*ngIf="editService.editMode === false || (editService.editMode === true && selected?.id !== rowData.id)"></span>
+					<p-inputSwitch [disabled]="isFuture(rowData)"
+												 *ngIf="editService.editMode === true && selected?.id === rowData.id" [(ngModel)]="rowData.complete">
+					</p-inputSwitch>
+				</td>
+				<td style="min-width: 150px">
+					<p-calendar showButtonBar="true" appendTo="body" [disabled]="
+							editService.editMode === false || (editService.editMode === true && selected?.id !== rowData.id)
+						" [(ngModel)]="rowData.date"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+				</td>
+				<td style="min-width: 75px; overflow: visible">
+					<span *ngIf="editService.editMode === false">{{ rowData.date | date : 'HH:mm' }}</span>
+					<iterpro-timepicker *ngIf="editService.editMode === true"
+															[disabled]="!editService.editMode || (editService.editMode === true && selected?.id !== rowData.id)"
+															[ngModel]="getTime(rowData.date)"
+															(timeChanged)="onTimeChanged($event)"
+					></iterpro-timepicker>
+				</td>
+				<td style="min-width: 300px">
+					<input
+						[disabled]="editService.editMode == false || (editService.editMode === true && selected?.id !== rowData.id)"
+						[(ngModel)]="rowData.exam" pInputText title="{{ rowData.exam }}" />
+				</td>
+				<td style="min-width: 400px">
+					<textarea id="$notes" class="expandable" pInputTextarea [title]="rowData?.description"
+						[(ngModel)]="rowData.description" [autoResize]="true" rows="1" [pTooltip]="rowData?.description"
+						[disabled]="editService.editMode === false || (editService.editMode === true && selected?.id !== rowData.id)">
+					</textarea>
+				</td>
+				<td style="min-width: 150px">
+					<iterpro-table-attachment accept="*" [editable]="editService.editMode && selected?.id === rowData.id"
+						[attachment]="rowData.attachment" (file)="selectFile($event)" (error)="attachmentError($event)" />
+				</td>
+				<td style="min-width: 150px">
+					<a *ngIf="!editService.editMode && selected?.id === rowData.id"
+						style="min-width: 45%; text-overflow: ellipsis; overflow: hidden" target="_blank"
+						href="//{{ rowData.cloudUrl }}">{{ rowData.cloudUrl }}</a>
+					<input *ngIf="editService.editMode === true && selected?.id === rowData.id" [(ngModel)]="rowData.cloudUrl"
+						pInputText title="{{ rowData.cloudUrl }}" />
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr>
+				<td translate>alert.noRecordsFound</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>
+
+<!-- Functional Tests -->
+<h3 class="tw-mb-2 tw-mt-8">{{ 'prevention.assessments.functionalTests' | translate | uppercase }}</h3>
+<div class="tw-w-full tw-min-h-[175px] tw-mb-2">
+	<p-table *ngIf="tests" [value]="tests" [rows]="20" [scrollable]="true" scrollHeight="200px" dataKey="date" styleClass="p-datatable-striped">
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th style="min-width: 75px"></th>
+				<th style="min-width: 150px" translate>medical.infirmary.exam.date</th>
+				<th style="min-width: 300px" translate>prevention.assessment.test</th>
+				<th style="min-width: 450px" translate>prevention.assessment.purpose</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10">
+				<td class="tw-text-center" style="min-width: 75px">
+					<i class="fas fa-search" style="cursor: pointer" href="#" [routerLink]="getTestLink(rowData)"
+						 pTooltip="{{ getLinkTitle(rowData) | translate }}"></i>
+				</td>
+				<td style="min-width: 150px" translate>
+					<p-calendar showButtonBar="true" appendTo="body" [disabled]="true" [(ngModel)]="rowData.date"
+											[clearButtonStyleClass]="'p-button-sm'"
+											[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+				</td>
+				<td style="min-width: 300px" translate>{{ rowData.name }}</td>
+				<td style="min-width: 450px" translate>
+					<span>{{ rowData['purpose'].join(', ') }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="emptymessage">
+			<tr>
+				<td>No records found</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>
+
+<p-dialog [(visible)]="confirmDeleteFlag" [showHeader]="true" [closable]="false" [closeOnEscape]="false"
+	[draggable]="false" [resizable]="false" modal="modal">
+	<div>
+		<span translate>confirm.eventRelated</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="delete(true)" label="{{ 'yes' | translate }}"></p-button>
+		<p-button size="small" (click)="delete(false)" label="{{ 'no' | translate }}"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discardDelete()" label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

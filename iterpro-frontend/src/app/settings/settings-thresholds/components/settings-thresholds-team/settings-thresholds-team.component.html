@@ -1,0 +1,37 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'profile.tabs.thresholds'" [title]="'Team'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="thresholdsFormArray?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+<div class="tw-mt-8">
+	@if (!isLoading) {
+		<p-table [value]="thresholdsFormArray.controls"
+						 [scrollable]="true"
+						 [scrollHeight]="'70vh'"
+						 [styleClass]="'p-datatable-gridlines'">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10 tw-uppercase">
+					<th></th>
+					<th translate>thresholds.custom</th>
+					<th translate>thresholds.lastMonth</th>
+					<th translate>thresholds.season</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-control let-i="rowIndex">
+				<tr class="tw-h-10 tw-uppercase" [formGroup]="control">
+					<td>{{ control.get('metricLabel').value }}</td>
+					<td>
+						<input pInputText type="number" formControlName="value" />
+						<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'value'" [label]="'thresholds.custom' | translate"></iterpro-form-feedback>
+					</td>
+					<td>{{ control.get('last30').value }}</td>
+					<td>{{ control.get('lastSeason').value }}</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	}
+	@else {
+		<iterpro-skeleton-table [cols]="4" [rows]="10"></iterpro-skeleton-table>
+	}
+</div>

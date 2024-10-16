@@ -1,0 +1,15 @@
+<div class="tw-w-full tw-flex tw-items-center tw-justify-between tw-gap-2">
+	<div>{{title | translate}}</div>
+	@if (editable) {
+		<div class="tw-flex tw-items-center tw-justify-end">
+			@if (!isLoading) {
+				<iterpro-icon-button [icon]="'fas fa-plus'" [tooltip]="'buttons.add' | translate" (click)="add($event)"></iterpro-icon-button>
+			} @else {
+				<p-progressSpinner
+					[style]="{ width: '20px', height: '20px', 'margin-left': '5px', 'margin-top': '5px' }"
+				>
+				</p-progressSpinner>
+			}
+		</div>
+	}
+</div>

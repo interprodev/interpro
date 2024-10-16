@@ -1,0 +1,79 @@
+{
+	"name": "Instat",
+	"plural": "Instat",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getStandingsLeaderboard": {
+			"accepts": [
+				{
+					"arg": "tournamentId",
+					"type": "number"
+				},
+				{
+					"arg": "seasonId",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-leaderboard",
+				"verb": "get"
+			}
+		},
+		"getStandingsMatchList": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "number"
+				},
+				{
+					"arg": "tournamentId",
+					"type": "number"
+				},
+				{
+					"arg": "seasonId",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-match-list",
+				"verb": "get"
+			}
+		},
+		"getStandingsMatchStats": {
+			"accepts": [
+				{
+					"arg": "matchId",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/standings-match-stats",
+				"verb": "get"
+			}
+		}
+	}
+}

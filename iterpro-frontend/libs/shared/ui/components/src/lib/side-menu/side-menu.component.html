@@ -1,0 +1,48 @@
+<div class="tw-p-5">
+	<!-- Sidebar Menu -->
+	<nav class="tw-space-y-8 tw-ml-1">
+		<!-- Parent Menu Item -->
+		@for (parent of items(); track parent) {
+			<div>
+				<div class="tw-mb-2 tw-text-sm">
+					<a
+						[routerLink]="parent.routerLink"
+						[routerLinkActive]="['tw-text-white']"
+						[routerLinkActiveOptions]="{ exact: false }"
+						class="tw-font-semibold tw-uppercase tw-text-shark-200 hover:tw-font-bold hover:tw-text-shark-100"
+					>
+						@if (parent.icon) {
+							<i [class]="parent.icon + ' tw-mr-2 tw-cursor-pointer'"></i>
+						}
+						<span>
+							{{ parent.label | translate }}
+							@if (parent?.badgeIcon) {
+								<i [class]="parent.badgeIcon.icon + ' tw-ml-1'" [pTooltip]="parent.badgeIcon.tooltip"></i>
+							}
+						</span>
+					</a>
+				</div>
+				<!-- Child Menu Items -->
+				<ul class="tw-space-y-2">
+					@for (child of parent.items; track child) {
+						<li>
+							<a
+								[routerLink]="child.routerLink"
+								[routerLinkActive]="'selected'"
+								class="tw-flex tw-items-center tw-rounded tw-px-1 tw-py-2 tw-text-sm tw-text-shark-200 tw-transition-all tw-duration-300 tw-ease-in-out hover:tw-text-white"
+							>
+								<!-- Menu Label -->
+								<span class="tw-ml-2">
+									{{ child.label | translate }}
+									@if (child?.badgeIcon) {
+										<i [class]="child.badgeIcon.icon + ' tw-ml-1'" [pTooltip]="child.badgeIcon.tooltip"></i>
+									}
+								</span>
+							</a>
+						</li>
+					}
+				</ul>
+			</div>
+		}
+	</nav>
+</div>

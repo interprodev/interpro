@@ -1,0 +1,78 @@
+<div>
+	<div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-mb-8">
+		<div>
+			<h4 class="tw-text-center tw-uppercase tw-mb-2" translate>workload.overview</h4>
+			<p-table
+				*ngIf="data"
+				[value]="[data]"
+				styleClass="p-datatable-gridlines"
+			>
+				<ng-template pTemplate="header">
+					<tr class="tw-h-8">
+						<th></th>
+						<th translate>N</th>
+						<th translate>%</th>
+						<th translate>min</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body">
+					<tr class="tw-h-8">
+						<td translate>workload.general.totalDays</td>
+						<td>{{ data.general.totalDays }}</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="tw-h-8">
+						<td translate>workload.general.daysOff</td>
+						<td>{{ data.general.daysOff }}</td>
+						<td>{{ data.general.daysOff / data.general.totalDays | percent : '1.0-0' }}</td>
+						<td></td>
+					</tr>
+					<tr class="tw-h-8">
+						<td translate>workload.general.totalSessions</td>
+						<td>{{ data.general.allSessions }}</td>
+						<td></td>
+						<td>{{ data.general.trainingMinutes + data.general.gameMinutes | number : '1.0-0' }}</td>
+					</tr>
+					<tr class="tw-h-8">
+						<td translate>workload.general.trainingSession</td>
+						<td>{{ data.general.trainingSessions }}</td>
+						<td>{{ data.general.trainingSessions / data.general.allSessions | percent : '1.0-0' }}</td>
+						<td>{{ data.general.trainingMinutes | number : '1.0-0' }}</td>
+					</tr>
+					<tr class="tw-h-8">
+						<td translate>workload.general.games</td>
+						<td>{{ data.general.games }}</td>
+						<td>{{ data.general.games / data.general.allSessions | percent : '1.0-0' }}</td>
+						<td>{{ data.general.gameMinutes | number : '1.0-0' }}</td>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="emptymessage">
+					<tr class="tw-h-8">
+						<td colspan="3" class="tw-text-center" translate>alert.noRecordsFound</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+
+		<div>
+			<h4 class="tw-text-center tw-uppercase tw-mb-2" translate>workload.timeInTarget</h4>
+			<div style="height: 20vh">
+				<p-chart *ngIf="data" [data]="dataTit" [options]="optionsTit" type="bar"></p-chart>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<div class="tw-w-full tw-flex tw-justify-end tw-items-center">
+			<i
+				*ngIf="dataLoad"
+				class="fas fa-sort-amount-up tw-cursor-pointer"
+				[ngClass]="{ 'fa-active': sort }"
+				[pTooltip]="'sessionAnalysis.order' | translate"
+				(click)="onToggleOrder()"
+			></i>
+		</div>
+		<p-chart *ngIf="dataLoad" [data]="dataLoad" [options]="optionsLoad" type="bar" class="tw-h-[30rem] tw-block"></p-chart>
+	</div>
+</div>

@@ -1,0 +1,183 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [title]="'settings.general'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="generalForm?.dirty || userForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+<div class="tw-mb-8 tw-mt-8"><iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown></div>
+@if (!isLoading) {
+	<div class="tw-grid tw-grid-cols-12 tw-gap-8 tw-mt-2 tw-mb-10">
+		<div class="tw-col-span-12 lg:tw-col-span-6 2xl:tw-col-span-4">
+			<div [formGroup]="generalForm" class="tw-mb-10">
+				<h4 class="tw-pb-3 tw-uppercase" translate>club.settings.generalSettings</h4>
+				<div class="tw-flex tw-flex-col">
+					<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+						<div class="tw-col-span-1">
+							<span class="tw-text-sm iterpro-text-color-900" translate>club.name</span>
+						</div>
+						<div class="tw-col-span-2">
+							<input class="tw-text-sm" type="text" pInputText formControlName="name" />
+						</div>
+					</div>
+					<div class="tw-my-1">
+						<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'name'" [label]="'club.name' | translate"></iterpro-form-feedback>
+					</div>
+
+					<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+						<div class="tw-col-span-1">
+							<span class="tw-text-sm iterpro-text-color-900" translate>profile.overview.gender</span>
+						</div>
+						<div class="tw-col-span-2">
+							<p-dropdown
+								appendTo="body"
+								formControlName="gender"
+								[options]="genders"
+								[filter]="true"
+								[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+							></p-dropdown>
+						</div>
+					</div>
+					<div class="tw-my-1">
+						<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'gender'" [label]="'profile.overview.gender' | translate"></iterpro-form-feedback>
+					</div>
+				</div>
+			</div>
+			<!-- Landing pages -->
+			<div>
+				<h4 class="tw-pb-3 tw-uppercase" translate>settings.landingPage</h4>
+				<div class="tw-flex tw-flex-col">
+					<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container" [formGroup]="generalForm">
+						<div class="tw-col-span-1">
+							<span class="tw-text-sm iterpro-text-color-900" translate>settings.teamLandingPage</span>
+						</div>
+						<div class="tw-col-span-2">
+							<p-dropdown
+								formControlName="landingPage"
+								[options]="teamLandingPages"
+								[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+							></p-dropdown>
+						</div>
+					</div>
+					<div class="tw-my-1">
+						<iterpro-form-feedback [formGroup]="generalForm" [clickedCondition]="saveClicked" [field]="'landingPage'" [label]="'settings.landingPage' | translate"></iterpro-form-feedback>
+					</div>
+
+					<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container" [formGroup]="userForm">
+						<div class="tw-col-span-1">
+							<span class="tw-text-sm iterpro-text-color-900" translate>settings.yourLandingPage</span>
+						</div>
+						<div class="tw-col-span-2">
+							<p-dropdown
+								formControlName="landingPage"
+								[options]="userLandingPages"
+								[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+							></p-dropdown>
+						</div>
+					</div>
+					<div class="tw-my-1">
+						<iterpro-form-feedback [formGroup]="userForm" [clickedCondition]="saveClicked" [field]="'landingPage'" [label]="'settings.landingPage' | translate"></iterpro-form-feedback>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Game/Training report template -->
+	<div class="tw-grid tw-grid-cols-12 tw-gap-8 tw-mt-2">
+		<div class="tw-col-span-6">
+			<div [formGroup]="generalForm">
+				<h4 class="tw-pb-3 tw-uppercase" translate>player.reports</h4>
+				<div class="tw-flex tw-flex-col">
+					<!-- Game report template -->
+					<div class="tw-grid tw-grid-cols-6 tw-items-center iterpro-item-container tw-mb-2">
+						<div class="tw-col-span-2">
+							<span class="tw-text-sm iterpro-text-color-900 tw-whitespace-nowrap" translate>scouting.gameReportTemplate</span>
+						</div>
+						<div class="tw-col-span-4">
+							<div class="tw-flex tw-justify-end tw-gap-3">
+								<p-dropdown
+									formControlName="activeGameReportTemplate"
+									[options]="gameTemplatesOptions"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								>
+								</p-dropdown>
+								@if (editMode) {
+									@if (generalForm.get('activeGameReportTemplate')?.value?.id) {
+										<iterpro-icon-button
+											[icon]="'fas fa-pencil'"
+											[tooltip]="'buttons.edit' | translate"
+											(click)="onOpenCustomTemplate('game')"
+										></iterpro-icon-button>
+										<iterpro-icon-button
+											[icon]="'fas fa-copy'"
+											[tooltip]="'buttons.duplicate' | translate"
+											(click)="onOpenCustomTemplate('game', true, true)"
+										></iterpro-icon-button>
+									}
+									<iterpro-icon-button
+										[icon]="'fas fa-plus'"
+										[tooltip]="'buttons.addNew' | translate"
+										(click)="onOpenCustomTemplate('game',true)"></iterpro-icon-button>
+								}
+							</div>
+						</div>
+					</div>
+					<!-- Training report template -->
+					<div class="tw-grid tw-grid-cols-6 tw-items-center iterpro-item-container">
+						<div class="tw-col-span-2">
+							<span class="tw-text-sm iterpro-text-color-900 tw-whitespace-nowrap" translate>player.trainingReportTemplate</span>
+						</div>
+						<div class="tw-col-span-4">
+							<div class="tw-flex tw-justify-end tw-gap-3">
+								<p-dropdown
+									formControlName="activeTrainingReportTemplate"
+									[options]="trainingTemplatesOptions"
+									[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								>
+								</p-dropdown>
+								@if (editMode) {
+									@if (generalForm.get('activeTrainingReportTemplate')?.value?.id) {
+										<iterpro-icon-button
+											[icon]="'fas fa-pencil'"
+											[tooltip]="'buttons.edit' | translate"
+											(click)="onOpenCustomTemplate('training')"
+										></iterpro-icon-button>
+										<iterpro-icon-button
+											[icon]="'fas fa-copy'"
+											[tooltip]="'buttons.duplicate' | translate"
+											(click)="onOpenCustomTemplate('training',true, true)"
+										></iterpro-icon-button>
+									}
+									<iterpro-icon-button
+										[icon]="'fas fa-plus'"
+										[tooltip]="'buttons.addNew' | translate"
+										(click)="onOpenCustomTemplate('training',true)"></iterpro-icon-button>
+								}
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+} @else {
+	<div class="tw-flex tw-flex-col tw-gap-8">
+		<iterpro-skeleton-grid [columns]="2" [rows]="3" [span]="2" [showTitle]="true"></iterpro-skeleton-grid>
+		<iterpro-skeleton-grid [columns]="2" [rows]="1" [span]="2" [showTitle]="true"></iterpro-skeleton-grid>
+	</div>
+}
+
+@if(showTemplateEditor) {
+	<iterpro-custom-report-template-editor
+		[show]="showTemplateEditor"
+		[template]="templateToEdit"
+		(save)="onSaveCustomTemplate(templateToEditType, $event)"
+		(discard)="onCloseCustomTemplate()"
+	/>
+}
+

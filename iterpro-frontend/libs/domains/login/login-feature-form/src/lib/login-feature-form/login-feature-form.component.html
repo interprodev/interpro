@@ -1,0 +1,180 @@
+<div class="login-container" *ngIf="(viewMode$ | async) !== 'success'">
+	<div class="login-container-row">
+		<div class="login-section left">
+			<div class="login-content">
+				<form
+					*ngIf="(viewMode$ | async) === 'login'"
+					class="login-form"
+					[formGroup]="loginForm"
+					(keyup.enter)="performLoginAction()"
+					(ngSubmit)="performLoginAction()"
+				>
+					<div class="login-form-header">
+						<h2>Welcome Back to Iterpro</h2>
+						<div class="login-subheader">
+							A sport intelligence platform, with powerful features all in one place, giving you the ultimate tool for your players'
+							management.
+						</div>
+					</div>
+					<div class="login-form-content">
+						<div class="login-input-fields" *ngIf="(isLoading$ | async) === false">
+							<input pInputText id="login-email" class="login-input" name="email" type="email" autocomplete="off" formControlName="email" />
+							<label class="login-label" for="login-email">Email</label>
+							<input pInputText id="login-password" class="login-input" name="password" type="password" formControlName="password" />
+							<label class="login-label" for="login-password">Password</label>
+						</div>
+						<div class="login-actions" *ngIf="(isLoading$ | async) === false">
+							<a (click)="showRecoveryPasswordViewAction()">{{ 'login.lostPassword' | translate }}</a>
+							<button pButton [disabled]="isLoading$ | async" size="large" class="p-button-primary tw-w-full" type="submit" [label]="'LOG IN'"></button>
+						</div>
+					</div>
+					<div class="login-progress-spinner" *ngIf="isLoading$ | async">
+						<p-progressSpinner [style]="{ width: '100px', height: '100px' }"></p-progressSpinner>
+					</div>
+				</form>
+
+				<form *ngIf="(viewMode$ | async) === 'reset'" class="login-form" [formGroup]="recoverForm">
+					<div class="login-form-header">
+						<h2>Reset your password</h2>
+						<div class="login-subheader">We'll send a reset link to your email address</div>
+					</div>
+					<div class="login-form-content">
+						<div class="login-input-fields">
+							<input
+								pInputText
+								class="login-input"
+								id="login-recover"
+								type="email"
+								autocomplete="off"
+								formControlName="email"
+								(keyup.enter)="passwordRecoveryAction()"
+							/>
+							<label class="login-label" for="login-recover">Email</label>
+						</div>
+						<div class="login-actions">
+							<a (click)="showLoginViewAction()">{{ 'login.back' | translate }}</a>
+							<p-button size="large" styleClass="p-button-primary tw-w-full" (click)="passwordRecoveryAction()" #recoverButton>
+								{{ 'login.recover' | translate }}
+							</p-button>
+						</div>
+					</div>
+				</form>
+
+				<div *ngIf="(viewMode$ | async) === '2FAlogin'" class="login-form login2FA-modal">
+					<div class="login-form-header">
+						<h2>Welcome Back to Iterpro</h2>
+						<div class="login-subheader">
+							A sport intelligence platform, with powerful features all in one place, giving you the ultimate tool for your players'
+							management.
+						</div>
+					</div>
+					<div class="login-form-content">
+						<div class="login-input-fields" *ngIf="(isLoading$ | async) === false">
+							<input
+								class="login-input"
+								id="auth-input"
+								type="text"
+								maxlength="6"
+								min="1"
+								max="6"
+								size="8"
+								pInputText
+								[disabled]="!!(isLoading$ | async)"
+								[(ngModel)]="authenticationCode"
+								(keyup.enter)="validateLoginCodeAction()"
+							/>
+							<label class="login-label" for="auth-input">Google Authenticator Code</label>
+						</div>
+						<div class="login-actions" *ngIf="(isLoading$ | async) === false">
+							<a (click)="cancelLoginCodeAction()">{{ 'login.back' | translate }}</a>
+							<p-button size="large" styleClass="p-button-primary tw-w-full" (click)="validateLoginCodeAction()">
+								{{ 'login.2FA.verify' | translate }}
+							</p-button>
+						</div>
+					</div>
+					<div class="login-progress-spinner" *ngIf="isLoading$ | async">
+						<p-progressSpinner [style]="{ width: '100px', height: '100px' }"></p-progressSpinner>
+					</div>
+				</div>
+
+				<div *ngIf="(viewMode$ | async) === '2FAsetup'" class="login-form">
+					<div class="login-form-header">
+						<h2>Welcome to Iterpro</h2>
+						<div class="login-subheader">
+							A sport intelligence platform, with powerful features all in one place, giving you the ultimate tool for your players'
+							management.
+						</div>
+					</div>
+					<div class="login-form-content">
+						<div class="login-form-header" *ngIf="(isLoading$ | async) === false">
+							<span>1. {{ 'login.2FA.setup.install' | translate }}</span>
+						</div>
+						<div class="centered" *ngIf="(isLoading$ | async) === false">
+							<span>
+								<a target="_blank" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
+									<img
+										class="store-icon-android"
+										alt="Get it on Google Play"
+										src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+									/>
+								</a>
+							</span>
+							<span>
+								<a target="_blank" href="https://apps.apple.com/app/google-authenticator/id388497605">
+									<img class="store-icon-ios" alt="Download it on the App Store" src="assets/img/appstore-badge.svg" />
+								</a>
+							</span>
+						</div>
+						<div class="login-form-header" *ngIf="(isLoading$ | async) === false">
+							<span>2. {{ 'login.2FA.setup.qrcode' | translate }}</span>
+						</div>
+						<div class="centered" *ngIf="(isLoading$ | async) === false">
+							<img [src]="qrCode$ | async" alt="qr code" />
+						</div>
+						<div class="login-form-header centered" *ngIf="(isLoading$ | async) === false">
+							<div>{{ 'login.2FA.setup.textcode' | translate }}</div>
+							<span class="small-text">{{ textCode$ | async }}</span>
+						</div>
+						<div class="login-form-header" *ngIf="(isLoading$ | async) === false">
+							<span>3. {{ 'login.2FA.write' | translate }}</span>
+						</div>
+						<div class="login-actions" *ngIf="(isLoading$ | async) === false">
+							<input
+								class="login-input"
+								id="auth-input"
+								type="text"
+								maxlength="6"
+								min="1"
+								max="6"
+								size="8"
+								pInputText
+								[disabled]="!!(isLoading$ | async)"
+								[(ngModel)]="authenticationCode"
+								(keyup.enter)="validateSetupCodeAction()"
+							/>
+							<label class="login-label" for="auth-input">Google Authenticator Code</label>
+						</div>
+						<div class="login-actions" *ngIf="(isLoading$ | async) === false">
+							<a (click)="cancelLoginCodeAction()" translate>login.back</a>
+							<p-button size="large" styleClass="p-button-primary tw-w-full" (click)="validateSetupCodeAction()" translate>login.2FA.verify</p-button>
+						</div>
+					</div>
+					<div class="login-progress-spinner" *ngIf="isLoading$ | async">
+						<p-progressSpinner [style]="{ width: '100px', height: '100px' }"></p-progressSpinner>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="login-section right">
+			<img class="logo" src="/assets/img/logo/logo-text.svg" alt="iterpro logo" />
+			<ng-container [ngSwitch]="mode">
+				<div *ngSwitchCase="'club'" class="sub-logo">SPORTS INTELLIGENCE</div>
+				<div *ngSwitchCase="'grassroots'" class="sub-logo">GRASSROOTS</div>
+				<div *ngSwitchCase="'agent'" class="sub-logo">AGENT</div>
+			</ng-container>
+			<div class="sub-sub-logo">Decisions Made Easy</div>
+			<!-- <img-modal-preview class="logo cropped" src="/assets/img/logo/logo-all-black-cropped.svg" /> -->
+			<img class="logo rotated" src="/assets/img/logo/logo-white-rotated.svg" alt="iterpro logo" />
+		</div>
+	</div>
+</div>

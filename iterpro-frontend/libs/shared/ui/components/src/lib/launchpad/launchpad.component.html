@@ -1,0 +1,10 @@
+<div class="tw-grid tw-col-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6 tw-mt-8 tw-overflow-hidden">
+	@for (block of blocks; track blocks) {
+		@if (block.enabled || (!block.enabled && !hideDisabledModules)) {
+			<div class="tw-grid-cols-1 tw-flex tw-items-center tw-justify-center">
+				<iterpro-launchpad-block class="tw-w-full" [link]="block.link" [params]="block.params" [title]="block.title"
+																 [subtitle]="block.subtitle" [img]="block.img" [enabled]="block.enabled" [beta]="block.beta" />
+			</div>
+		}
+	}
+</div>

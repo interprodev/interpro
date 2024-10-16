@@ -1,0 +1,25 @@
+.col-main {
+	position: relative;
+}
+
+.grayed {
+	color: #bbbbbb;
+	font-weight: normal;
+}
+
+.col-sidebar {
+	position: relative;
+}
+
+.col-sidebar > .fa-sidebar {
+	top: 50px;
+	right: 20px;
+	cursor: pointer;
+	position: absolute;
+}
+
+
+.selector {
+	background-color: var(--color-bg-600);
+	border-radius: var(--iterpro-border-radius);
+}

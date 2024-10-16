@@ -1,0 +1,176 @@
+<div class="main-container profile-content">
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+		<div class="tw-col-span-2 tw-p-2 tw-flex tw-flex-col tw-gap-4">
+			<h3 class="player-name">{{ player.displayName }}</h3>
+			<div class="tw-w-48 tw-flex tw-flex-col tw-justify-left tw-gap-4">
+				<div class="profile-picture tw-rounded">
+					<iterpro-player-provider-widget
+						[wyscoutId]="player.wyscoutId"
+						[instatId]="player.instatId"
+					/>
+
+					<iterpro-picture [photoUrl]="player.downloadUrl" class="pflex-block pflex-w-full" />
+				</div>
+			</div>
+			<div class="tw-flex tw-flex-col tw-gap-4" *ngIf="type === 'PlayerScouting'">
+				<div class="tw-w-48">
+					<iterpro-tactic-board
+						[first]="player.position"
+						[second]="player.position2"
+						[third]="player.position3"
+						[sportType]="sportType"
+					/>
+				</div>
+				<div>
+					<h4 translate>general</h4>
+					<table class="fields-table tw-mt-2 tw-w-full tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+						<tr>
+							<th translate>profile.team</th>
+							<td style="width: 70%">
+								<span>{{ $any(player).currentTeam }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th translate>attributes.expiry</th>
+							<td style="width: 70%">
+								<span>{{ player.contractEnd | formatDateBySetting }}</span>
+							</td>
+						</tr>
+						<tr>
+							<th translate>attributes.birth</th>
+							<td style="width: 70%">
+								<span>{{ player.birthDate | formatDateBySetting }}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div *ngIf="playerDescriptionSetting === 'attributes'">
+					<h4 translate>profile.deal.noName</h4>
+					<table class="fields-table tw-mt-2 tw-w-full tw-border-0.3 tw-border-shark-900 tw-border-solid tw-rounded">
+						<tr>
+							<th translate>profile.overview.transferfee</th>
+							<td>
+								<iterpro-price-range [model]="player" from="feeFrom" to="feeTo" />
+							</td>
+						</tr>
+						<tr>
+							<th translate>profile.overview.transferwage</th>
+							<td>
+								<iterpro-price-range [model]="player" from="wageFrom" to="wageTo" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="tw-col-span-10">
+			<div class="tw-flex tw-justify-end tw-items-center" *ngIf="type === 'PlayerScouting'">
+				<iterpro-report-download (downloadPDF)="downloadEntirePdf.emit()" />
+			</div>
+			<div class="data-row row-details">
+				<p-accordion styleClass="accordion-visible" [style.width]="'100%'" [multiple]="true">
+					<p-accordionTab header="{{ 'profile.tabs.attributes' | translate }}">
+						<iterpro-tipss-scouting-header
+							*ngIf="
+								customers &&
+									playerDescriptionSetting === 'tipss' &&
+									type === 'PlayerScouting' &&
+									$any(player)?.reportDataAvg;
+								else basicAttributes
+							"
+							[team]="team"
+							[playerDescriptionSetting]="playerDescriptionSetting"
+							[player]="player"
+							[customers]="customers"
+							[type]="type"
+							[showCalculatedBy]="showCalculatedBy"
+							[scoutingMode]="scoutingMode"
+							(scoutingRedirect)="scoutingRedirect.emit($event)"
+						/>
+
+						<ng-template #basicAttributes>
+							<iterpro-player-attributes-entries
+								*ngIf="customers"
+								[player]="player"
+								[customers]="customers"
+								[type]="type"
+								[team]="team"
+								[playerDescriptionSetting]="playerDescriptionSetting"
+								(playerAttributesEmitter)="playerReportEmitter.emit($event)"
+							/>
+						</ng-template>
+					</p-accordionTab>
+				</p-accordion>
+			</div>
+			<div class="data-row row-details">
+				<p-accordion styleClass="accordion-visible" [style.width]="'100%'" [multiple]="true">
+					<p-accordionTab header="{{ 'description' | translate }}">
+						<iterpro-player-descriptions-entries
+							*ngIf="customers"
+							[player]="player"
+							[customers]="customers"
+							[type]="type"
+							[team]="team"
+							(playerDescriptionsEmitter)="playerReportEmitter.emit($event)"
+						/>
+					</p-accordionTab>
+				</p-accordion>
+			</div>
+			<div class="data-row row-details">
+				<p-accordion styleClass="accordion-visible" [style.width]="'100%'" [multiple]="true">
+					<p-accordionTab header="{{ 'development' | translate }}">
+						<iterpro-player-development-scouting-swiss
+							*ngIf="playerDescriptionSetting === 'tipss' && type === 'PlayerScouting'; else basicDevelopment"
+							[team]="team"
+							[scoutingGames]="scoutingGames"
+						/>
+						<ng-template #basicDevelopment>
+							<iterpro-player-development
+								*ngIf="customers"
+								[player]="player"
+								[team]="team"
+								[type]="type"
+								[playerDescriptionSetting]="playerDescriptionSetting"
+							/>
+						</ng-template>
+					</p-accordionTab>
+				</p-accordion>
+			</div>
+			<div class="data-row row-details" *ngIf="playerDescriptionSetting === 'tipss' && type === 'PlayerScouting'">
+				<p-accordion styleClass="accordion-visible" [style.width]="'100%'" [multiple]="true">
+					<p-accordionTab header="{{ 'chart' | translate }}">
+						<iterpro-player-chart-scouting-swiss
+							*ngIf="customers"
+							[player]="$any(player)"
+							[team]="team"
+							[scoutingGames]="scoutingGames"
+							[seasons]="seasons"
+							[customers]="customers"
+							[scoutingPlayers]="scoutingPlayers"
+						/>
+					</p-accordionTab>
+				</p-accordion>
+			</div>
+			<div class="data-row row-details">
+				<p-accordion styleClass="accordion-visible" [style.width]="'100%'" [multiple]="true">
+					<p-accordionTab header="{{ 'navigator.videogallery' | translate }}">
+						<iterpro-player-videogallery
+							[type]="type"
+							[customers]="customers"
+							[player]="player"
+						/>
+					</p-accordionTab>
+				</p-accordion>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="tw-mt-4">
+	<iterpro-player-attributes-compare
+		*ngIf="playerDescriptionSetting === 'attributes'"
+		[player]="player"
+		[type]="type"
+		[customers]="customers"
+	/>
+</div>

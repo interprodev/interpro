@@ -1,0 +1,148 @@
+<p-dialog
+	[(visible)]="visible"
+	[responsive]="true"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+	[style]="{ width: '700px' }"
+>
+	<div class="row-header">
+		<h4>SELECT DRUG</h4>
+		<a
+			class="fas fa-external-link-alt"
+			pTooltip="WADA Prohibited List"
+			href="https://www.wada-ama.org/sites/default/files/wada_2020_english_prohibited_list_0.pdf"
+			target="_blank"
+			rel="noopener noreferrer"
+		></a>
+	</div>
+	<h5 class="spacing" translate>medical.supplements.dialog.item.anatomicalMain</h5>
+	<p-dropdown
+		[ngClass]="'padded'"
+		id="level1"
+		showClear="true"
+		filter="true"
+		appendTo="body"
+		[style]="{ width: '100%' }"
+		[options]="level1Options"
+		optionLabel="name"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+		(onChange)="loadLevel2($event)"
+		[(ngModel)]="level1"
+	>
+	</p-dropdown>
+	<h5 class="spacing" translate>medical.supplements.dialog.item.therapeutic</h5>
+	<p-dropdown
+		[ngClass]="'padded'"
+		id="level2"
+		showClear="true"
+		filter="true"
+		appendTo="body"
+		[style]="{ width: '100%' }"
+		[options]="level2Options"
+		optionLabel="name"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+		(onChange)="loadLevel3($event)"
+		[disabled]="!level1"
+		[(ngModel)]="level2"
+	></p-dropdown>
+	<h5 class="spacing" translate>medical.supplements.dialog.item.pharmacological</h5>
+	<p-dropdown
+		[ngClass]="'padded'"
+		id="level3"
+		showClear="true"
+		filter="true"
+		appendTo="body"
+		[style]="{ width: '100%' }"
+		[options]="level3Options"
+		optionLabel="name"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+		(onChange)="loadLevel4($event)"
+		[disabled]="!level2"
+		[(ngModel)]="level3"
+	></p-dropdown>
+	<h5 class="spacing" translate>medical.supplements.dialog.item.chemical</h5>
+	<p-dropdown
+		[ngClass]="'padded'"
+		id="level4"
+		showClear="true"
+		filter="true"
+		appendTo="body"
+		[style]="{ width: '100%' }"
+		[options]="level4Options"
+		optionLabel="name"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+		(onChange)="loadLevel5($event)"
+		[disabled]="!level3"
+		[(ngModel)]="level4"
+	></p-dropdown>
+	<!-- virtualScroll enables the basic performance enhancement but failing to set the virtualScrollItemSize value prevents improved performance.
+		virtualScrollItemSize affects the amount of vertical space allotted to options in the displayed options panel and 30 provides an acceptable
+		height for rendering a checkbox and adjacent single line of text for each option in that panel. -->
+	<h5 class="spacing" translate>medical.supplements.dialog.item.substance</h5>
+	<p-dropdown
+		[ngClass]="'padded'"
+		id="level5"
+		showClear="true"
+		filter="true"
+		appendTo="body"
+		[virtualScroll]="true"
+		virtualScrollItemSize="30"
+		[style]="{ width: '100%' }"
+		[options]="level5Options"
+		optionLabel="label"
+		placeholder="{{ 'dropdown.placeholder' | translate }}"
+		(onChange)="select($event)"
+		[(ngModel)]="selected"
+	>
+		<ng-template let-treatment pTemplate="item">
+			<div class="test-list" style="justify-content: flex-start !important">
+				<div (click)="savePin($event, treatment)">
+					<div *ngIf="treatment.code | isInclude : pinnedTreatments" class="hide-solid-pin">
+						<i
+							class="fas fa-thumbtack"
+							pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+							tooltipPosition="bottom"
+						></i>
+					</div>
+					<div *ngIf="treatment.code | isInclude : pinnedTreatments" class="unpinned">
+						<i
+							class="fal fa-thumbtack"
+							pTooltip=" {{ 'test.list.star.unpin.icon' | translate }} "
+							tooltipPosition="bottom"
+						></i>
+					</div>
+					<div *ngIf="!(treatment.code | isInclude : pinnedTreatments)" class="pin">
+						<i
+							class="fas fa-thumbtack"
+							pTooltip=" {{ 'test.list.star.pin.icon' | translate }} "
+							tooltipPosition="bottom"
+						></i>
+					</div>
+				</div>
+				<span style="margin-left: 1em">{{ treatment.label }}</span>
+			</div>
+		</ng-template>
+	</p-dropdown>
+	<h5 class="spacing" translate>medical.supplements.dialog.item.commercialName</h5>
+	<input *ngIf="selected" pInputText [(ngModel)]="selected.commercialName" />
+	<p-footer>
+		<h5 *ngIf="warningMessage" style="text-align: left !important">
+			{{ 'medical.supplement.dialog.message' | translate }}
+		</h5>
+		<p-button size="small" styleClass="p-button-primary"
+			icon="fas fa-check"
+			(click)="save()"
+			[disabled]="!selected"
+			label="{{ 'buttons.save' | translate }}"
+		></p-button>
+		<p-button size="small" [outlined]="true"
+			icon="fas fa-times"
+			(click)="discard()"
+			label="{{ 'buttons.discard' | translate }}"
+		></p-button>
+	</p-footer>
+</p-dialog>

@@ -1,0 +1,26 @@
+<div class="tw-flex tw-items-center tw-gap-2">
+	<div class="pflex-flex pflex-align-items-center">
+		<p-dropdown
+			[placeholder]="'dropdown.placeholderPlayer' | translate"
+			[filter]="true"
+			[(ngModel)]="selectedPlayer"
+			[options]="playersOptions"
+			optionLabel="displayName"
+		>
+			<ng-template let-player pTemplate="item">
+				<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+					<iterpro-picture
+						class="pflex-block pflex-bg-white pflex-border-round-sm pflex-w-2rem pflex-h-2rem pflex-overflow-hidden"
+						[photoUrl]="player.downloadUrl"
+					/>
+					<span class="pflex-text-base">{{ player.displayName }}</span>
+				</div>
+			</ng-template>
+		</p-dropdown>
+
+		<p-button size="small" [disabled]="!selectedPlayer" (click)="addDeal()">
+			{{ 'addDeal' | translate }}
+		</p-button>
+	</div>
+	<iterpro-transfers-deals-third-party-player [alreadyImportedPlayers]="alreadyImportedPlayers" (thirdPartyPlayerSelected)="onSelectThirdPartySearchDialog($event)"></iterpro-transfers-deals-third-party-player>
+</div>

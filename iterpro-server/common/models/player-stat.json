@@ -1,0 +1,96 @@
+{
+	"name": "PlayerStat",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"playerName": {
+			"type": "string"
+		},
+		"minutesPlayed": {
+			"type": "number"
+		},
+		"substituteInMinute": {
+			"type": "number"
+		},
+		"substituteOutMinute": {
+			"type": "number"
+		},
+		"yellowCard": {
+			"type": "boolean"
+		},
+		"redCard": {
+			"type": "boolean"
+		},
+		"gameName": {
+			"type": "string"
+		},
+		"teamId": {
+			"type": "object"
+		},
+		"rawFields": {
+			"type": [
+				{
+					"rawName": {
+						"type": "string"
+					},
+					"rawValue": {
+						"type": "string"
+					}
+				}
+			]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"importFromCsv": {
+			"accepts": [
+				{
+					"arg": "playerStats",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "csvData",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/importFromCsv",
+				"verb": "post"
+			}
+		}
+	}
+}

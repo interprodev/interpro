@@ -1,0 +1,98 @@
+<ng-container *ngIf="!isLoading; else showLoadingTemplate">
+	<header class="header" *ngIf="!showForm && !selectedVideo">
+		<h1>{{ 'videogallery.title' | translate }}</h1>
+		<div class="tw-flex tw-justify-end tw-gap-4">
+			<p-button [size]="'small'" *ngIf="!!linkedId && !isNewFromRedirect" (click)="closeGallery(true)" [label]="'buttons.back' | translate">
+			</p-button>
+			<p-button [size]="'small'" *ngIf="!!linkedId && !isNewFromRedirect" (click)="closeGallery()" [label]="'buttons.close' | translate">
+			</p-button>
+		</div>
+	</header>
+
+	<div
+		[hidden]="selectedVideo || showForm"
+		class="tw-overflow-y-auto tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg tw-p-2"
+		[style]="'max-height: 75vh'"
+	>
+		<div class="video-lists">
+			<!-- <ng-container *ngTemplateOutlet="videoCategory; context: { $implicit: mapTo(sharedWithMe) }"> </ng-container> -->
+			<ng-container *ngFor="let categoryGallery of gallery | keyvalue: originalOrder">
+				<ng-container *ngTemplateOutlet="videoCategory; context: { $implicit: categoryGallery }"></ng-container>
+				<!--
+				<ng-container *ngIf="isActiveCategory(categoryGallery.key)">
+				</ng-container> -->
+			</ng-container>
+		</div>
+	</div>
+
+	<div *ngIf="selectedVideo && !showForm">
+		<iterpro-video-player
+			[video]="selectedVideo"
+			[tags]="tagFilters"
+			[players]="players"
+			[staffs]="staffs"
+			[customers]="customers"
+			(close)="backToGallery()"
+			(comments)="onUpdateComments($event)"
+			(next)="nextVideo()"
+			(previous)="previousVideo()"
+			(edit)="editVideoClip($event)"
+		/>
+	</div>
+
+	<ng-container *ngIf="showForm">
+		<iterpro-video-form
+			[linkedEventId]="linkedId"
+			[isEditVideo]="selectedVideo"
+			[events]="availableEvents"
+			[players]="players"
+			[staffs]="staffs"
+			[customers]="customers"
+			[category]="categoryToAddVideo"
+			(videoDeleted)="handleDeletedVideo()"
+			(discardClicked)="onDiscardClicked()"
+			(changeCategory)="onChangeCategory($event)"
+		/>
+	</ng-container>
+</ng-container>
+
+<ng-template #videoCategory let-categoryGallery>
+	<span class="tw-flex tw-items-baseline">
+		<h3>
+			{{ 'videogallery.category.' + getCategoryValue(categoryGallery.key) | translate }}
+			<span class="tw-font-normal tw-text-sm">({{ categoryGallery.value.length }})</span>
+		</h3>
+		<div class="tw-mr-2 tw-cursor-pointer tw-items-center" (click)="toggleFilters(categoryGallery.key)">
+			<i class="fas fa-filter" [pTooltip]="'videogallery.filters' | translate"> </i>
+		</div>
+		<i
+			*ngIf="categoryGallery.key !== 'SHAREDWITHME'"
+			class="fas fa-plus tw-cursor-pointer"
+			pTooltip="{{ 'videogallery.new' | translate }}"
+			(click)="createVideoClip(categoryGallery.key)"
+		></i>
+	</span>
+
+	<iterpro-video-gallery-filter
+		*ngIf="!!showFilters[categoryGallery.key]"
+		[players]="players"
+		[focus]="filterFocus === categoryGallery.key"
+		[videos]="categoryGallery.value"
+		[status]="getFilterStatus(categoryGallery.key)"
+		[controls]="categoryGallery.key !== 'GAMES' ? { home: false, away: false, date: false, opponents: false } : {}"
+		(filter)="filterGallery($event, categoryGallery)"
+	/>
+
+	<iterpro-video-list
+		[id]="'video-category-' + categoryGallery.key"
+		[items]="categoryGallery.value"
+		[customers]="customers"
+		(select)="selectVideo($event)"
+	/>
+</ng-template>
+
+<ng-template #showLoadingTemplate>
+	<div class="tw-w-full tw-flex tw-justify-center tw-items-center" [style]="'height: 50vh'">
+		<p-progressSpinner></p-progressSpinner>
+	</div>
+</ng-template>

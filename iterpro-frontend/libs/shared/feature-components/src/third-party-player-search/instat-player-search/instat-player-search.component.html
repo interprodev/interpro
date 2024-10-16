@@ -1,0 +1,157 @@
+<!-- DIALOG -->
+<p-dialog
+	[visible]="true"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[blockScroll]="true"
+	[modal]="true"
+	[style]="{ width: '80vw', 'max-height': '60vw' }"
+>
+
+	<!-- HEADER -->
+	<p-header><span translate>instat.title</span></p-header>
+
+	<!-- TEAM AND COMPETITION -->
+	<div class="container">
+		<div class="row">
+			<div class="col margin-right">
+				<span class="inline-label">Competition</span>
+				<p-dropdown
+					[virtualScroll]="true"
+					[virtualScrollItemSize]="30"
+					[options]="competitions"
+					[(ngModel)]="selectedCompetition"
+					[filter]="true"
+					[ngModelOptions]="{ standalone: true }"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					appendTo="body"
+					[disabled]="loading"
+					(onChange)="changeCompetition($event)"
+				></p-dropdown>
+			</div>
+
+			<div class="col">
+				<span class="inline-label">Team</span>
+				<p-dropdown
+					[virtualScroll]="true"
+					[virtualScrollItemSize]="30"
+					[options]="teams"
+					[(ngModel)]="selectedTeam"
+					[filter]="true"
+					[ngModelOptions]="{ standalone: true }"
+					placeholder="{{ 'dropdown.placeholder' | translate }}"
+					appendTo="body"
+					[disabled]="loading || !selectedCompetition"
+					(onChange)="changeTeam($event)"
+				></p-dropdown>
+			</div>
+		</div>
+	</div>
+
+	<!-- LOADER AND PLAYERS TABLE -->
+	<div class="row spinner-container relative">
+		<p-progressSpinner *ngIf="loading; else playersTable" class="spinner"></p-progressSpinner>
+		<ng-template #playersTable>
+			<div class="col" style="width: 100%">
+				<p-table
+					styleClass="p-datatable-striped"
+					*ngIf="players.length > 0"
+					[value]="players"
+					[paginator]="true"
+					[rows]="5"
+					[(selection)]="selectedPlayers"
+				>
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th style="width: 40px">
+								<p-tableHeaderCheckbox *ngIf="selection !== 'single'"></p-tableHeaderCheckbox>
+							</th>
+							<th
+								[ngStyle]="{
+									'text-align': col.align ? col.align : 'left',
+									width: col.width ? col.width : 'auto'
+								}"
+								*ngFor="let col of cols"
+								class="table-header"
+								[pSortableColumn]="col.sortable ? col.field : undefined"
+							>
+								{{ col.header | translate }}
+								<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+							</th>
+							<!--th class="table-header pt-last"></th-->
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+						<tr
+							class="tw-h-10"
+							[pSelectableRow]="rowData"
+							[pSelectableRowDisabled]="rowData.alreadyImported"
+							styleClass="wysearch"
+							[ngClass]="{ disabled: rowData.alreadyImported }"
+						>
+							<td [ngSwitch]="selection" style="width: 40px">
+								<p-tableRadioButton
+									*ngSwitchCase="'single'"
+									[value]="rowData"
+									[disabled]="rowData.alreadyImported"
+									[pTooltip]="
+										rowData.alreadyImportedTeam ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''
+									"
+								></p-tableRadioButton>
+								<p-tableCheckbox
+									*ngSwitchDefault
+									[value]="rowData"
+									[disabled]="rowData.alreadyImported"
+									[pTooltip]="
+										rowData.alreadyImportedTeam ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''
+									"
+								></p-tableCheckbox>
+							</td>
+							<td><img style="width: 100%" [src]="rowData.img" alt="player photo" /></td>
+							<td>{{ rowData.name }}</td>
+							<td style="text-align: center">
+								<iterpro-player-flag *ngIf="rowData.birthArea?.alpha2code" [lang]="rowData.birthArea.alpha2code" />
+								<iterpro-player-flag
+									*ngIf="!!rowData.passportArea && rowData.birthArea?.alpha2code !== rowData.passportArea?.alpha2code"
+									[lang]="rowData.passportArea?.alpha2code"
+								 />
+							</td>
+							<td>{{ rowData.position }}</td>
+							<td>{{ rowData.currentTeamName }}</td>
+							<td
+								[pTooltip]="
+									rowData.alreadyImported ? 'Player already imported in ' + rowData.alreadyImportedTeam : ''
+								"
+							>
+								{{ rowData.alreadyImportedTeam }}
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</div>
+		</ng-template>
+	</div>
+
+	<!-- FOOTER -->
+	<p-footer>
+		<p-button
+			size="small"
+			[outlined]="true"
+			icon="fas fa-times"
+			(click)="discard()"
+			label="{{ 'buttons.close' | translate }}"
+		></p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			(click)="selectPlayers()"
+			label="{{ 'buttons.import' | translate }}"
+			[disabled]="selectedPlayers.length === 0"
+		></p-button>
+	</p-footer>
+
+</p-dialog>

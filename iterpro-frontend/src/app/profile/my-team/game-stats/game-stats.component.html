@@ -1,0 +1,226 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3 class="h3-myteam-player">{{ player.displayName }}</h3>
+					<div class="profile-picture tw-rounded">
+						<iterpro-player-provider-widget [wyscoutId]="player?.wyscoutId" [instatId]="player?.instatId" />
+						<img style="background-color: white" class="player-pic" [src]="player.downloadUrl | azureUrl"
+							onError="this.src='assets/img/default_icon.png';" alt="player picture" />
+					</div>
+					<h4 class="spacing" translate>profile.season</h4>
+					<iterpro-change-season *ngIf="seasons" />
+					<h4 class="spacing" translate>preferences.metrics</h4>
+					<p-multiSelect *ngIf="metrics" appendTo="body" styleClass="overflow" [selectionLimit]="2"
+						optionLabel="metricLabel" [options]="metrics" [(ngModel)]="selectedMetrics"
+						(onChange)="handleMetricsSelect($event)" placeholder="{{ 'dropdown.placeholder' | translate }}">
+						<ng-template let-metric pTemplate="item">
+							{{ metric.metricLabel | capitalize }}
+						</ng-template>
+						<ng-template let-metric pTemplate="selectedItem">
+							{{ metric.metricLabel | capitalize }}
+						</ng-template>
+					</p-multiSelect>
+				</div>
+				<div class="col-right-profile-thre" style="margin-left: 2rem; flex-direction: column">
+					<div class="pflex-flex pflex-justify-content-end">
+						<i class="fas fa-tag tw-cursor-pointer" [ngClass]="{ 'fa-border': labels === true }"
+							pTooltip="{{ 'sessionAnalysis.labels' | translate }}" (click)="onToggleLabels()"></i>
+					</div>
+					<div class="row row-column">
+						<div class="chart-container">
+							<p-chart *ngIf="data" [style]="{ width: '100%' }" type="line" [data]="data" [options]="options"></p-chart>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="rowProfile" style="margin-top: 3rem">
+				<div class="table-container">
+					<div style="text-align: right; margin-bottom: 1em">
+						<iterpro-report-download (downloadCSV)="downloadCSV('primary')" />
+					</div>
+					<p-tabView *ngIf="isNationalClub$ | async; else games" (onChange)="handleTabChange($event)"
+						[activeIndex]="panelIndex">
+						<p-tabPanel header="{{ 'sidebar.teamtype.national' | translate }}">
+							<ng-container *ngTemplateOutlet="games"> </ng-container>
+						</p-tabPanel>
+						<p-tabPanel header="{{ 'sidebar.teamtype.club' | translate }}">
+							<ng-container *ngTemplateOutlet="clubgames"> </ng-container>
+						</p-tabPanel>
+					</p-tabView>
+
+					<ng-template #clubgames>
+						<p-table #dt [value]="tableMatches" [scrollable]="true" scrollHeight="600px" styleClass="p-datatable-striped">
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th class="tw-text-center" style="width: 60px" pFrozenColumn translate></th>
+									<th style="width: 100px" pFrozenColumn translate>date</th>
+									<th pFrozenColumn translate>event.opponent</th>
+									<th style="width: 200px" translate>event.subformat</th>
+									<th class="tw-text-center" style="width: 50px" translate>
+										matchAnalysis.result</th>
+									<th class="tw-text-center" style="width: 50px" translate>buttons.video
+									</th>
+									<th class="tw-text-center" title="{{ 'admin.dashboard.minutesPlayed' | translate }}"
+										style="width: 95px">
+										<span translate>admin.dashboard.minutesPlayed</span>
+									</th>
+									<th *ngFor="let metric of metrics" class="tw-text-center" style="width: 95px"
+										title="{{ metric.metricLabel }}">
+										<span>{{ metric.metricLabel | capitalize }}</span>
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+								<tr class="tw-h-10" [pContextMenuRow]="rowData" [pContextMenuRowIndex]="rowIndex">
+									<td class="tw-text-center" style="width: 60px" pFrozenColumn>
+										<span *ngIf="rowIndex > 0" appendTo="body" class="report-download">
+											<i #menuIcon (click)="setOpenPlayer($event, rowData, menu)" class="fas fa-ellipsis-h"></i>
+										</span>
+									</td>
+									<ng-container *ngIf="rowIndex === 0">
+										<td pFrozenColumn>
+											<span translate>profile.gamestats.overall</span>
+										</td>
+										<td style="width: 100px" pFrozenColumn></td>
+										<td style="width: 40px" pFrozenColumn></td>
+										<td style="width: 200px"></td>
+										<td style="width: 50px"></td>
+										<td style="width: 50px"></td>
+
+										<td style="width: 50px"></td>
+									</ng-container>
+									<ng-container *ngIf="rowIndex > 0">
+										<td *ngIf="rowIndex > 0" style="width: 100px" pFrozenColumn>
+											<span>{{ rowData.date | formatDateBySetting }}</span>
+										</td>
+										<td *ngIf="rowIndex > 0" pFrozenColumn>
+											<span>{{ getMatchOpponent(rowData, 'secondary') }}</span>
+										</td>
+										<td *ngIf="rowIndex > 0" style="width: 200px">
+											<span>{{ getMatchCompetition(rowData) }}</span>
+										</td>
+										<td class="tw-text-center" *ngIf="rowIndex > 0" style="width: 50px">
+											<span>{{ getMatchResult(rowData) }}</span>
+										</td>
+										<td class="tw-text-center" style="width: 50px">
+											<iterpro-modal-preview *ngIf="!!rowData.video; else noVideo">
+												<i style="font-size: 1em" class="fas fa-video clickable" handler></i>
+												<div class="video-content" content>
+													<video controls>
+														<source [src]="rowData.video.downloadUrl | azureUrl" type="video/mp4" />
+													</video>
+												</div>
+											</iterpro-modal-preview>
+											<ng-template #noVideo><span>-</span></ng-template>
+										</td>
+									</ng-container>
+
+									<td class="tw-text-center" style="width: 95px">
+										<span>{{ getMetricValue(rowData.pmstats, 'minutesPlayed') }}</span>
+									</td>
+									<td *ngFor="let metric of metrics" class="tw-text-center" style="width: 95px">
+										<span>{{ getMetricValue(rowData._playerStats, metric.metricName) }}</span>
+									</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</ng-template>
+
+					<ng-template #games>
+						<p-table #dt [value]="tableMatches" [scrollable]="true" scrollDirection="both"
+							scrollHeight="600px" styleClass="p-datatable-striped">
+							<ng-template pTemplate="header">
+								<tr class="tw-h-10">
+									<th class="tw-text-center" style="width: 60px" pFrozenColumn translate></th>
+									<th style="width: 100px" pFrozenColumn translate>date</th>
+									<th class="tw-text-center" style="width: 40px" pFrozenColumn></th>
+									<th pFrozenColumn translate>event.opponent</th>
+									<th style="width: 200px" translate>event.subformat</th>
+									<th class="tw-text-center" style="width: 50px" translate>home.home</th>
+									<th class="tw-text-center" style="width: 50px" translate>
+										matchAnalysis.result</th>
+									<th class="tw-text-center" style="width: 50px" translate>buttons.video
+									</th>
+									<th class="tw-text-center" title="{{ 'admin.dashboard.minutesPlayed' | translate }}"
+										style="width: 95px">
+										<span translate>admin.dashboard.minutesPlayed</span>
+									</th>
+									<th *ngFor="let metric of metrics" class="tw-text-center" style="width: 95px"
+										title="{{ metric.metricLabel }}">
+										<span>{{ metric.metricLabel | capitalize }}</span>
+									</th>
+								</tr>
+							</ng-template>
+							<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+								<tr class="tw-h-10" [pContextMenuRow]="rowData" [pContextMenuRowIndex]="rowIndex">
+									<td class="tw-text-center" style="width: 60px" pFrozenColumn>
+										<span *ngIf="rowIndex > 0" appendTo="body" class="report-download">
+											<i #menuIcon (click)="setOpenPlayer($event, rowData, menu)" class="fas fa-ellipsis-h"></i>
+											<p-contextMenu #menu [model]="rowData.menuItems" appendTo="body"> </p-contextMenu>
+										</span>
+									</td>
+									<ng-container *ngIf="rowIndex === 0">
+										<td pFrozenColumn>
+											<span translate>profile.gamestats.overall</span>
+										</td>
+										<td style="width: 100px" pFrozenColumn></td>
+										<td style="width: 40px" pFrozenColumn></td>
+										<td style="width: 200px"></td>
+										<td style="width: 50px"></td>
+										<td style="width: 50px"></td>
+
+										<td style="width: 50px"></td>
+									</ng-container>
+									<ng-container *ngIf="rowIndex > 0">
+										<td *ngIf="rowIndex > 0" style="width: 100px" pFrozenColumn>
+											<span>{{ getMatchDate(rowData, 'primary') }}</span>
+										</td>
+										<td class="tw-text-center" *ngIf="rowIndex > 0" style="width: 40px"
+											pFrozenColumn>
+											<i class="point" [ngClass]="getPointClass(rowData)"></i>
+										</td>
+										<td *ngIf="rowIndex > 0" pFrozenColumn>
+											<span>{{ getMatchOpponent(rowData, 'primary') }}</span>
+										</td>
+										<td *ngIf="rowIndex > 0" style="width: 200px">
+											<span>{{ getMatchCompetition(rowData) }}</span>
+										</td>
+										<td class="tw-text-center" *ngIf="rowIndex > 0" style="width: 50px">
+											<span>{{ getMatchHomeOrAway(rowData, 'primary') }}</span>
+										</td>
+
+										<td class="tw-text-center" *ngIf="rowIndex > 0" style="width: 50px">
+											<span>{{ getMatchResult(rowData) }}</span>
+										</td>
+
+										<td class="tw-text-center" style="width: 50px">
+											<iterpro-modal-preview *ngIf="!!rowData.video; else noVideo">
+												<i style="font-size: 1em" class="fas fa-video clickable" handler></i>
+												<div class="video-content" content>
+													<video controls>
+														<source [src]="rowData.video.downloadUrl | azureUrl" type="video/mp4" />
+													</video>
+												</div>
+											</iterpro-modal-preview>
+											<ng-template #noVideo><span>-</span></ng-template>
+										</td>
+									</ng-container>
+
+									<td class="tw-text-center" style="width: 95px">
+										<span>{{ getMetricValue(rowData.pmstats, 'minutesPlayed') }}</span>
+									</td>
+									<td *ngFor="let metric of metrics" class="tw-text-center" style="width: 95px">
+										<span>{{ getMetricValue(rowData._playerStats, metric.metricName) }}</span>
+									</td>
+								</tr>
+							</ng-template>
+						</p-table>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

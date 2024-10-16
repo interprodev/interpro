@@ -1,0 +1,74 @@
+.pt-team {
+	background-color: #000 !important;
+	padding: 0.8rem 0.5rem !important;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.pt-readiness {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #000;
+}
+
+.visible-fields {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+.visible-fields > * {
+	margin-left: 20px;
+	margin-bottom: 15px;
+}
+
+.red {
+	color: red;
+}
+
+.green {
+	color: green;
+}
+
+.filters-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+	flex-wrap: wrap;
+	column-gap: 12px;
+	row-gap: 12px;
+	.filter-group {
+		background-color: var(--color-bg-600);
+		border-radius: var(--iterpro-border-radius);
+		flex: 0.35;
+		.container-title {
+			padding-left: 12px;
+			padding-top: 12px;
+		}
+		.filters {
+			display: flex;
+			padding: 12px;
+			flex-wrap: wrap;
+			> div {
+				margin: 0.5rem 1rem;
+			}
+			label {
+				display: block;
+				margin-bottom: 3px;
+				text-transform: capitalize;
+				color: #bbb;
+			}
+		}
+	}
+	.first-container {
+		flex: 1;
+	}
+	margin-bottom: 1rem;
+}
+
+.reset-button-container {
+	text-align: right;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}

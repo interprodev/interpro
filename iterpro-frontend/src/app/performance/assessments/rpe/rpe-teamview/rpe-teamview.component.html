@@ -1,0 +1,51 @@
+<div class="card">
+	<div class="teamView-header">
+		<h3 class="centered" translate>surveys.rpe.teamSummary</h3>
+		<div class="tw-flex tw-items-center tw-justify-between tw-gap-4">
+			<ng-container *ngIf="selectedSession">
+
+				<!-- Redirect to Session Analysis -->
+				<iterpro-redirect-icon path="/performance/session-analysis" [params]="goToSessionAnalysis(selectedSession)"
+					tooltip="to.sessionAnalysis.redirect" />
+
+				<!-- Redirect to Planning -->
+				<iterpro-redirect-icon style="margin-left: 0.5em" path="/manager/planning"
+					[params]="goToPlanning(selectedSession)" [icon]="'fas fa-calendar'" tooltip="to.planning.redirect" />
+
+			</ng-container>
+			<input type="file" #inputjson
+				accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" #file
+				style="display: none" (change)="fileChanged($event)" />
+			<i class="fas fa-file-excel" [class.disabled]="!sessions.length" (click)="downloadCsvRpe()"
+				pTooltip="{{ 'surveys.csvDownload' | translate }}"></i>
+			<i class="fas fa-upload" [class.disabled]="!sessions.length" (click)="file.click()"
+				pTooltip="{{ 'surveys.csvUpload' | translate }}"></i>
+			<i class="fas fa-save" [class.disabled]="!sessions.length || !editService.editMode" (click)="saveMultipleRpe()"
+				pTooltip="{{ 'buttons.save' | translate }}"></i>
+			<i class="fas fa-trash" [class.disabled]="!sessions.length" (click)="deleteMultipleRpe()"
+				pTooltip="{{ 'buttons.delete' | translate }}"></i>
+		</div>
+	</div>
+
+	<div class="tw-grid tw-grid-cols-12">
+		<div class="tw-col-span-12 md:tw-col-span-6 lg:tw-col-span-4 xl:tw-col-span-3">
+			<p-table [styleClass]="'p-datatable-striped'" [scrollable]="true" [value]="sessions">
+				<ng-template pTemplate="header">
+					<tr class="tw-h-10">
+						<th class="tw-w-[200px]" translate>general.player</th>
+						<th class="tw-w-[100px]" translate>surveys.rpe.rpe</th>
+					</tr>
+				</ng-template>
+				<ng-template pTemplate="body" let-rowData>
+					<tr class="tw-h-10">
+						<td class="tw-w-[200px]">{{ rowData.playerName }}</td>
+						<td class="tw-w-[100px]">
+							<input [(ngModel)]="rowData.rpe" [ngModelOptions]="{ standalone: true }" type="number" min="0" step="0.5"
+										 oninput="validity.valid||(value='');" pInputText (ngModelChange)="edit($event)" />
+						</td>
+					</tr>
+				</ng-template>
+			</p-table>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,110 @@
+<div>
+
+	<!-- Table Filter Template -->
+	<iterpro-table-filter-template
+		*ngIf="showFilterTemplateSelection"
+		[ngClass]="{ 'pflex p-hidden': !showFilters }"
+		[tableId]="'injury_list_table'"
+		[filters]="filtersForTemplate"
+		[visibility]="visibleColumns"
+		(templateChanged)="handleFilterTemplateChanged($event)"
+	/>
+
+	<!-- If Showing Filters -->
+	<div class="tw-p-4 tw-bg-shark-900 tw-bg-opacity-85 tw-rounded tw-mb-4" [hidden]="!showFilters">
+		<div class="tw-w-full tw-flex tw-justify-end">
+			<!-- Filters / Table Columns -->
+			<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+				<ng-template pTemplate="item" let-item>
+					<a class="p-menuitem-link tw-px-2 tw-py-1">
+						<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+						<i class="tw-ml-2" [class]="item.icon"></i>
+					</a>
+				</ng-template>
+			</p-tabMenu>
+		</div>
+		<div>
+			@switch (activeFilterTabType) {
+				@case (filtersTabTypes[0]) {
+					<iterpro-table-filter
+						[class.maximize]="true"
+						[items]="itemsBackup"
+						[options]="filterOptions"
+						[hideReset]="true"
+						(filterEmitter)="handleFilterStateUpdated($event)">
+					</iterpro-table-filter>
+				}
+				@case (filtersTabTypes[1]) {
+					<iterpro-table-column-filter
+						[options]="columnOptions"
+						[hideReset]="true"
+						(onChange)="changeViewableColumns($event)"
+					/>
+				}
+			}
+		</div>
+	</div>
+
+	<!-- Table Values -->
+	<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+		<p-table [value]="items" [columns]="columns" [scrollable]="true"
+						 [styleClass]="'p-datatable-striped'"
+						 [rowHover]="true">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th
+						*ngFor="let col of columns; let i = index"
+						[ngStyle]="{
+						textAlign: !!col.align ? col.align : 'center',
+						minWidth: !!col.width ? (col.width + 'px') : '150px',
+						width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+					}"
+						[pSortableColumn]="col.sortable ? col.field : false"
+						pFrozenColumn
+						[frozen]="col.frozen"
+					>
+						{{ col.header }}
+						<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10" (click)="editInjury(rowData)">
+					<td
+						*ngFor="let col of columns; let i = index"
+						[ngStyle]="{
+						textAlign: !!col.align ? col.align : 'center',
+						minWidth: !!col.width ? col.width : '150px',
+						width: i === 0 ? '6rem' : 'calc(calc(100% - 6rem) / ' + (columns.length - 1) + ')'
+					}"
+					pFrozenColumn
+					[frozen]="col.frozen"
+					>
+						@switch (col.type) {
+							@case ('image') {
+								<div class="tw-h-14 tw-w-14 tw-flex tw-items-center tw-justify-center tw-rounded tw-bg-white">
+									<iterpro-picture [photoUrl]="rowData.downloadUrl" class="tw-block" />
+								</div>
+							}
+							@case ('year') {
+								{{ rowData[col.field] | formatDateBySetting }}
+							}
+							@case ('age') {
+								{{ rowData[col.field] | age }}
+							}
+							@case ('flag') {
+								<iterpro-player-flag lang="{{ rowData[col.field] }}" />
+							}
+							@case ('translate') {
+								{{ rowData[col.field] ? (rowData[col.field] | translate) : '' }}
+							}
+							@default {
+								{{ rowData[col.field] }}
+							}
+						}
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</div>

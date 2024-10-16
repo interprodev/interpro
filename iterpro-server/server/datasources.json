@@ -1,0 +1,23 @@
+{
+	"db": {
+		"name": "db",
+		"connector": "memory",
+		"connectionTimeout": 1000000
+	},
+	"iterproMongo": {
+		"connector": "mongodb",
+		"url": "${DB_URL}",
+		"name": "iterproMongo",
+		"allowExtendedOperators": true
+	},
+	"iterproLegal": {
+		"connector": "mongodb",
+		"url": "${DB_URL_LEGAL}",
+		"name": "iterproLegal",
+		"allowExtendedOperators": true
+	},
+	"transient": {
+		"name": "transient",
+		"connector": "transient"
+	}
+}

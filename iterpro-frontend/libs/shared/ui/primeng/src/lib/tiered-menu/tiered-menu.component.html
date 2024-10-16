@@ -1,0 +1,19 @@
+@if (!iconOnly) {
+	<p-button
+		[iconPos]="'left'"
+		[loading]="isLoading"
+		[icon]="icon"
+		[label]="label"
+		[disabled]="disabled"
+		[styleClass]="styleClass"
+		[size]="'small'"
+		[text]="isText"
+		(click)="buttonClicked(menu, $event)"></p-button>
+} @else {
+	<i
+		[class]="icon + ' iterpro-clickable-icon'"
+		(click)="buttonClicked(menu, $event)"
+		[pTooltip]="label"
+	></i>
+}
+<p-tieredMenu #menu [model]="menuItems" [popup]="true" appendTo="body"></p-tieredMenu>

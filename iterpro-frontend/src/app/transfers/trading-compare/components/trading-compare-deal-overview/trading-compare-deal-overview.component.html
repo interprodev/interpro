@@ -1,0 +1,38 @@
+@if(leftComparePlayer || rightComparePlayer) {
+<div class="pflex-flex pflex-gap-4 pflex-w-full pflex-justify-content-between">
+	<!-- Left Deal -->
+	<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-w-full">
+		<div class="pflex-flex pflex-gap-3 pflex-flex-column">
+			@for (item of leftComparePlayer?.deal; track $index) {
+			<div class="pflex-flex pflex-w-full pflex-justify-content-between pflex-border-round-sm">
+				<label class="pflex-text-sm pflex-opacity-70">{{ item.label }}</label>
+				<span>{{ item.value }}</span>
+			</div>
+			}
+		</div>
+	</div>
+
+	<!-- Chart -->
+	<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-py-3 pflex-w-full">
+		<h4 class="pflex-text-sm pflex-text-center pflex-uppercase pflex-underline pflex-mb-4">{{ 'transfers.dealOverview' | translate }}</h4>
+
+		<div class="pflex-h-full pflex-max-h-20rem">
+			@if(chartData && chartOptions) {
+			<p-chart type="bar" [data]="chartData" [options]="chartOptions" [plugins]="chartPlugins"></p-chart>
+			}
+		</div>
+	</div>
+
+	<!-- Right Deal -->
+	<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-p-4 pflex-w-full">
+		<div class="pflex-flex pflex-gap-3 pflex-flex-column">
+			@for (item of rightComparePlayer?.deal; track $index) {
+			<div class="pflex-flex pflex-flex-row-reverse pflex-w-full pflex-justify-content-between pflex-border-round-sm">
+				<label class="pflex-text-sm pflex-opacity-70">{{ item.label }}</label>
+				<span>{{ item.value }}</span>
+			</div>
+			}
+		</div>
+	</div>
+</div>
+}

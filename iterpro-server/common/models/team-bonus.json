@@ -1,0 +1,40 @@
+{
+	"name": "TeamBonus",
+	"plural": "TeamBonuses",
+	"base": "ContractOption",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"people": {
+			"type": ["string"]
+		},
+		"total": {
+			"type": "number"
+		},
+		"dueDate": {
+			"type": "date"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"match": {
+			"type": "belongsTo",
+			"model": "Match",
+			"foreignKey": ""
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"clubSeason": {
+			"type": "belongsTo",
+			"model": "ClubSeason",
+			"foreignKey": "seasonId"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,1297 @@
+{
+	"name": "PlayerApp",
+	"plural": "PlayerApp",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getMe": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/me",
+				"verb": "get"
+			}
+		},
+		"updateMe": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/me",
+				"verb": "put"
+			}
+		},
+		"changePassword": {
+			"accepts": [
+				{
+					"arg": "oldPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "newPassword",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/change-password",
+				"verb": "post"
+			}
+		},
+		"createEventForPlayer": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"required": true,
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateStart",
+					"type": "date",
+					"required": true,
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateEnd",
+					"type": "date",
+					"required": true,
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "duration",
+					"type": "number",
+					"required": true,
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "rpe",
+					"type": "number",
+					"required": true,
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/eventForPlayer",
+				"verb": "post"
+			}
+		},
+		"setEventReminder": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "minutes",
+					"type": "number",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/eventReminder",
+				"verb": "post"
+			}
+		},
+		"getSessionsForDay": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/getSessionsForDay",
+				"verb": "post"
+			}
+		},
+		"loginPlayer": {
+			"accepts": [
+				{
+					"arg": "username",
+					"type": "string"
+				},
+				{
+					"arg": "password",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "Object",
+				"root": true
+			},
+			"http": {
+				"path": "/loginPlayer",
+				"verb": "post"
+			}
+		},
+		"getMinimumVersion": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/minimumVersion",
+				"verb": "post"
+			}
+		},
+		"getNotifications": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "start",
+					"type": "number",
+					"required": false
+				},
+				{
+					"arg": "limit",
+					"type": "number",
+					"required": false
+				},
+				{
+					"arg": "read",
+					"type": "boolean",
+					"required": false
+				},
+				{
+					"arg": "teamIds",
+					"type": "array",
+					"required": false
+				},
+				{
+					"arg": "startDate",
+					"type": "date",
+					"required": false
+				},
+				{
+					"arg": "endDate",
+					"type": "date",
+					"required": false
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications",
+				"verb": "get"
+			}
+		},
+		"setAllNotificationsAsRead": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/notificationAllRead",
+				"verb": "post"
+			}
+		},
+		"setNotificationAsRead": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "notificationId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/notificationRead",
+				"verb": "post"
+			}
+		},
+		"toggleNotifications": {
+			"accepts": [
+				{
+					"arg": "notificationId",
+					"type": "string"
+				},
+				{
+					"arg": "read",
+					"type": "boolean"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/toggle-notifications",
+				"verb": "post"
+			}
+		},
+		"toggleAllNotifications": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				},
+				{
+					"arg": "read",
+					"type": "boolean"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/toggle-all-notifications",
+				"verb": "post"
+			}
+		},
+		"getNotificationsBadge": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications/badge",
+				"verb": "get"
+			}
+		},
+		"playerLogout": {
+			"accepts": [
+				{
+					"arg": "deviceId",
+					"type": "string"
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/playerLogout",
+				"verb": "post"
+			}
+		},
+		"getPlayerTodayStatus": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/playerTodayStatus",
+				"verb": "post"
+			}
+		},
+		"resetPassword": {
+			"accepts": [
+				{
+					"arg": "playerUsername",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/resetPassword",
+				"verb": "post"
+			}
+		},
+		"getSeasonEventsForPlayer": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "dateStart",
+					"type": "date"
+				},
+				{
+					"arg": "dateEnd",
+					"type": "date"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/seasonEventsForPlayer",
+				"verb": "post"
+			}
+		},
+		"getTactics": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/tactics",
+				"verb": "get"
+			}
+		},
+		"setVideoAsRead": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/setVideoAsRead",
+				"verb": "post"
+			}
+		},
+		"submitRpe": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "sessionId",
+					"type": "string"
+				},
+				{
+					"arg": "rpe",
+					"type": "number"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/submitRpe",
+				"verb": "post"
+			}
+		},
+		"submitWellnessSurvey": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "wellness_sleep",
+					"type": "number"
+				},
+				{
+					"arg": "wellness_stress",
+					"type": "number"
+				},
+				{
+					"arg": "wellness_fatigue",
+					"type": "number"
+				},
+				{
+					"arg": "wellness_soreness",
+					"type": "number"
+				},
+				{
+					"arg": "wellness_mood",
+					"type": "number"
+				},
+				{
+					"arg": "sleep_start",
+					"type": "string"
+				},
+				{
+					"arg": "sleep_end",
+					"type": "string"
+				},
+				{
+					"arg": "sleep_hours",
+					"type": "number"
+				},
+				{
+					"arg": "locations",
+					"type": "array"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/submitWellnessSurvey",
+				"verb": "post"
+			}
+		},
+		"updateNotificationSettings": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string"
+				},
+				{
+					"arg": "notificationEvents",
+					"type": "boolean"
+				},
+				{
+					"arg": "notificationSurveys",
+					"type": "boolean"
+				},
+				{
+					"arg": "notificationVideoShared",
+					"type": "boolean"
+				},
+				{
+					"arg": "notificationVideoComments",
+					"type": "boolean"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/updateNotificationSettings",
+				"verb": "post"
+			}
+		},
+		"getPlayerVideos": {
+			"accepts": [
+				{
+					"arg": "categories",
+					"type": "array",
+					"required": false,
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/videos",
+				"verb": "get"
+			}
+		},
+		"videoMatchCommentEdit": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "matchId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "commentId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "commentParentId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "commentBody",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "read",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/videoMatchCommentEdit",
+				"verb": "post"
+			}
+		},
+		"getComments": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments",
+				"verb": "get"
+			}
+		},
+		"createComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments",
+				"verb": "post"
+			}
+		},
+		"updateComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments/:commentId",
+				"verb": "put"
+			}
+		},
+		"deleteComment": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/vdeos/:videoId/comments/:commentId",
+				"verb": "delete"
+			}
+		},
+		"getReplies": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments/:commentId/replies",
+				"verb": "get"
+			}
+		},
+		"createReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments/:commentId/replies",
+				"verb": "post"
+			}
+		},
+		"updateReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments/:commentId/replies/:replyId",
+				"verb": "put"
+			}
+		},
+		"deleteReply": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/videos/:videoId/comments/:commentId/replies/:replyId",
+				"verb": "delete"
+			}
+		},
+		"getPlayerTransferCareers": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/careersTransfers",
+				"verb": "get"
+			}
+		},
+		"getCurrency": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/currency",
+				"verb": "get"
+			}
+		},
+		"getPlayerStats": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/stats",
+				"verb": "get"
+			}
+		},
+		"getContracts": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/contracts",
+				"verb": "get"
+			}
+		},
+		"getReminders": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/reminders",
+				"verb": "get"
+			}
+		},
+		"setReminders": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/reminders",
+				"verb": "post"
+			}
+		},
+		"getPlayerEvents": {
+			"accepts": [
+				{
+					"arg": "start",
+					"type": "date",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "end",
+					"type": "date",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/events",
+				"verb": "get"
+			}
+		},
+		"getEventDetails": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/events/:id",
+				"verb": "get"
+			}
+		},
+		"getPlayerReadiness": {
+			"accepts": [
+				{
+					"arg": "date",
+					"type": "DateString",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/readiness",
+				"verb": "get"
+			}
+		},
+		"getChatPlayers": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/chat-players",
+				"verb": "get"
+			}
+		},
+		"getChatStaffs": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/chat-staffs",
+				"verb": "get"
+			}
+		},
+		"getTeamTestMetrics": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/test-metrics",
+				"verb": "get"
+			}
+		},
+		"getPlayerFitnessProfile": {
+			"accepts": [
+				{
+					"arg": "testIds",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "metrics",
+					"type": "array",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "Returns fitness profile for a player",
+			"http": {
+				"path": "/fitness",
+				"verb": "get"
+			}
+		},
+		"getPlayerRobustness": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/robustness",
+				"verb": "get"
+			}
+		},
+		"getFixturesInfo": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/fixtures",
+				"verb": "get"
+			}
+		},
+		"getMatchStats": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/fixtures/:eventId/match-stats",
+				"verb": "get"
+			}
+		},
+		"getClub": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/club",
+				"verb": "get"
+			}
+		},
+		"getSeasonInfo": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/season",
+				"verb": "get"
+			}
+		}
+	}
+}

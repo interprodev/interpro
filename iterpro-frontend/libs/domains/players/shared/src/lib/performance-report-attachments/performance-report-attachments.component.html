@@ -1,0 +1,29 @@
+
+@if (attachments && attachments.length > 0) {
+	<div class="tw-flex tw-flex-col tw-gap-4 tw-mt-2">
+		@for (attachment of attachments; track attachment) {
+			@switch (attachmentType) {
+				@case ('documents') {
+					<iterpro-attachment-item [attachment]="attachment"
+																	 [sharedWithTooltip]="sharedWithOptions ? ([attachment?.sharedPlayerIds, attachment?.sharedStaffIds] | sharedWithTooltip : sharedWithOptions) : null"
+																	 [showEditButton]="showEditAttachment"
+																	 [showDeleteButton]="showDeleteAttachment"
+																	 (editClicked)="editAttachment.emit()"
+																	 (deleteClicked)="removeAttachment(attachment)"></iterpro-attachment-item>
+				}
+				@case ('videos') {
+					<div class="tw-w-[250px]">
+						@if (editable) {
+							<div class="tw-flex tw-items-center tw-justify-end tw-mb-1">
+								<iterpro-icon-button [icon]="'fas fa-trash'" [tooltip]="'buttons.delete' | translate" (click)="removeAttachment(attachment)"></iterpro-icon-button>
+							</div>
+						}
+						<iterpro-video-viewer [videoUrl]="attachment.downloadUrl | azureUrl" [videoLoaded]="true"></iterpro-video-viewer>
+					</div>
+				}
+			}
+		}
+	</div>
+} @else {
+	<p class="tw-p-2 tw-text-shark-300">{{ 'alert.noRecordsFound' | translate }}</p>
+}

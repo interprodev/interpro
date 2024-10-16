@@ -1,0 +1,80 @@
+<div class="tw-flex tw-justify-end tw-gap-3">
+	<!-- Add new -->
+	@if (!editMode && buttonTypes.includes('addNew')) {
+		<p-button
+			icon="fas fa-plus"
+			iconPos="left"
+			[size]="'small'"
+			[label]="addNewLabel | translate"
+			(click)="create.emit()"
+			[loading]="loading"
+		></p-button>
+	}
+	<!-- Edit -->
+	@if (!editMode && buttonTypes.includes('edit')) {
+		<p-button
+			[size]="'small'"
+			[label]="'buttons.edit' | translate"
+			(click)="edit.emit()"
+			[loading]="loading"
+		></p-button>
+	} @else {
+		<!-- Clone -->
+		@if (buttonTypes.includes('clone')) {
+			<p-button
+				type="button"
+				icon="fas fa-copy"
+				iconPos="left"
+				[ngStyle]="{ backgroundColor: 'var(--iterpro-tab-background)' }"
+				class="p-button-rounded"
+				[size]="'small'"
+				[label]="
+					cloneCounter < 1 || !cloneCounter
+						? (cloneLabel | translate)
+						: (cloneLabel | translate) + ' (' + cloneCounter + ')'
+				"
+				[disabled]="cloneCounter < 1"
+				(click)="clone.emit()"
+			></p-button>
+		}
+		<!-- Save -->
+		@if (buttonTypes.includes('save')) {
+			<p-button
+				icon="fas fa-save"
+				iconPos="left"
+				styleClass="p-button-primary"
+				[size]="'small'"
+				[label]="'buttons.save' | translate"
+				(click)="save.emit()"
+			></p-button>
+		}
+		<!-- Discard -->
+		@if (showDiscard && buttonTypes.includes('discard')) {
+			<p-button
+				[icon]="discardIcon"
+				iconPos="left"
+				[outlined]="true"
+				[size]="'small'"
+				[label]="discardLabel | translate"
+				(click)="discard.emit()"
+			></p-button>
+		}
+		<!-- Delete -->
+		@if (editMode && buttonTypes.includes('delete')) {
+			<p-button
+				icon="fas fa-trash"
+				iconPos="left"
+				styleClass="p-button-danger"
+				[size]="'small'"
+				[loading]="loading"
+				[label]="
+					deleteCounter < 1 || !deleteCounter
+						? (deleteLabel | translate)
+						: (deleteLabel | translate) + ' (' + deleteCounter + ')'
+				"
+				[disabled]="deleteCounter < 1"
+				(click)="onDelete()"
+			></p-button>
+		}
+	}
+</div>

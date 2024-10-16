@@ -1,0 +1,84 @@
+<div class="tw-w-full tw-flex tw-flex-col tw-items-center">
+	<div class="tw-w-[90%] tw-bg-shark-950 tw-bg-opacity-85 tw-rounded-lg tw-p-5">
+		<!-- Actions -->
+		<div class="tw-flex tw-items-center tw-justify-end tw-gap-4 tw-mb-4">
+			<i
+				[pTooltip]="'bodychart.showLegend' | translate"
+				(click)="op.toggle($event)"
+				class="fas fa-question icon label-tooltip tw-cursor-pointer"
+			></i>
+			<i
+				class="fas fa-folder-open tw-cursor-pointer"
+				style="font-size: 1em"
+				(click)="uploadDialogVisibility = true"
+				[pTooltip]="
+				match.event?._attachments.length > 0
+					? ('dialog.file.showDialog' | translate) + ' (' + match.event?._attachments.length + ')'
+					: ('dialog.file.noFileAttached' | translate)
+			"
+			></i>
+			<iterpro-report-download (downloadPDF)="downloadReport()" />
+		</div>
+		<div class="tw-flex tw-justify-center">
+			<!-- Field -->
+			<div class="field-match">
+				<div class="field-container">
+					<img class="field" src="{{ getFieldUrl() }}" alt="field" />
+					<iterpro-player-card-tactic
+						*ngFor="let player of lineup; index as i"
+						[injuryMapObj]="injuryMap"
+						[playerList]="playerList"
+						[tactic]="player"
+						[x]="tacticsPositions[i].x"
+						[y]="tacticsPositions[i].y"
+						[isSelected]="isSelected(player, currentSelectedPlayer)"
+						(click)="onClickPlayer(player)"
+						(showDialogEmitter)="showPlayerDialog(player)"
+					/>
+				</div>
+			</div>
+			<!-- Bench -->
+			<div class="bench-match">
+				<h5 class="uppercase" translate>tactics.substitutes</h5>
+				<div>
+					<iterpro-player-card-tactic
+						*ngFor="let player of bench"
+						[injuryMapObj]="injuryMap"
+						[playerList]="playerList"
+						[tactic]="player"
+						[isSelected]="isSelected(player, currentSelectedPlayer)"
+						(click)="onClickPlayer(player)"
+						(showDialogEmitter)="showPlayerDialog(player)"
+					/>
+
+					<span class="line">&nbsp;</span>
+
+					<iterpro-player-card-tactic
+						*ngFor="let player of notCalled"
+						[injuryMapObj]="injuryMap"
+						[playerList]="playerList"
+						[tactic]="player"
+						[isSelected]="isSelected(player, currentSelectedPlayer)"
+						(click)="onClickPlayer(player)"
+						(showDialogEmitter)="showPlayerDialog(player)"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p-overlayPanel #op appendTo="body">
+	<div style="padding: 1em; max-width: 20vw; max-height: 70vh; overflow: auto">
+		<iterpro-legend-content [legendConfig]="legendConfig" />
+	</div>
+</p-overlayPanel>
+
+<iterpro-multiple-file-upload
+	*ngIf="uploadDialogVisibility"
+	[visible]="uploadDialogVisibility"
+	[editMode]="true"
+	[attachmentModel]="match.event._attachments"
+	(save)="saveAttachments($event)"
+	(discard)="uploadDialogVisibility = false"
+/>

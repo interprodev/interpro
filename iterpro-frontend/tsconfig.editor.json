@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "libs/shared/utils/common-utils/src/services/medical/injury-icon.service.ts", "libs/shared/utils/common-utils/src/utils/functions/table/table-player.functions.ts"],
+  "compilerOptions": {
+    "types": ["jest", "node"]
+  }
+}

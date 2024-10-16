@@ -1,0 +1,48 @@
+
+h3 {
+  text-transform: uppercase;
+}
+
+
+.fields-table.pos-table td {
+  vertical-align: top;
+}
+
+
+.fab {
+	font-size: 1.5em;
+	cursor: pointer;
+}
+
+.id {
+	display: flex;
+	flex-direction: column;
+}
+.upload {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.upload > * {
+	margin-left: 1em;
+}
+
+.id-title {
+	width: 80%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 0.9rem;
+	white-space: nowrap;
+}
+
+
+.inline-label {
+	font-weight: normal;
+  color: #bbbbbb;
+}
+
+
+.panelHistory {
+	background-color: transparent !important;
+	border-bottom: none !important;
+}

@@ -1,0 +1,62 @@
+<div style="display: flex; justify-content: space-around">
+	<div class="attributes-container" *ngFor="let reportDataAvg of reportDataAvg">
+		<div class="progress-wrapper">
+			<div class="current">
+				{{ reportDataAvg.mainField.avg }}
+			</div>
+			<round-progress
+				[current]="
+					typeOf(reportDataAvg.mainField.avg) === 'string'
+						? getPotentialScore(reportDataAvg.mainField.avg)
+						: reportDataAvg.mainField.avg
+				"
+				[max]="typeOf(reportDataAvg.mainField.avg) === 'string' ? 3 : reportDataAvg.mainField.max || 0"
+				[stroke]="5"
+				[color]="reportDataAvg.mainField.color || ''"
+				[background]="'#dddddd'"
+				[radius]="50"
+				[semicircle]="true"
+				[responsive]="true"
+			></round-progress>
+		</div>
+		<div class="main-field-title">
+			<h3 translate>{{ reportDataAvg.mainField.label }}</h3>
+			<i
+				class="iterpro-clickable-icon"
+				[class]="mode === 'redirectToReports' ? 'fas fa-info-circle' : 'fas fa-search'"
+				[pTooltip]="
+					mode === 'redirectToReports'
+						? ('redirect.to.gameReport.text' | translate)
+						: showCalculatedBy
+						? 'Hide attributes'
+						: 'Show attributes'
+				"
+				style="margin-left: 1em"
+				(click)="onClickIcon($event)"
+			></i>
+		</div>
+		<div class="attributes-table fields-table" *ngIf="showCalculatedBy">
+			<ng-container *ngFor="let entry of reportDataAvg.calculatedBy">
+				<div class="attribute-row iterpro-item-container">
+					<div class="table-left-title">
+						{{ entry.label }}
+					</div>
+					<div class="values-container">
+						<ng-container *ngIf="typeOf(entry.avg) !== 'boolean'; else showBooleanTemplate">
+							<div class="flexed">
+								<span [ngStyle]="getStyleForInputNumber(entry.color)">{{ entry.avg }}</span>
+							</div>
+						</ng-container>
+						<ng-template #showBooleanTemplate>
+							<div [ngSwitch]="entry.avg" class="flexed">
+								<i *ngSwitchCase="true" style="color: green" class="fas fa-check"></i>
+								<i *ngSwitchCase="false" style="color: red" class="fas fa-times"></i>
+								<i *ngSwitchCase="'-'" style="color: orange" class="fas fa-circle-o"></i>
+							</div>
+						</ng-template>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+</div>

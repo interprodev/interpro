@@ -1,0 +1,14 @@
+<div class="main tw-mt-8">
+	<div class="tw-grid tw-min-h-full tw-grid-cols-12">
+		<!-- Sidebar -->
+		<div class="tw-bg-shark-950 tw-col-span-2 tw-rounded-bl-lg tw-rounded-tl-lg tw-border-r-shark-900 tw-border-r-2 tw-border-l-0 tw-border-b-0 tw-border-t-0 tw-border-solid">
+			<iterpro-side-menu [items]="menuItems"></iterpro-side-menu>
+		</div>
+		<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-col-span-10 tw-rounded-br-lg tw-rounded-tr-lg">
+			<div class="tw-p-5">
+				<!-- Settings Container Router Outlet -->
+				<router-outlet></router-outlet>
+			</div>
+		</div>
+	</div>
+</div>

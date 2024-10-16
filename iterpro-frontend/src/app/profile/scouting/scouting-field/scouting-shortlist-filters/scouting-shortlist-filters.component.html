@@ -1,0 +1,13 @@
+<div class="filters-section">
+	<span class="filter-check" *ngFor="let filter of status | keyvalue: originalOrder">
+		<label class="label" translate>{{ 'profile.overview.' + filter.key }}</label>
+		<p-multiSelect
+			[options]="filter.value.options"
+			[optionLabel]="filter.key"
+			[(ngModel)]="filter.value.value"
+			placeholder="{{ 'multiselect.placeholder' | translate }}"
+			(onChange)="emitFilterValues()"
+			appendTo="body"
+		></p-multiSelect>
+	</span>
+</div>

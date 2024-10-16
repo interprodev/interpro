@@ -1,0 +1,47 @@
+<div>
+	<div class="tw-mb-4 tw-flex tw-flex-col tw-gap-4">
+		<!-- Add T-Shirt Button -->
+		<div class="tw-flex tw-flex-wrap tw-gap-2">
+			<!-- T-Shirts Players -->
+			@for (player of players; track $index) {
+				<iterpro-drills-canvas-item [item]="player" (click)="togglePanel('T-Shirt', player.label, op1, $event)" />
+			}
+		</div>
+	</div>
+	<div class="tw-flex tw-flex-col tw-gap-4">
+		<!-- Add Dot Button -->
+		<div class="tw-flex tw-flex-wrap tw-gap-2">
+			<!-- DOT Players -->
+			@for (color of colors; track $index) {
+				<div
+					class="tw-flex tw-h-12 tw-w-12 tw-cursor-pointer tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-p-2 tw-transition-all hover:tw-bg-shark-900"
+					[pTooltip]="'drillCanvas.editor.player' | translate"
+					(click)="togglePanel('Dot', color, op1, $event)"
+				>
+					<span class="tw-block tw-h-full tw-w-full tw-rounded-full" [style.backgroundColor]="color"></span>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+<p-overlayPanel #op1 appendTo="body" [showCloseIcon]="true">
+	<div class="tw-w-full tw-p-4">
+		<!-- Title -->
+		<h3 class="tw-mb-4 tw-text-lg tw-font-bold">{{ overplayPanelParams?.title | translate }}</h3>
+		<div class="tw-flex tw-items-center tw-gap-4">
+			<!-- Input Text for T-Shirts Number -->
+			<form [formGroup]="playerForm">
+				<input type="text" pInputText formControlName="number" [maxlength]="2" [minlength]="0" />
+			</form>
+			<!-- Add Player Button -->
+			<p-button
+				[size]="'small'"
+				[outlined]="true"
+				[label]="'buttons.add' | translate"
+				(click)="createPlayer(overplayPanelParams?.type)"
+				[disabled]="!playerForm?.valid || !selectedPlayerColor"
+			/>
+		</div>
+	</div>
+</p-overlayPanel>

@@ -1,0 +1,567 @@
+<div *ngIf="option" class="conditions-box">
+	<span *ngIf="!isPrecondition(type)" class="conditions-box-header">
+		<span style="display: flex">
+			<span style="margin-right: 1em; color: #bbb" translate>bonus.panel.conditionsRelationFlag</span>
+			<p-dropdown
+				[readonly]="disabled"
+				appendTo="body"
+				[options]="booleanRelationOptions"
+				[(ngModel)]="option.conditionRelationFlag"
+				name="conditionRelationFlag"
+				#conditionRelationFlag="ngModel"
+				[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+				[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+			></p-dropdown>
+		</span>
+		<i *ngIf="!disabled" class="fas fa-plus" (click)="addCondition()"></i>
+	</span>
+
+	<span *ngIf="isPrecondition(type)" class="row" style="width: 100%; justify-content: space-between">
+		<p-checkbox
+			[(ngModel)]="option.conditioned"
+			[disabled]="disabled"
+			title="{{ 'admin.contracts.conditioned' | translate }}"
+			binary="true"
+			name="conditioned"
+			#conditioned="ngModel"
+		>
+		</p-checkbox>
+		<span style="display: flex; align-items: center">
+			<span *ngIf="option.conditioned" style="margin-right: 1em; color: #bbb" translate
+				>bonus.panel.conditionsRelationFlag</span
+			>
+			<p-dropdown
+				*ngIf="option.conditioned"
+				[style]="{ width: '100%', 'min-width': '100%' }"
+				[readonly]="disabled"
+				appendTo="body"
+				[options]="booleanRelationOptions"
+				[(ngModel)]="option.conditionRelationFlag"
+				name="conditionRelationFlag"
+				#conditionRelationFlag="ngModel"
+				[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+				[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+			></p-dropdown>
+			<i
+				*ngIf="option.conditioned && !disabled"
+				class="fas fa-plus"
+				style="margin-left: 1em"
+				(click)="addCondition()"
+			></i>
+		</span>
+	</span>
+
+	<p-table
+		*ngIf="!isPrecondition(type) || (isPrecondition(type) && option.conditioned)"
+		[value]="option.conditions"
+		dataKey="id"
+		[scrollable]="true"
+		rowExpandMode="single"
+	>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+			<tr>
+				<td>
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+					<span class="condition-row-header">
+						<span>{{ 'bonus.condition' | translate }} {{ rowIndex + 1 }}</span>
+						<span>
+							<i *ngIf="!disabled" class="fas fa-clone" (click)="cloneCondition(rowIndex)"></i>
+							<i
+								*ngIf="!disabled"
+								class="fas fa-trash-alt"
+								style="margin-left: 1em"
+								(click)="removeCondition(rowIndex)"
+							></i>
+						</span>
+					</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+			<tr>
+				<th>
+					<div *ngIf="isPrecondition(type)" class="condition-row">
+						<span class="condition-label" translate>bonus.team.type</span>
+						<span class="condition-value">
+							<p-dropdown
+								[style]="{ width: '100%', 'min-width': '100%', 'margin-right': '1em' }"
+								appendTo="body"
+								[readonly]="disabled"
+								name="type"
+								#type="ngModel"
+								[(ngModel)]="rowData.type"
+								[options]="conditionsType"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label">{{ 'bonus.condition' | translate }}</span>
+						<span *ngIf="type === 'appearance' || rowData.type === 'appearance'" class="condition-value">
+							<span style="color: #bbb" translate>admin.contracts.appearance.label</span>
+							<input
+								[disabled]="disabled"
+								style="width: 5%; margin-left: 1em"
+								pInputText
+								[(ngModel)]="rowData.count"
+								name="count"
+								#count="ngModel"
+								type="number"
+							/>
+							<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate
+								>admin.contracts.appearanceFees.label</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="nationalsApp"
+								[(ngModel)]="rowData.goal"
+								name="typeB2"
+								#typeB2="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+								required
+							></p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB2.invalid"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<input
+								*ngIf="rowData.goal === 'appMinutes'"
+								[disabled]="disabled"
+								style="width: 5%; margin-left: 1em"
+								pInputText
+								[(ngModel)]="rowData.count2"
+								name="appBonus_count2"
+								#appBonus_count2="ngModel"
+								type="number"
+							/>
+							<span *ngIf="rowData.goal === 'appMinutes'" style="margin-left: 1em; color: #bbb" translate>min</span>
+							<ng-container *ngIf="!disabled || rowData.bonusCap">
+								<span style="color: #bbb; margin-left: 1em" translate>admin.contracts.until</span>
+								<input
+									[disabled]="disabled"
+									style="width: 5%; margin-left: 1em"
+									pInputText
+									[(ngModel)]="rowData.bonusCap"
+									name="bonusCap"
+									#bonusCap="ngModel"
+									type="number"
+								/>
+							</ng-container>
+						</span>
+						<span *ngIf="type === 'performance' || rowData.type === 'performance'" class="condition-value">
+							<span style="color: var(--color-neutral-900); margin-right: 1em" translate
+								>admin.contracts.performance.label</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[options]="playerActions"
+								[(ngModel)]="rowData.action"
+								name="typeB3"
+								#typeB3="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+								required
+							>
+							</p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB3.invalid"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<input
+								*ngIf="rowData.action === 'makes' || option.type === 'isInTheTop'"
+								[disabled]="disabled"
+								style="width: 5%; margin-left: 1em; margin-right: 1em"
+								pInputText
+								[(ngModel)]="rowData.count"
+								name="pBonus_count"
+								#pBonus_count="ngModel"
+								type="number"
+							/>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								*ngIf="rowData.action === 'makes'"
+								[options]="goals"
+								[(ngModel)]="rowData.goal"
+								name="pBonus_goal"
+								#pBonus_goal="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+								required
+							>
+							</p-dropdown>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								*ngIf="rowData.action && rowData.action !== 'makes'"
+								[options]="awards"
+								[(ngModel)]="rowData.goal"
+								name="pBonus_award"
+								#pBonus_award="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+						</span>
+						<span *ngIf="type === 'standardTeam' || rowData.type === 'standardTeam'" class="condition-value">
+							<span style="color: var(--color-neutral-900); margin-right: 1em" translate
+								>admin.contracts.teamBonus.label</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[options]="teamActions"
+								[(ngModel)]="rowData.action"
+								name="typeB4"
+								#typeB4="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB4.invalid"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<input
+								*ngIf="
+									rowData.action === 'achieves' &&
+									(rowData.goal === 'wins' || rowData.goal === 'points' || rowData.goal === 'position')
+								"
+								[disabled]="disabled"
+								style="width: 5%; margin-left: 1em; margin-right: 1em"
+								pInputText
+								[(ngModel)]="rowData.count"
+								name="pBonus_count2"
+								#pBonus_count2="ngModel"
+								type="number"
+							/>
+							<p-dropdown
+								*ngIf="rowData.action === 'achieves'"
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="teamActionsGoal"
+								[(ngModel)]="rowData.goal"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								name="STBonus_actionAchieves"
+								#STBonus_actionAchieves="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+						</span>
+						<span *ngIf="type === 'signing' || rowData.type === 'signing'" class="condition-value">
+							<span style="color: var(--color-neutral-900); margin-right: 1em" translate
+								>admin.contracts.signing.label</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[options]="signingOptions"
+								[(ngModel)]="rowData.action"
+								name="typeB5"
+								#typeB5="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB5.invalid"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<span
+								*ngIf="rowData.action === 'isFedMemberAtDate' || option.type === 'isSold'"
+								style="margin-left: 1em; margin-right: 1em; color: #bbb"
+								translate
+								>on</span
+							>
+							<p-calendar
+								*ngIf="rowData.action === 'isFedMemberAtDate'"
+								[style.margin-right]="'1em'"
+								[(ngModel)]="rowData.membershipDate"
+								[disabled]="disabled"
+								dateFormat="dd/mm/yy"
+								appendTo="body"
+								name="bonusMember"
+								#bonusMember="ngModel"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+							<p-calendar
+								*ngIf="rowData.action === 'isSold'"
+								[style.margin-right]="'1em'"
+								[(ngModel)]="rowData.soldDate"
+								[disabled]="disabled"
+								dateFormat="dd/mm/yy"
+								appendTo="body"
+								name="soldDate"
+								#soldDate="ngModel"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							>
+							</p-calendar>
+							<span
+								*ngIf="rowData.action === 'isSold'"
+								style="margin-left: 1em; margin-right: 1em; color: #bbb"
+								translate
+								>admin.contracts.for</span
+							>
+							<span *ngIf="rowData.action === 'isSold'">{{ currency }}</span>
+							<input
+								*ngIf="rowData.action === 'isSold'"
+								[disabled]="disabled"
+								style="width: auto; margin-right: 1em"
+								[(ngModel)]="rowData.soldAmount"
+								name="soldAmount"
+								#soldAmount="ngModel"
+								iterproMask
+								pInputText
+								type="text"
+							/>
+						</span>
+						<span *ngIf="type === 'custom' || rowData.type === 'custom'" class="condition-value">
+							<input
+								[disabled]="disabled"
+								pInputText
+								[(ngModel)]="rowData.custom"
+								name="customCondition"
+								#customCondition="ngModel"
+								type="string"
+							/>
+						</span>
+						<span *ngIf="type === 'appearanceFee'" class="condition-value">
+							<span style="margin-right: 1em; color: #bbb" translate>per</span>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="appearances"
+								[(ngModel)]="rowData.goal"
+								name="typeB"
+								#typeB="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+								required
+							></p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB.invalid && typeB.touched"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<ng-container *ngIf="!disabled || rowData.bonusCap">
+								<span style="color: #bbb; margin-left: 1em" translate>admin.contracts.until</span>
+								<input
+									[disabled]="disabled"
+									style="width: 5%; margin-left: 1em"
+									pInputText
+									[(ngModel)]="rowData.bonusCap"
+									name="bonusCap"
+									#bonusCap="ngModel"
+									type="number"
+								/>
+							</ng-container>
+							<span *ngIf="rowData.goal" style="margin-left: 1em; color: var(--iterpro-text-color-white)">{{
+								rowData?.goal | selectItemLabel: appearances | translate
+							}}</span>
+						</span>
+						<span *ngIf="type === 'performanceFee'" class="condition-value">
+							<span style="margin-right: 1em; color: #bbb" translate>per</span>
+							<p-dropdown
+								[disabled]="disabled"
+								appendTo="body"
+								[options]="goals"
+								[(ngModel)]="rowData.goal"
+								name="typeB"
+								#typeB="ngModel"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+								required
+								[class.ng-invalid]="typeB.invalid"
+							></p-dropdown>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="typeB.invalid"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<ng-container *ngIf="!disabled || rowData.bonusCap">
+								<span style="color: #bbb; margin-left: 1em" translate>admin.contracts.until</span>
+								<input
+									[disabled]="disabled"
+									style="width: 5%; margin-left: 1em"
+									pInputText
+									[(ngModel)]="rowData.bonusCap"
+									name="bonusCap"
+									#bonusCap="ngModel"
+									type="number"
+								/>
+							</ng-container>
+							<span *ngIf="rowData.goal" style="margin-left: 1em; color: var(--iterpro-text-color-white)" translate>{{
+								rowData?.goal | selectItemLabel: goals | translate
+							}}</span>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label" *ngIf="rowData.goal === 'calledUp'" translate>profile.team</span>
+						<span *ngIf="rowData.goal === 'calledUp'" class="condition-value">
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="teams"
+								[(ngModel)]="rowData.team"
+								name="team"
+								#team="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label" *ngIf="rowData.goal !== 'calledUp'" translate
+							>admin.evaluation.competitions</span
+						>
+						<span *ngIf="rowData.goal !== 'calledUp'" class="condition-value">
+							<p-multiSelect
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								[disabled]="disabled"
+								appendTo="body"
+								[options]="phases"
+								[(ngModel)]="rowData.phases"
+								name="phase"
+								#phase="ngModel"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							></p-multiSelect>
+							<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate>of</span>
+							<p-multiSelect
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								[disabled]="disabled"
+								appendTo="body"
+								[virtualScroll]="true"
+								virtualScrollItemSize="30"
+								[filter]="true"
+								[options]="competitions"
+								[(ngModel)]="rowData.competitions"
+								name="competition"
+								#competition="ngModel"
+								(onChange)="onChangeCompetitions(rowIndex)"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-multiSelect>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="!rowData.competitions || rowData.competitions.length === 0"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate
+								>bonus.panel.competitionsRelationFlag</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="booleanRelationOptions"
+								[(ngModel)]="rowData.competitionsRelationFlag"
+								name="competitionsRelationFlag"
+								#competitionsRelationFlag="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-dropdown>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label" translate>club.settings.seasons</span>
+						<span class="condition-value">
+							<p-multiSelect
+								maxSelectedLabels="1"
+								selectedItemsLabel="{0} selected"
+								[disabled]="disabled"
+								appendTo="body"
+								[options]="seasonsItems"
+								[(ngModel)]="rowData.seasons"
+								name="season"
+								#season="ngModel"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								(onChange)="onChangeSeason(rowIndex)"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							>
+							</p-multiSelect>
+							<div
+								class="form-invalid fas fa-exclamation"
+								*ngIf="rowData?.seasons?.length === 0"
+								pTooltip="{{ 'password.errors.required' | translate }}"
+							></div>
+							<span style="margin-left: 1em; margin-right: 1em; color: #bbb" translate
+								>bonus.panel.seasonsRelationFlag</span
+							>
+							<p-dropdown
+								[readonly]="disabled"
+								appendTo="body"
+								[options]="booleanRelationOptions"
+								[(ngModel)]="rowData.seasonsRelationFlag"
+								name="seasonsRelationFlag"
+								#seasonsRelationFlag="ngModel"
+								[style]="{ width: '100%', 'min-width': '100%' }"
+								[dropdownIcon]="disabled ? 'none' : 'fas fa-chevron-down'"
+								[placeholder]="disabled ? null : ('dropdown.placeholder' | translate)"
+							></p-dropdown>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label" translate>admin.contracts.startFrom</span>
+						<span class="condition-value">
+							<p-calendar
+								[(ngModel)]="rowData.startDate"
+								[disabled]="disabled"
+								[style.width]="'15%'"
+								appendTo="body"
+								name="startDate"
+								#startDate="ngModel"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+						</span>
+					</div>
+					<div class="condition-row">
+						<span class="condition-label" translate>admin.contracts.until</span>
+						<span class="condition-value">
+							<p-calendar
+								[(ngModel)]="rowData.untilDate"
+								[disabled]="disabled"
+								[style.width]="'15%'"
+								appendTo="body"
+								name="untilDate"
+								#untilDate="ngModel"
+								[clearButtonStyleClass]="'p-button-sm'"
+								[todayButtonStyleClass]="'p-button-sm'"
+							></p-calendar>
+						</span>
+					</div>
+				</th>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>

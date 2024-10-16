@@ -1,0 +1,73 @@
+<span *ngIf="option">
+	<span pTooltip="{{ getTooltip() }}" [escape]="false"
+		[tooltipDisabled]="!option.installments || (option.installments && option.installments.length === 0)">
+		<span *ngIf="!option.installments || (option.installments && option.installments.length === 0); else multiple"
+			style="margin-right: 1em" translate>admin.contracts.options.withinOneInstallments</span>
+		<ng-template #multiple><span style="margin-right: 1em; color: #bbb" translate
+				[translateParams]="{ value: option.installments.length }">admin.contracts.options.withinInstallments</span>
+		</ng-template>
+		<i class="fas fa-search" pTooltip="{{ 'contract.managePayment' | translate }}" (click)="openInstallments()"></i>
+		<span style="margin-left: 2em; color: var(--color-neutral-900)">{{ 'referenceValue' | translate }}:
+			{{
+			option.amount
+			? ('bonus.amount' | translate)
+			: option.grossAmount
+			? ('admin.contracts.grossAmount' | translate)
+			: ''
+			}}
+		</span>
+	</span>
+
+	<div *ngIf="showInstallmentsTable" class="installments-table-container">
+		<p-table styleClass="p-datatable-striped" [value]="option.installments">
+			<ng-template pTemplate="caption">
+				<div class="headers">
+					<i *ngIf="!disabled" class="fas fa-plus" (click)="addInstallment()" style="cursor: pointer"
+						pTooltip="{{ 'add.installments' | translate }}"></i>
+				</div>
+			</ng-template>
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th translate>admin.evaluation.value</th>
+					<th translate>general.date</th>
+					<th translate>admin.dashboard.season</th>
+					<th></th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10">>
+					<td style="display: flex; width: 100%">
+						<span>
+							<span *ngIf="!option.percentage">{{ currency }}</span>
+							<span *ngIf="option.percentage">%</span>
+							<input [disabled]="disabled" [(ngModel)]="rowData.value" name="value" type="text" pInputText iterproMask
+								(input)="updateResidual()" [ngModelOptions]="{ standalone: true }" />
+						</span>
+					</td>
+					<td>
+						<p-calendar [disabled]="disabled" appendTo="body" [(ngModel)]="rowData.date" [minDate]="getPrevious(rowIndex)" [maxDate]="option.within" dateFormat="dd/mm/yy"
+							name="date" (onSelect)="resetSeason(rowIndex, $event)"
+							[ngModelOptions]="{ standalone: true }"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'">
+						</p-calendar>
+					</td>
+					<td>
+						<p-dropdown [readonly]="disabled" appendTo="body" [options]="_seasons"
+							[(ngModel)]="rowData.season" placeholder="{{ 'dropdown.placeholder' | translate }}"
+							(onChange)="resetDate($event, rowIndex)" [ngModelOptions]="{ standalone: true }">
+						</p-dropdown>
+					</td>
+					<td style="display: flex; column-gap: 1em; justify-content: flex-end">
+						<i class="fas fa-exclamation" style="color: red; margin-right: 1em"
+							pTooltip="{{ 'installments.missingDate' | translate }}" *ngIf="!rowData.season && !rowData.date"></i>
+						<i *ngIf="!disabled" class="fas fa-copy" (click)="duplicateInstallment(rowIndex)"></i>
+						<i *ngIf="!disabled" class="fas fa-trash-alt" (click)="deleteInstallment(rowIndex)"></i>
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+		<span *ngIf="residualInstallmentValue !== 0" style="margin-right: 1em; color: red"
+			translate>installments.residual0</span>
+	</div>
+</span>

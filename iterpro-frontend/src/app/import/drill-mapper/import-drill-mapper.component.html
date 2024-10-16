@@ -1,0 +1,35 @@
+<div *ngIf="splits.length === 0" translate>drill.mapper.nosplits</div>
+<p-table styleClass="p-datatable-striped" *ngIf="splits.length > 0" [value]="splits">
+	<ng-template pTemplate="header">
+		<tr class="tw-h-10">
+			<th class="text-center" style="width:10%" translate>drill.mapper.mapToDrill</th>
+			<th style="width: 35%" translate>drill.mapper.column.split</th>
+			<th class="text-center" style="width: 20%" translate>drill.mapper.column.importAsNew</th>
+			<th style="width: 35%" translate>drill.mapper.column.drill</th>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-split>
+		<tr class="tw-h-10" *ngIf="!split.mainSession">
+			<td class="text-center">
+				<p-checkbox name="conversion" binary="true" [ngModel]="split.toConvert" [disabled]="split.mainSession"
+					(onChange)="toggleDrillConversion(split)"></p-checkbox>
+			</td>
+			<td>
+				{{ split.splitName }}
+			</td>
+			<td class="text-center">
+				<p-checkbox name="newDrill" binary="true" [ngModel]="split.newDrill" [disabled]="!split.toConvert"
+					(onChange)="toggleImportAsNew(split)"></p-checkbox>
+			</td>
+			<td>
+				<p-dropdown *ngIf="!split.newDrill && split.toConvert" appendTo="body" [filter]="true" [options]="drills"
+					optionLabel="importLabel" [ngModel]="selectedDrill(split.drillName)"
+					[dropdownIcon]="split.toConvert ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="split.toConvert ? ('dropdown.placeholder' | translate) : null"
+					(onChange)="changeMapping($event, split)"></p-dropdown>
+				<span *ngIf="split.newDrill">{{ split.drillName }}</span>
+			</td>
+
+		</tr>
+	</ng-template>
+</p-table>

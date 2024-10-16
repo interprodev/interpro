@@ -1,0 +1,16 @@
+{
+	"name": "shared-ui-primeng",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/shared/ui/primeng/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:shared", "type:ui"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"options": {
+				"format": "compact"
+			}
+		}
+	}
+}

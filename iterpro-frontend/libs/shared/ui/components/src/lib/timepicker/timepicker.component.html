@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+	<p-dropdown
+		#dropdown
+		appendTo="body"
+		[options]="timeOptions"
+		[editable]="true"
+		[formControlName]="'time'"
+		(onChange)="onTimeChange()"
+		(click)="!form.enabled ? dropdown.overlayVisible = false : dropdown.overlayVisible = true"
+	>
+	</p-dropdown>
+</div>

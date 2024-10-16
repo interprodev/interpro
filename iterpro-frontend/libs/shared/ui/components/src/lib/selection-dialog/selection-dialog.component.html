@@ -1,0 +1,58 @@
+<div>
+	@if (subtitle) {
+		<h4 class="tw-mb-2 tw-font-normal">{{ subtitle }}</h4>
+	}
+	@if (!itemsGroups || !itemsGroups.length) {
+		<p-progressSpinner
+			class="tw-mb-2 tw-mr-2 tw-inline-flex tw-h-4 tw-w-4 tw-items-center tw-justify-center"
+			strokeWidth="8"
+		></p-progressSpinner>
+	} @else {
+		<p-listbox
+			[options]="itemsGroups"
+			[(ngModel)]="selectedItems"
+			[multiple]="isMultipleSelection"
+			[listStyle]="{ 'max-height': '30rem' }"
+			[checkbox]="true"
+			[group]="true"
+			[filter]="true"
+			optionLabel="label"
+			optionGroupLabel="groupName"
+			optionGroupChildren="groupItems"
+		>
+			<ng-template let-group pTemplate="group">
+				<div class="tw-flex tw-items-center">
+					<span>{{ group.groupName }}</span>
+				</div>
+			</ng-template>
+			<ng-template let-item pTemplate="item">
+				<div class="tw-inline-block tw-pr-3">
+					@if (item.value.itemUrl) {
+						<img
+							class="tw-mr-2 tw-h-full tw-w-8 tw-rounded-s tw-border-2 tw-border-gray-500"
+							[src]="item.value.itemUrl"
+						/>
+					}
+					<span>{{ item.label }}</span>
+				</div>
+			</ng-template>
+		</p-listbox>
+	}
+	<div class="tw-mt-6 tw-flex tw-w-full tw-justify-end tw-gap-4">
+		<p-button
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			[size]="'small'"
+			[disabled]="!canSave()"
+			(click)="save()"
+			[label]="saveButtonLabel | translate"
+		></p-button>
+		<p-button
+			icon="fas fa-times"
+			[size]="'small'"
+			[outlined]="true"
+			(click)="discard()"
+			[label]="'buttons.discard' | translate"
+		></p-button>
+	</div>
+</div>

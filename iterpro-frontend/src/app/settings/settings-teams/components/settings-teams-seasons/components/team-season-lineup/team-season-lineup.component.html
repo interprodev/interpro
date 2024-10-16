@@ -1,0 +1,43 @@
+@if (editMode) {
+	<div class="tw-flex tw-justify-end tw-items-center tw-mb-2">
+		<p-button type="button" [size]="'small'"
+							[label]="'buttons.selectPlayers' | translate" (click)="openPeopleBulkChangeDialog()"></p-button>
+	</div>
+}
+<p-table [value]="players" [scrollable]="true" [scrollHeight]="'45vh'" [styleClass]="'p-datatable-gridlines'">
+	<ng-template pTemplate="header">
+		<tr class="tw-h-10">
+			<th translate>name</th>
+			<th class="tw-text-center" translate>profile.overview.nationality</th>
+			<th class="tw-text-center" translate>admin.evaluation.jersey</th>
+			<th class="tw-text-center" translate>profile.position</th>
+			<th class="tw-text-center" translate>profile.overview.age</th>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-rowData>
+		<tr class="tw-h-10 tw-cursor-pointer">
+			<td class="tw-flex tw-items-center tw-justify-between tw-gap-2">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<iterpro-picture class="tw-w-12 tw-h-12 tw-bg-white tw-rounded tw-overflow-hidden" [photoUrl]="rowData.downloadUrl" />
+					<div>{{rowData.displayName}}</div>
+					@if (rowData.captain) {
+						<div>(C)</div>
+					}
+				</div>
+			</td>
+			<td class="tw-text-center">
+				@if (rowData.nationality) {
+					<iterpro-player-flag [lang]="rowData.nationality" />
+				}
+			</td>
+			<td class="tw-text-center">{{ rowData.jersey }}</td>
+			<td class="tw-text-center">{{ rowData.position }}</td>
+			<td class="tw-text-center">{{ rowData.birthDate | age }}</td>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="emptymessage">
+		<tr>
+			<td class="tw-pt-4" colspan="5">{{'alert.noPlayersSelected' | translate}}</td>
+		</tr>
+	</ng-template>
+</p-table>

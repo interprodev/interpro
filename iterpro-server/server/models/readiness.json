@@ -1,0 +1,113 @@
+{
+	"name": "Readiness",
+	"plural": "Readiness",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"getPeriodReadiness": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "from",
+					"type": "date",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "to",
+					"type": "date",
+					"http": { "source": "query" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/period",
+				"verb": "get"
+			}
+		},
+		"getTeamReadiness": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "date",
+					"type": "date",
+					"http": { "source": "query" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/team",
+				"verb": "get"
+			}
+		},
+		"getPlayerReadiness": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": { "source": "query" }
+				},
+				{
+					"arg": "date",
+					"type": "date",
+					"http": { "source": "query" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/player",
+				"verb": "get"
+			}
+		},
+		"getPlayerLatestReadiness": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": { "source": "query" }
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/player/latest",
+				"verb": "get"
+			}
+		}
+	}
+}

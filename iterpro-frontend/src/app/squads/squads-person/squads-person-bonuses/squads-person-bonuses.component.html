@@ -1,0 +1,224 @@
+<div class="pflex-col-12">
+	<h3 style="text-transform: uppercase; margin-bottom: 1em" translate>forecast.purchaseContractBonuses</h3>
+
+	<h4 class="spacing" style="font-weight: bold; margin-bottom: 0.6em; margin-top: 1em" translate>
+		forecast.appearanceBonuses
+	</h4>
+
+	<p-table styleClass="p-datatable-striped" *ngIf="appBonusesList && appBonusesList.length > 0" [value]="appBonusesList"
+		[scrollable]="true" scrollHeight="flex" dataKey="id" [style]="{ 'background-color': 'transparent' }">
+		<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td style="width: 3%; max-width: 50px">
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+				</td>
+				<td style="width: 37%; max-width: 200px">
+					<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+						[value]="isReachedProgressBar(rowData)">
+					</p-progressBar>
+				</td>
+				<td style="width: 60%; text-align: left">
+					<span *ngIf="rowData && rowData.amount">{{ currency }}{{ rowData.amount | number : '0.0-3' : 'it-IT' }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData>
+			<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+				<td class="expanded-row" colspan="11">
+					<div class="expanded-row-container">
+						<div class="expanded-row-bar">
+							<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+								[value]="isReachedConditionProgressBarTeam(rowData)">
+							</p-progressBar>
+						</div>
+						<div class="expanded-row-string">
+							<span pTooltip="{{ getBonusText(rowData, i + 1) }}" [escape]="false">
+								<span style="margin-right: 2em; width: 20%">
+									<span style="color: var(--color-neutral-900)" [innerHTML]="getCondition(condition, rowData)"></span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<h4 class="spacing" style="font-weight: bold; margin-bottom: 0.6em; margin-top: 1em" translate>
+		forecast.performanceBonuses
+	</h4>
+	<p-table styleClass="p-datatable-striped" *ngIf="perfBonusesList && perfBonusesList.length > 0" [value]="perfBonusesList"
+		[scrollable]="true" scrollHeight="flex" dataKey="id">
+		<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td style="width: 3%; max-width: 50px">
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+				</td>
+				<td style="width: 37%; max-width: 200px">
+					<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+						[value]="isReachedProgressBar(rowData)">
+					</p-progressBar>
+				</td>
+				<td style="width: 60%; text-align: left">
+					<span *ngIf="rowData && rowData.amount">{{ currency }}{{ rowData.amount | number : '0.0-3' : 'it-IT' }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData>
+			<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+				<td class="expanded-row" colspan="11">
+					<div class="expanded-row-container">
+						<div class="expanded-row-bar">
+							<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+								[value]="isReachedConditionProgressBarTeam(rowData)">
+							</p-progressBar>
+						</div>
+						<div class="expanded-row-string">
+							<span pTooltip="{{ getBonusText(rowData, i + 1) }}" [escape]="false">
+								<span style="margin-right: 2em; width: 20%">
+									<span style="color: var(--color-neutral-900)" [innerHTML]="getCondition(condition, rowData)"></span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<h4 class="spacing" style="font-weight: bold; margin-bottom: 0.6em; margin-top: 1em" translate>
+		forecast.standardTeamBonus
+	</h4>
+	<p-table styleClass="p-datatable-striped" *ngIf="teamBonusesList && teamBonusesList.length > 0" [value]="teamBonusesList"
+		[scrollable]="true" scrollHeight="flex" dataKey="id">
+		<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td style="width: 3%; max-width: 50px">
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+				</td>
+				<td style="width: 37%; max-width: 200px">
+					<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+						[value]="isReachedProgressBar(rowData)">
+					</p-progressBar>
+				</td>
+				<td style="width: 60%; text-align: left">
+					<span *ngIf="rowData && rowData.amount">{{ currency }}{{ rowData.amount | number : '0.0-3' : 'it-IT' }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData>
+			<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+				<td class="expanded-row" colspan="11">
+					<div class="expanded-row-container">
+						<div class="expanded-row-bar">
+							<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+								[value]="isReachedConditionProgressBarTeam(condition)">>
+							</p-progressBar>
+						</div>
+						<div class="expanded-row-string">
+							<span pTooltip="{{ getBonusText(rowData, i + 1) }}" [escape]="false">
+								<span style="margin-right: 2em; width: 20%">
+									<span style="color: var(--color-neutral-900)" [innerHTML]="getCondition(condition, rowData)"></span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<h4 class="spacing" style="font-weight: bold; margin-bottom: 0.6em; margin-top: 1em" translate>
+		forecast.signingBonus
+	</h4>
+	<p-table styleClass="p-datatable-striped" *ngIf="signingBonusesList && signingBonusesList.length > 0"
+		[value]="signingBonusesList" [scrollable]="true" scrollHeight="flex" dataKey="id">
+		<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td style="width: 3%; max-width: 50px">
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+				</td>
+				<td style="width: 37%; max-width: 200px">
+					<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+						[value]="isReachedProgressBar(rowData)">
+					</p-progressBar>
+				</td>
+				<td style="width: 60%; text-align: left">
+					<span *ngIf="rowData && rowData.amount">{{ currency }}{{ rowData.amount | number : '0.0-3' : 'it-IT' }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData>
+			<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+				<td class="expanded-row" colspan="11">
+					<div class="expanded-row-container">
+						<div class="expanded-row-bar">
+							<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+								[value]="isReachedConditionProgressBarTeam(condition)">">
+							</p-progressBar>
+						</div>
+						<div class="expanded-row-string">
+							<span pTooltip="{{ getBonusText(rowData, i + 1) }}" [escape]="false">
+								<span style="margin-right: 2em; width: 20%">
+									<span style="color: var(--color-neutral-900)" [innerHTML]="getCondition(condition, rowData)"></span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<h4 class="spacing" style="font-weight: bold; margin-bottom: 0.6em; margin-top: 1em" translate>
+		forecast.customBonus
+	</h4>
+	<p-table styleClass="p-datatable-striped" *ngIf="customBonusesList && customBonusesList.length > 0"
+		[value]="customBonusesList" [scrollable]="true" scrollHeight="flex" dataKey="id">
+		<ng-template pTemplate="body" let-rowData let-expanded="expanded">
+			<tr class="tw-h-10">
+				<td style="width: 3%; max-width: 50px">
+					<a href="#" [pRowToggler]="rowData">
+						<i [ngClass]="expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'"></i>
+					</a>
+				</td>
+				<td style="width: 37%; max-width: 200px">
+					<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+						[value]="isReachedProgressBar(rowData)">
+					</p-progressBar>
+				</td>
+				<td style="width: 60%; text-align: left">
+					<span *ngIf="rowData && rowData.amount">{{ currency }}{{ rowData.amount | number : '0.0-3' : 'it-IT' }}</span>
+				</td>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="rowexpansion" let-rowData>
+			<tr class="tw-h-10" *ngFor="let condition of rowData.conditions; let i = index">
+				<td class="expanded-row" colspan="11">
+					<div class="expanded-row-container">
+						<div class="expanded-row-bar">
+							<p-progressBar [ngStyle]="{ height: '1.3em', width: '100%' }" [ngClass]="'red'" [showValue]="true"
+								[value]="isReachedConditionProgressBarTeam(condition)">
+							</p-progressBar>
+						</div>
+						<div class="expanded-row-string">
+							<span pTooltip="{{ getBonusText(rowData, i + 1) }}" [escape]="false">
+								<span style="margin-right: 2em; width: 100%">
+									<span style="color: var(--color-neutral-900)" [innerHTML]="getCondition(condition, rowData)"></span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>

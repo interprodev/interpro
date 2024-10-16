@@ -1,0 +1,50 @@
+{
+	"name": "CustomerApi",
+	"plural": "customerApis",
+	"base": "User",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"apiKey": {
+			"type": "string"
+		},
+		"apiKeyExpiry": {
+			"type": "date"
+		},
+		"active": {
+			"type": "boolean",
+			"default": true
+		},
+		"freemium": {
+			"type": "boolean",
+			"default": false
+		},
+		"freemiumExpiry": {
+			"type": "date"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		}
+	},
+	"acls": [],
+	"methods": {},
+	"indexes": {
+		"active_user_index": {
+			"keys": {
+				"username": 1,
+				"active": 1,
+				"apiKey": 1
+			},
+			"options": {
+				"unique": true
+			}
+		}
+	}
+}

@@ -1,0 +1,194 @@
+<form (ngSubmit)="save()" [class.view-mode]="isNotEdit()">
+	<div class="c-header">
+		<h3 translate>chronicForm.chronicIssue</h3>
+		<div class="tw-flex tw-items-center tw-gap-4">
+			<button pButton size="small" class="p-button-primary" *ngIf="!isDisabled()" type="submit">SAVE</button>
+			<p-button size="small" *ngIf="!isHealed() && !isFlaredUp() && isNotEdit()" (click)="edit()" type="button">EDIT</p-button>
+			<p-button size="small" [outlined]="true" *ngIf="this.injury.id && isEdit()" (click)="discard()" type="button">DISCARD</p-button>
+			<p-button size="small" styleClass="p-button-danger" *ngIf="!isFlaredUp() && isNotEdit()" (click)="askDelete()" type="button">DELETE</p-button>
+			<p-button size="small" (click)="close.emit()" type="button">BACK</p-button>
+		</div>
+	</div>
+	<div class="c-form">
+		<div class="c-left">
+			<div>
+				<div class="c-inline">
+					<div class="c-label" translate>sidebar.date</div>
+					<div>
+						<p-calendar
+							showButtonBar="true"
+							[(ngModel)]="injury.date"
+							[style]="{ width: '100%' }"
+							[disabled]="injury.id"
+							name="date"
+							[clearButtonStyleClass]="'p-button-sm'"
+							[todayButtonStyleClass]="'p-button-sm'"
+						></p-calendar>
+					</div>
+				</div>
+				<div class="c-inline">
+					<div class="c-label" translate>medical.infirmary.details.system</div>
+					<div class="c-input">
+						<div>
+							<p-multiSelect
+								styleClass="customMultiSelect"
+								[(ngModel)]="injury.system"
+								[disabled]="isDisabled()"
+								[options]="systemOptions"
+								[style]="{ width: 'auto' }"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								maxSelectedLabels="1000"
+								name="system"
+							>
+							</p-multiSelect>
+						</div>
+					</div>
+				</div>
+				<div class="c-inline">
+					<div class="c-label" translate>medical.infirmary.details.location</div>
+					<div class="c-input">
+						<div>
+							<p-dropdown
+								[(ngModel)]="injury.location"
+								[style]="{ width: 'auto' }"
+								[options]="locationsOptions"
+								[readonly]="injury.id"
+								[required]="true"
+								name="location"
+							></p-dropdown>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="c-inline">
+					<div class="c-label" translate>medical.infirmary.details.anatomicalDetails</div>
+					<div class="c-input">
+						<div>
+							<p-multiSelect
+								styleClass="customMultiSelect"
+								[disabled]="isDisabled()"
+								[options]="anatomicalDetails"
+								[(ngModel)]="injury.anatomicalDetails"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+								[virtualScroll]="true"
+								virtualScrollItemSize="30"
+								name="anatomicalDetails"
+							>
+							</p-multiSelect>
+						</div>
+					</div>
+				</div>
+				<div class="c-label" translate>medical.infirmary.details.diagnosis</div>
+				<div>
+					<textarea [(ngModel)]="injury.diagnosis" [disabled]="isDisabled()" name="diagnosis" rows="8"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="c-right">
+			<div>
+				<div class="c-label" translate>chronicIssue.symptoms</div>
+				<div>
+					<textarea [(ngModel)]="injury.symptoms" [disabled]="isDisabled()" name="symptoms" rows="3"></textarea>
+				</div>
+				<div class="c-label" translate>chronicIssue.suggestedTherapy</div>
+				<div>
+					<textarea [(ngModel)]="injury.suggestedTherapy" [disabled]="isDisabled()" name="therapy" rows="3"></textarea>
+				</div>
+				<div class="c-label label-todo" translate>
+					toDo
+
+					<i (click)="addToDo()" *ngIf="!isDisabled()" aria-hidden="true" class="fas fa-plus"></i>
+				</div>
+				<div class="to-do">
+					<div *ngFor="let toDo of injury.toDo; let i = index" class="to-do-item">
+						•
+						<input
+							type="text"
+							class="bulleted"
+							placeholder="To do"
+							[ngModel]="injury.toDo[i]"
+							(change)="onValueUpdateToDo($event, i)"
+							[disabled]="isDisabled()"
+							name="{{ 'toDo' + i }}"
+						/>
+						<i
+							(click)="removeToDo(i)"
+							*ngIf="!isDisabled()"
+							aria-hidden="true"
+							class="fas fa-trash"
+							pTooltip="Remove item"
+						></i>
+					</div>
+				</div>
+				<div class="c-label label-todo" translate>
+					notToDo
+
+					<i *ngIf="!isDisabled()" (click)="addNotToDo()" aria-hidden="true" class="fas fa-plus"></i>
+				</div>
+				<div class="to-do">
+					<div *ngFor="let notToDo of injury.notToDo; let i = index" class="not-to-do-item">
+						•
+						<input
+							type="text"
+							class="bulleted"
+							placeholder="Not to do"
+							[ngModel]="injury.notToDo[i]"
+							(change)="onValueUpdateNotToDo($event, i)"
+							[disabled]="isDisabled()"
+							name="{{ 'notToDo' + i }}"
+						/>
+						<i
+							(click)="removeNotToDo(i)"
+							*ngIf="!isDisabled()"
+							aria-hidden="true"
+							class="fas fa-trash"
+							pTooltip="Remove item"
+						></i>
+					</div>
+				</div>
+				<div class="c-label" translate>medical.infirmary.report.status</div>
+				<div class="c-status dropdown-ontop">
+					<p-dropdown
+						*ngIf="!isFlaredUp()"
+						[style]="{ width: '90%' }"
+						[options]="isDisabled() ? fullStatusOptions : statusOptions"
+						[readonly]="isDisabled()"
+						[(ngModel)]="injury.currentStatus"
+						name="currentStatus"
+					>
+						<ng-template let-status pTemplate="selectedItem">
+							<div class="point-select">
+								<div class="point-value">{{ status.value | translate }}</div>
+								<div class="point" [style.backgroundColor]="status.color"></div>
+							</div>
+						</ng-template>
+						<ng-template let-status pTemplate="item">
+							<div class="point-select point-select-item">
+								<div class="point-value">{{ status.value | translate }}</div>
+								<div class="point" [style.backgroundColor]="status.color"></div>
+							</div>
+						</ng-template>
+					</p-dropdown>
+					<span class="flared-up" translate>Flared-Up</span>
+					<p-inputSwitch
+						[(ngModel)]="flaredUp"
+						[ngModelOptions]="{ standalone: true }"
+						*ngIf="!isFlaredUp()"
+						[disabled]="isDisabled() && injury.id"
+						(onChange)="flareUp()"
+					></p-inputSwitch>
+					<i
+						*ngIf="isFlaredUp()"
+						pTooltip="Go to injury details"
+						style="cursor: pointer; color: #fff; margin-left: 1.5em"
+						href="#"
+						[routerLink]="getLinkInfirmary(injury)"
+						class="fas fa-fire"
+						style="color: var(--color-primary-500)"
+					>
+					</i>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

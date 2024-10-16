@@ -1,0 +1,49 @@
+{
+	"name": "PlayerReport",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"templateId": {
+			"type": "string"
+		},
+		"templateVersion": {
+			"type": "number"
+		},
+		"displayName": {
+			"type": "string"
+		},
+		"position": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"nationality": {
+			"type": "string"
+		},
+		"birthDate": {
+			"type": "date"
+		},
+		"reportData": {
+			"type": "object"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

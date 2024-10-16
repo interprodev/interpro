@@ -1,0 +1,42 @@
+.infoHealth {
+	/* margin: 1em; */
+	width: 100%;
+}
+
+.section-player {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.profile-pic {
+	margin-top: 0.5em;
+	width: 90px;
+}
+
+.bbox {
+	@apply tw-p-2 tw-bg-shark-1000 tw-rounded;
+}
+.bbox + .bbox {
+	margin-top: 10px;
+}
+.bbox h3 {
+	margin-bottom: 10px;
+}
+
+.table-scroll {
+	max-height: 206px;
+	overflow-y: auto;
+}
+
+.column {
+	flex-direction: column;
+}
+.selected .table-cell {
+	background: rgba(215, 44, 44, 0.4) !important;
+}
+
+
+iterpro-player-dropdown{
+	flex: 1;
+}

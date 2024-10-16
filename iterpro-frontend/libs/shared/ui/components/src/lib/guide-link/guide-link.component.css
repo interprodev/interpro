@@ -1,0 +1,21 @@
+.guide-link {
+	position: fixed;
+	top: 200px;
+	z-index: 90000;
+	left: -3px;
+	width: 32px;
+	height: 60px;
+	padding: 3px 0px 0px;
+	background-color: var(--color-primary-500);
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	box-shadow: inset -1px 0px 0 rgba(0, 0, 0, 0.08), inset -2px 0px 0 rgba(255, 255, 255, 0.7),
+		inset 9px 0px 29px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.guide-link:hover {
+	left: 0;
+}

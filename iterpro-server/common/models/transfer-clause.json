@@ -1,0 +1,29 @@
+{
+	"name": "TransferClause",
+	"plural": "TransferClauses",
+	"base": "ContractOption",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"percentage": {
+			"type": "boolean",
+			"default": false
+		},
+		"conditioned": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"model": "TransferContract",
+			"foreignKey": "contractId"
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

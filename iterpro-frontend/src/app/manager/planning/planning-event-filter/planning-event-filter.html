@@ -1,0 +1,50 @@
+<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded tw-flex tw-justify-between tw-gap-4">
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-text-sm iterpro-text-color-900">{{'players' | translate}}: </div>
+		<div>
+			<p-multiSelect [options]="players" [(ngModel)]="selectedPlayers" optionLabel="displayName"
+				selectedItemsLabel="{0} selected" maxSelectedLabels="1" placeholder="{{ 'dropdown.placeholder' | translate }}"
+				(onChange)="changePlayersSelection()">
+			</p-multiSelect>
+		</div>
+  </div>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-text-sm iterpro-text-color-900">{{'admin.staff' | translate}}: </div>
+		<div>
+			<p-multiSelect [options]="staffList" [(ngModel)]="selectedStaff" selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1" placeholder="{{ 'dropdown.placeholder' | translate }}" (onChange)="changeStaffSelection()">
+			</p-multiSelect>
+		</div>
+  </div>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-text-sm iterpro-text-color-900">{{'preferences.groups' | translate}}: </div>
+		<div>
+			<p-multiSelect [options]="groups" [(ngModel)]="selectedGroups" optionLabel="name" selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1" placeholder="{{ 'dropdown.placeholder' | translate }}" (onChange)="changeGroupSelection()">
+			</p-multiSelect>
+		</div>
+  </div>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-text-sm iterpro-text-color-900">{{'import.dashboard.author' | translate}}: </div>
+		<div>
+			<p-multiSelect [options]="authorsList" [(ngModel)]="selectedAuthors" selectedItemsLabel="{0} selected"
+				maxSelectedLabels="1" placeholder="{{ 'dropdown.placeholder' | translate }}"
+				(onChange)="changeAuthorSelection()">
+			</p-multiSelect>
+		</div>
+  </div>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <div class="tw-text-sm iterpro-text-color-900">{{'event.format' | translate}}: </div>
+		<div>
+			<p-multiSelect [options]="formats" [(ngModel)]="selectedFormats" selectedItemsLabel="{0} selected"
+				maxSelectedLabels="0" placeholder="{{ 'dropdown.placeholder' | translate }}" (onChange)="changeSelection()">
+				<ng-template let-item pTemplate="item">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<div class="iterpro-point" [style.backgroundColor]="getFormatColor(item.value)"></div>
+						<div>{{ item.label | translate }}</div>
+					</div>
+				</ng-template>
+			</p-multiSelect>
+		</div>
+  </div>
+</div>

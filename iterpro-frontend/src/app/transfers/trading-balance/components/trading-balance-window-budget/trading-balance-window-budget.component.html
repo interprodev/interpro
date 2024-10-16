@@ -1,0 +1,38 @@
+@if(transferWindow?.budget) {
+<div class="pflex-flex pflex-flex-column pflex-gap-4 pflex-align-items-end pflex-text-base">
+	<!-- Budgets -->
+	<div class="pflex-flex pflex-gap-6">
+		<div class="pflex-flex pflex-align-items-baseline pflex-gap-2">
+			<!-- Actions -->
+			<div class="pflex-flex pflex-gap-2 pflex-align-items-center">
+				@if (isEditing) {
+				<iterpro-icon-button [icon]="'fas fa-save'" (click)="save()" [tooltip]="'buttons.save' | translate" />
+				<iterpro-icon-button [icon]="'fas fa-xmark'" (click)="discard()" [tooltip]="'buttons.discard' | translate" />
+				} @else {
+				<iterpro-icon-button [icon]="'fas fa-edit'" (click)="edit()" [tooltip]="'buttons.edit' | translate" />
+				}
+			</div>
+
+			<div class="pflex-flex pflex-align-items-baseline pflex-gap-2">
+				<label class="pflex-opacity-70">{{ 'transfer.windows.budget' | translate }}: </label>
+				<span class="pflex-flex pflex-align-items-baseline">
+					<label>{{ currency }}</label>
+					<input
+						class="pflex-texl-2xl pflex-font-bold"
+						type="text"
+						iterproMask
+						pInputText
+						[disabled]="!isEditing"
+						[(ngModel)]="transferWindowBudget"
+					/>
+				</span>
+			</div>
+		</div>
+
+		<div class="pflex-flex pflex-align-items-baseline pflex-gap-2">
+			<label class="pflex-opacity-70">{{ 'transfer.windows.residualBudget' | translate }}: </label>
+			<span class="pflex-texl-2xl pflex-font-bold">{{ residualBudget | shortNumber : true }}</span>
+		</div>
+	</div>
+</div>
+}

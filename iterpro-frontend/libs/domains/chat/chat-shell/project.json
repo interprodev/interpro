@@ -1,0 +1,14 @@
+{
+	"name": "chat-shell",
+	"$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/chat/chat-shell/src",
+	"prefix": "iterpro",
+	"tags": ["scope:chat", "type:shell"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

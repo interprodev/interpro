@@ -1,0 +1,33 @@
+@if (seasonForm) {
+	<div class="tw-h-full tw-relative">
+		<div class="tw-flex tw-items-center tw-justify-between tw-py-8">
+			<iterpro-dialog-header [title]="header"></iterpro-dialog-header>
+			<iterpro-action-buttons [buttonTypes]="(seasonForm.dirty && teamSeason?.id) ? ['delete'] : (!seasonForm.dirty && teamSeason?.id) ? ['discard', 'delete'] : ['discard']"
+															[editMode]="true" [discardLabel]="'buttons.close'" [discardIcon]="null"
+															[deleteAskConfirmation]="true"
+															[deleteConfirmationMessage]="'confirm.deleteSeason'"
+															(discard)="onDiscard()" (delete)="onDelete()">
+			</iterpro-action-buttons>
+		</div>
+		<ng-container [formGroup]="seasonForm">
+			<iterpro-team-seasons-details [formGroupName]="'details'" [clubSeasons]="clubSeasons"  [device]="team.device" [editMode]="true" [saveClicked]="saveClicked"></iterpro-team-seasons-details>
+		</ng-container>
+		<p-tabMenu [model]="menuItems" [activeItem]="activeMenu"/>
+		<div class="tw-mt-2 tw-p-2" [formGroup]="seasonForm">
+			@switch (activeMenu) {
+				@case (menuItems[0]) {
+					<iterpro-team-season-competitions [formGroupName]="'competitions'" [teamSeason]="teamSeason" [team]="team" [isNationalClub]="isNationalClub" [clubPlayers]="clubPlayers" [seasonPlayerIds]="teamSeason.playerIds"  [clubSeasons]="clubSeasons" [editMode]="true" [saveClicked]="saveClicked"></iterpro-team-season-competitions>
+				}
+				@case (menuItems[1]) {
+					<iterpro-team-season-lineup [editMode]="true" [clubPlayers]="clubPlayers" [seasonPlayerIds]="teamSeason.playerIds" [seasonName]="teamSeason.name" (lineUpChangeEmitter)="linedUpChanged($event)"></iterpro-team-season-lineup>
+				}
+				@case (menuItems[2]) {
+					<iterpro-team-season-staff [editMode]="true" [clubStaff]="clubStaff" [seasonStaffIds]="teamSeason.staffIds" [seasonName]="teamSeason.name" (staffChangeEmitter)="staffChanged($event)"></iterpro-team-season-staff>
+				}
+			}
+			@if (seasonForm.dirty) {
+				<iterpro-dialog-footer-buttons (discardClicked)="onDiscard()" (confirmClicked)="onConfirm()" [confirmAskConfirmation]="true"></iterpro-dialog-footer-buttons>
+			}
+		</div>
+	</div>
+}

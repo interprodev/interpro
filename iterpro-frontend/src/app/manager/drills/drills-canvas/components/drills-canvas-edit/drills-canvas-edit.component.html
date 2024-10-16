@@ -1,0 +1,210 @@
+<div class="main tw-flex tw-flex-col tw-gap-4 tw-py-8">
+	<div
+		class="tw-flex tw-h-full tw-w-full tw-flex-col tw-items-center tw-gap-4 tw-rounded-lg tw-bg-shark-950 tw-bg-opacity-95 tw-p-8"
+	>
+		<!-- Header -->
+		<!-- Title and Save -->
+		<div class="tw-items tw-flex tw-w-full tw-items-start tw-justify-between">
+			<!-- Back - Title - Author -->
+			<div class="gap-1 tw-flex tw-flex-col tw-items-start">
+				<div class="tw-relative tw-flex tw-flex-col tw-gap-2">
+					<div class="tw-flex tw-gap-2">
+						<!-- Back -->
+						<iterpro-back-button />
+						<!-- Title -->
+						<div class="tw-flex tw-items-baseline tw-gap-4">
+							<!-- Error Warn: no title -->
+							@if (!drillCanvasForm.valid) {
+								<small class="tw-absolute -tw-top-5 tw-left-0 tw-text-danger-500">{{
+									'drillCanvas.editor.titleRequired' | translate
+								}}</small>
+							}
+							<!-- Form -->
+							<form [formGroup]="drillCanvasForm" class="iterpro-item-container tw-grid tw-items-center">
+								<input
+									class="tw-inline-block tw-w-auto tw-text-xl tw-font-bold"
+									type="text"
+									pInputText
+									pAutoFocus
+									[placeholder]="'drillCanvas.editor.defaultName' | translate"
+									formControlName="name"
+								/>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- Author -->
+				<div>
+					@if (lastChangelog?.authorName && lastChangelog?.timestamp) {
+						<!-- Author and Date -->
+						<div class="tw-mt-1 tw-flex tw-items-center tw-justify-end tw-gap-1">
+							<p class="tw-text-xs tw-text-shark-200">{{ lastChangelog.authorName }}</p>
+							<p class="tw-text-xs tw-text-shark-200">{{ lastChangelog.timestamp | formatDateBySetting: 'HH:mm' }}</p>
+						</div>
+					}
+				</div>
+			</div>
+			<!-- Delete and Save -->
+			<div class="tw-flex tw-items-center tw-gap-4">
+				<!-- Download as Image and Link to Drill -->
+				@if (editingCanvas?.id) {
+					<div class="tw-flex tw-items-center tw-gap-4">
+						<p-button
+							[size]="'small'"
+							[disabled]="!drillCanvasForm.value.name || !drillCanvas?.backgroundImage || isLoading"
+							[label]="'drillCanvas.downloadPreview' | translate"
+							(click)="downloadPreview()"
+						/>
+						<p-button
+							[size]="'small'"
+							[disabled]="!drillCanvas?.backgroundImage || isLoading"
+							[label]="'Link to Drill'"
+							(click)="linkToDrill()"
+						/>
+					</div>
+				}
+
+				@if (editingCanvas?.id) {
+					<p-button
+						[disabled]="isLoading"
+						styleClass="p-button-danger"
+						[label]="'buttons.delete' | translate"
+						(click)="deleteDrillCanvas()"
+						[size]="'small'"
+					/>
+				}
+
+				@if (drillCanvasForm?.dirty || undoStack?.length > 0) {
+					<!-- Save -->
+					<p-button
+						styleClass="p-button-primary"
+						[size]="'small'"
+						[loading]="isLoading"
+						[disabled]="!drillCanvasForm.valid"
+						[label]="'buttons.save' | translate"
+						(click)="saveDrillCanvas()"
+					/>
+				}
+			</div>
+		</div>
+
+		<!-- Content -->
+		<div class="tw-relative tw-flex tw-h-[80vh] tw-w-full tw-max-w-full tw-items-stretch tw-gap-4">
+			<!-- Left Column -->
+			<div class="tw-relative tw-flex tw-h-full tw-w-[calc(100%-20rem)] tw-flex-col tw-items-end tw-gap-2">
+				<!-- Actions -->
+				<iterpro-drills-canvas-actions
+					class="tw-absolute"
+					[canvas]="drillCanvas"
+					[undoStack]="undoStack"
+					[redoStack]="redoStack"
+					[activeSelection]="activeSelection"
+					(copyObject)="addObj($event)"
+					(deleteObjects)="deleteSelectedObject($event)"
+					(groupObjects)="group($event)"
+					(ungroupObjects)="ungroup($event)"
+					(resetCanvas)="resetCanvas()"
+					(undoAction)="undo()"
+					(redoAction)="redo()"
+					(sendBack)="sendBack($event)"
+					(bringFront)="bringFront($event)"
+					(colorChange)="updateObjColor($event)"
+				/>
+
+				<!-- Canvas -->
+				<div
+					#canvasContainer
+					(iterproClickOutside)="clearSelection()"
+					class="tw-mt-14 tw-flex tw-h-full tw-w-full tw-items-center tw-justify-center tw-overflow-hidden tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950"
+				>
+					<canvas></canvas>
+				</div>
+			</div>
+
+			<!-- Right Column -->
+			<div class="tw-h-[calc(100vh-17rem)] tw-w-80 tw-min-w-80 tw-max-w-sm tw-overflow-y-auto">
+				<div class="tw-flex tw-flex-col tw-gap-4" *ngIf="drillMappings$ | async as data">
+					@if (drillCanvas.backgroundImage) {
+						<!-- Tools -->
+						<div class="tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2">
+							<p-panel [header]="'drillCanvas.editor.tools' | translate" [toggleable]="true" [collapsed]="false">
+								<div class="tw-mt-4 tw-flex tw-flex-wrap tw-gap-2">
+									<iterpro-drills-canvas-tools
+										[canvasMode]="drillCanvasMode"
+										(cursorMode)="activateCursor($event)"
+										(drawingMode)="activateDrawing($event)"
+										(addTextbox)="addObj($event)"
+									/>
+								</div>
+							</p-panel>
+						</div>
+
+						<!-- Arrows & Shapes -->
+						<div class="tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2">
+							<p-panel [header]="'drillCanvas.editor.shapes' | translate" [toggleable]="true" [collapsed]="true">
+								<div class="tw-mt-4 tw-flex tw-flex-wrap tw-gap-2">
+									<iterpro-drills-canvas-shapes
+										[canvas]="drillCanvas"
+										[canvasMode]="drillCanvasMode"
+										(addShape)="addObj($event)"
+										(addArrow)="addObj($event)"
+										(toggleEvents)="toggleEvents($event)"
+										(arrowMode)="toggleArrowMode($event)"
+										(lineMode)="toggleLineMode($event)"
+									/>
+								</div>
+							</p-panel>
+						</div>
+
+						<!-- Drill Equipment -->
+						<div class="tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2">
+							<p-panel [header]="'drillCanvas.editor.equipment' | translate" [toggleable]="true" [collapsed]="true">
+								<div class="tw-mt-4 tw-flex tw-flex-wrap tw-gap-2">
+									@for (equipment of data.elements; track $index) {
+										<iterpro-drills-canvas-item [item]="equipment" (addItem)="addObj($event)" />
+									}
+								</div>
+							</p-panel>
+						</div>
+
+						<!-- Players -->
+						<div class="tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2">
+							<p-panel [header]="'drillCanvas.editor.players' | translate" [toggleable]="true" [collapsed]="true">
+								<iterpro-drills-canvas-players
+									class="tw-mt-4 tw-block"
+									[players]="data.players"
+									(addPlayer)="addObj($event)"
+								/>
+							</p-panel>
+						</div>
+
+						<!-- Backgrounds -->
+						<div class="tw-rounded-lg tw-border tw-border-solid tw-border-shark-900 tw-bg-shark-950 tw-p-2">
+							<p-panel [header]="'drillCanvas.editor.backgrounds' | translate" [toggleable]="true" [collapsed]="true">
+								<div class="tw-mt-4 tw-flex tw-flex-wrap tw-gap-2">
+									@for (background of data.backgrounds; track $index) {
+										<iterpro-drills-canvas-item
+											[item]="background"
+											[isBackground]="true"
+											(addItem)="setBackgroundImage($event)"
+										/>
+									}
+								</div>
+							</p-panel>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (showDrillSearch) {
+	<iterpro-drills-search
+		[drills]="drillsListBackup"
+		[drillFiltersConfig]="drillFiltersConfig"
+		[drillsMapping]="drillsMapping"
+		(discardEmitter)="showDrillSearch = false"
+		(saveEmitter)="handleDrillSelected($event)"
+	/>
+}

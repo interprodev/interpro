@@ -1,0 +1,954 @@
+<form #formTransfer="ngForm" id="formTransfer" (ngSubmit)="onSubmit(formTransfer)">
+	<div class="form-container" style="margin-bottom: 1.5em">
+		<div class="header-buttons">
+			<div *ngIf="!contract" class="flexed" style="width: 100%; justify-content: space-between">
+				<span class="greyed" style="margin-left: 1em" translate>admin.info.notFound</span>
+			</div>
+
+			<div class="flexed" style="width: 100%; justify-content: space-between">
+				<div class="flexed">
+					<span class="flexed greyed" style="text-transform: none; margin-right: 2em">
+						<span style="margin-right: 1em" *ngIf="!contractDataLoading; else showLabelLoading">{{
+							'admin.contracts.validated' | translate
+						}}</span>
+						<span
+							*ngIf="(contract && contract?.validated) || !editMode"
+							[style.background-color]="contract?.validated ? 'green' : 'red'"
+							class="point"
+							pTooltip="{{ 'bonus.asset' | translate }}"
+						></span>
+						<p-inputSwitch
+							*ngIf="contract && !contract?.validated && editMode && canViewNotarize()"
+							[disabled]="!isContractComplete()"
+							[(ngModel)]="contract.validated"
+							[pTooltip]="'admin.contract.notarize' | translate"
+							[ngModelOptions]="{ standalone: true }"
+							(onChange)="confirmValidateChange($event)"
+							[style]="{ 'font-size': '0.75em' }"
+						></p-inputSwitch>
+					</span>
+				</div>
+
+				<div class="flexed">
+					<div class="upload">
+						<span class="inline-label" *ngIf="!contractDataLoading; else showLabelLoading"
+							>{{ contract?._attachments?.length }} {{ 'admin.contracts.fileAttached' | translate }}</span
+						>
+						<i class="fas fa-folder-open" (click)="openFileDialog()" pTooltip="{{ 'dialog.file.showDialog' | translate }}"></i>
+					</div>
+					<i
+						*ngIf="contract"
+						style="text-transform: none"
+						class="fas fa-history"
+						(click)="openHistory()"
+						pTooltip="{{ 'contract.openHistory' | translate }}"
+						translate
+					></i>
+					<p-inputSwitch
+						*ngIf="contract && contract?.validated && canViewDeNotarize()"
+						[pTooltip]="'admin.contract.unfreeze' | translate"
+						[disabled]="!editMode"
+						[(ngModel)]="contract.validated"
+						[ngModelOptions]="{ standalone: true }"
+						(onChange)="confirmValidateChange($event)"
+						[style]="{ 'font-size': '0.75em', 'margin-left': '1em' }"
+					></p-inputSwitch>
+				</div>
+			</div>
+		</div>
+
+		<div *ngIf="contract" style="margin-top: 1em">
+			<h3 class="spacing" translate>admin.contracts.origin</h3>
+			<table class="fields-table block-table" style="width: 100%; border-spacing: 0.5em 0.8em">
+				<tr>
+					<td>
+						<div class="inline-group" style="padding-top: 0.5em; justify-content: flex-start">
+							<div class="inline-group">
+								<p-dropdown
+									appendTo="body"
+									[style]="{ width: '100%' }"
+									[readonly]="contract?.validated || !editMode"
+									[options]="outward ? outwardItems : originItems"
+									[(ngModel)]="contract.personStatus"
+									name="personStatus"
+									[ngClass]="{
+										'ng-dirty ng-invalid': personStatus.errors && personStatus.errors.required
+									}"
+									#personStatus="ngModel"
+									placeholder="{{ 'dropdown.placeholder' | translate }}"
+									required
+								></p-dropdown>
+								<div class="form-invalid fas fa-exclamation" *ngIf="personStatus.errors && personStatus.errors.required" translate></div>
+								<span *ngIf="contract?.personStatus === 'purchased' || contract?.personStatus === 'sell'" class="inline-label">
+									<span *ngIf="buyBackBonuses && buyBackBonuses[0] && buyBackBonuses[0].amount" style="text-transform: lowercase" translate
+										>transferContract.options.buyBack</span
+									>
+									<span
+										*ngIf="
+											buyBackBonuses &&
+											buyBackBonuses[0] &&
+											buyBackBonuses[0].amount &&
+											sellOnFeeBonuses &&
+											sellOnFeeBonuses[0] &&
+											sellOnFeeBonuses[0].amount
+										"
+										style="text-transform: lowercase"
+										translate
+										>and</span
+									>
+									<span
+										*ngIf="sellOnFeeBonuses && sellOnFeeBonuses[0] && sellOnFeeBonuses[0].amount"
+										style="text-transform: lowercase"
+										translate
+										>transfercontract.options.sellOnFee</span
+									>
+								</span>
+								<span *ngIf="contract?.personStatus === 'inTeamOnLoan' || contract?.personStatus === 'onLoan'" class="inline-label">
+									<span
+										*ngIf="
+											loanOptionBonuses && loanOptionBonuses[0] && loanOptionBonuses[0].option && loanOptionBonuses[0].option !== 'none'
+										"
+										[translateParams]="getParams()"
+										style="text-transform: lowercase"
+										translate
+										>transferContract.options.loan</span
+									>
+								</span>
+							</div>
+
+							<div
+								*ngIf="!outward && contract?.personStatus !== 'freeTransfer' && contract?.personStatus !== 'homegrown'"
+								class="inline-group"
+							>
+								<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.fromClub</span>
+								<ng-container *ngIf="!contractDataLoading; else showLabelLoading">
+									<p-autoComplete
+										[style]="{ width: '300px' }"
+										[disabled]="contract?.validated || !editMode"
+										name="fromClub"
+										#fromClub="ngModel"
+										[(ngModel)]="selectedClub"
+										[suggestions]="thirdPartyClubs"
+										(completeMethod)="searchClub($event)"
+										(onSelect)="selectClub($event)"
+										field="label"
+										dropdownMode="current"
+										required
+										[ngClass]="{
+											'ng-dirty ng-invalid': fromClub.errors && fromClub.errors.required
+										}"
+										[required]="true"
+									></p-autoComplete>
+									<span class="form-invalid fas fa-exclamation" *ngIf="fromClub.errors && fromClub.errors.required" translate></span>
+								</ng-container>
+
+								<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.toClub</span>
+								<span translate class="nowrap" style="font-size: 0.9rem" *ngIf="!contractDataLoading; else showLabelLoading">{{
+									club?.name
+								}}</span>
+								<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.homeTransfer</span>
+								<p-inputSwitch
+									[disabled]="contract?.validated || !editMode"
+									[(ngModel)]="contract.homeTransfer"
+									name="homeTransfer"
+									#homeTransfer="ngModel"
+								></p-inputSwitch>
+								<span translate class="nowrap" style="margin-left: 1em; font-size: 0.9rem">{{
+									(contract?.homeTransfer ? 'admin.contracts.home' : 'admin.contracts.away') | translate
+								}}</span>
+							</div>
+							<div
+								*ngIf="outward && contract?.personStatus !== 'freeTransfer' && contract?.personStatus !== 'homegrown'"
+								class="inline-group"
+							>
+								<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.fromClub</span>
+								<span translate style="font-size: 0.9rem" class="nowrap">{{ club?.name }}</span>
+								<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.toClub</span>
+								<ng-container *ngIf="!contractDataLoading; else showLabelLoading">
+									<p-autoComplete
+										[style]="{ width: '300px' }"
+										[readonly]="contract?.validated || !editMode"
+										name="fromClub"
+										#fromClub="ngModel"
+										[(ngModel)]="selectedClub"
+										[suggestions]="thirdPartyClubs"
+										(completeMethod)="searchClub($event)"
+										(onSelect)="selectClub($event)"
+										field="label"
+										dropdownMode="current"
+									></p-autoComplete>
+									<span translate class="inline-label nowrap" style="font-size: 0.9rem">admin.contracts.homeTransfer</span>
+								</ng-container>
+								<p-inputSwitch
+									[disabled]="contract?.validated || !editMode"
+									[(ngModel)]="contract.homeTransfer"
+									name="homeTransfer"
+									#homeTransfer="ngModel"
+								></p-inputSwitch>
+								<span translate class="nowrap" style="margin-left: 1em; font-size: 0.9rem">{{
+									(contract?.homeTransfer ? 'admin.contracts.home' : 'admin.contracts.away') | translate
+								}}</span>
+							</div>
+
+							<div class="inline-group">
+								<div *ngIf="contract?.renew" class="inline-group">
+									<span translate>admin.contracts.renew</span>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="inline-group">
+							<div style="justify-content: unset" class="inline-group" *ngIf="!contractDataLoading; else showRowLoading">
+								<span translate class="inline-label" style="font-size: 0.9rem; margin-left: 0">admin.contracts.stipulationDate</span>
+								<p-calendar
+									appendTo="body"
+									[disabled]="contract?.validated || !editMode"
+									name="duration_stipulation"
+									#duration_stipulation="ngModel"
+									[(ngModel)]="contract.stipulationDate"
+									[ngClass]="{
+										'ng-dirty ng-invalid': duration_stipulation.errors && duration_stipulation.errors.required
+									}"
+									required
+									showButtonBar="true"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								>
+								</p-calendar>
+								<span
+									class="form-invalid fas fa-exclamation"
+									*ngIf="duration_stipulation.errors && duration_stipulation.errors.required"
+									translate
+								></span>
+							</div>
+							<div style="justify-content: unset" class="inline-group" *ngIf="!contractDataLoading; else showRowLoading">
+								<span translate class="inline-label" style="font-size: 0.9rem">admin.contracts.on</span>
+								<p-calendar
+									appendTo="body"
+									[disabled]="contract?.validated || !editMode"
+									name="duration_from"
+									#duration_from="ngModel"
+									[(ngModel)]="contract.on"
+									[ngClass]="{
+										'ng-dirty ng-invalid': duration_from.errors && duration_from.errors.required,
+										'ng-dirty ng-warning': checkDateInsideSeasons(contract?.on)
+									}"
+									required
+									showButtonBar="true"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								>
+								</p-calendar>
+								<span
+									class="form-invalid fas fa-exclamation"
+									*ngIf="duration_from.errors && duration_from.errors.required"
+									translate
+								></span>
+								<span
+									class="form-invalid fas fa-exclamation fa-warning"
+									*ngIf="checkDateInsideSeasons(contract?.on)"
+									pTooltip="{{ 'seasons.dateOutside' | translate }}"
+								></span>
+							</div>
+							<div style="justify-content: unset" class="inline-group" *ngIf="!contractDataLoading; else showRowLoading">
+								<span translate class="inline-label" style="font-size: 0.9rem">admin.contracts.itcDate</span>
+								<p-calendar
+									appendTo="body"
+									[disabled]="contract?.validated || !editMode"
+									[(ngModel)]="contract.itcDate"
+									name="duration_itc"
+									#duration_itc="ngModel"
+									showButtonBar="true"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+							</div>
+							<div
+								*ngIf="contract?.personStatus === 'onLoan' || contract?.personStatus === 'inTeamOnLoan'"
+								style="justify-content: unset"
+								class="inline-group"
+							>
+								<span translate class="inline-label" style="font-size: 0.9rem">admin.contracts.to</span>
+								<p-calendar
+									appendTo="body"
+									[disabled]="contract?.validated || !editMode"
+									name="duration_end"
+									[minDate]="contract?.on"
+									#duration_end="ngModel"
+									[(ngModel)]="contract.endDate"
+									showButtonBar="true"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								>
+								</p-calendar>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h3 *ngIf="personType !== 'Agent'" class="spacing" translate>admin.contracts.fixedTransferPart</h3>
+			<table *ngIf="personType !== 'Agent'" class="fields-table block-table" style="width: 100%; border-spacing: 0.5em 0.8em">
+				<tr>
+					<th translate>profile.archive.amount</th>
+					<td style="padding-top: 0.5em">
+						<div class="inline-group" style="align-items: center" *ngIf="!contractDataLoading; else showRowLoading">
+							<span [innerHTML]="getTransferFee(contract)"></span>
+							<span class="buttons"
+								><i
+									*ngIf="isNullOrUndefined(contract?.amount)"
+									class="fas fa-exclamation-triangle"
+									style="margin-right: 1em"
+									[pTooltip]="'admin.contracts.incomplete' | translate"
+								></i
+								><i
+									*ngIf="contract?.amountAsset"
+									class="fas fa-sack-dollar"
+									style="margin-right: 1em"
+									pTooltip="{{ 'bonus.asset' | translate }}"
+								></i
+								><i class="fas fa-search" style="cursor: pointer; color: #bbbbbb" (click)="editContractClause(contract, 'transferFee')"></i>
+							</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h3 *ngIf="personType !== 'Agent'" class="spacing" style="display: flex; justify-content: space-between">
+				<span translate>admin.contracts.variableWagePart</span>
+				<div
+					class="inline-group"
+					style="font-family: 'Gotham', sans-serif; flex-wrap: unset"
+					*ngIf="!contractDataLoading; else showRowLoading"
+				>
+					<span
+						class="inline-label"
+						style="text-transform: capitalize; margin-right: 1em; word-break: keep-all; white-space: nowrap"
+						translate
+						>admin.contracts.bonusCap</span
+					>
+					<span style="color: #fafafa"> {{ currency }}</span>
+					<input
+						iterproMask
+						[disabled]="contract?.validated || !editMode"
+						pInputText
+						#bonusCap="ngModel"
+						[(ngModel)]="contract.bonusCap"
+						name="bonusCap"
+						ngModel
+						type="text"
+					/>
+				</div>
+			</h3>
+			<table *ngIf="personType !== 'Agent'" class="fields-table block-table" style="width: 100%; border-spacing: 0.5em 0.8em">
+				<tr>
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.appearance</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('appearance')"
+						></i>
+					</th>
+					<td>
+						<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+							<span *ngFor="let bonus of appearanceBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+								<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+								<span class="buttons">
+									<i
+										*ngIf="!isValid(bonus)"
+										class="fas fa-exclamation-triangle"
+										style="margin-right: 1em"
+										[pTooltip]="'admin.contracts.incomplete' | translate"
+									></i>
+									<i *ngIf="bonus.asset" class="fas fa-sack-dollar" style="margin-right: 1em" pTooltip="{{ 'bonus.asset' | translate }}"></i
+									><i
+										class="fas fa-search"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="editContractClause(bonus, 'appearance', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-clone"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="cloneContractClause(bonus, 'appearance', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-close"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="deleteContractClause(bonus, 'appearance', i)"
+									></i>
+								</span>
+							</span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.performance</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('performance')"
+						></i>
+					</th>
+					<td>
+						<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+							<span *ngFor="let bonus of performanceBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+								<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+								<span class="buttons">
+									<i
+										*ngIf="!isValid(bonus)"
+										class="fas fa-exclamation-triangle"
+										style="margin-right: 1em"
+										[pTooltip]="'admin.contracts.incomplete' | translate"
+									></i>
+									<i *ngIf="bonus.asset" class="fas fa-sack-dollar" style="margin-right: 1em" pTooltip="{{ 'bonus.asset' | translate }}"></i
+									><i
+										class="fas fa-search"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="editContractClause(bonus, 'performance', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-clone"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="cloneContractClause(bonus, 'performance', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-close"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="deleteContractClause(bonus, 'performance', i)"
+									></i> </span
+							></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.standardTeam</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('standardTeam')"
+						></i>
+					</th>
+					<td>
+						<div class="inline-group" style="align-items: flex-start; justify-content: flex-start">
+							<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+								<span *ngFor="let bonus of standardTeamBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+									<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+									<span class="buttons">
+										<i
+											*ngIf="!isValid(bonus)"
+											class="fas fa-exclamation-triangle"
+											style="margin-right: 1em"
+											[pTooltip]="'admin.contracts.incomplete' | translate"
+										></i>
+										<i
+											*ngIf="bonus.asset"
+											class="fas fa-sack-dollar"
+											style="margin-right: 1em"
+											pTooltip="{{ 'bonus.asset' | translate }}"
+										></i
+										><i
+											class="fas fa-search"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="editContractClause(bonus, 'standardTeam', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-clone"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="cloneContractClause(bonus, 'standardTeam', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-close"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="deleteContractClause(bonus, 'standardTeam', i)"
+										></i> </span
+								></span>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.signing</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('signing')"
+						></i>
+					</th>
+					<td>
+						<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+							<span *ngFor="let bonus of signingBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+								<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+								<span class="buttons">
+									<i
+										*ngIf="!isValid(bonus)"
+										class="fas fa-exclamation-triangle"
+										style="margin-right: 1em"
+										[pTooltip]="'admin.contracts.incomplete' | translate"
+									></i>
+									<i *ngIf="bonus.asset" class="fas fa-sack-dollar" style="margin-right: 1em" pTooltip="{{ 'bonus.asset' | translate }}"></i
+									><i
+										class="fas fa-search"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="editContractClause(bonus, 'signing', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-clone"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="cloneContractClause(bonus, 'signing', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-close"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="deleteContractClause(bonus, 'signing', i)"
+									></i
+								></span>
+							</span>
+						</div>
+					</td>
+				</tr>
+
+				<tr>
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.custom</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('custom')"
+						></i>
+					</th>
+					<td>
+						<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+							<span *ngFor="let bonus of customBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+								<span class="text"><span [innerHTML]="getBonusText(bonus, i + 1)"></span></span>
+								<span class="buttons">
+									<i
+										*ngIf="!isValid(bonus)"
+										class="fas fa-exclamation-triangle"
+										style="margin-right: 1em"
+										[pTooltip]="'admin.contracts.incomplete' | translate"
+									></i>
+									<i *ngIf="bonus.asset" class="fas fa-sack-dollar" style="margin-right: 1em" pTooltip="{{ 'bonus.asset' | translate }}"></i
+									><i
+										class="fas fa-search"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="editContractClause(bonus, 'custom', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-clone"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="cloneContractClause(bonus, 'custom', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-close"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="deleteContractClause(bonus, 'custom', i)"
+									></i
+								></span>
+							</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h3
+				*ngIf="personType !== 'Agent' && (contract?.personStatus === 'inTeamOnLoan' || contract?.personStatus === 'onLoan')"
+				class="spacing"
+				translate
+			>
+				admin.contracts.valorization
+			</h3>
+			<table
+				*ngIf="personType !== 'Agent' && (contract?.personStatus === 'inTeamOnLoan' || contract?.personStatus === 'onLoan')"
+				class="fields-table block-table"
+				style="width: 100%; border-spacing: 0.5em 0.8em"
+			>
+				<tr>
+					<th style="display: flex; justify-content: space-between; width: 100%">
+						<div class="inline-group">
+							<i
+								class="fas fa-plus"
+								*ngIf="!contract?.validated && editMode"
+								style="margin-left: auto; font-size: 1rem; cursor: pointer"
+								(click)="addContractClause('valorization')"
+							></i>
+						</div>
+					</th>
+					<td>
+						<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+							<span *ngFor="let wage of valorizationBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+								<span class="text"><span [innerHTML]="getBasicWageText(wage, 'valorization', i + 1)"></span> </span>
+								<span class="buttons">
+									<i
+										*ngIf="!isValid(wage)"
+										class="fas fa-exclamation-triangle"
+										style="margin-right: 1em"
+										[pTooltip]="'admin.contracts.incomplete' | translate"
+									></i>
+									<i *ngIf="wage.asset" class="fas fa-sack-dollar" pTooltip="{{ 'bonus.asset' | translate }}"></i>
+									<i
+										class="fas fa-search"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="editContractClause(wage, 'valorization', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-clone"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="cloneContractClause(wage, 'valorization', i)"
+									></i>
+									<i
+										*ngIf="!contract?.validated && editMode"
+										class="fas fa-close"
+										style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+										(click)="deleteContractClause(wage, 'valorization', i)"
+									></i>
+								</span>
+							</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h3 *ngIf="personType !== 'Agent'" class="spacing" translate>admin.contracts.options</h3>
+			<table *ngIf="personType !== 'Agent'" class="fields-table block-table" style="width: 100%; border-spacing: 0.5em 0.8em">
+				<tr *ngIf="contract?.personStatus === 'purchased' || contract?.personStatus === 'sell'">
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.options.sellOnFee</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('sellOnFee')"
+						></i>
+					</th>
+					<td style="padding-top: 0.5em">
+						<div class="inline-group" style="align-items: flex-start; justify-content: flex-start">
+							<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+								<span *ngFor="let option of sellOnFeeBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+									<span class="text">
+										<span [innerHTML]="getTransferOptionText(option, option.percentage, i + 1)"></span>
+									</span>
+									<span class="buttons">
+										<i
+											*ngIf="!isValid(option)"
+											class="fas fa-exclamation-triangle"
+											style="margin-right: 1em"
+											[pTooltip]="'admin.contracts.incomplete' | translate"
+										></i>
+										<i
+											*ngIf="option.asset"
+											class="fas fa-sack-dollar"
+											style="margin-right: 1em"
+											pTooltip="{{ 'bonus.asset' | translate }}"
+										></i>
+										<i
+											class="fas fa-search"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="editContractClause(option, 'sellOnFee', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-clone"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="cloneContractClause(option, 'sellOnFee', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-close"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="deleteContractClause(option, 'sellOnFee', i)"
+										></i>
+									</span>
+								</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr *ngIf="contract?.personStatus === 'purchased' || contract?.personStatus === 'sell'">
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.options.buyBack</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('buyBack')"
+						></i>
+					</th>
+					<td style="padding-top: 0.5em">
+						<div class="inline-group" style="align-items: flex-start; justify-content: flex-start">
+							<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+								<span *ngFor="let option of buyBackBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+									<span class="text">
+										<span [innerHTML]="getTransferOptionText(option, option.percentage, i + 1)"></span>
+									</span>
+									<span class="buttons">
+										<i
+											*ngIf="!isValid(option)"
+											class="fas fa-exclamation-triangle"
+											style="margin-right: 1em"
+											[pTooltip]="'admin.contracts.incomplete' | translate"
+										></i>
+										<i
+											*ngIf="option.asset"
+											class="fas fa-sack-dollar"
+											style="margin-right: 1em"
+											pTooltip="{{ 'bonus.asset' | translate }}"
+										></i
+										><i
+											class="fas fa-search"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="editContractClause(option, 'buyBack', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-clone"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="cloneContractClause(option, 'buyBack', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-close"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="deleteContractClause(option, 'buyBack', i)"
+										></i>
+									</span>
+								</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr *ngIf="contract?.personStatus === 'inTeamOnLoan' || contract?.personStatus === 'onLoan'">
+					<th style="display: flex; justify-content: space-between">
+						<span translate>admin.contracts.options</span>
+						<i
+							class="fas fa-plus"
+							*ngIf="!contract?.validated && editMode"
+							style="font-size: 1rem; cursor: pointer"
+							(click)="addContractClause('loanOption')"
+						></i>
+					</th>
+					<td style="padding-top: 0.5em">
+						<div class="inline-group" style="align-items: flex-start; justify-content: flex-start">
+							<div class="repeated-group" *ngIf="!bonusDataLoading; else showRowsLoading">
+								<span *ngFor="let option of loanOptionBonuses; let i = index" class="inline-group" style="margin-bottom: 1em">
+									<span class="text">
+										<span [innerHTML]="getLoanOptionText(option, i + 1)"></span>
+									</span>
+									<span class="buttons">
+										<i
+											*ngIf="!isValid(option)"
+											class="fas fa-exclamation-triangle"
+											style="margin-right: 1em"
+											[pTooltip]="'admin.contracts.incomplete' | translate"
+										></i>
+										<i
+											*ngIf="option.asset"
+											class="fas fa-sack-dollar"
+											style="margin-right: 1em"
+											pTooltip="{{ 'bonus.asset' | translate }}"
+										></i
+										><i
+											class="fas fa-search"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="editContractClause(option, 'loanOption', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-clone"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="cloneContractClause(option, 'loanOption', i)"
+										></i>
+										<i
+											*ngIf="!contract?.validated && editMode"
+											class="fas fa-close"
+											style="margin-left: 1em; cursor: pointer; color: #bbbbbb"
+											(click)="deleteContractClause(option, 'loanOption', i)"
+										></i>
+									</span>
+								</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<h3 *ngIf="personType !== 'Agent'" class="spacing" translate>admin.contracts.notes</h3>
+			<table *ngIf="personType !== 'Agent'" class="fields-table block-table" style="width: 100%; border-spacing: 0.5em 0.8em">
+				<tr>
+					<td
+						[ngStyle]="!contract?.validated && editMode ? undefined : { paddingTop: '0.5em' }"
+						*ngIf="!contractDataLoading; else showRowsLoading"
+					>
+						<editor
+							*ngIf="!contract?.validated && editMode; else readOnlyEditor"
+							name="notes"
+							[initialValue]="'input-text.placeholder' | translate"
+							[inline]="false"
+							[(ngModel)]="contract.notes"
+							[init]="tinyEditorInit"
+						>
+						</editor>
+						<ng-template #readOnlyEditor>
+							<span [innerHTML]="contract?.notes | marked"></span>
+						</ng-template>
+					</td>
+				</tr>
+			</table>
+
+			<h3 class="spacing flexed">
+				<span translate>admin.contracts.agentOptions</span>
+				<i
+					*ngIf="editMode"
+					class="fas fa-plus"
+					style="margin-left: auto; font-size: 1rem; cursor: pointer"
+					(click)="addAgentContract()"
+				></i>
+			</h3>
+			<ng-container *ngIf="!contractDataLoading; else showRowsLoading">
+				<p-accordion
+					styleClass="accordion-visible"
+					[activeIndex]="agentActiveIndex"
+					*ngIf="agentContracts?.length > 0; else noRecordsFound"
+				>
+					<p-accordionTab
+						*ngFor="let agentContract of agentContracts; let i = index"
+						[header]="
+							agentContract?.agentId ? (agentContract.agentId | customerName: agents) : ('profile.contract' | translate) + ' ' + (i + 1)
+						"
+					>
+						<iterpro-agent-contract
+							*ngIf="agentContract"
+							[ngModel]="agentContract"
+							[disabled]="contract?.validated || !editMode"
+							[currency]="currency"
+							[translation]="translation"
+							[seasons]="seasons"
+							[extended]="extended"
+							[club]="club"
+							[isTypeTransferContract]="true"
+							[outward]="outward"
+							[postTaxes]="postTaxes"
+							(contractChange)="onChangeAgentContract($event)"
+							[agents]="agents"
+							(agentContractDelete)="deleteContractClause($event, 'agentContract', i)"
+							name="agent{{ i }}"
+							#agent="ngModel"
+						>
+						</iterpro-agent-contract>
+					</p-accordionTab>
+				</p-accordion>
+			</ng-container>
+		</div>
+	</div>
+</form>
+
+<iterpro-multiple-file-upload
+	*ngIf="visible"
+	[visible]="visible"
+	[editMode]="editMode"
+	[attachmentModel]="contract?._attachments"
+	(save)="onSaveAttachments($event)"
+	(discard)="onDiscardAttachments()"
+></iterpro-multiple-file-upload>
+
+<iterpro-bonus-panel
+	*ngIf="selectedBonus"
+	[visible]="visibleBonusPanel"
+	[type]="type"
+	[newBonus]="newBonus"
+	[isTypeTransferContract]="true"
+	[(ngModel)]="selectedBonus"
+	[disabled]="contract?.validated || !editMode"
+	[currency]="currency"
+	[seasons]="seasons"
+	[financial]="financial"
+	[team]="team"
+	[outward]="outward"
+	[club]="club"
+	[ngModelOptions]="{ standalone: true }"
+	[index]="tempIndex"
+	(saveEmitter)="onCloseBonusDialog()"
+	(discardEmitter)="closePanel()"
+>
+</iterpro-bonus-panel>
+
+<p-dialog
+	*ngIf="viewHistory"
+	[header]="'contract.history.title' | translate"
+	[(visible)]="viewHistory"
+	[modal]="true"
+	[style]="{ width: '50vw' }"
+>
+	<p-table
+		class="p-datatable-striped"
+		*ngIf="contract?.changeHistory && contract?.changeHistory.length > 0; else no_history"
+		[value]="contract?.changeHistory"
+	>
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th translate>date</th>
+				<th translate>tooltip.author</th>
+				<th translate>tooltip.action</th>
+				<th translate>tooltip.changes</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10">
+				<td>{{ rowData.date | formatDateBySetting: 'HH:mm' }}</td>
+				<td>{{ rowData.author | customerName: customers }}</td>
+				<td>{{ rowData.action }}</td>
+				<td>{{ rowData.details }}</td>
+			</tr>
+		</ng-template>
+	</p-table>
+	<ng-template #no_history>
+		<span translate>contract.noHistory</span>
+	</ng-template>
+</p-dialog>
+
+<ng-template #showRowsLoading>
+	<div class="repeated-group" style="row-gap: 6px">
+		<p-skeleton width="200px"></p-skeleton>
+		<p-skeleton width="130px"></p-skeleton>
+		<p-skeleton width="100px"></p-skeleton>
+	</div>
+</ng-template>
+
+<ng-template #showRowLoading>
+	<div class="inline-group">
+		<p-skeleton width="200px"></p-skeleton>
+	</div>
+</ng-template>
+
+<ng-template #showLabelLoading>
+	<p-skeleton width="100px"></p-skeleton>
+</ng-template>
+
+<ng-template #noRecordsFound>
+	<p style="padding: 1rem; color: var(--color-neutral-900)">{{ 'alert.noRecordsFound' | translate }}</p>
+</ng-template>

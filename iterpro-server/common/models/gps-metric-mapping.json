@@ -1,0 +1,28 @@
+{
+	"name": "GpsMetricMapping",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"columnName": {
+			"type": "string"
+		},
+		"expression": {
+			"type": "string"
+		},
+		"columnLabel": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

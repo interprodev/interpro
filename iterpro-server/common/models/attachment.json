@@ -1,0 +1,58 @@
+{
+	"name": "Attachment",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"date": {
+			"type": "date",
+			"required": true
+		},
+		"url": {
+			"type": "string"
+		},
+		"downloadUrl": {
+			"type": "string"
+		},
+		"externalUrl": {
+			"type": "string"
+		},
+		"streamingUrl": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		},
+		"sharedPlayers": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "sharedPlayerIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"sharedStaffs": {
+			"type": "referencesMany",
+			"model": "Staff",
+			"foreignKey": "sharedStaffIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

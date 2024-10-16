@@ -1,0 +1,366 @@
+<div #body class="main tw-mt-8">
+	<div *blockUI="'containerProf'">
+		<header>
+			@if (bulkPeopleTable) {
+				<!-- BULK IMPORT -->
+				<div class="tw-flex tw-justify-end tw-items-center tw-m-2" *ngIf="!!bulkPeopleTable">
+				@if (errorsPerPageBulkPlayer.length > 0) {
+					<span class="info bulk-errors">
+						{{ 'import.error' | translate }}:
+						{{ errorsPerPageBulkPlayer[currentPageBulkPlayer] }}
+						({{ totalBulkErrors(errorsPerPageBulkPlayer) }})
+					</span>
+				}
+					<p-button class="tw-ml-2" size="small" styleClass="p-button-contrast"
+										[disabled]="!correctBulkPlayerUpload?.valid"
+										[class.disabled-btn]="!correctBulkPlayerUpload?.valid"
+										(click)="updateCsvUplodedPlayers()"
+										[label]="'buttons.import' | translate"
+					>
+					</p-button>
+					<p-button class="tw-ml-2" size="small" styleClass="p-button-contrast" (click)="discardCsvUploadedPlayers()" [label]="'buttons.discard' | translate"></p-button>
+				</div>
+			} @else {
+				@if (!selected) {
+					<!-- Toolbar -->
+					<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+						<!-- Main Title -->
+						<h1>{{ 'admin.squads' | translate }}</h1>
+						<div class="tw-flex tw-gap-4">
+							<!-- Search Bar -->
+							<div class="tw-flex tw-items-center tw-gap-4 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+								<div class="tw-relative tw-w-full tw-rounded tw-shadow-lg">
+									<input
+										type="text"
+										class="tw-w-80 tw-text-shark-200 tw-placeholder-shark-200 tw-border-shark-800 tw-transition-colors"
+										[placeholder]="'admin.squads.search' | translate"
+										[formControl]="filterPlayerText"
+									/>
+									<i class="fas fa-search tw-absolute tw-top-0 tw-right-0 tw-m-1 tw-text-shark-200"></i>
+								</div>
+							</div>
+							<!-- Download PDF / Filters / Legend -->
+							<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+								<iterpro-icon-button
+									class="tw-cursor-pointer"
+									[disabled]="selectedPeople.length === 0"
+									[icon]="'fas fa-users'"
+									[tooltip]="(getRole() === 'Player' ? 'admin.squads.players.move-selected' : 'admin.squads.staff.move-selected')  | translate"
+									(click)="openMoveSelectedPlayersDialog()"
+								></iterpro-icon-button>
+								<iterpro-icon-button
+									class="tw-cursor-pointer"
+									[disabled]="!hasActivePeopleSelected()"
+									[icon]="'fas fa-archive'"
+									[tooltip]="'admin.squads.archive-selected' | translate"
+									(click)="setArchivedState(true)"
+								></iterpro-icon-button>
+								<iterpro-icon-button
+									class="tw-cursor-pointer"
+									[disabled]="!hasArchivedPeopleSelected()"
+									[icon]="'fas fa-undo'"
+									[tooltip]="'admin.squads.activate-selected' | translate"
+									(click)="setArchivedState(false)"
+								></iterpro-icon-button>
+								<iterpro-icon-button
+									class="tw-cursor-pointer"
+									[disabled]="!hasDeletablePeopleSelected()"
+									[icon]="'fas fa-trash'"
+									[tooltip]="'admin.squads.delete-selected' | translate"
+									(click)="deleteSelectedPeople()"
+								></iterpro-icon-button>
+								<iterpro-icon-button
+									*ngIf="isPlayerRole() && hasPlayerApp()"
+									[icon]="'fas fa-mobile-screen-button'"
+									[tooltip]="'buttons.playerAppCredentialsDialog' | translate"
+									(click)="openPlayerAppDialog()"
+								></iterpro-icon-button>
+								<iterpro-report-download
+									(downloadPDF)="downloadPdf()"
+									(downloadCSV)="downloadCsv()"
+								></iterpro-report-download>
+								<div>
+									<input
+										type="file"
+										#inputjson
+										accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+										#file
+										style="display: none"
+										(change)="fileChanged($event)"
+									/>
+									<iterpro-csv-upload-download
+										*ngIf="isPlayerRole()"
+										(downloadEmptyCSV)="downloadEmptyCsv()"
+										(uploadCSV)="file.click()"
+										downloadLabel="{{ 'admin.squads.players.sampleCSV' | translate }}"
+									>
+									</iterpro-csv-upload-download>
+								</div>
+								<iterpro-icon-button
+									[icon]="showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+									[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+									(click)="toggleFilter()"
+								>
+								</iterpro-icon-button>
+							</div>
+						</div>
+					</div>
+					<!-- Add Player -->
+					<div class="tw-flex tw-items-center tw-justify-end tw-mb-4">
+						<iterpro-tiered-menu
+							[icon]="'fas fa-plus'"
+							[iconOnly]="false"
+							[styleClass]="'p-button-contrast'"
+							[label]="'buttons.addNew' | translate"
+							[isLoading]="isLoading"
+							[menuItems]="addPlayerMenuItems"
+						></iterpro-tiered-menu>
+					</div>
+				} @else {
+					<!-- Player Header -->
+					<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+						<!-- Player Dropdown -->
+						<iterpro-search-dropdown [showCaretIcon]="!editService.editMode" [selectedPerson]="selected" (selectPerson)="onSelectFromDropdown($event)" [people]="searchDropdownElements" />
+
+						<div class="tw-flex tw-items-center tw-gap-4">
+							<p-button styleClass="p-button-contrast" size="small" *ngIf="!editService.editMode" (click)="onBack()" [label]="'back.to.table' | translate"></p-button>
+							<ng-container *ngIf="isEditableSection()">
+								<p-button
+									size="small" styleClass="p-button-contrast" *ngIf="!editService.editMode" (click)="onEdit()" [label]="'buttons.edit' | translate"></p-button>
+								<p-button
+									size="small" styleClass="p-button-primary" *ngIf="editService.editMode"  (click)="confirmEdit()" [label]="'buttons.save' | translate">
+								</p-button>
+								<p-button size="small" styleClass="p-button-contrast" *ngIf="editService.editMode" (click)="onDiscard()" [label]="'buttons.discard' | translate"></p-button>
+							</ng-container>
+							<span *ngIf="activeIndex === squadPersonViewEnum.Details" class="legal-buttons"></span>
+						</div>
+					</div>
+				}
+			}
+		</header>
+		<!-- TABLE -->
+		<iterpro-squad-people
+			#players
+			*ngIf="!selected && !bulkPeopleTable && club"
+			[club]="club"
+			[showFilters]="showFilters"
+			[onPlayerClick]="onSelectPlayer"
+			[onStaffClick]="onSelectStaff"
+			[onAgentClick]="onSelectAgent"
+			[openArchive]="openArchive"
+			[openDelete]="openDelete"
+			[selectedPeople]="selectedPeople"
+			[totalPeopleRows]="totalPeopleRows"
+			(loadPage)="loadPlayerPage($event)"
+			(filter)="updateFilterAndReload($event)"
+			(addSelectedPlayers)="addSelectedPeople($event)"
+			(resetSelectedPlayers)="resetSelectedPeople()"
+			(removeSelectedPlayers)="removeSelectedPeople($event)"
+		></iterpro-squad-people>
+		@if (!!bulkPeopleTable) {
+			<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+				<iterpro-csv-upload-preview
+					*ngIf="!!bulkPeopleTable"
+					[table]="bulkPeopleTable"
+					[paginator]="true"
+					[rows]="50"
+					(status)="updateBulkPlayerImportStatus($event)"
+					(errorsPerPage)="showBulkPlayerImportErrorPerPage($event)"
+					(currentPage)="setCurrentPageBulkPlayerImport($event)"
+				>
+				</iterpro-csv-upload-preview>
+			</div>
+		}
+		<iterpro-squads-person
+			*ngIf="selected"
+			[person]="selected"
+			[personType]="personType"
+			[players]="players"
+			[club]="club"
+			[agents]="agents"
+			[editMode]="editService.editMode"
+			[isNew]="isNew"
+			[activeIndex]="activeIndex"
+			[customers]="customers"
+			[contractIdParam]="contractIdParam"
+			(removeFromSeasonEmitter)="onRemoveFromSeasonTrigger($event)"
+			(tabChangeEmitter)="onTabChange($event)"
+		></iterpro-squads-person>
+	</div>
+</div>
+
+<iterpro-archiviation-dialog
+	*ngIf="visible"
+	[element]="toArchive"
+	[personType]="isTempPersonType"
+	[team]="selectedTeam"
+	(onSave)="onSaveArchiviation($event)"
+	(onDiscard)="onCloseDialog()"
+></iterpro-archiviation-dialog>
+
+<iterpro-activate-dialog
+	*ngIf="visibleUnarchive"
+	[element]="toActivate"
+	[personType]="isTempPersonType"
+	(onSave)="onSaveActivation($event)"
+	(onDiscard)="onCloseDialog()"
+></iterpro-activate-dialog>
+
+<iterpro-third-party-player-search
+	*ngIf="thirdPartyPlayerSearchDialogVisible"
+	[alreadyImportedPlayers]="alreadyImportedPlayers"
+	(discardEmitter)="onDiscardThirdPartySearchDialog()"
+	(selectPlayersEmitter)="onSelectThirdPartySearchDialog($event)"
+>
+</iterpro-third-party-player-search>
+
+<!-- add single player to selected season -->
+<p-dialog
+	[visible]="isPlayerToSeasonDialogVisible()"
+	[showHeader]="true"
+	[header]="'confirm.title' | translate"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[style]="{ 'min-width': '50vw' }"
+	modal="modal"
+>
+	<div>
+		<span translate>confirm.selectTeamToAddPlayerTo</span>
+	</div>
+	<div class="new-player-dialog-dropdown">
+		<p-dropdown
+			[placeholder]="'dropdown.teamPlaceholder' | translate"
+			appendTo="body"
+			optionLabel="name"
+			[options]="allTeams"
+			[(ngModel)]="teamToMoveSelectedPeople"
+		></p-dropdown>
+	</div>
+	<div *ngIf="teamToMoveSelectedPeople">
+		<span translate>admin.contracts.teamBonus.inSeason</span>
+		<div class="new-player-dialog-dropdown">
+			<p-dropdown
+				[placeholder]="'dropdown.seasonPlaceholder' | translate"
+				appendTo="body"
+				optionLabel="name"
+				[options]="teamToMoveSelectedPeople?.teamSeasons"
+				[(ngModel)]="seasonToMoveSelectedPlayers"
+			></p-dropdown>
+		</div>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			(click)="addNewPlayer()"
+			[label]="'buttons.save' | translate"
+			[disabled]="!teamToMoveSelectedPeople || !seasonToMoveSelectedPlayers"
+		></p-button>
+		<p-button size="small" [outlined]="true" (click)="discardAddNewPlayer()" [label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>
+
+<!-- add wyscout players to selected season -->
+<p-dialog
+	[visible]="isThirdPartyToSeasonDialogVisible()"
+	[showHeader]="true"
+	[header]="getThirdPartyPlayersAddTitle()"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[style]="{ 'min-width': '50vw' }"
+	modal="modal"
+>
+	<div>
+		<span translate>confirm.selectTeamToAddPlayerTo</span>
+	</div>
+	<div class="new-player-dialog-dropdown">
+		<p-dropdown
+			[placeholder]="'dropdown.teamPlaceholder' | translate"
+			appendTo="body"
+			optionLabel="name"
+			[options]="providerTeams"
+			[(ngModel)]="teamToMoveSelectedPeople"
+		></p-dropdown>
+	</div>
+	<div *ngIf="teamToMoveSelectedPeople">
+		<span translate>admin.contracts.teamBonus.inSeason</span>
+		<div class="new-player-dialog-dropdown">
+			<p-dropdown
+				[placeholder]="'dropdown.seasonPlaceholder' | translate"
+				appendTo="body"
+				optionLabel="name"
+				[options]="teamToMoveSelectedPeople?.teamSeasons"
+				[(ngModel)]="seasonToMoveSelectedPlayers"
+				[disabled]="!teamToMoveSelectedPeople"
+			></p-dropdown>
+		</div>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast"
+			(click)="addThirdPartyPlayers()"
+			[label]="'buttons.save' | translate"
+			[disabled]="!teamToMoveSelectedPeople || !seasonToMoveSelectedPlayers"
+		></p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast" (click)="discardAddNewPlayer()" [label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>
+
+<iterpro-player-app-credentials
+	*ngIf="playerAppDialog"
+	[visible]="playerAppDialog"
+	[teams]="club.teams"
+	[selectedTeam]="selectedTeam"
+	(onClose)="onClosePlayerAppDialog($event)"
+></iterpro-player-app-credentials>
+
+<p-dialog
+	[(visible)]="moveSelectedPeopleDialogVisible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	[style]="{ 'min-width': '50vw' }"
+	modal="modal"
+>
+	@if (getRole() === 'Player') {
+		<p-header translate>admin.squads.players.move-selected </p-header>
+	} @else if (getRole() === 'Staff') {
+		<p-header translate>admin.squads.staff.move-selected </p-header>
+	}
+	<div>
+		{{ 'admin.squads.move-to-team' | translate: { names: getSelectedPeopleNames() } }}
+	</div>
+	<div class="move-to-team-dropdown">
+		<p-dropdown
+			[placeholder]="'dropdown.teamPlaceholder' | translate"
+			appendTo="body"
+			optionLabel="name"
+			[options]="allTeams"
+			[(ngModel)]="teamToMoveSelectedPeople"
+		></p-dropdown>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast"
+			label="{{ 'buttons.save' | translate }}"
+			[disabled]="!teamToMoveSelectedPeople"
+			(click)="moveSelectedPeople()"
+		></p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast"
+			label="{{ 'buttons.discard' | translate }}"
+			(click)="closeMoveSelectedPeopleDialog()"
+		></p-button>
+	</p-footer>
+</p-dialog>

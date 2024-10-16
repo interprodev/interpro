@@ -1,0 +1,34 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.clubPreferences'" [title]="'club.settings.seasons'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="false" [loading]="!clubSeasons" (discard)="discard()"
+													(create)="addNewSeason()"
+													[buttonTypes]="['addNew']"></iterpro-action-buttons>
+</div>
+<div class="tw-mt-8">
+	@if(clubSeasons) {
+		<p-table [value]="clubSeasons" [scrollable]="true"
+						 [scrollHeight]="'70vh'"
+						 [rowHover]="true"
+						 [styleClass]="'p-datatable-gridlines'">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th translate>season.name</th>
+					<th translate>season.start</th>
+					<th translate>season.end</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-season>
+				<tr class="tw-h-10 tw-cursor-pointer" (click)="editSeason(season)">
+					<td>{{season.name}}</td>
+					<td>{{season.start | formatDateBySetting}}</td>
+					<td>{{season.end | formatDateBySetting}}</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	}
+	@else {
+		<div class="tw-mt-8">
+			<iterpro-skeleton-table [cols]="3" [rows]="10"></iterpro-skeleton-table>
+		</div>
+	}
+</div>

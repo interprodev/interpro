@@ -1,0 +1,305 @@
+<div>
+	<div class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+		<div class="author-info" *ngIf="currentDrill.authorId">
+			<div class="author-name">{{ currentDrill.authorId | customerName: customers }}</div>
+			<div>{{ currentDrill.creationDate | formatDateBySetting: 'HH:mm' }}</div>
+		</div>
+		<iterpro-report-download (downloadPDF)="downloadReport()" />
+		<i class="fas fa-pencil" *ngIf="!editService.editMode" (click)="edit()" [pTooltip]="'buttons.edit' | translate"></i>
+		<i
+			class="fas fa-copy"
+			(click)="duplicateDrill()"
+			[pTooltip]="'buttons.duplicate' | translate"
+			[class.icon-disabled]="!currentDrill?.id"
+		></i>
+		<i
+			class="fas fa-trash"
+			*ngIf="!editService.editMode"
+			(click)="confirmDelete()"
+			pTooltip="{{ 'buttons.delete' | translate }}"
+		></i>
+		<i
+			class="fas fa-save"
+			*ngIf="editService.editMode"
+			(click)="confirmEdit()"
+			[pTooltip]="'buttons.save' | translate"
+		></i>
+		<i
+			class="fas fa-close"
+			*ngIf="editService.editMode"
+			(click)="discard()"
+			[pTooltip]="'buttons.discard' | translate"
+		></i>
+	</div>
+</div>
+<div class="clear"></div>
+
+<div>
+	<input
+		type="text"
+		pInputText
+		[disabled]="!editService.editMode"
+		[(ngModel)]="currentDrill.name"
+		[placeholder]="'drills.name' | translate"
+		class="name-input whiter"
+	/>
+</div>
+
+<div class="row row-spaced">
+	<div class="col col-spaced col-2" style="margin-top: 10px">
+		<table class="fields-table small-table light-th" cellpadding="0" cellspacing="0">
+			<tr>
+				<th translate>drills.theme</th>
+				<td style="text-align: left">
+					<p-dropdown
+						[style]="{ width: '100%' }"
+						[showClear]="true"
+						[disabled]="!editService.editMode"
+						[options]="drillsMapping.themes"
+						[(ngModel)]="currentDrill.theme"
+						[placeholder]="editService.editMode ? ('dropdown.placeholder' | translate) : null"
+					></p-dropdown>
+				</td>
+			</tr>
+
+			<tr>
+				<th><i class="fas fa-bullseye-arrow"></i><span translate>drills.goal</span></th>
+				<td></td>
+			</tr>
+
+			<tr>
+				<th class="padded">
+					<div class="subgoal"><span>•</span><span translate>drills.technicalGoal</span></div>
+				</th>
+				<td style="text-align: left">
+					<p-multiSelect
+						appendTo="body"
+						[disabled]="!editService.editMode"
+						[options]="drillsMapping.technicalGoals"
+						[(ngModel)]="currentDrill.technicalGoals"
+						[placeholder]="editService.editMode ? ('dropdown.placeholder' | translate) : null"
+						maxSelectedLabels="1000"
+					></p-multiSelect>
+				</td>
+			</tr>
+
+			<tr>
+				<th class="padded">
+					<div class="subgoal"><span>•</span><span translate>drills.tacticalGoals</span></div>
+				</th>
+				<td style="text-align: left">
+					<p-multiSelect
+						appendTo="body"
+						[disabled]="!editService.editMode"
+						[options]="drillsMapping.tacticalGoals"
+						[(ngModel)]="currentDrill.tacticalGoals"
+						[placeholder]="editService.editMode ? ('dropdown.placeholder' | translate) : null"
+						maxSelectedLabels="1000"
+					></p-multiSelect>
+				</td>
+			</tr>
+
+			<tr>
+				<th class="padded">
+					<div class="subgoal"><span>•</span><span translate>drills.physicalGoal</span></div>
+				</th>
+				<td style="text-align: left">
+					<p-multiSelect
+						appendTo="body"
+						[disabled]="!editService.editMode"
+						[options]="drillsMapping.physicalGoals"
+						[(ngModel)]="currentDrill.physicalGoals"
+						[placeholder]="editService.editMode ? ('dropdown.placeholder' | translate) : null"
+						maxSelectedLabels="1000"
+					></p-multiSelect>
+				</td>
+			</tr>
+
+			<tr>
+				<th translate>drills.ageGroup</th>
+				<td style="text-align: left">
+					<p-dropdown
+						[disabled]="!editService.editMode"
+						[options]="drillsMapping.ageGroups"
+						[showClear]="true"
+						[(ngModel)]="currentDrill.ageGroup"
+						[placeholder]="editService.editMode ? ('dropdown.placeholder' | translate) : null"
+					>
+						<ng-template let-ageGroup pTemplate="item">
+							{{ ageGroup.label | capitalize }}
+						</ng-template>
+					</p-dropdown>
+				</td>
+			</tr>
+
+			<tr>
+				<th><i class="fas fa-ruler-combined"></i><span translate>drills.pitchSize</span></th>
+				<td style="text-align: left">
+					<div class="input-align-end">
+						<span class="pitch-label" translate>drills.pitchSize.width</span>
+						<input
+							[(ngModel)]="currentDrill.pitchSizeX"
+							[disabled]="!editService.editMode"
+							class="pitch-size"
+							type="number"
+							size="3"
+							pInputText
+						/>
+						<span class="pitch-unit">m</span>
+						<span class="pitch-label" translate>drills.pitchSize.length</span>
+						<input
+							[(ngModel)]="currentDrill.pitchSizeY"
+							[disabled]="!editService.editMode"
+							class="pitch-size"
+							type="number"
+							size="3"
+							pInputText
+						/>
+						<span class="pitch-unit">m</span>
+					</div>
+				</td>
+			</tr>
+
+			<tr>
+				<th><i class="fas fa-users"></i><span translate>drills.nPlayers</span></th>
+				<td style="text-align: left">
+					<input
+						[disabled]="!editService.editMode"
+						style="width: 20%; font-size: 1em; text-transform: capitalize"
+						pInputText
+						[(ngModel)]="currentDrill.players"
+						size="3"
+						type="number"
+						min="1"
+						max="22"
+					/>
+				</td>
+			</tr>
+
+			<tr>
+				<th><i class="fas fa-clock"></i><span translate>drills.duration</span></th>
+				<td style="text-align: left; text-transform: lowercase">
+					<div class="input-align-end">
+						<input
+							[disabled]="!editService.editMode"
+							[(ngModel)]="currentDrill.duration"
+							type="text"
+							pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+							size="15"
+							pInputText
+							style="width: 20%; font-size: 1em; text-transform: capitalize"
+						/>
+						<span class="p-inputgroup-addon duration-label">min</span>
+					</div>
+				</td>
+			</tr>
+
+			<tr class="tr-top">
+				<th style="width: unset !important" translate>drills.rules</th>
+				<td style="text-align: left; text-transform: none !important">
+					<editor
+						*ngIf="editService.editMode; else readOnlyEditorRules"
+						ngModel
+						[initialValue]="'input-text.placeholder' | translate"
+						[inline]="false"
+						[(ngModel)]="currentDrill.rules"
+						[disabled]="!editService.editMode"
+						[init]="tinyEditorInit"
+					>
+					</editor>
+					<ng-template #readOnlyEditorRules>
+						<span [innerHTML]="currentDrill.rules | marked"></span>
+					</ng-template>
+				</td>
+			</tr>
+			<!--
+                'undo redo bullist numlist bold italic underline | alignleft aligncenter alignright alignjustify | link' -->
+
+			<tr class="tr-top">
+				<th translate>drills.coachingPoint</th>
+				<td style="text-align: left">
+					<textarea
+						[disabled]="!editService.editMode"
+						[(ngModel)]="coachingPoint"
+						[(points)]="currentDrill.coachingPoint"
+						iterproDotTextBox
+						rows="10"
+						cols="30"
+						pInputTextarea
+						class="p-inputtext p-component textAreaInjury"
+					></textarea>
+				</td>
+			</tr>
+
+			<tr class="tr-top">
+				<th translate>drills.description</th>
+				<td style="text-align: left; text-transform: none !important">
+					<editor
+						*ngIf="editService.editMode; else readOnlyEditorDescription"
+						ngModel
+						[initialValue]="'input-text.placeholder' | translate"
+						[inline]="false"
+						[(ngModel)]="currentDrill.description"
+						[init]="tinyEditorInit"
+					>
+					</editor>
+					<ng-template #readOnlyEditorDescription>
+						<span [innerHTML]="currentDrill.description | marked"></span>
+					</ng-template>
+				</td>
+			</tr>
+
+			<tr class="tr-top">
+				<th translate>event.drill.shareWith</th>
+				<td class="pflex-text-left">
+					<div *ngIf="!editService.editMode" class="pflex-max-h-15rem pflex-overflow-auto">
+						<p-chip class="pflex-block pflex-mr-1 pflex-mb-1" *ngFor="let customer of selectedSharedWith">
+							{{ customer.displayName }}
+						</p-chip>
+					</div>
+
+					<span *ngIf="!editService.editMode && (!selectedSharedWith || selectedSharedWith.length === 0)">-</span>
+
+					<p-multiSelect
+						*ngIf="editService.editMode"
+						appendTo="body"
+						[options]="sharedWithOptions"
+						[(ngModel)]="currentDrill.sharedWithIds"
+						[optionLabel]="'displayName'"
+						[optionValue]="'id'"
+						(onChange)="updateSharedWithIds($event)"
+					></p-multiSelect>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="col col-spaced col-2 column col-container">
+		<iterpro-fileuploader
+			[maxFileSize]="megaBytesToBytes(200)"
+			[showPinnedLogic]="true"
+			[attachments]="drillAttachments"
+			[pinnedAttachmentId]="currentDrill?.pinnedAttachmentId"
+			[editMode]="editService.editMode"
+			(uploadError)="uploadError($event)"
+			(update)="updateAttachmentList($event)"
+			(updatePinnedAttachment)="updatePinnedAttachment($event)"
+			(delete)="deleteUploadedFileAt($event)"
+		/>
+
+		<div class="drill-profile tw-rounded-lg tw-bg-shark-1000 tw-p-5">
+			<h3 class="section-title tw-text-center" style="margin-bottom: 1.5em" translate>drills.drillProfile</h3>
+			<div *ngIf="!isLoading">
+				<div class="center-title" style="margin-bottom: 1em" translate [translateParams]="{ value: drillsNumber }">
+					drills.numberSplits
+				</div>
+				<div style="width: 500px; margin: auto">
+					<p-chart type="radar" [data]="radarData" [options]="radarOptions"></p-chart>
+				</div>
+			</div>
+			<div *ngIf="isLoading" class="flexed column" style="justify-content: center; align-items: center">
+				<p-progressSpinner [style]="{ width: '30px', height: '30px' }"> </p-progressSpinner>
+			</div>
+		</div>
+	</div>
+</div>

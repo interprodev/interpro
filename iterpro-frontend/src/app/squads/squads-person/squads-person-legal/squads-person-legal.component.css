@@ -1,0 +1,144 @@
+.section {
+	width: 100%;
+}
+
+.rowProfile {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin-bottom: 1em;
+}
+
+.row {
+	justify-content: space-between;
+}
+
+.end {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.col-left-profile {
+	width: 14%;
+	padding-right: 2rem;
+	flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	width: 86%;
+	flex-grow: 1;
+	display: flex;
+	margin-left: 1em;
+	flex-direction: column;
+}
+
+h3 {
+	text-transform: uppercase;
+}
+
+.profile-picture {
+	width: 100%;
+	margin-top: 1em;
+	overflow: hidden;
+	position: relative;
+}
+
+.player-pic {
+	width: 100%;
+	box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+	opacity: 1;
+	display: block;
+	transition: 0.5s ease;
+	backface-visibility: hidden;
+	background-color: white;
+}
+
+.data-col {
+	padding: 0 1rem;
+}
+
+.profile-data-column {
+	width: 50%;
+}
+
+.header-element {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-right: 1.5em;
+}
+
+.inline-label {
+	margin-left: 2em;
+	margin-right: 1em;
+	font-weight: normal;
+	color: #bbbbbb;
+}
+
+.inline-group:hover {
+	background-color: #111;
+}
+
+.item-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	row-gap: 2em;
+}
+
+.report-download {
+	position: relative;
+}
+
+.report-submenu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 5px;
+	background-color: var(--color-neutral-300);
+	z-index: 100;
+}
+.report-item {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+.report-item:hover {
+	background-color: #171717;
+}
+.report-item .fas {
+	margin-right: 0.5rem;
+}
+
+.invalid-contract {
+	color: red;
+	margin-left: 5px;
+}
+
+.upload {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.upload > div,
+.upload input,
+.upload a {
+	margin-right: 1em;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	word-break: break-all;
+	white-space: nowrap;
+}
+
+.upload > i {
+	margin-right: 1em;
+}
+.inline-label {
+	margin-left: 2em;
+	margin-right: 1em;
+	font-weight: normal;
+	color: #bbbbbb;
+}

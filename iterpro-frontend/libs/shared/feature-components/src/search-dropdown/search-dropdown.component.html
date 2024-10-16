@@ -1,0 +1,64 @@
+<div class="tw-bg-shark-900 tw-rounded-lg tw-p-2 tw-cursor-pointer tw-relative" (iterproClickOutside)="dropdownOpen = false">
+	<div class="tw-flex tw-justify-between tw-items-center tw-w-min-[200px] tw-gap-8" (click)="dropdownOpen = true">
+		<div class="tw-flex tw-items-center tw-gap-2">
+			<div class="tw-w-[3rem] tw-block tw-bg-white tw-rounded tw-overflow-hidden tw-relative">
+				<iterpro-picture [photoUrl]="selectedPerson?.downloadUrl"></iterpro-picture>
+				@if (personType === 'Player') {
+					<!-- Provider Widget -->
+					<iterpro-player-provider-widget
+						[size]="'small'"
+						[wyscoutId]="$any(selectedPerson)?.wyscoutId"
+						[instatId]="$any(selectedPerson)?.instatId"
+					/>
+				}
+			</div>
+			@switch (personType) {
+				@case ('Player') {
+					<div class="tw-font-normal tw-text-lg">{{ $any(selectedPerson).displayName }}</div>
+				}
+				@case ('Staff') {
+					<div class="tw-font-normal tw-text-lg">{{ $any(selectedPerson).firstName }} {{ $any(selectedPerson).lastName }}</div>
+				}
+			}
+		</div>
+		@if (showCaretIcon) {
+			<div class="fas fa-caret-down"></div>
+		}
+	</div>
+	@if (dropdownOpen) {
+		<div class="tw-absolute tw-left-0 tw-top-[50px] tw-z-[1000]">
+			<div class="tw-bg-shark-900 tw-rounded tw-relative tw-flex tw-flex-col tw-gap-2 tw-w-[250px]">
+				<div class="tw-flex tw-items-center tw-gap-3 tw-p-2">
+					<input [formControl]="term" type="text" [placeholder]="'videogallery.search.placeholder' | translate" />
+						@if (searching) {
+							<div class="tw-w-[20px]">
+								<p-progressSpinner strokeWidth="7" [style]="{width: '20px', height: '20px'}" />
+							</div>
+						}
+				</div>
+				<div class="tw-max-h-[220px] tw-flex tw-flex-col tw-gap-2 tw-overflow-auto">
+					@for (result of people; track result) {
+						<div (click)="!result.isTeam && onSelect(result)" class="tw-flex tw-items-center tw-gap-2 tw-p-2 tw-cursor-pointer hover:tw-bg-shark-950">
+							@if (!result.isTeam) {
+								<div class="tw-w-[3rem] tw-block tw-bg-white tw-overflow-hidden tw-rounded tw-relative">
+									<iterpro-picture [photoUrl]="result?.player?.downloadUrl" [baseClass]="'tw-w-[3rem]'"></iterpro-picture>
+									<!-- Provider Widget -->
+									<iterpro-player-provider-widget
+										[size]="'small'"
+										[wyscoutId]="result.player?.wyscoutId"
+										[instatId]="result.player?.instatId"
+									/>
+								</div>
+								<div>{{ result.player.displayName}}</div>
+							} @else {
+								<div>{{ result.team.name }}</div>
+							}
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+

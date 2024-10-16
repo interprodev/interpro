@@ -1,0 +1,95 @@
+<div class="main tw-mt-8">
+	<div *blockUI="'chart'">
+		<div *ngIf="selectedTeam && teams">
+			<header>
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+					<!-- Main title -->
+					<h1>{{ selectedTeam.name }}</h1>
+					<!-- Toolbar -->
+					<div class="tw-flex tw-items-center tw-gap-4">
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<p-dropdown
+								[options]="teamOptions"
+								[ngModel]="selectedTeamId"
+								(onChange)="onSelectTeam($event)"
+								[style]="{
+								display: 'flex',
+								'align-items': 'center',
+								width: '200px',
+								height: '30px',
+							}"
+							>
+							</p-dropdown>
+						</div>
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<p-dropdown
+								*ngIf="!isEmpty(selectedTeam.teamSeasons)"
+								[options]="selectedTeam.teamSeasons"
+								optionLabel="name"
+								[(ngModel)]="selectedSeason"
+								(onChange)="onSelectSeason($event)"
+								[style]="{
+								display: 'flex',
+								'align-items': 'center',
+								width: '200px',
+								height: '30px',
+							}"
+							>
+							</p-dropdown>
+						</div>
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<!-- Card View / List View -->
+							<p-tabMenu [model]="viewTypes" [activeItem]="activeViewType">
+								<ng-template pTemplate="item" let-item>
+									<a class="p-menuitem-link tw-px-2 tw-py-1">
+										<i [class]="item.icon" [pTooltip]="item.label | translate"></i>
+									</a>
+								</ng-template>
+							</p-tabMenu>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			@if (selectedSeason && clubSeason && players?.length > 0) {
+				<div>
+					@switch (activeViewType.id) {
+						@case ('overviewView') {
+							<!-- Overview View -->
+							<iterpro-financial-dashboard [team]="selectedTeam" [selectedSeason]="selectedSeason" [players]="players">
+							</iterpro-financial-dashboard>
+						}
+						@case ('analysisView') {
+							<!-- Analysis View -->
+							<iterpro-financial-analysis
+								[index]="activeViewType.id === 'analysisView' ? 1 : 0"
+								[team]="selectedTeam"
+								[players]="players"
+								[selectedSeason]="selectedSeason"
+							>
+							</iterpro-financial-analysis>
+						}
+					}
+				</div>
+			} @else {
+				<!--Handling of displayed message to user when no team season or no club season found or no player found in team-->
+				<div
+					*ngIf="!generalBlockUI.isActive"
+					class="row container"
+					style="min-height: 250px; background-color: var(--color-bg-600); padding: 1em; min-width: 300px"
+				>
+					<div class="col-12" style="width: 100%; align-items: center; display: flex; justify-content: center">
+						<div class="text-center">{{ getMessageForNoTeamSeasons() }}</div>
+						&nbsp;
+						<i
+							href="#"
+							style="cursor: pointer; float: right; display: flex; justify-content: center"
+							[routerLink]="getClubSettingsLink()"
+						>{{ getRedirectText() }}
+						</i>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</div>

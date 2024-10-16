@@ -1,0 +1,326 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>sessionAnalysis</h1>
+		</header>
+
+		<div class="row row-sidebar" *ngIf="viewsStates$ | async as views">
+			<!-- IF: SESSION -->
+			<div *ngIf="views.mainView === viewStates.Session" class="col col-main no-max">
+				<p-tabView
+					class="colView-3 mainMenuInner"
+					[activeIndex]="views.sessionView"
+					(onChange)="onChangeSessionAnalysis($event)"
+				>
+					<!-- TEAM -->
+					<p-tabPanel [header]="'sessionAnalysis.options.team' | translate">
+						<iterpro-session-team
+							[chartFlags]="chartFlags$ | async"
+							[chartFlagsEnable]="chartFlagsEnable$ | async"
+							[viewFlags]="viewFlags$ | async"
+							[selectedSession]="selectedSession$ | async"
+							[metrics]="metrics$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[selectedFilter]="selectedFilter$ | async"
+							[selectedSplit]="selectedSessionTeamSplit$ | async"
+							[selectedPlayersOptions]="selectedSessionPlayersOptions$ | async"
+							[playersSessions]="playersSessions$ | async"
+							[playersStatistics]="sessionPlayersStatistics$ | async"
+							[bubbleMetrics]="selectedBubbleMetrics$ | async"
+							[selectedAdvanced]="selectedAdvanced$ | async"
+							[advancedData]="advancedData$ | async"
+							(onCalendarClick)="onCalendarSession()"
+							(onShowUploadDialog)="onShowUploadDialog()"
+							(onHideUploadDialog)="onHideUploadDialog()"
+							(onToggleSidebar)="onToggleSidebar($event)"
+							(onToggleThresholds)="onToggleThresholds($event)"
+							(onTogglePercentage)="onTogglePercentage($event)"
+							(onToggleOrder)="onToggleOrder($event)"
+							(onToggleLabels)="onToggleLabels($event)"
+							(onToggleBubble)="onToggleBubble($event)"
+							(onDownloadPDF)="onDownloadSessionTeamPDF($event)"
+							(onDownloadCSV)="onDownloadSessionTeamCSV($event)"
+						>
+						</iterpro-session-team>
+					</p-tabPanel>
+					<!-- INDIVIDUAL -->
+					<p-tabPanel [header]="'sessionAnalysis.options.individual' | translate">
+						<iterpro-session-individual
+							[mainSession]="individualMainSession$ | async"
+							[selectedSession]="selectedSession$ | async"
+							[selectedPlayer]="selectedIndividualPlayer$ | async"
+							[playersSessions]="playersSessions$ | async"
+							[metrics]="metrics$ | async"
+							[individualALCL]="individualALCL$ | async"
+							[advancedFlags]="advancedFlags$ | async"
+							[selectedSplits]="selectedSessionIndividualSplits$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[playerStatistics]="individualPlayerStatistics$ | async"
+							[selectedTeam]="selectedTeam$ | async"
+							[viewFlags]="viewFlags$ | async"
+							[chartFlags]="chartFlags$ | async"
+							[canLoadAdvanced]="canLoadAdvanced$ | async"
+							(onToggleSidebar)="onToggleSidebar($event)"
+							(onToggleThresholds)="onToggleThresholds($event)"
+							(onToggleLabels)="onToggleLabels($event)"
+							(onTogglePercentage)="onTogglePercentage($event)"
+							(onCalendarClick)="onCalendarSession()"
+							(onShowUploadDialog)="onShowUploadDialog()"
+							(onDownloadPDF)="onDownloadSessionIndividualPDF($event)"
+						>
+						</iterpro-session-individual>
+					</p-tabPanel>
+				</p-tabView>
+
+				@if (views.sessionView === sessionViews.Team && views.mainView === viewStates.Session) {
+					<!-- TEAM TABLE STATS -->
+					<ng-container
+						*ngTemplateOutlet="
+							tableStatsTemplate;
+							context: {
+								headers: (metricsLabels$ | async),
+								rows: (sessionPlayersStatistics$ | async | keyvalue)
+							}
+						"
+					></ng-container>
+				}
+			</div>
+
+			<!-- IF: PERIOD -->
+			<div *ngIf="views.mainView === viewStates.Period" class="col col-main no-max">
+				<p-tabView
+					class="colView-3 mainMenuInner"
+					[activeIndex]="views.periodView"
+					(onChange)="onChangePeriodAnalysis($event)"
+				>
+					<!-- TOTAL -->
+					<p-tabPanel [header]="'sessionAnalysis.options.total' | translate">
+						<iterpro-period-total
+							[viewFlags]="viewFlags$ | async"
+							[selectedTeam]="selectedTeam$ | async"
+							[selectedPlayers]="selectedPeriodPlayersOptions$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[metrics]="metrics$ | async"
+							[periodSessions]="periodTotalSessions$ | async"
+							[datePeriod]="selectedDatePeriod$ | async"
+							[selectedSplits]="selectedPeriodSplits$ | async"
+							[chartFlags]="chartFlags$ | async"
+							[playersStatistics]="periodTotalPlayersStatistics$ | async"
+							(onToggleSidebar)="onToggleSidebar($event)"
+							(onToggleLabels)="onToggleLabels($event)"
+							(onTogglePercentage)="onTogglePercentage($event)"
+							(onToggleOrder)="onToggleOrder($event)"
+							(onDownloadPDF)="onDownloadPeriodTotalPDF($event)"
+							(onDownloadCSV)="onDownloadPeriodCSV($event)"
+						>
+						</iterpro-period-total>
+					</p-tabPanel>
+
+					<!-- TREND -->
+					<p-tabPanel [header]="'sessionAnalysis.options.trend' | translate">
+						<iterpro-period-trend
+							[selectedTeam]="selectedTeam$ | async"
+							[selectedPlayers]="selectedPeriodPlayersOptions$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[metrics]="metrics$ | async"
+							[datePeriod]="selectedDatePeriod$ | async"
+							[selectedSplits]="selectedPeriodSplits$ | async"
+							[periodSessions]="periodTrendSessions$ | async"
+							[periodStatistics]="periodTrendPlayersStatistics$ | async"
+							[periodTableData]="periodTrendTableData$ | async"
+							[eventData]="periodEventData$ | async"
+							[viewFlags]="viewFlags$ | async"
+							[chartFlags]="chartFlags$ | async"
+							[selectedAdvanced]="selectedAdvanced$ | async"
+							[advancedData]="advancedData$ | async"
+							(onToggleSidebar)="onToggleSidebar($event)"
+							(onToggleLabels)="onToggleLabels($event)"
+							(onDownloadPDF)="onDownloadPeriodTrendPDF($event)"
+							(onDownloadCSV)="onDownloadPeriodCSV($event)"
+						>
+						</iterpro-period-trend>
+					</p-tabPanel>
+				</p-tabView>
+				@if (views.periodView === periodViews.Total) {
+					@if (views.mainView === viewStates.Period) {
+						<!-- PERIOD TOTAL TABLE STATS -->
+						<ng-container
+							*ngTemplateOutlet="
+							tableStatsTemplate;
+							context: {
+								headers: (metricsLabels$ | async),
+								rows: (periodTotalPlayersStatistics$ | async | keyvalue)
+							}
+						"
+						></ng-container>
+					}
+				}
+				@if (views.periodView === periodViews.Trend) {
+					@if (views.mainView === viewStates.Period) {
+						<!-- PERIOD TREND TABLE STATS -->
+						<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+						<iterpro-table-stats [headers]="periodSessionDates$ | async" [rows]="periodTrendPlayersStatistics$ | async | keyvalue">
+							<ng-template #headersTemplate let-headers let-index>
+								<th pFrozenColumn [style.width]="'130px'" [style.min-width]="'130px'">
+									<p-dropdown
+										*ngIf="metrics$ | async"
+										appendTo="body"
+										[options]="metrics$ | async"
+										optionLabel="metricLabel"
+										[(ngModel)]="selectedMetric"
+										(onChange)="onMetricChange($event)"
+									>
+									</p-dropdown>
+								</th>
+								<th *ngFor="let header of headers; let index" [style.width]="'130px'" [style.min-width]="'130px'">
+									{{ header }}
+								</th>
+							</ng-template>
+
+							<ng-template #rowsTemplate let-row let-index>
+								<td pFrozenColumn [ngStyle]="{ width: '200px', minWidth: '200px' }">{{ row.key }}</td>
+								<td *ngFor="let value of row.value" [ngStyle]="{ width: '130px', minWidth: '130px' }">
+									<div class="tw-flex tw-items-center tw-gap-2">
+																				<span
+																					class="iterpro-point"
+																					*ngIf="value?.canShowSemaphore?.[metricIndex] && value?.semaphore?.[metricIndex]"
+																					[pTooltip]="
+                'Threshold: ' + (value?.threshold[metricIndex] || '-') +
+                (value?.ratio?.[metricIndex] ? ' → [' + value?.ratio[metricIndex] + ']' : '')
+              "
+																					[ngStyle]="{ backgroundColor: value?.semaphore[metricIndex] }"
+																				>
+									</span>
+										<span>{{ value?.value?.[metricIndex] || '-' }}</span>
+									</div>
+								</td>
+							</ng-template>
+						</iterpro-table-stats>
+
+						</div>
+					}
+				}
+			</div>
+
+			<!-- SIDEBAR FILTERS -->
+			<div class="col col-sidebar" [ngClass]="(viewFlags$ | async)?.sidebar ? 'open' : 'closed'">
+				<p-tabView
+					[activeIndex]="views.mainView"
+					(onChange)="onChangeFilterTab($event)"
+				>
+					<!-- SESSION PANEL -->
+					<p-tabPanel [header]="'sessionAnalysis.session' | translate">
+						<iterpro-session-filters
+							[sessionAnalysisState]="views.sessionView"
+							[teamSeasons]="teamSeasons$ | async"
+							[selectedTeam]="selectedTeam$ | async"
+							[selectedSeason]="selectedSeason$ | async"
+							[sessions]="sessions$ | async"
+							[playersInSession]="playersInSession$ | async"
+							[playersOptions]="playersOptions$ | async"
+							[advancedOptions]="advancedOptions$ | async"
+							[selectedAdvanced]="selectedAdvanced$ | async"
+							[metrics]="metrics$ | async"
+							[bubbleMetrics]="selectedBubbleMetrics$ | async"
+							[splits]="sessionSplits$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[selectedSession]="selectedSession$ | async"
+							[selectedSessionDuration]="selectedSessionDuration$ | async"
+							[selectedSessionGDType]="selectedSessionGDType$ | async"
+							[selectedPlayersOptions]="selectedSessionPlayersOptions$ | async"
+							[selectedFilter]="selectedFilter$ | async"
+							[selectedTeamSplit]="selectedSessionTeamSplit$ | async"
+							[selectedIndividualPlayer]="selectedIndividualPlayer$ | async"
+							[selectedIndividualSplits]="selectedSessionIndividualSplits$ | async"
+							[chartFlags]="chartFlags$ | async"
+							[advancedFlags]="advancedFlags$ | async"
+							[canLoadAdvanced]="canLoadAdvanced$ | async"
+							(onSelectSeason)="onChangeSeason($event)"
+							(onSelectSession)="onChangeSession($event)"
+							(onSelectTeamPlayers)="onChangeTeamPlayers($event)"
+							(onSelectIndividualPlayer)="onChangeIndividualPlayer($event)"
+							(onSelectFilter)="onChangeFilter($event)"
+							(onSelectMetrics)="onChangeMetrics($event)"
+							(onSelectTeamSplit)="onChangeTeamSplit($event)"
+							(onSelectIndividualSplits)="onChangeIndividualSplits($event)"
+							(onSelectMetricBubble)="onChangeBubbleMetrics($event)"
+							(onSelectAdvanced)="onChangeAdvanced($event)"
+						>
+						</iterpro-session-filters>
+					</p-tabPanel>
+
+					<!-- PERIOD PANEL -->
+					<p-tabPanel [header]="'sessionAnalysis.period' | translate">
+						<iterpro-period-filters
+							[periodAnalysisState]="views.periodView"
+							[playersOptions]="playersOptions$ | async"
+							[metrics]="metrics$ | async"
+							[splits]="periodSplits$ | async"
+							[selectedTeam]="selectedTeam$ | async"
+							[selectedDatePeriod]="selectedDatePeriod$ | async"
+							[selectedSplits]="selectedPeriodSplits$ | async"
+							[selectedMetrics]="selectedMetrics$ | async"
+							[selectedPlayersOptions]="selectedPeriodPlayersOptions$ | async"
+							[selectedFilter]="selectedFilter$ | async"
+							[selectedSessionType]="selectedPeriodSessionType$ | async"
+							[advancedOptions]="advancedOptions$ | async"
+							[selectedAdvanced]="selectedAdvanced$ | async"
+							[periodGames]="periodGames$ | async"
+							[periodTrainings]="periodTrainings$ | async"
+							[advancedFlags]="advancedFlags$ | async"
+							[canLoadAdvanced]="canLoadAdvanced$ | async"
+							(onSelectPeriod)="onChangeDatePeriod($event)"
+							(onSelectFilter)="onChangeFilter($event)"
+							(onSelectSessionType)="onChangeSessionType($event)"
+							(onSelectPlayers)="onChangePeriodPlayers($event)"
+							(onSelectSplits)="onChangePeriodSplits($event)"
+							(onSelectMetrics)="onChangeMetrics($event)"
+							(onSelectAdvanced)="onChangeAdvanced($event)"
+						>
+						</iterpro-period-filters>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+
+	<iterpro-multiple-file-upload
+		*ngIf="selectedSession$ | async"
+		[visible]="(viewFlags$ | async)?.uploadDialog"
+		[editMode]="true"
+		[attachmentModel]="(selectedSession$ | async)?._attachments"
+		(save)="onSaveAttachmentsToSession($event)"
+		(discard)="onHideUploadDialog()"
+	/>
+</div>
+
+<ng-template #tableStatsTemplate let-headers="headers" let-rows="rows">
+	<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+		<iterpro-table-stats [headers]="headers" [rows]="rows">
+			<ng-template #headersTemplate let-headers>
+				<th pFrozenColumn >
+					{{ 'general.player' | translate }}
+				</th>
+				<th *ngFor="let header of headers" [style.width]="'130px'" [style.min-width]="'130px'">
+					{{ header }}
+				</th>
+			</ng-template>
+
+			<ng-template #rowsTemplate let-row>
+				<td [ngStyle]="{ width: '130px', minWidth: '130px' }" pFrozenColumn>{{ row.key }}</td>
+				<td [ngStyle]="{ width: '130px', minWidth: '130px' }" *ngFor="let value of row.value">
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<span
+							class="iterpro-point"
+							*ngIf="value?.canShowSemaphore"
+							[pTooltip]="'Threshold: ' + value?.threshold + (value?.ratio ? ' → [' + value?.ratio + ']' : '')"
+							[ngStyle]="{ backgroundColor: value?.semaphore }"
+						>
+						</span>
+						<span>{{ value?.value }}</span>
+					</div>
+				</td>
+			</ng-template>
+		</iterpro-table-stats>
+	</div>
+</ng-template>

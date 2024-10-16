@@ -1,0 +1,216 @@
+{
+	"name": "ProfilePlayers",
+	"plural": "ProfilePlayers",
+	"base": "Model",
+	"public": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"profileFitness": {
+			"accepts": [
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "testIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metricsSelected",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/profileFitness",
+				"verb": "post"
+			}
+		},
+		"profileGameStats": {
+			"accepts": [
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "metricsPlayerStats",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "isPrimaryTeam",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/profileGameStats",
+				"verb": "post"
+			}
+		},
+		"profileMaintenance": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "testIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/profileMaintenance",
+				"verb": "post"
+			}
+		},
+		"profileRobustness": {
+			"accepts": [
+				{
+					"arg": "teamSeasonId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "playerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateFrom",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "dateTo",
+					"type": "date",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "minutesField",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "individual",
+					"type": "number",
+					"http": {
+						"source": "form"
+					},
+					"required": "false"
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/profileRobustness",
+				"verb": "post"
+			}
+		}
+	}
+}

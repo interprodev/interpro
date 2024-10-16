@@ -1,0 +1,234 @@
+<!-- EXAMS -->
+<div class="pflex-p-4">
+	<div class="pflex-mb-2 pflex-w-full pflex-flex pflex-align-items-center pflex-justify-content-between">
+		<h3>{{ 'medical.infirmary.exams' | translate }}</h3>
+
+		<!-- MEDICAL RECORD REDIRECT -->
+		<div class="pflex-flex pflex-align-items-center pflex-gap-2">
+			<i
+				class="pflex-cursor-pointer fas fa-medkit"
+				(click)="goToInjuryPrevention()"
+				[pTooltip]="'event.medicalRecords.redirect' | translate"
+			></i>
+			<p-button
+				size="small"
+				[label]="'buttons.addNew' | translate"
+				*ngIf="injury && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+				(click)="addExam()"
+			>
+			</p-button>
+		</div>
+	</div>
+
+	<p-table
+		styleClass="fixedHeightTable p-datatable-striped"
+		[ngStyle]="{ height: '200px', display: 'block'}"
+		*ngIf="injury && injury._injuryExams && injury?._injuryExams?.length > 0; else noExams"
+		[value]="injury._injuryExams"
+		[rows]="20"
+		[scrollable]="true"
+		scrollHeight="200px"
+		dataKey="date"
+	>
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th class="treat-actions" pFrozenColumn></th>
+				<th [ngStyle]="{ width: '140px', justifyContent: 'left' }">
+					{{ 'medical.infirmary.exam.date' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '80px', justifyContent: 'left' }">
+					{{ 'medical.infirmary.exam.hour' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '200px', justifyContent: 'left' }">
+					{{ 'medical.infirmary.exam.exam' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '400px', justifyContent: 'left' }">
+					{{ 'medical.infirmary.report.description' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '200px', justifyContent: 'left' }">
+					{{ 'tooltip.author' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '150px', justifyContent: 'center' }">
+					{{ 'medical.infirmary.exam.attachment' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '150px', justifyContent: 'center' }">
+					{{ 'admin.contracts.linkToDocument' | translate }}
+				</th>
+				<th [ngStyle]="{ width: '100px', justifyContent: 'center' }">
+					{{ 'prevention.treatments.complete' | translate }}
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10">
+				<td class="treat-actions" pFrozenColumn>
+					<ng-container>
+						<i
+							*ngIf="
+								!editFlag &&
+								rowData.complete !== true &&
+								injury.currentStatus !== 'medical.infirmary.details.statusList.healed'
+							"
+							class="fas fa-pencil-alt pflex-text-sm pflex-cursor-pointer"
+							[pTooltip]="'buttons.edit' | translate"
+							(click)="editExam(rowData)"
+						></i>
+						<i
+							*ngIf="editFlag && selectedExam?.id === rowData.id"
+							class="fas fa-save pflex-text-sm pflex-cursor-pointer"
+							[pTooltip]="'buttons.save' | translate"
+							(click)="confirmSave(rowData, rowIndex)"
+						></i>
+						<i
+							*ngIf="!editFlag && injury.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+							class="fas fa-trash pflex-text-sm pflex-cursor-pointer"
+							[pTooltip]="'buttons.delete' | translate"
+							(click)="confirmDeleteExam(rowData)"
+						></i>
+						<i
+							*ngIf="editFlag === true && selectedExam?.id === rowData.id"
+							class="fas fa-times pflex-text-sm pflex-cursor-pointer"
+							[pTooltip]="'buttons.discard' | translate"
+							(click)="discardExam(rowData, rowIndex)"
+						></i>
+					</ng-container>
+				</td>
+				<td style="width: 140px">
+					<p-calendar
+						showButtonBar="true"
+						appendTo="body"
+						[disabled]="!editFlag || (editFlag === true && selectedExam?.id !== rowData.id)"
+						[(ngModel)]="rowData.date"
+						[minDate]="injury.date"
+						(onSelect)="linkDate($event)"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					>
+					</p-calendar>
+				</td>
+				<td style="width: 80px; overflow: visible">
+					<span *ngIf="!editFlag || (editFlag === true && selectedExam?.id !== rowData.id)">{{
+							rowData.date | date : 'HH:mm'
+						}}</span>
+					<div class="inline">
+						<iterpro-timepicker style="margin-left: 1em;"
+																*ngIf="editFlag === true && selectedExam?.id === rowData.id"
+																[disabled]="false"
+																[ngModel]="getTime(rowData.date)"
+																(timeChanged)="onTimeChanged($event)"
+						></iterpro-timepicker>
+					</div>
+				</td>
+				<td style="width: 200px">
+					<input
+						[disabled]="!editFlag || (editFlag === true && selectedExam?.id !== rowData.id)"
+						[(ngModel)]="rowData.exam"
+						pInputText
+						[title]="rowData.exam"
+					/>
+				</td>
+				<td style="width: 400px">
+					<textarea
+						id="$notes"
+						pInputTextarea
+						[title]="rowData?.description"
+						[disabled]="!editFlag || (editFlag === true && selectedExam?.id !== rowData.id)"
+						[(ngModel)]="rowData.description"
+						class="expandable"
+						rows="1"
+					></textarea>
+					<!-- (focusout)="putAtBeginning()"-->
+					<!-- <input [disabled]="editFlag == false || (editFlag === true && selectedExam?.id !== rowData.id)" [(ngModel)]="rowData.description" pInputText title="{{rowData.description}}"/> -->
+				</td>
+				<td style="width: 200px">
+					<p-dropdown
+						appendTo="body"
+						[disabled]="!editFlag || (editFlag === true && selectedExam?.id !== rowData.id)"
+						[options]="customers | customersToSelectItems"
+						[(ngModel)]="rowData.authorId"
+						[dropdownIcon]="editFlag && selectedExam?.id === rowData.id ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="editFlag && selectedExam?.id === rowData.id ? ('dropdown.placeholder' | translate) : null"
+					>
+					</p-dropdown>
+				</td>
+				<td style="width: 150px; justify-content: center">
+					<iterpro-table-attachment
+						accept="*"
+						[editable]="editFlag && selectedExam?.id === rowData.id"
+						[attachment]="rowData.attachment"
+						(file)="selectFile($event)"
+						(error)="attachmentError($event)"
+					>
+					</iterpro-table-attachment>
+				</td>
+				<td style="width: 150px; justify-content: center">
+					<a
+						*ngIf="!editFlag && selectedExam?.id === rowData.id"
+						style="width: 45%; text-overflow: ellipsis; overflow: hidden"
+						target="_blank"
+						href="//{{ rowData.cloudUrl }}"
+					>{{ rowData.cloudUrl }}</a
+					>
+					<input
+						*ngIf="editFlag === true && selectedExam?.id === rowData.id"
+						[(ngModel)]="rowData.cloudUrl"
+						pInputText
+						title="{{ rowData.cloudUrl }}"
+					/>
+				</td>
+				<td style="width: 100px; justify-content: center" translate>
+					<span
+						[style.color]="getCompleteClass(rowData).color"
+						pTooltip="{{ getCompleteTitle(rowData) }}"
+						[style.font-size]="'1.5em'"
+						class="fas"
+						[ngClass]="getCompleteClass(rowData).class"
+						*ngIf="editFlag === false || (editFlag === true && selectedExam?.id !== rowData.id)"
+					></span>
+					<p-inputSwitch
+						[disabled]="isFuture(rowData)"
+						*ngIf="editFlag === true && selectedExam?.id === rowData.id"
+						[(ngModel)]="rowData.complete"
+					></p-inputSwitch>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<ng-template #noExams>
+		<p>{{ 'alert.noRecordsFound' | translate }}</p>
+	</ng-template>
+</div>
+
+<!-- EXAM DIALOG -->
+<p-dialog
+	[(visible)]="confirmDeleteFlag"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div>
+		<span translate>confirm.eventRelated</span>
+	</div>
+	<p-footer>
+		<p-button size="small" styleClass="p-button-primary" (click)="deleteExam(true)" [label]="'yes' | translate"></p-button>
+		<p-button size="small" (click)="deleteExam(false)" [label]="'no' | translate"></p-button>
+		<p-button size="small" [outlined]="true" (click)="discardDeleteExam()" [label]="'buttons.discard' | translate"></p-button>
+	</p-footer>
+</p-dialog>
+
+<!-- ASSESMENTS LIST -->
+<div class="pflex-p-4">
+	<iterpro-assessments-list
+		[customers]="customers"
+		[currentUserId]="currentUserId"
+		[assessments]="assessments"
+		[injury]="injury"
+		(create)="confirmSaveAssessment($event)"
+		(edit)="confirmSaveAssessment($event)"
+		(delete)="confirmDeleteAssessment($event)"
+	></iterpro-assessments-list>
+</div>

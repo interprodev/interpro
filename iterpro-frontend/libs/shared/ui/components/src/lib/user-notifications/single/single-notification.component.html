@@ -1,0 +1,64 @@
+@if (notification) {
+	<a
+		class="pflex-flex pflex-gap-1 pflex-text-sm pflex-mb-2 pflex-p-2 pflex-border-round-sm pflex-surface-700 pflex-transition-linear pflex-transition-duration-300 pflex-transition-all hover:pflex-surface-600 notification-container"
+		[ngClass]="{ 'pflex-surface-900 hover:pflex-surface-800': notification.read }"
+		[style.borderColor]="notification | notificationColor"
+		(click)="openNotification(notification)"
+	>
+		<!-- NOTIFICATION HEADER -->
+
+		@if (notification.img) {
+			<img
+				class="pflex-w-4rem pflex-block pflex-h-full pflex-bg-white pflex-border-round-md"
+				[src]="notification | notificationImage"
+				alt="notification picture"
+				onError="this.src='assets/img/default_icon.png';"
+			/>
+		} @else {
+			<div
+				class="pflex-p-1 pflex-w-4rem pflex-h-4rem pflex-flex pflex-justify-content-center pflex-align-items-center"
+				[style]="'min-width: 4rem;'"
+			>
+				@if (!club || (club && !club.crest)) {
+					<i class="fas fa-shield-alt pflex-text-4xl"></i>
+				} @else {
+					<iterpro-picture [photoUrl]="club.crest" class="tw-h-10 tw-w-10" />
+				}
+			</div>
+		}
+
+		<!-- NOTIFICATION CONTENT -->
+		<div class="pflex-flex pflex-text-left pflex-flex-column pflex-justify-content-between pflex-px-2 pflex-w-full">
+			<div class="pflex-flex pflex-justify-content-between pflex-gap-1 pflex-align-items-baseline">
+				<span class="pflex-text-xs pflex-font-normal pflex-text-gray-500">{{
+					notification.teamId | teamName: teams
+				}}</span>
+				<span
+					[class.pflex-hidden]="notification.read"
+					class="pflex-text-xs pflex-cursor-pointer pflex-white-space-nowrap hover:pflex-underline"
+					(click)="markAsRead($event)"
+				>
+					{{ 'notifications.markAsRead' | translate }}
+				</span>
+			</div>
+			<div
+				class="pflex-flex pflex-justify-content-between pflex-gap-2 plex-align-items-baseline pflex-my-2 pflex-font-normal"
+			>
+				<span
+					class="pflex-text-sm"
+					[style]="'text-transform: none;'"
+					[innerHTML]="notification | notificationMessage"
+				></span>
+			</div>
+
+			<!-- NOTIFICATION FOOTER -->
+			<div class="pflex-flex pflex-justify-content-between pflex-align-items-baseline pflex-text-gray-500 pflex-mt-1">
+				<div class="pflex-flex pflex-gap-1 pflex-align-items-baseline">
+					<i [ngClass]="notification | notificationIconClass" ia-hidden="true" class="pflex-text-base"></i>
+					<span class="pflex-text-xs pflex-font-normal">{{ notification | notificationDate }}</span>
+				</div>
+				<time class="pflex-font-normal pflex-text-xs">{{ notification.date | formatDateBySetting: 'HH:mm' }}</time>
+			</div>
+		</div>
+	</a>
+}

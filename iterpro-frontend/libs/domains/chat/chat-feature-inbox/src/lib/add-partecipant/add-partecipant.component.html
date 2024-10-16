@@ -1,0 +1,44 @@
+<div>
+	<p-progressSpinner
+		*ngIf="!contactsGroups || !contactsGroups.length; else contactSelection"
+		class="pflex-mb-3 pflex-inline-flex pflex-w-1rem pflex-h-1rem pflex-align-items-center pflex-justify-content-center pflex-mr-2"
+		strokeWidth="8"
+	></p-progressSpinner>
+
+	<ng-template #contactSelection>
+		<p-listbox
+			[options]="contactsGroups"
+			[(ngModel)]="selectedPartecipants"
+			[listStyle]="{ 'max-height': '35rem' }"
+			[multiple]="true"
+			[checkbox]="true"
+			[filter]="true"
+			[group]="true"
+			optionGroupLabel="groupName"
+			optionGroupChildren="contacts"
+			optionLabel="name"
+		>
+			<ng-template let-group pTemplate="group">
+				<div class="pflex-flex pflex-align-items-center">
+					<span>{{ group.groupName }}</span>
+				</div>
+			</ng-template>
+			<ng-template let-contact pTemplate="item">
+				<div class="pflex-inline-block pflex-bg-black-alpha-60 pflex-border-round-sm pflex-pr-3">
+					<div class="pflex-w-2rem pflex-h-full pflex-border-round-sm pflex-border-2 pflex-border-500 pflex-mr-2">
+						<iterpro-picture [photoUrl]="contact.photoUrl" />
+					</div>
+					<span>{{ contact.name }}</span>
+				</div>
+			</ng-template>
+		</p-listbox>
+	</ng-template>
+
+	<p-button
+		size="small"
+		class="pflex-w-full pflex-mt-4 info video-button buttons-panel"
+		(click)="confirmAddPartecipants()"
+		[label]="'buttons.confirm' | translate"
+	>
+	</p-button>
+</div>

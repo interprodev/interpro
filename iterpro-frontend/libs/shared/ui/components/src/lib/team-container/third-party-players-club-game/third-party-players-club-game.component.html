@@ -1,0 +1,45 @@
+<ng-container *ngIf="!tabView; else tabViewTemplate">
+	@if (!gameDetails.hideHome) {
+		<div>
+			<iterpro-team-container [team]="gameDetails.home" [editable]="editable" [selectable]="homeSelectable" [displayEmptyPlayers]="displayEmptyPlayers" [sportType]="sportType" />
+		</div>
+	}
+	@if (!gameDetails.hideAway) {
+		<div [class.away-team]="
+		!horizontalAlign && gameDetails.home.players.length > 0 && gameDetails.away.players.length > 0
+	">
+			<iterpro-team-container [team]="gameDetails.away" [editable]="editable" [selectable]="awaySelectable" [displayEmptyPlayers]="displayEmptyPlayers" [sportType]="sportType"/>
+		</div>
+	}
+</ng-container>
+
+<ng-template #tabViewTemplate>
+  <p-tabView class="colView mainMenuInner">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="crest">
+					<iterpro-picture [type]="'team'" [photoUrl]="gameDetails?.home?.imageDataURL"></iterpro-picture>
+          <span>{{ gameDetails.home.name }}</span>
+        </div>
+      </ng-template>
+      <div class="pflex-pb-8">
+        <iterpro-team-container [team]="gameDetails.home" [showHeader]="false" [editable]="editable" [selectable]="homeSelectable" [displayEmptyPlayers]="displayEmptyPlayers" [sportType]="sportType" />
+      </div>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="crest">
+					<iterpro-picture [type]="'team'" [photoUrl]="gameDetails?.away?.imageDataURL"></iterpro-picture>
+          <span>{{ gameDetails.away.name }}</span>
+        </div>
+      </ng-template>
+      <div class="pflex-pb-8">
+        <iterpro-team-container [team]="gameDetails.away" [showHeader]="false" [editable]="editable" [selectable]="awaySelectable" [displayEmptyPlayers]="displayEmptyPlayers" [sportType]="sportType" />
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</ng-template>
+
+<ng-template #noCrest>
+  <img src="assets/img/default_crest.png" onError="this.src='assets/img/default_crest.png';" alt="club crest"/>
+</ng-template>

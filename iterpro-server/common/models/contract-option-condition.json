@@ -1,0 +1,97 @@
+{
+	"name": "ContractOptionCondition",
+	"plural": "ContractOptionConditions",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"_id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"type": {
+			"type": "string",
+			"required": true
+		},
+		"action": {
+			"type": "string"
+		},
+		"count": {
+			"type": "number"
+		},
+		"count2": {
+			"type": "number"
+		},
+		"goal": {
+			"type": "string"
+		},
+		"team": {
+			"type": "string"
+		},
+		"custom": {
+			"type": "string"
+		},
+		"phases": {
+			"type": "array"
+		},
+		"competitions": {
+			"type": "array"
+		},
+		"seasons": {
+			"type": "array"
+		},
+		"startDate": {
+			"type": "date"
+		},
+		"untilDate": {
+			"type": "date"
+		},
+		"membershipDate": {
+			"type": "date"
+		},
+		"soldDate": {
+			"type": "date"
+		},
+		"soldAmount": {
+			"type": "number"
+		},
+		"condition": {
+			"type": "string"
+		},
+		"matchId": {
+			"type": "string"
+		},
+		"seasonsRelationFlag": {
+			"type": "string",
+			"default": "and"
+		},
+		"competitionsRelationFlag": {
+			"type": "string",
+			"default": "and"
+		},
+		"bonusCap": {
+			"type": "number"
+		},
+		"progress": {
+			"type": {
+				"count": "number",
+				"count2": "number",
+				"total": "number",
+				"percentage": "number"
+			},
+			"default": {
+				"count": 0,
+				"count2": 0,
+				"total": 0,
+				"percentage": 0
+			}
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

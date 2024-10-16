@@ -1,0 +1,302 @@
+<div class="profile-content">
+	<div class="row">
+		<div class="ui-g pflex-col-12">
+			<div class="pflex-col-3">
+				<table class="fields-table">
+					<tr>
+						<th translate>forecast.purchaseDate</th>
+						<td>{{ forecastData?.on | formatDateBySetting }}</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.contractForm</th>
+						<td>{{ forecastData?.from | formatDateBySetting }}</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.contractExpiry</th>
+						<td>{{ forecastData?.to | formatDateBySetting }}</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>forecast.cost</span>
+							<p-checkbox [(ngModel)]="costFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.cost | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>finance.cashFlow.achievedBonus</span>
+							<p-checkbox [(ngModel)]="achievedBonusFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.achievedBonuses | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>forecast.residualBonuses</span>
+							<p-checkbox [(ngModel)]="residualBonusFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.bonuses | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>admin.contracts.agentFee</span>
+							<p-checkbox [(ngModel)]="agentFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.agent | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>forecast.agentAchievedBonus</span>
+							<p-checkbox
+								[(ngModel)]="agentAchievedBonusFlag"
+								binary="true"
+								(onChange)="recalculateForecast(forecastData)"
+							>
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.agentAchievedBonuses | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>forecast.agentResidualBonus</span>
+							<p-checkbox
+								[(ngModel)]="agentResidualBonusFlag"
+								binary="true"
+								(onChange)="recalculateForecast(forecastData)"
+							>
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.agentBonuses | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>forecast.solidarity</span>
+							<p-checkbox [(ngModel)]="solidarityFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.solidarityMechanism | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th style="display: flex; justify-content: space-between; column-gap: 24px">
+							<span translate>admin.contracts.valorization</span>
+							<p-checkbox [(ngModel)]="valorizationFlag" binary="true" (onChange)="recalculateForecast(forecastData)">
+							</p-checkbox>
+						</th>
+						<td>
+							<span>{{ currency }}{{ forecastData?.valorization | number: '0.0-3' : language }}</span>
+						</td>
+					</tr>
+					<tr>
+						<th translate>assetValue</th>
+						<td>{{ currency }}{{ forecastData?.total | number: '0.0-3' : language }}</td>
+					</tr>
+					<tr>
+						<th translate>forecast.amortizationLength</th>
+						<td>{{ forecastData?.amortizationLength }}</td>
+					</tr>
+					<tr>
+						<th translate>forecast.amortization</th>
+						<td *ngIf="forecastData && forecastData.amortization && isValidAmortization(forecastData.amortization)">
+							{{ currency }}{{ forecastData?.amortization | number: '0.0-3' : language }}
+						</td>
+					</tr>
+					<tr>
+						<th translate>forecast.amortization.upToDate</th>
+						<td *ngIf="forecastData && forecastData.amortization && isValidAmortization(forecastData.amortization)">
+							{{ currency }}{{ amortizationToday | number: '0.0-0' : language }}
+						</td>
+					</tr>
+					<tr>
+						<th translate>forecast.amortization.netBookValueUpToDate</th>
+						<td *ngIf="forecastData && forecastData.amortization && isValidAmortization(forecastData.amortization)">
+							{{ currency }}{{ netBookValueToday | number: '0.0-0' : language }}
+						</td>
+					</tr>
+					<tr>
+						<th translate>forecast.amortization.capillarity</th>
+						<td *ngIf="forecastData && forecastData.amortization && isValidAmortization(forecastData.amortization)">
+							<p-dropdown
+								appendTo="body"
+								[options]="units"
+								[(ngModel)]="selectedUnit"
+								(onChange)="onChangeUnit()"
+							></p-dropdown>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="pflex-col-9" style="position: relative">
+				<p-chart *ngIf="data" type="line" [data]="data" [options]="options"></p-chart>
+			</div>
+		</div>
+		<div class="ui-g pflex-col-12">
+			<div class="pflex-col-12">
+				<div *ngIf="cols && (selectedUnit === 1 || selectedUnit === 2)" class="container">
+					<table class="default-table">
+						<thead>
+							<tr>
+								<th rowspan="2"></th>
+								<th *ngFor="let col of cols; index as i" colspan="selectedUnit" style="text-align: center">
+									<span pTooltip="{{ getStartSeason(i) }}">{{ 'forecast.season' | translate }} {{ cols[i] }}</span>
+								</th>
+							</tr>
+							<tr *ngIf="selectedUnit !== 1">
+								<th *ngFor="let col of amortization; index as i" colspan="selectedUnit" style="text-align: center">
+									<div class="flexed" style="justify-content: space-around">
+										<span *ngFor="let value of col; index as j">{{ getUnitLabel() | translate }} {{ j + 1 }}</span>
+									</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td translate>forecast.amortization</td>
+								<td *ngFor="let col of cols; index as i" style="text-align: center">
+									<div class="flexed">
+										<div
+											*ngFor="let value of amortization[i]; index as j"
+											class="flexed"
+											[ngClass]="{
+												renewed: isRenewedCell(i, j),
+												bonus: isBonusCell(i, j),
+												residual: isResidualBonusCell(i, j),
+												today: isTodayCell(i, j)
+											}"
+											[pTooltip]="getTooltip(i, j)"
+											[escape]="false"
+											style="justify-content: center"
+											[ngStyle]="{ 'width.%': 100 / selectedUnit }"
+										>
+											<span>{{ currency }}{{ value ? (value | number: '1.' : language) : 0 }}</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td translate>forecast.residual</td>
+								<td *ngFor="let col of cols; index as i" style="text-align: center">
+									<div class="flexed">
+										<div
+											*ngFor="let value of residual[i]; index as j"
+											class="flexed"
+											style="justify-content: center"
+											[ngClass]="{
+												renewed: isRenewedCell(i, j),
+												bonus: isBonusCell(i, j),
+												residual: isResidualBonusCell(i, j),
+												today: isTodayCell(i, j)
+											}"
+											[pTooltip]="getTooltip(i, j)"
+											[escape]="false"
+											[ngStyle]="{ 'width.%': 100 / selectedUnit }"
+										>
+											<span>{{ currency }}{{ value ? (value | number: '1.' : language) : 0 }}</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div *ngIf="cols && (this.selectedUnit === 4 || this.selectedUnit === 12)" class="container">
+					<table *ngFor="let col of cols; index as i" class="default-table" style="margin-top: 1em">
+						<thead>
+							<tr>
+								<th rowspan="2"></th>
+								<th colspan="selectedUnit" style="text-align: center">
+									<span pTooltip="{{ getStartSeason(i) }}">{{ 'forecast.season' | translate }} {{ cols[i] }}</span>
+								</th>
+							</tr>
+
+							<tr *ngIf="selectedUnit !== 1">
+								<th colspan="selectedUnit" style="text-align: center">
+									<div class="flexed" style="justify-content: space-around">
+										<span *ngFor="let value of amortization[i]; index as j"
+											>{{ getUnitLabel() | translate }} {{ j + 1 }}</span
+										>
+									</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td [ngStyle]="{ 'width.%': 100 / selectedUnit }" translate>forecast.amortization</td>
+								<td style="text-align: center">
+									<div class="flexed">
+										<div
+											*ngFor="let value of amortization[i]; index as j"
+											class="flexed"
+											[ngClass]="{
+												renewed: isRenewedCell(i, j),
+												bonus: isBonusCell(i, j),
+												residual: isResidualBonusCell(i, j),
+												today: isTodayCell(i, j)
+											}"
+											[pTooltip]="getTooltip(i, j)"
+											[escape]="false"
+											style="justify-content: center"
+											[ngStyle]="{ 'width.%': 100 / selectedUnit }"
+										>
+											<span>{{ currency }}{{ value ? (value | number: '1.' : language) : 0 }}</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td [ngStyle]="{ 'width.%': 100 / selectedUnit }" translate>forecast.residual</td>
+								<td style="text-align: center">
+									<div class="flexed">
+										<div
+											*ngFor="let value of residual[i]; index as j"
+											class="flexed"
+											style="justify-content: center"
+											[ngClass]="{
+												renewed: isRenewedCell(i, j),
+												bonus: isBonusCell(i, j),
+												residual: isResidualBonusCell(i, j),
+												today: isTodayCell(i, j)
+											}"
+											[pTooltip]="getTooltip(i, j)"
+											[escape]="false"
+											[ngStyle]="{ 'width.%': 100 / selectedUnit }"
+										>
+											<span>{{ currency }}{{ value ? (value | number: '1.' : language) : 0 }}</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div style="padding: 1.8em 2em 1.8em 2em; width: 100%" *ngIf="bonuses">
+			<iterpro-squads-person-bonuses
+				[bonuses]="bonuses"
+				[seasons]="seasons"
+				[currency]="currency"
+				[translation]="translation"
+				[club]="club"
+			>
+			</iterpro-squads-person-bonuses>
+		</div>
+	</div>
+</div>

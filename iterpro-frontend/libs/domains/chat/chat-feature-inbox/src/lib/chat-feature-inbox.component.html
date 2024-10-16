@@ -1,0 +1,43 @@
+<ng-container>
+	<!-- Start chat seletion -->
+	<div
+		class="pflex-relative pflex-flex pflex-align-items-center pflex-justify-content-between pflex-w-full pflex-mb-3 pflex-p-3 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg"
+	>
+		<div class="pflex-w-full">
+			<div class="pflex-w-full pflex-flex pflex-align-items-start pflex-justify-content-between">
+				<div>
+					<h4 class="pflex-mb-2">{{ 'chat.title' | translate }}</h4>
+					<small>{{ 'chat.description' | translate }}</small>
+					<br />
+					<small>{{ 'chat.groupsHint' | translate }}</small>
+				</div>
+
+				<div class="pflex-flex pflex-flex-column pflex-gap-2">
+					<p-button size="small" styleClass="tw-w-full" (click)="newChat()" [label]="'chat.newChat' | translate"></p-button>
+					<p-button size="small" styleClass="tw-w-full"  (click)="newGroup()" [label]="'chat.newGroup' | translate"></p-button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- CONTAINER -->
+	<div class="pflex-relative tw-mt-8">
+		<!-- GROUP ACTIONS -->
+		<div *ngIf="isCurrentGroup$ | async" class="pflex-relative tw-absolute tw--right-4 tw--top-4">
+			<p-menu #menu [popup]="true" [model]="groupActions" appendTo="body" [className]="'chat-menu'"></p-menu>
+			<p-button
+				size="small"
+				(click)="menu.toggle($event)"
+				[icon]="conversationActionsLoader ? 'fa-solid fa-spinner-third fa-spin' : 'fa-regular fa-gear'"
+			></p-button>
+		</div>
+
+		<!-- INBOX -->
+		<div #talkjsContainer [ngStyle]="{ height: 'calc(100vh - 17rem)' }" class="pflex-w-full">
+			<p-progressSpinner
+				class="pflex-inline-flex pflex-w-3rem pflex-h-3rem pflex-align-items-center pflex-justify-content-center pflex-mr-2"
+				strokeWidth="8"
+			></p-progressSpinner>
+		</div>
+	</div>
+</ng-container>

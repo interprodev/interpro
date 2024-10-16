@@ -1,0 +1,70 @@
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-relative">
+
+	<!-- Actions -->
+	<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+		<iterpro-report-download
+			(downloadPDF)="downloadReportAction()"
+			(downloadCSV)="downloadCsvAction()"
+			[pTooltip]="'PDF - CSV'"
+		/>
+		<i
+			class="fas fa-sort-amount-up tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': showInOrder }"
+			[pTooltip]="'sessionAnalysis.order' | translate"
+			(click)="onToggleOrderAction()"
+		></i>
+		<span
+			class="fas fa-question tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': showHelper }"
+			[pTooltip]="'attendance.statistics.legend' | translate"
+			(click)="op.toggle($event)"
+		></span>
+		<i
+			class="fas fa-tag tw-cursor-pointer"
+			[ngClass]="{ 'fa-active': showLabels }"
+			[pTooltip]="'sessionAnalysis.labels' | translate"
+			(click)="onToggleLabelsAction()"
+		></i>
+	</div>
+
+	<!-- Chart -->
+	<iterpro-chart class="tw-mt-2" [height]="'400'" [data]="stats" [options]="options" type="bar" />
+</div>
+
+<!-- Stats -->
+<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+	<iterpro-table-stats [headers]="headers" [rows]="rows">
+		<ng-template #headersTemplate let-headers>
+			<th
+				*ngFor="let header of headers; let i = index"
+				pFrozenColumn
+				[frozen]="i === 0"
+				[ngStyle]="{ minWidth: i === 0 ? '100px' : '200px' }"
+			>
+				{{ header }}
+			</th>
+		</ng-template>
+
+		<ng-template #rowsTemplate let-row>
+			<td
+				*ngFor="let field of row; let i = index"
+				pFrozenColumn
+				[frozen]="i === 0"
+				[pTooltip]="i !== 0 && headers[i] + ': ' + field"
+			>
+				{{ field }}
+			</td>
+		</ng-template>
+	</iterpro-table-stats>
+</div>
+
+<p-overlayPanel #op (onHide)="this.showHelper = false" (onShow)="this.showHelper = true">
+	<div class="tw-overflow-auto tw-p-4 tw-bg-shark-900 tw-max-h-[30rem]">
+		<ul>
+			<li *ngFor="let pos of legend" class="tw-my-2">
+				<p class="tw-font-bold">{{ pos.label | translate }}</p>
+				<span>{{ pos.tooltip | translate }}</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>

@@ -1,0 +1,155 @@
+<!-- Player Card -->
+@if (!isPlayersLoading) {
+	<div
+		class="tw-flex tw-cursor-pointer tw-w-64 tw-h-[100px] tw-bg-shark-950 tw-bg-opacity-85 tw-rounded hover:tw-bg-shark-900 tw-overflow-hidden"
+		[class.tw-h-[120px]]="scouting && isPlayerDescriptionTipss"
+		(click)="onClickPlayer(player)"
+	>
+		<!-- Sx Container -->
+		<div class="tw-bg-white tw-relative">
+
+			<!-- Provider Widget -->
+			<iterpro-player-provider-widget
+				[wyscoutId]="player?.wyscoutId"
+				[instatId]="player?.instatId"
+			/>
+
+			<!-- Player Info -->
+			<iterpro-picture [photoUrl]="player.downloadUrl" [baseClass]="scouting && isPlayerDescriptionTipss ? 'tw-block tw-h-[120px] tw-w-[120px]' : 'tw-block tw-h-[100px] tw-w-[100px]'" />
+
+			<div class="tw-flex tw-p-1 tw-w-full tw-justify-between tw-items-center tw-absolute tw-bottom-0 tw-left-0 tw-bg-shark-900 tw-bg-opacity-80 tw-text-sm tw-font-bold">
+				@if (player.position) {
+					<span>{{ player.position + '.short' | translate }}</span>
+				}
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<div class="tw-text-xs">{{ player.birthDate | date : 'yyyy' }}</div>
+					@if (player.nationality) {
+						<iterpro-player-flag [lang]="player.nationality" />
+					}
+				</div>
+			</div>
+
+		</div>
+		<!-- Dx Container -->
+		<div class="tw-p-2 tw-w-full tw-flex-1">
+			<div class="tw-flex tw-flex-col tw-h-full">
+				<div class="tw-font-bold tw-text-xs tw-mb-1">{{player.displayName}}</div>
+				@if (scouting) {
+					<!-- Scouting Card -->
+					<div class="tw-text-shark-200 tw-text-xs">
+						<div [class.tw-text-2xs]="scouting && isPlayerDescriptionTipss">{{ player.currentTeam || '-' }}</div>
+						<iterpro-player-card-detail [player]="player" [tipssMode]="isPlayerDescriptionTipss" />
+					</div>
+					<!-- Icons -->
+					<div class="tw-flex tw-h-full tw-items-end tw-justify-end tw-gap-2 tw-font-normal tw-text-sm">
+						@if (!player.archived) {
+							<!-- Scouting Icons -->
+							<div
+									pTooltip="{{ (maxArchivableReached ? 'maximumArchivedPlayers' : 'profile.archive') | translate }}"
+									[tooltipDisabled]="!maxArchivableReached"
+									class="tw-flex tw-gap-2"
+								>
+								<i
+									pTooltip="{{ 'profile.archive' | translate }}"
+									class="fas fa-archive tw-text-xs tw-text-white"
+									(click)="openArchiveDialog($event, player)"
+									[ngClass]="{ disabled: maxArchivableReached }"
+								></i>
+							</div>
+							<i
+								pTooltip="{{ 'profile.deletePlayerScouting' | translate }}"
+								class="fas fa-trash tw-text-xs tw-text-white"
+								(click)="openDeleteDialog($event, player)"
+							></i>
+						} @else {
+							<!-- Scouting Archived Icons -->
+							<div
+								pTooltip="{{
+								maxImportableReached
+									? ('maximumActivePlayers' | translate)
+									: ('player.archivedFrom' | translate) +
+									  (player.archivedDate | date) +
+									  '\n\n' +
+									  ('profile.unarchive' | translate)
+								}}"
+									[tooltipDisabled]="!maxImportableReached"
+								class="tw-flex tw-gap-2"
+								>
+								<i
+									[ngClass]="{ disabled: maxImportableReached }"
+									pTooltip="{{ 'profile.unarchive' | translate }}"
+									class="fas fa-undo icon"
+									(click)="openActivateDialog($event, player)"
+								></i>
+							</div>
+						}
+					</div>
+				} @else {
+					<!-- My Team Card -->
+					<div class="tw-flex tw-gap-1 tw-items-center tw-text-shark-200 tw-font-normal tw-text-xs">
+						<div translate>profile.player.readiness</div>
+						<div>- - - - -</div>
+						<div class="iterpro-point" [style.background-color]="getPointColor(player)"></div>
+					</div>
+					@if (player.archived) {
+						<div class="tw-flex tw-h-full tw-items-end tw-justify-between">
+							<div class="tw-flex tw-align-baseline tw-font-light tw-text-2xs">
+								<div translate>player.archivedFrom</div>
+								<div class="tw-text-white tw-pl-1">{{ player.archivedDate | formatDateBySetting }}</div>
+							</div>
+						</div>
+					} @else {
+						<!-- Icons -->
+						<div class="tw-flex tw-h-full tw-items-end tw-justify-end tw-text-sm tw-gap-2">
+							@if (player.preventionPast) {
+								<i
+									[escape]="false"
+									tooltipStyleClass="widthTooltip"
+									[pTooltip]="player.preventionPastDescription"
+									class="fas fa-close tw-text-xs tw-text-red-500"
+								></i>
+							}
+							@if (player.preventionNext) {
+								<i
+									[escape]="false"
+									tooltipStyleClass="widthTooltip"
+									[pTooltip]="player.preventionNextDescription"
+									class="fas fa-clock tw-text-xs"
+								></i>
+							}
+							@if (player.expiration) {
+								<i
+									class="fas fa-file-certificate tw-text-xs tw-text-white"
+									[pTooltip]="player.expirationDescription"
+								></i>
+							}
+							@if (player.flaredUp) {
+								<i class="fas fa-fire tw-text-xs colored" pTooltip="{{ 'tooltip.flaredUp' | translate }}"></i>
+							}
+							<iterpro-injury-icon [injuries]="player.injuries" />
+						</div>
+					}
+				}
+			</div>
+		</div>
+	</div>
+} @else {
+	<!-- Loading Card -->
+	<div class="tw-flex tw-cursor-pointer tw-w-72 tw-h-28 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded-lg hover:tw-bg-shark-800">
+		<div class="tw-relative" style="background: unset">
+			<p-skeleton width="130px" height="100px"></p-skeleton>
+			<div class="tw-flex tw-p-1 tw-w-full tw-justify-between tw-items-center tw-absolute tw-bottom-0 tw-left-0 tw-bg-shark-800 tw-bg-opacity-80 tw-text-sm tw-font-bold">
+				<p-skeleton width="30px"></p-skeleton>
+				<p-skeleton width="20px"></p-skeleton>
+			</div>
+		</div>
+		<div class="tw-p-2 tw-w-full tw-flex-1 tw-flex tw-flex-col tw-gap-2">
+			<p-skeleton width="100px"></p-skeleton>
+			<p-skeleton width="60px" height="10px"></p-skeleton>
+			<p-skeleton width="40px" height="10px"></p-skeleton>
+			<p-skeleton width="45px" height="10px"></p-skeleton>
+		</div>
+	</div>
+
+}
+

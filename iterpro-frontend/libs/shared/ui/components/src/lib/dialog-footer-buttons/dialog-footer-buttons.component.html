@@ -1,0 +1,18 @@
+<div class="dynamic-dialog-footer tw-absolute tw-bottom-0 tw-right-0">
+	<p-button
+		[styleClass]="'p-button-primary'"
+		icon="fas fa-check"
+		[size]="'small'"
+		[disabled]="confirmDisabled"
+		(click)="onConfirm()"
+		[label]="confirmLabel | translate"
+	></p-button>
+	<p-button
+		size="small"
+		[outlined]="true"
+		icon="fas fa-times"
+		[size]="'small'"
+		(click)="discardClicked.emit()"
+		[label]="'buttons.discard' | translate"
+	></p-button>
+</div>

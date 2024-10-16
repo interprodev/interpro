@@ -1,0 +1,49 @@
+{
+	"name": "PlayerProviderMapping",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"rawMetrics": {
+			"type": ["object"]
+		},
+		"id": {
+			"type": "string",
+			"id": true,
+			"defaultFn": "uuid"
+		},
+		"splitField": {
+			"type": "string"
+		},
+		"playerField": {
+			"type": "string"
+		},
+		"gameField": {
+			"type": "string"
+		},
+		"durationField": {
+			"type": "string"
+		},
+		"yellowCardField": {
+			"type": "string"
+		},
+		"redCardField": {
+			"type": "string"
+		},
+		"substituteInMinuteField": {
+			"type": "string"
+		},
+		"substituteOutMinuteField": {
+			"type": "string"
+		},
+		"scoreField": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

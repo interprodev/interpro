@@ -1,0 +1,178 @@
+<div *ngIf="playerData">
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+		<!-- Sx Container -->
+		<div class="tw-col-span-6 tw-p-5 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+			<div class="tw-flex tw-flex-col tw-gap-8 tw-text-[0.8em]">
+				<!-- Player image && Go Score -->
+				<div class="tw-grid tw-grid-cols-12 tw-gap-8">
+					<!-- Player image -->
+					<div class="tw-col-span-6 tw-flex tw-flex-col">
+						<h3 class="tw-mb-2">{{ playerData.displayName }}</h3>
+						<iterpro-picture [photoUrl]="playerData.downloadUrl" class="tw-rounded tw-bg-white tw-overflow-hidden tw-max-w-[150px]"></iterpro-picture>
+					</div>
+					<!-- Go Score -->
+					<ng-container *ngTemplateOutlet="goScore; context: { $implicit: playerData.goscore }"></ng-container>
+				</div>
+				<!-- Wellness & Readiness -->
+				<div class="tw-grid tw-grid-cols-12 tw-gap-8">
+					<!-- Wellness -->
+					<ng-container *ngTemplateOutlet="wellness; context: { $implicit: playerData.wellness }"></ng-container>
+					<!-- Readiness -->
+					<ng-container *ngTemplateOutlet="readiness; context: { $implicit: playerData.readiness }"></ng-container>
+				</div>
+			</div>
+		</div>
+		<!-- SX Container -->
+		<div class="tw-col-span-6 tw-p-5 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+			<div class="tw-flex tw-flex-col tw-gap-4 tw-text-[0.8em]">
+				<!-- Health -->
+				<ng-container *ngTemplateOutlet="health; context: { $implicit: playerData.healthStatus }"></ng-container>
+				<!-- Body Chart -->
+				<ng-container *ngTemplateOutlet="bodyChartTemplate; context: { $implicit: playerData.bodyChart }"></ng-container>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #goScore let-goscore>
+	<div class="tw-col-span-6">
+		<h3 class="tw-mb-2" translate>readiness.goScore</h3>
+		<div class="go-score">
+			<div class="go-score-progress">
+				<div class="go-score-round">
+					<div class="go-score-text">
+						{{ goscore.today.value || '-' }}
+					</div>
+					<round-progress
+						[current]="goscore.today.value"
+						[max]="100"
+						[stroke]="10"
+						[color]="goscore.today.color"
+						[background]="'#dddddd'"
+						[radius]="100"
+						[responsive]="true"
+					>
+					</round-progress>
+				</div>
+			</div>
+			<div class="go-score-data">
+				<div class="go-label" translate>readiness.last48h</div>
+				<div class="go-data">
+					<strong [style.color]="goscore.last48h.color">{{ goscore.last48h.value || '-' }}</strong
+					>&nbsp;
+					<span *ngIf="goscore.today.value">{{ goscore.last48h.increment }}</span>
+				</div>
+				<div class="go-label" translate>readiness.last7d</div>
+				<div class="go-data">
+					<strong [style.color]="goscore.last7d.color">{{ goscore.last7d.value || '-' }}</strong
+					>&nbsp;
+					<span *ngIf="goscore.today.value">{{ goscore.last7d.increment }}</span>
+				</div>
+				<div class="go-label" translate>readiness.injuryRisk</div>
+				<div class="go-data">
+					<strong [style.color]="goscore.today.color" translate>{{ goscore.injuryRisk }}</strong>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #health let-healthStatus>
+	<div>
+		<h3 class="tw-mb-2" translate>readiness.healthStatus</h3>
+		<table class="fields-table tw-w-full">
+			<ng-container *ngFor="let injury of healthStatus.injuries">
+				<tr>
+					<th style="white-space: nowrap" translate>{{ injury?.issue }}</th>
+					<td style="white-space: nowrap" class="icon-container">
+						<i *ngIf="injury.chronicInjuryId" class="fas fa-fire" style="color: var(--color-primary-500)"></i>
+						<i [ngClass]="injury.icon"></i>
+						<span translate>{{ injury?.location }}</span>
+					</td>
+				</tr>
+				<tr>
+					<th style="white-space: nowrap" translate>medical.infirmary.report.status</th>
+					<td style="white-space: nowrap">
+						<span translate>{{ injury.status }}</span>
+					</td>
+				</tr>
+			</ng-container>
+			<tr>
+				<th style="white-space: nowrap" translate>readiness.healthStatus.availability</th>
+				<td style="white-space: nowrap">
+					<span [style.color]="healthStatus.color" translate>{{ healthStatus.available }}</span>
+				</td>
+			</tr>
+			<tr *ngIf="healthStatus.available === 'no'">
+				<th style="white-space: nowrap" translate>readiness.healthStatus.expectation</th>
+				<td style="white-space: nowrap">
+					<span *ngIf="healthStatus.available === 'no'">{{ healthStatus.expectation }}</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+</ng-template>
+
+<ng-template #wellness let-wellness>
+	<div class="tw-col-span-6">
+		<h3 class="tw-mb-2" translate>goScore.wellbeing</h3>
+		<div *ngIf="wellnessEnabled; else wellnessNotEnabled">
+			<div *ngFor="let item of wellbeingKeys" class="health-item double-item">
+				<span translate>{{ item.label }}</span>
+				<ng-container *ngIf="isStandardField(item.key)">
+				<span class="tw-text-center wellness-label">
+					{{ wellness[item.key]?.value }}
+				</span>
+					<i class="point" [style.background-color]="wellness[item.key]?.color"></i>
+				</ng-container>
+				<span class="tw-text-center">
+				<ng-container *ngIf="isLocationField(item.key); else increment">
+					<span [pTooltip]="getSorenessLocations(wellness.locations)" style="white-space: nowrap">
+						{{ getLocationsNumberString(wellness.locations.length) }}</span
+					>
+				</ng-container>
+				<ng-template #increment>{{ wellness[item.key]?.increment }}</ng-template>
+
+				<span *ngIf="isSleepField(item.key)">
+					<span *ngIf="item.key !== 'duration'; else duration">
+						{{ wellness[item.key] }}
+					</span>
+					<ng-template #duration>
+						{{ wellness.sleep_duration }}
+					</ng-template>
+				</span>
+			</span>
+			</div>
+		</div>
+		<ng-template #wellnessNotEnabled translate>alert.wellbeingTestNotSelected</ng-template>
+	</div>
+</ng-template>
+
+<ng-template #readiness let-readiness>
+	<div class="tw-col-span-6">
+		<h3 class="tw-mb-2" translate>navigator.readiness</h3>
+		<div>
+			<div *ngFor="let item of readiness" class="health-item double-item">
+				<span translate>{{ item.test }}</span>
+				<span translate>{{ item.label }}</span>
+				<span class="tw-text-center">
+				{{ item.value || '-' }}
+			</span>
+				<span *ngIf="item.value" class="point" [style.background-color]="item.color"></span>
+				<span class="tw-text-center">
+				<span *ngIf="item.value">{{ item.increment }}</span>
+			</span>
+			</div>
+			<div *ngIf="readiness.length === 0" translate>alert.noSelectedTestForTheGoScoreCalculation</div>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #bodyChartTemplate let-bodyChart>
+	<iterpro-body-chart
+		#bodyChart
+		appendTo="body"
+		[injuries]="bodyChart.injuries"
+		[chronic]="bodyChart.chronicInjuries"
+	/>
+</ng-template>

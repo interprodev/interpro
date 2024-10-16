@@ -1,0 +1,129 @@
+h5 + .small-table {
+	margin-top: 1rem;
+}
+.author-info {
+	display: flex;
+	color: #ccc;
+	.author-name {
+		color: #fff;
+		margin-right: 0.5em;
+	}
+}
+.name-input {
+	width: 100%;
+	font-size: 2em;
+	padding: 0.5rem !important;
+}
+.small-table {
+	width: 100%;
+	text-transform: capitalize;
+	font-size: 0.9rem;
+	border-spacing: 0 6px;
+
+	.fas {
+		margin-right: 1em;
+	}
+	tr {
+		border-radius: 2px;
+	}
+	th {
+		font-family: 'Gotham';
+		text-align: left !important;
+		font-size: 0.9rem;
+		width: 30%;
+	}
+	td,
+	th {
+		padding: 0.5rem;
+	}
+	td {
+		font-size: 0.9rem;
+		text-transform: capitalize;
+		font-weight: normal;
+	}
+	.padded {
+		padding-left: 1.5em;
+	}
+}
+
+.subgoal {
+	display: flex;
+	align-items: center;
+	> span:last-child {
+		margin-left: 5px;
+		flex-grow: 1;
+	}
+}
+
+.input-align-end {
+	display: flex;
+	align-items: baseline;
+}
+
+.pitch-unit {
+	text-transform: lowercase;
+	+ .pitch-label {
+		margin-left: 30px;
+	}
+}
+
+.pitch-label {
+	margin-right: 5px;
+	color: #bbbbbb;
+}
+.pitch-size {
+	width: 50px;
+	text-align: right;
+	padding-right: 2px;
+}
+.duration-label {
+	color: #bbbbbb;
+	font-size: 0.8rem;
+}
+
+.tr-top {
+	vertical-align: top;
+}
+
+.col-container {
+	justify-content: space-between;
+	padding-bottom: 0.4em;
+	.content {
+		background-color: var(--color-bg-700);
+		.center-title {
+			text-align: center;
+		}
+	}
+	.drill-profile {
+		max-height: 62vh;
+		overflow: auto;
+	}
+}
+
+.column {
+	flex-direction: column;
+}
+
+.fas {
+	cursor: pointer;
+}
+.flexed {
+	display: flex;
+	justify-content: space-between;
+}
+
+textarea {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	width: 100%;
+	resize: none !important;
+}
+.textAreaInjury {
+	@apply tw-p-2 tw-w-full tw-min-h-[50px] tw-bg-shark-1000 tw-rounded-lg;
+}
+
+iterpro-report-download {
+	font-size: 1.2rem;
+}

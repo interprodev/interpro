@@ -1,0 +1,26 @@
+<div class="trigger-time">
+	<div>
+		<label translate>event.drill.startTime</label>
+		<iterpro-timepicker [ngModel]="slotMinTime"
+												[disabled]="false"
+												(timeChanged)="slotMinTimeChange.emit($event)">
+		</iterpro-timepicker>
+	</div>
+	<div>
+		<label translate>event.drill.endTime</label>
+		<iterpro-timepicker style="margin-left: 1em;"
+												[ngModel]="slotMaxTime"
+												[minTime]="slotMinTime"
+												[disabled]="false"
+												(timeChanged)="slotMaxTimeChange.emit($event)">
+		</iterpro-timepicker>
+	</div>
+	<i
+		class="fas fa-thumbtack iterpro-clickable-icon"
+		[class.icon-disabled]="!slotMinTime || !slotMaxTime"
+		[class.favorite]="hasTargetTimeRangeSetting"
+		(click)="pinClicked()"
+		[pTooltip]="(hasTargetTimeRangeSetting ? 'buttons.resetFilters' : 'buttons.save') | translate"
+	>
+	</i>
+</div>

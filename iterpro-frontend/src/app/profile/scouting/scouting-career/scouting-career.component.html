@@ -1,0 +1,103 @@
+<div class="data-career">
+	<div class="last-transfers">
+		<p-table [value]="transfers" [scrollable]="true" scrollHeight="150px" styleClass="p-datatable-striped">
+			<ng-template pTemplate="caption">
+				<div class="caption">
+					<h3 translate>admin.transfers</h3>
+				</div>
+			</ng-template>
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th style="width: 20%" translate>admin.evaluation.date</th>
+					<th style="width: 20%" translate>admin.evaluation.from</th>
+					<th style="width: 20%" translate>admin.evaluation.to</th>
+					<th style="width: 20%" translate>admin.evaluation.type</th>
+					<th style="width: 20%" translate>admin.evaluation.value</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10" *ngIf="rowData">
+					<td style="width: 20%">{{ rowData.startDate | formatDateBySetting }}</td>
+					<td style="width: 20%">{{ rowData.fromTeamName }}</td>
+					<td style="width: 20%">{{ rowData.toTeamName }}</td>
+					<td style="width: 20%">{{ rowData.type }}</td>
+					<td style="width: 20%">{{ rowData.value }}</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="emptymessage">
+				<tr>
+					<td translate>information.generic.notAvailable</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+
+	<div class="career">
+		<p-table #dt [value]="career" [scrollable]="true" scrollHeight="300px" styleClass="p-datatable-striped">
+			<ng-template pTemplate="caption">
+				<div class="caption">
+					<h3 translate>admin.evaluation.career</h3>
+					<div class="label-container" style="display: flex; align-items: center">
+						<span class="caption-label" style="margin-right: 1em">Club</span>
+						<p-inputSwitch [(ngModel)]="showNational" (onChange)="toggleNational()"></p-inputSwitch>
+						<span class="caption-label" style="margin-left: 1em">National</span>
+					</div>
+				</div>
+			</ng-template>
+			<ng-template pTemplate="header" let-col="columns">
+				<tr class="tw-h-10">
+					<th translate>admin.evaluation.season</th>
+					<th [ngStyle]="{ minWidth: '200px' }" translate>scouting.league</th>
+					<th [ngStyle]="{ minWidth: '200px' }" translate>admin.evaluation.club</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-tshirt" pTooltip="{{ 'admin.evaluation.jersey' | translate }}"></i>
+					</th>
+					<th translate style="justify-content: center">admin.evaluation.apps</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-futbol" pTooltip="{{ 'admin.evaluation.goals' | translate }}"></i>
+					</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-whistle" pTooltip="{{ 'admin.evaluation.penalties' | translate }}"></i>
+					</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-clock" pTooltip="{{ 'admin.evaluation.minutesPlayed' | translate }}"></i>
+					</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-arrow-up" pTooltip="{{ 'admin.evaluation.substituteIn' | translate }}"></i>
+					</th>
+					<th translate style="justify-content: center">
+						<i class="fas fa-arrow-down" pTooltip="{{ 'admin.evaluation.substituteOut' | translate }}"></i>
+					</th>
+					<th style="justify-content: center">
+						<div class="cards-container">
+							<div class="soccer-card yellow" pTooltip="{{ 'event.game.yellow' | translate }}"></div>
+							<div class="soccer-card red" pTooltip="{{ 'event.game.red' | translate }}"></div>
+						</div>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+				<tr class="tw-h-10" *ngIf="rowData">
+					<td>{{ rowData.season?.name }}</td>
+					<td [ngStyle]="{ minWidth: '200px' }">{{ rowData.competition?.name }}</td>
+					<td [ngStyle]="{ minWidth: '200px' }" title="{{ rowData.team?.officialName }}">
+						{{ rowData.team?.officialName }}
+					</td>
+					<td style="justify-content: center">{{ rowData.shirtNumber }}</td>
+					<td style="justify-content: center">{{ rowData.appearances }}</td>
+					<td style="justify-content: center">{{ rowData.goal }}</td>
+					<td style="justify-content: center">{{ rowData.penalties }}</td>
+					<td style="justify-content: center">{{ rowData.minutesPlayed }}</td>
+					<td style="justify-content: center">{{ rowData.substituteIn }}</td>
+					<td style="justify-content: center">{{ rowData.substituteOut }}</td>
+					<td style="text-align: center">{{ rowData.yellowCard }} - {{ rowData.redCards }}</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="emptymessage">
+				<tr>
+					<td translate>information.generic.notAvailable</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</div>

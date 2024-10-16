@@ -1,0 +1,104 @@
+<div class="main-container">
+	<div class="attribute-container" *ngFor="let reportDataAvg of reportDataAvg">
+		<div class="progress-wrapper">
+			<div class="main-value">
+				{{ reportDataAvg.mainField.avg }}
+			</div>
+			<round-progress
+				[current]="
+					typeOf(reportDataAvg.mainField.avg) === 'string'
+						? getPotentialScore(reportDataAvg.mainField.avg)
+						: reportDataAvg.mainField.avg
+				"
+				[max]="typeOf(reportDataAvg.mainField.avg) === 'string' ? 3 : reportDataAvg.mainField.max"
+				[stroke]="5"
+				[color]="reportDataAvg.mainField.color"
+				[background]="'#dddddd'"
+				[radius]="50"
+				[semicircle]="true"
+				[responsive]="true"
+			></round-progress>
+			<div class="attribute-label" translate>
+				{{ reportDataAvg.mainField.label }}
+				<i
+					class="iterpro-clickable-icon"
+					[class]="mode === 'redirectToReports' ? 'fas fa-info-circle' : 'fas fa-search'"
+					[pTooltip]="
+						mode === 'redirectToReports'
+							? ('redirect.to.gameReport.text' | translate)
+							: showAttributeTable
+							? 'Hide attributes'
+							: 'Show attributes'
+					"
+					(click)="onClickIcon($event)"
+				></i>
+			</div>
+		</div>
+		<table class="attribute-table fields-table" *ngIf="showAttributeTable">
+			<tr *ngFor="let entry of reportDataAvg.calculatedBy">
+				<th class="table-left-title">
+					{{ entry.label }}
+				</th>
+				<td *ngIf="typeOf(entry.avg) !== 'boolean'; else showBooleanTemplate">
+					<div class="flexed">
+						<span [ngStyle]="getStyleForInputNumber(entry.color)">{{ entry.avg }}</span>
+					</div>
+				</td>
+				<ng-template #showBooleanTemplate>
+					<td>
+						<div [ngSwitch]="entry.avg" class="flexed">
+							<i *ngSwitchCase="true" style="color: green" class="fas fa-check"></i>
+							<i *ngSwitchCase="false" style="color: red" class="fas fa-times"></i>
+							<i *ngSwitchCase="'-'" style="color: orange" class="fas fa-circle-o"></i>
+						</div>
+					</td>
+				</ng-template>
+			</tr>
+		</table>
+	</div>
+
+	<div class="attribute-container">
+		<div class="progress-wrapper">
+			<round-progress
+				[current]="prognosisScore"
+				[max]="3"
+				[stroke]="5"
+				[color]="prognosisColor"
+				[background]="'#dddddd'"
+				[radius]="50"
+				[semicircle]="true"
+				[responsive]="true"
+			></round-progress>
+			<div class="main-value">
+				<input
+					pInputText
+					style="text-align: center"
+					[ngModel]="prognosisLabel"
+					(ngModelChange)="updatePrognosisLabel($event)"
+					type="text"
+					[disabled]="!editMode"
+					[pKeyFilter]="inputValidatorPrognosis"
+					(change)="recalculatePrognosisScore($event)"
+				/>
+			</div>
+			<div class="attribute-label" translate>
+				prognosis
+				<i
+					class="iterpro-clickable-icon"
+					*ngIf="!!prognosisDescription"
+					[class]="mode === 'redirectToReports' ? 'fas fa-info-circle' : 'fas fa-search'"
+					[pTooltip]="prognosisDescription"
+				></i>
+			</div>
+		</div>
+		<textarea
+			pInputTextarea
+			class="p-inputtext p-component"
+			rows="13"
+			[ngModel]="prognosisDescription"
+			(ngModelChange)="updatePrognosisDescription($event)"
+			[disabled]="!editMode"
+			*ngIf="showAttributeTable"
+		></textarea>
+	</div>
+</div>

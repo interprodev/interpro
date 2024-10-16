@@ -1,0 +1,303 @@
+.section {
+	width: 100%;
+}
+
+.rowProfile {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.row {
+	justify-content: space-between;
+}
+
+.end {
+	display: flex;
+	justify-content: space-between;
+}
+
+.col-left-profile {
+	width: 14%;
+	padding-right: 2rem;
+	flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	width: 86%;
+	flex-grow: 1;
+	display: flex;
+	margin-left: 1em;
+	flex-direction: column;
+}
+
+h3 {
+	text-transform: uppercase;
+}
+
+.profile-picture {
+	width: 100%;
+	margin-top: 1em;
+	overflow: hidden;
+	position: relative;
+}
+
+.player-pic {
+	width: 100%;
+	box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+	opacity: 1;
+	display: block;
+	transition: 0.5s ease;
+	backface-visibility: hidden;
+	background-color: white;
+}
+
+.data-col {
+	padding: 0 1rem;
+}
+
+.profile-data-column {
+	width: 50%;
+}
+
+.form-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.form-selector {
+	width: 15%;
+	display: flex;
+	flex-direction: column;
+	padding: 0 1.5em 0 1.5em;
+}
+
+.inline-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.wrap-group {
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin-top: 5px;
+}
+/* .wrap-group > span {
+	white-space: nowrap;
+} */
+
+.inline-label {
+	margin-left: 2em;
+	margin-right: 1em;
+	font-weight: normal;
+	color: #bbbbbb;
+}
+
+.repeated-group {
+	width: 100%;
+}
+
+.fields-table th {
+	width: 15%;
+}
+
+.fields-table td {
+	width: 85%;
+}
+
+.header-buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+.header-buttons .fas {
+	margin-left: 1em;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+.upload {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.upload > div,
+.upload input,
+.upload a {
+	margin-right: 1em;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	word-break: break-all;
+	white-space: nowrap;
+}
+
+.upload > i {
+	margin-right: 1em;
+}
+
+.upload-link {
+	font-size: 0.9em;
+	display: flex;
+	justify-content: space-between;
+	margin-right: 1em;
+	align-items: center;
+}
+
+.upload-button {
+	margin-right: 1em;
+}
+
+.flex-end {
+	display: flex;
+	align-items: center;
+}
+
+.form-invalid {
+	/* width: 50%; */
+	font-size: 12px;
+	color: #e62a10;
+	padding-left: 1em;
+}
+
+.link {
+	/* background-color: var(--color-bg-700); */
+	width: 30%;
+}
+
+.header-section {
+	width: 100%;
+	margin-bottom: 2em;
+	background-color: var(--color-bg-700);
+}
+
+.header-row {
+	width: 60%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.report-download {
+	position: relative;
+}
+.report-submenu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 5px;
+	background-color: var(--color-neutral-300);
+	z-index: 100;
+}
+.report-item {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+.report-item:hover {
+	background-color: #171717;
+}
+.report-item .fas {
+	margin-right: 0.5rem;
+}
+
+.contract-title {
+	text-transform: uppercase;
+	font-family: 'Gotham';
+	/* font-weight: bold; */
+}
+
+.point {
+	margin-left: 1em;
+	position: static;
+	right: 10%;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+.wage-header-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0;
+}
+.nowrap {
+	white-space: nowrap;
+}
+.benefits span {
+	font-size: 12px;
+}
+
+span {
+	/* white-space: nowrap; */
+}
+
+.header-element {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-right: 1.5em;
+}
+
+.asset {
+	margin-right: 1em;
+	margin-left: 0.8em;
+}
+
+.block-table {
+	background-color: var(--color-bg-700);
+}
+
+.block-table,
+.block-table tbody,
+.block-table thead,
+.block-table tr,
+.block-table th,
+.block-table td {
+	display: block;
+	width: 100% !important;
+}
+
+.block-table th {
+	padding: 1em;
+}
+.block-table td {
+	padding: 0 1em 0.5em 1em;
+}
+.block-table td {
+	min-height: 30px;
+}
+
+.actived {
+	cursor: pointer;
+	color: #ddd;
+}
+
+.disable {
+	cursor: default;
+	color: #757575;
+	pointer-events: none;
+}
+
+.asset {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+
+/* .inline-group:hover {
+  background-color: var(--color-neutral-300);
+} */
+
+.fa-exclamation-triangle {
+	color: red;
+}
+
+.text {
+	width: 90%;
+}

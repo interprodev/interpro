@@ -1,0 +1,7 @@
+<span
+  (mouseenter)="checkAdditionalInfo()"
+	class="short-name"
+	[ngClass]="{'disabled': player.alreadyImported }"
+>
+  {{player.shortName}}
+</span>

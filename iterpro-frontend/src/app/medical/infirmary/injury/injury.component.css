@@ -1,0 +1,24 @@
+.select-player {
+	margin: 1em 0;
+}
+.side-title {
+	margin: 1.5em 0 1em 0;
+}
+.no-max {
+	overflow: visible;
+	position: relative;
+}
+
+.injury-label {
+	margin-left: 0.5em;
+}
+
+.injury-list-icon {
+	margin-right: 0.5em;
+}
+
+.col-sidebar {
+  width: unset;
+  flex: 2.5;
+  max-width: 20vw;
+}

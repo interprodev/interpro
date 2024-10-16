@@ -1,0 +1,78 @@
+<div [id]="uuid" class="pflex-w-full pflex-relative pflex-p-4">
+
+  <div class="pflex-flex pflex-max-w-30rem pflex-mx-auto">
+    <div *ngIf="!pointsMode" [innerHTML]="style"></div>
+    <div class="body-svg">
+      <iterpro-body-chart-front
+        [emitZoneClicked]="emitZoneClicked"
+        [zoneClicked]="zoneClicked"
+        [zoneIn]="zoneIn"
+        [zoneOut]="zoneOut"
+      />
+      <div
+        *ngIf="tooltips.front"
+        [style.left.%]="tooltips.front.position.left"
+        [style.top.%]="tooltips.front.position.top"
+        class="tooltip"
+      >
+        {{ tooltips.front.label }}
+      </div>
+      <ng-container *ngIf="pointsMode">
+        <div
+          *ngFor="let point of frontPoints"
+          [style.left.%]="point.point.left"
+          [style.top.%]="point.point.top"
+          class="popup-svg"
+        >
+          {{point.value}}
+        </div>
+      </ng-container>
+    </div>
+    <div class="body-svg">
+      <iterpro-body-chart-back
+        [emitZoneClicked]="emitZoneClicked"
+        [zoneClicked]="zoneClicked"
+        [zoneIn]="zoneIn"
+        [zoneOut]="zoneOut"
+      />
+      <div
+        *ngIf="tooltips.back"
+        [style.left.%]="tooltips.back.position.left"
+        [style.top.%]="tooltips.back.position.top"
+        class="tooltip"
+      >
+        {{tooltips.back.label}}
+      </div>
+      <ng-container *ngIf="pointsMode">
+        <div
+          *ngFor="let point of backPoints"
+          [style.left.%]="point.point.left"
+          [style.top.%]="point.point.top"
+          class="popup-svg"
+        >
+          {{point.value}}
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="body-side-container" *ngIf="showSwitch || showLegend">
+    <i [pTooltip]="'bodychart.showLegend' | translate"
+      (click)="openLegend($event)"
+      class="fas fa-question icon tw-cursor-pointer tw-text-[1.7em]"></i>
+    <p-inputSwitch
+      *ngIf="showSwitch"
+      [pTooltip]="pointsMode ? ('bodychart.switchToActiveInjuries' | translate) : ('bodychart.switchToNumberInjuries' | translate)"
+      (onChange)="togglePointMode()"
+      tooltipPosition="top"
+    ></p-inputSwitch>
+  </div>
+
+  <!-- Overlay Panel -->
+  <p-overlayPanel [style]="{ 'background-color': '#585c5d' }" appendTo="body">
+    <div style="padding:1em;max-width: 50vw;max-height:50vh;overflow:auto">
+      <div class="legend-row" *ngFor="let item of legendConfiguration">{{item.label}}<div class="legend-rectangle {{item?.patternClass}}" [style.background]="item?.background"></div></div>
+    </div>
+  </p-overlayPanel>
+
+</div>

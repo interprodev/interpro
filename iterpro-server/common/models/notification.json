@@ -1,0 +1,405 @@
+{
+	"name": "Notification",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"message": {
+			"type": "string"
+		},
+		"type": {
+			"type": "string"
+		},
+		"subtype": {
+			"type": "string"
+		},
+		"date": {
+			"type": "date"
+		},
+		"sessionId": {
+			"type": "string"
+		},
+		"playerId": {
+			"type": "string"
+		},
+		"staffId": {
+			"type": "string"
+		},
+		"anamnesysId": {
+			"type": "string"
+		},
+		"read": {
+			"type": "boolean",
+			"default": false
+		},
+		"metrics": {
+			"type": "array"
+		},
+		"eventId": {
+			"type": "string"
+		},
+		"img": {
+			"type": "string"
+		},
+		"eventDate": {
+			"type": "date"
+		},
+		"messageEn": {
+			"type": "string"
+		},
+		"playerArchived": {
+			"type": "boolean"
+		},
+		"videoId": {
+			"type": "string"
+		},
+		"matchId": {
+			"type": "string"
+		},
+		"scoutingGameReportId": {
+			"type": "string"
+		},
+		"scoutingGameId": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": ""
+		},
+		"customer": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {
+		"checkNotificationForPlayerOperation": {
+			"accepts": [
+				{
+					"arg": "idPlayer",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "type",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkNotificationForPlayerOperation",
+				"verb": "post"
+			}
+		},
+		"checkNotificationForPlayerTransfer": {
+			"accepts": [
+				{
+					"arg": "idTransfer",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "isStatusChange",
+					"type": "boolean",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "prevStatus",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkNotificationForPlayerTransfer",
+				"verb": "post"
+			}
+		},
+		"checkForInjuryCreation": {
+			"accepts": [
+				{
+					"arg": "injuryId",
+					"type": "string"
+				},
+				{
+					"arg": "teamId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForInjuryCreation",
+				"verb": "post"
+			}
+		},
+		"checkForInjuryStatusChanges": {
+			"accepts": [
+				{
+					"arg": "injuryId",
+					"type": "string"
+				},
+				{
+					"arg": "teamId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForInjuryStatusChanges",
+				"verb": "post"
+			}
+		},
+		"checkForInjuryAvailability": {
+			"accepts": [
+				{
+					"arg": "injuryId",
+					"type": "string"
+				},
+				{
+					"arg": "teamId",
+					"type": "string"
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForInjuryAvailability",
+				"verb": "post"
+			}
+		},
+		"checkNotificationForPlayerValue": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkNotificationForPlayerValue",
+				"verb": "post"
+			}
+		},
+		"checkNotificationForPlayerContract": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "customerIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkNotificationForPlayerContract",
+				"verb": "post"
+			}
+		},
+		"checkNotificationForPlayerScouting": {
+			"accepts": [
+				{
+					"arg": "playerId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "messages",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkNotificationForPlayerScouting",
+				"verb": "post"
+			}
+		},
+		"checkForEventInvitations": {
+			"accepts": [
+				{
+					"arg": "eventId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "staffIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "eventTitle",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForEventInvitations",
+				"verb": "post"
+			}
+		},
+		"checkForVideoSharingNotification": {
+			"accepts": [
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "staffIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForVideoSharingNotification",
+				"verb": "post"
+			}
+		},
+		"checkForVideoCommentNotification": {
+			"accepts": [
+				{
+					"arg": "videoId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "staffIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "authorIds",
+					"type": "array",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/checkForVideoCommentNotification",
+				"verb": "post"
+			}
+		}
+	},
+	"indexes": {
+		"customerId_1": {
+			"keys": {
+				"customerId": 1
+			}
+		}
+	}
+}

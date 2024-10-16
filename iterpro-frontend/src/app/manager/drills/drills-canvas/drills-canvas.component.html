@@ -1,0 +1,12 @@
+<div class="main tw-my-8">
+	<div>
+		<!-- Gallery -->
+		<iterpro-drills-canvas-gallery
+			(addCanvas)="addCanvas()"
+			(editCanvas)="editCanvas($event)"
+			(deleteCanvas)="deleteCanvases($event)"
+			(cloneCanvas)="cloneCanvas($event)"
+			[drillCanvas]="drillCanvas"
+		/>
+	</div>
+</div>

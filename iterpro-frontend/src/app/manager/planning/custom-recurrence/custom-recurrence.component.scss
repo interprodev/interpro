@@ -1,0 +1,33 @@
+.custom-recurrence-row {
+  display: flex;
+  column-gap: 24px;
+  .label-repeat-on {
+    margin-bottom: 12px;
+  }
+}
+.weekly-days-buttons {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  column-gap: 12px;
+  .p-button-raised {
+    background: var(--color-neutral-500);
+    width: 2rem;
+    height: 2rem;
+    padding: 2px;
+  }
+}
+
+.selected-button {
+  background: var(--color-primary-500) !important;
+}
+
+.radio-buttons-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+  margin-top: 12px;
+}
+.radio-item {
+  display: flex;
+}

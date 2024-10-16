@@ -1,0 +1,53 @@
+
+.flex-1-5 {
+	flex: 1.5 !important;
+}
+
+
+.overview-containers {
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	column-gap: 1rem;
+	.overview-container {
+		padding: 1rem;
+		width: 100%;
+		margin-bottom: 1rem;
+		@apply tw-bg-shark-900 tw-rounded-lg;
+		.type-label {
+			margin-bottom: 1rem;
+		}
+		.overview {
+			display: flex;
+			width: 100%;
+			justify-content: space-around;
+			column-gap: 4rem;
+			.section {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+				font-size: calc(1px + 0.9vw);
+				padding: 0;
+				.label {
+					color: var(--color-neutral-900);
+					font-size: 1rem;
+				}
+				.label-subtitle {
+					color: var(--color-neutral-900);
+					font-size: 0.8rem;
+					padding-top: 6px;
+					padding-bottom: 6px;
+				}
+
+				.value {
+					font-size: 1.3em;
+				}
+
+				h4 {
+					font-weight: normal;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+<ng-container *ngIf="selected; else selectableHeader">
+	<i class="fas fa-check-square selectedColumn" aria-hidden="true"></i>
+	<span class="selectedColumn">
+		{{ label }}
+	</span>
+</ng-container>
+<ng-template #selectableHeader>
+	<i class="fas fa-square" aria-hidden="true"></i>
+	<span [class.clickableColumn]="clickable" (click)="selectHeader($event)">
+		{{ label }}
+	</span>
+</ng-template>

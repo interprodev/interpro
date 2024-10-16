@@ -1,0 +1,16 @@
+<p-pickList [disabled]="true"
+						[showSourceControls]="false"
+						[showTargetControls]="false"
+						[source]="sourceItems | arrayFromNumber" [target]="targetItems | arrayFromNumber"
+						[responsive]="true"
+						[sourceHeader]="targetLabel"
+						[targetHeader]="targetLabel"
+						[showSourceFilter]="false"
+						[showTargetFilter]="false"
+						[styleClass]="'shark-picklist'">
+	<ng-template let-player pTemplate="item">
+		<div class="tw-p-1 tw-pt-2">
+			<p-skeleton width="100px"></p-skeleton>
+		</div>
+	</ng-template>
+</p-pickList>

@@ -1,0 +1,21 @@
+<ng-container *ngIf="description && actionFalseLabel && actionTrueLabel">
+	<p class="pflex-mb-8 description">{{ description | translate }}</p>
+	<div class="pflex-flex pflex-justify-content-end pflex-w-full pflex-gap-2">
+		<p-button [outlined]="'true'" [size]="'small'" [label]="'cancel' | translate" (click)="cancel()"></p-button>
+		<p-button
+			[label]="actionFalseLabel | translate"
+			[size]="'small'"
+			[outlined]="true"
+			(click)="confirmationAction(false)"
+			*ngIf="actionFalseLabel"
+		></p-button>
+		<p-button
+			[label]="actionTrueLabel | translate"
+			[size]="'small'"
+			styleClass="p-button-primary"
+			[icon]="actionTrueIcon"
+			[raised]="true"
+			(click)="confirmationAction(true)"
+		></p-button>
+	</div>
+</ng-container>

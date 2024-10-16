@@ -1,0 +1,55 @@
+<div>
+	@if (teamList$ | async) {
+		<a
+			pRipple
+			class="tw-transition-duration-150 tw-flex tw-cursor-pointer tw-items-center tw-rounded tw-p-4 tw-px-12 tw-font-medium tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white lg:tw-px-2 lg:tw-py-2"
+			pStyleClass="@next"
+			enterFromClass="tw-hidden"
+			enterActiveClass="pflex-scalein"
+			leaveToClass="tw-hidden"
+			leaveActiveClass="pflex-fadeout"
+			[hideOnOutsideClick]="true"
+		>
+		<span class="tw-mr-2 tw-flex tw-items-center">
+			<ng-container>
+				@if ((selectedClub$ | async)?.crest) {
+					<iterpro-picture [photoUrl]="(selectedClub$ | async)?.crest" [type]="'team'" class="tw-h-10 tw-max-w-10" />
+				} @else {
+					<i class="fas fa-shield-alt tw-text-4xl"> </i>
+				}
+			</ng-container>
+		</span>
+			<span class="tw-text-sm">{{ (selectedTeam$ | async)?.name }}</span>
+			<i class="fas fa-angle-down tw-ml-auto lg:tw-ml-3"></i>
+		</a>
+		<ul
+			class="tw-z-50 tw-m-0 tw-hidden tw-w-full tw-origin-top tw-cursor-pointer tw-list-none tw-bg-shark-950 tw-border-solid tw-border-0.3 tw-border-shark-900 tw-rounded tw-px-12 tw-py-4 tw-shadow-none lg:tw-absolute lg:tw-w-60 lg:tw-px-0 lg:tw-py-0 lg:tw-shadow-lg"
+		>
+			<!-- Search Bar -->
+			<div class="tw-relative tw-w-full tw-rounded tw-border-shark-800 tw-bg-shark-950 tw-shadow-lg">
+				<input
+					type="text"
+					class="tw-w-full tw-px-4 tw-py-3 tw-rounded tw-text-shark-200 tw-placeholder-shark-200 tw-border-shark-800 tw-transition-colors"
+					[placeholder]="'videogallery.search.placeholder' | translate"
+					[(ngModel)]="searchTerm"
+					(ngModelChange)="searchTeam($event)"
+				/>
+				<i class="fas fa-search tw-absolute tw-top-0 tw-right-0 tw-m-3 tw-text-shark-200"></i>
+			</div>
+			@for (team of teamList$ | async; track team; let idx = $index) {
+				<li [class.tw-relative]="idx > 0">
+					<a
+						pRipple
+						class="tw-transition-duration-150 tw-flex tw-items-center tw-px-4 tw-py-3 tw-text-shark-200 tw-transition-colors hover:tw-bg-shark-800 hover:tw-text-white"
+						[class.selected]="team.id === (selectedTeam$ | async)?.id"
+						(click)="updateSelectedTeamAction(team)"
+					>
+						<span class="font-medium">{{ team.name }}</span>
+					</a>
+				</li>
+			}
+		</ul>
+	} @else {
+		<iterpro-skeleton-dropdown></iterpro-skeleton-dropdown>
+	}
+</div>

@@ -1,0 +1,45 @@
+<p-dialog [(visible)]="visible" [showHeader]="true" [closable]="false" [closeOnEscape]="false" [draggable]="false"
+	[resizable]="false" [modal]="true" [style]="{ width: '1000px' }">
+
+	<!-- Header -->
+	<p-header><span translate>editor.title</span>: {{ title | capitalize }}</p-header>
+
+	<!-- Content -->
+	<div class="container">
+		<div class="buttons">
+			<div class="operators">
+				<p-button size="small" (click)="addOperator('+')" label="+"></p-button>
+				<p-button size="small" (click)="addOperator('-')" label="-"></p-button>
+				<p-button size="small" (click)="addOperator('*')" label="*"></p-button>
+				<p-button size="small" (click)="addOperator('/')" label="/"></p-button>
+				<p-button size="small" (click)="addOperator('(')" label="("></p-button>
+				<p-button size="small" (click)="addOperator(')')" label=")"></p-button>
+			</div>
+			<div class="clear">
+				<p-button size="small" (click)="clear()" label="{{ 'buttons.clear' | translate }}"></p-button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="editor-container">
+				<textarea id="editor" pInputTextarea class="editor" [ngModel]="expression" (ngModelChange)="validate($event)"
+					[ngClass]="!isValid ? 'not-valid' : 'valid'"
+					style="height:100%;font-size:1rem;margin-right:1em;background-color:white"></textarea>
+			</div>
+			<div class="listbox-container">
+				<p-listbox [style]="{ width: '100%' }" [options]="variables" optionLabel="label" optionValue="name"
+					[listStyle]="{ 'max-height': '300px' }" (onClick)="addVariable($event)" [filter]="true"></p-listbox>
+			</div>
+		</div>
+		<div class="errors">
+			<span *ngIf="error">{{ error }}</span>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<p-footer>
+		<p-button size="small" [outlined]="true" icon="fas fa-times" (click)="discard()"
+			label="{{ 'buttons.discard' | translate }}"></p-button>
+		<p-button size="small" styleClass="p-button-primary" icon="fas fa-check" (click)="save()" label="{{ 'buttons.save' | translate }}"
+			[disabled]="!isValid"></p-button>
+	</p-footer>
+</p-dialog>

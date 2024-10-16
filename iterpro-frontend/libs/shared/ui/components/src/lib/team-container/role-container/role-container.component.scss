@@ -1,0 +1,40 @@
+.role-header {
+  margin-top: 1rem;
+  margin-bottom: 0.2em;
+  margin-right: 1em;
+  padding: 0.3rem 0.5rem;
+  color: #fafafa;
+  font-weight: bold;
+  font-size: 0.8rem;
+  background-color: var(--color-bg-700);
+  display: flex;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+  text-transform: uppercase;
+}
+
+.players-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+.even-row {
+  background-color: rgba(100, 100, 100, 0.24);
+}
+.td-smaller {
+  font-size: 0.9em;
+  padding: 0.2em 0.3em !important;
+  height: 40px;
+}
+.centered-cell {
+  display: flex;
+  justify-content: center;
+}
+.player-picture {
+  background-color: white;
+  width: 24px;
+  height: 24px;
+  align-self: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

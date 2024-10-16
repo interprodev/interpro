@@ -1,0 +1,110 @@
+<div class="main">
+	<div>
+		<header class="header">
+			<h1 translate>navigator.comparePlayers</h1>
+			<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+				<span style="font-size: large; font-weight: normal;"
+					translate>compare.player.archived.switch</span>
+				<p-inputSwitch class="switch" [(ngModel)]="isArchived" (onChange)="switchArchivedPlayer($event)">
+				</p-inputSwitch>
+				<i (click)="toggleFilters()" class="fas fa-filter tw-cursor-pointer" tooltipPosition="left" pTooltip="Show/hide filters"></i>
+			</div>
+		</header>
+
+		<div *ngIf="showFilters" class="tw-bg-shark-950 tw-bg-opacity-85 tw-mt-4 tw-p-4 tw-rounded tw-grid tw-grid-cols-12 tw-gap-4 tw-mb-4">
+			<div *ngFor="let filter of filters" class="tw-col-span-2">
+				<div class="tw-text-sm iterpro-text-color-900">{{ filter.label }}</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-multiSelect appendTo="body" optionLabel="label" placeholder="{{ 'dropdown.placeholder' | translate }}"
+												 [options]="filter.options" [(ngModel)]="filter.model"
+												 [style]="{ 'z-index': 'auto !important', width: 'auto' }">
+					</p-multiSelect>
+				</div>
+			</div>
+			<div class="tw-col-span-2 tw-flex tw-gap-2 tw-items-end" *ngIf="showFilters">
+				<p-button size="small" (click)="filterPlayers()" [label]="'buttons.filterPlayers' | translate"></p-button>
+				<p-button size="small" [outlined]="true" (click)="resetFilters()" [label]="'buttons.resetFilters' | translate"></p-button>
+			</div>
+		</div>
+
+		<div class="contInfo">
+			<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg">
+				<div class="info-cols">
+					<div class="player player-left">
+						<div class="player-selects">
+							<div class="player-header">
+								<iterpro-search-dropdown *ngIf="left && left.selected" [showCaretIcon]="true" [teams]="activeTeams" (selectPerson)="onSelected(left, $event, 'left')" [selectedPerson]="left.selected.player" [people]="left.defaultPlayers" />
+							</div>
+						</div>
+					</div>
+
+					<div class="player player-right">
+						<div class="player-selects">
+							<div class="player-header">
+								<iterpro-search-dropdown *ngIf="right && right.selected" [showCaretIcon]="true" [teams]="activeTeams" (selectPerson)="onSelected(right, $event, 'right')" [selectedPerson]="right.selected.player" [people]="right.defaultPlayers" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="info-cols">
+					<div class="player player-left">
+						<div *ngIf="left && left.selected" class="player-info">
+							<div class="player-visual">
+								<div class="iterpro-item-container tw-mb-2">
+									<p-dropdown [options]="left.seasons" [(ngModel)]="left.season"
+															(onChange)="onSeasonChange(left, 'left')" [style]="{ width: '100%' }"
+															optionLabel="name"></p-dropdown>
+								</div>
+								<iterpro-player-pic [player]="left.selected.player" />
+								<div class="player-tactic">
+									<iterpro-tactic-board [sportType]="'football'" [first]="left.selected.player.position"
+										[second]="left.selected.player.position2" [third]="left.selected.player.position3" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="player player-center">
+						<div class="tables">
+							<div class="player-table">
+								<iterpro-profile-table *ngIf="left && left.selected" [player]="left.selected.player"
+									[team]="left.selected.team" [sportType]="sportType" />
+							</div>
+							<div class="player-table">
+								<iterpro-profile-table *ngIf="right && right.selected" [player]="right.selected.player"
+									[team]="right.selected.team" [left]="false" [sportType]="sportType" />
+							</div>
+						</div>
+					</div>
+
+					<div class="player player-right">
+						<div *ngIf="right && right.selected" class="player-info">
+							<div class="player-visual">
+								<div class="iterpro-item-container tw-mb-2">
+									<p-dropdown [options]="right.seasons" [(ngModel)]="right.season"
+															(onChange)="onSeasonChange(right, 'right')" [style]="{ width: '100%' }"
+															optionLabel="name"></p-dropdown>
+								</div>
+								<iterpro-player-pic [player]="right.selected.player" />
+								<div class="player-tactic">
+									<iterpro-tactic-board [sportType]="'football'" [first]="right.selected.player.position"
+										[second]="right.selected.player.position2" [third]="right.selected.player.position3" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tw-p-4 tw-mt-4 tw-relative tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" *blockUI="'compare'">
+			<div class="tw-flex tw-items-center tw-justify-end tw-gap-4" *ngIf="tables.length > 0">
+				<iterpro-report-download class="download" (downloadPDF)="downloadReport()" />
+				<i class="fas fa-percentage tw-cursor-pointer" (click)="toggleAnalysis()" [class.action-selected]="analysis"></i>
+			</div>
+			<div class="tw-flex tw-flex-wrap tw-mt-1 tw-justify-around">
+				<iterpro-compare-table *ngFor="let table of tables" [table]="table" [analysis]="analysis" />
+			</div>
+		</div>
+	</div>
+</div>

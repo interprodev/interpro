@@ -1,0 +1,176 @@
+<div class="pflex-grid pflex-m-0 pflex-gap-2 pflex-justify-content-between">
+	<div class="pflex-col pflex-p-3">
+		<h3 class="pflex-text-center">TALENT ID</h3>
+		<h5 class="pflex-mb-2 pflex-text-center">{{ 'alert.playersFound' | translate: { value: resultFound } }}</h5>
+		<div>
+			<div class="chart" [ngSwitch]="selectedChart">
+				<ng-container *ngSwitchCase="'distribution'">
+					<p-chart
+						*ngIf="dataDistribution && optionsDistribution"
+						type="bar"
+						[data]="dataDistribution"
+						[options]="optionsDistribution"
+						[height]="'400px'"
+					></p-chart>
+				</ng-container>
+				<ng-container *ngSwitchCase="'scatter'">
+					<p-chart
+						*ngIf="dataScatter && optionsScatter"
+						type="scatter"
+						[data]="dataScatter"
+						[options]="optionsScatter"
+						[height]="'400px'"
+					></p-chart>
+				</ng-container>
+				<ng-container *ngSwitchCase="'gaussian'">
+					<p-chart
+						*ngIf="dataGaussian && optionsGaussian"
+						type="line"
+						[data]="dataGaussian"
+						[options]="optionsGaussian"
+						[height]="'400px'"
+					></p-chart>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+	<div class="col-fixed pflex-flex pflex-flex-column pflex-gap-3 pflex-p-3 filters-container">
+		<div>
+			<h5 class="pflex-mb-1" translate>chart</h5>
+			<p-dropdown [options]="chartsOptions" [(ngModel)]="selectedChart" (onChange)="renderCharts()"> </p-dropdown>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1 pflex-flex-inline" translate>
+				preferences.metrics
+				<div *ngIf="selectedChart === 'scatter' && includedCategories.length < 2" class="error-message">
+					{{ 'alert.requiredCategories' | translate: { value: 2 } }}
+				</div>
+			</h5>
+			<p-multiSelect
+				[options]="metricOptions"
+				[(ngModel)]="selectedMetrics"
+				[group]="true"
+				(ngModelChange)="onMetricsChange()"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="1"
+			>
+				<ng-template let-group pTemplate="group">
+					<div class="pflex-inline-flex pflex-align-items-center pflex-gap-2">
+						<p-checkbox
+							[binary]="true"
+							[ngModel]="isMetricGroupSelected(group)"
+							(onChange)="toggleMetricGroupSelection($event, group)"
+						></p-checkbox>
+						<div>{{ group.label }}</div>
+					</div>
+				</ng-template>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1 pflex-flex pflex-justify-content-between">
+				<span translate>profile.myTeam</span>
+				<i class="fas fa-info-circle" pTooltip="{{ 'attributes.compare.onlyPeople' | translate }}"></i>
+			</h5>
+			<p-multiSelect
+				[group]="true"
+				[options]="playerOptions"
+				[ngModel]="filters.playerIds"
+				(ngModelChange)="myTeamPlayerChanged($event)"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="2"
+			>
+				<ng-template let-group pTemplate="group">
+					<div class="pflex-inline-flex pflex-align-items-center pflex-gap-2">
+						<p-checkbox
+							[disabled]="group.items.length === 0"
+							[binary]="true"
+							[ngModel]="isPlayerGroupSelected(group)"
+							(onChange)="togglePlayerGroupSelection($event, group)"
+						></p-checkbox>
+						<div>{{ group.label }}</div>
+					</div>
+				</ng-template>
+				<ng-template let-item pTemplate="item">
+					<div class="pflex-inline-flex pflex-align-items-center pflex-gap-2">
+						<iterpro-picture [photoUrl]="item.picture" class="tw-h-6" />
+						<div>{{ item.label }}</div>
+					</div>
+				</ng-template>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1 pflex-flex pflex-justify-content-between">
+				<span translate>Scouting</span>
+				<i class="fas fa-info-circle" pTooltip="{{ 'attributes.compare.onlyPeople' | translate }}"></i>
+			</h5>
+			<p-multiSelect
+				[options]="scoutingOptions"
+				[ngModel]="filters.scoutingPlayerIds"
+				(ngModelChange)="scoutingPlayerChanged($event)"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="2"
+			>
+				<ng-template let-item pTemplate="item">
+					<div class="pflex-inline-flex pflex-align-items-center pflex-gap-2">
+						<iterpro-picture [photoUrl]="item.picture" class="tw-h-6" />
+						<div>{{ item.label }}</div>
+					</div>
+				</ng-template>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1" translate>profile.overview.age</h5>
+			<p-multiSelect
+				[options]="agesOptions"
+				[(ngModel)]="filters.ages"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="1"
+			>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1" translate>attributes.birthSemester</h5>
+			<p-multiSelect
+				[options]="birthSemesterOptions"
+				[(ngModel)]="filters.birthSemester"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="1"
+			>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1" translate>profile.position</h5>
+			<p-multiSelect
+				[options]="positionOptions"
+				[(ngModel)]="filters.positions"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="1"
+			>
+			</p-multiSelect>
+		</div>
+		<div>
+			<h5 class="pflex-mb-1" translate>tooltip.author</h5>
+			<p-multiSelect
+				[options]="customerOptions"
+				[(ngModel)]="filters.customersIds"
+				(onChange)="filtersChanged()"
+				[placeholder]="'dropdown.placeholder' | translate"
+				selectedItemsLabel="{0} selected"
+				[maxSelectedLabels]="1"
+			>
+			</p-multiSelect>
+		</div>
+	</div>
+</div>
+
+<ng-template #noCrest>
+	<i class="fas fa-shield-alt"> </i>
+</ng-template>

@@ -1,0 +1,9 @@
+.disabled-link {
+	color: var(--color-neutral-900);
+	pointer-events: none;
+}
+
+.selected {
+	color: white !important;
+	@apply tw-bg-shark-800;
+}

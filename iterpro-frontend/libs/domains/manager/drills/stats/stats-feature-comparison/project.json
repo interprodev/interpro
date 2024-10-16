@@ -1,0 +1,14 @@
+{
+	"name": "domains-manager-drills-stats-stats-feature-comparison",
+	"$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/manager/drills/stats/stats-feature-comparison/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:drills-stats", "type:shell"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"]
+		}
+	}
+}

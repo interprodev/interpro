@@ -1,0 +1,158 @@
+<div class="profile-content">
+	<div class="profile-pos">
+		<div class="profile-data section">
+			<div class="rowProfile">
+				<div class="col-left-profile">
+					<h3 class="h3-myteam-player">{{ player.displayName }}</h3>
+					<div class="profile-picture tw-rounded">
+						<iterpro-player-provider-widget
+							[wyscoutId]="player?.wyscoutId"
+							[instatId]="player?.instatId"
+						/>
+						<img
+							style="background-color: white"
+							class="player-pic"
+							[src]="player.downloadUrl | azureUrl"
+							onError="this.src='assets/img/default_icon.png';"
+							alt="player picture"
+						/>
+					</div>
+					<h4 class="spacing" translate>profile.season</h4>
+					<iterpro-change-season *ngIf="seasons" />
+					<h4 class="spacing" translate>preferences.metrics</h4>
+					<p-multiSelect
+						*ngIf="metrics"
+						appendTo="body"
+						styleClass="overflow"
+						[selectionLimit]="2"
+						[options]="metrics"
+						optionLabel="metricLabel"
+						[(ngModel)]="selectedMetrics"
+						(onChange)="handleMetricsSelect($event)"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						selectedItemsLabel="{0} selected"
+					></p-multiSelect>
+					<h4 class="spacing" translate>Metrics Radar</h4>
+					<p-multiSelect
+						*ngIf="metrics"
+						appendTo="body"
+						styleClass="overflow"
+						[options]="metrics"
+						optionLabel="metricLabel"
+						[(ngModel)]="selectedMetricsRadar"
+						(onChange)="handleMetricsRadarSelect($event)"
+						placeholder="{{ 'dropdown.placeholder' | translate }}"
+						selectedItemsLabel="{0} selected"
+					></p-multiSelect>
+				</div>
+
+				<div class="tw-w-full tw-flex tw-flex-col tw-gap-4">
+					<div class="tw-grid tw-grid-cols-12 tw-justify-center tw-gap-8">
+						<div class="tw-col-span-4 tw-flex tw-items-center tw-justify-center">
+							<p-chart *ngIf="dataRadar" type="radar" [width]="'400px'" [data]="dataRadar" [options]="optionsRadar"></p-chart>
+						</div>
+						<div class="tw-col-span-8">
+							<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+								<i
+									class="fas fa-tag tw-cursor-pointer"
+									[ngClass]="{ 'fa-border': labels === true }"
+									[pTooltip]="'sessionAnalysis.labels' | translate"
+									(click)="onToggleLabels()"
+								></i>
+								<iterpro-report-download (downloadPDF)="downloadReportPdf()" (downloadCSV)="downloadReportCSV()" />
+							</div>
+							<div class="tw-h-[300px]">
+								<p-chart
+									*ngIf="dataTimeline"
+									[style]="{ width: '100%'}"
+									type="line"
+									[data]="dataTimeline"
+									[options]="optionsTimeline"
+								>
+								</p-chart>
+							</div>
+						</div>
+					</div>
+
+					<!-- Last outcomes-->
+					<div class="tw-flex tw-flex-col">
+						<h4 class="spacing" translate>fitness.lastOutcomes</h4>
+						<div class="tables-container">
+							<div *ngFor="let item of table | keyvalue" class="table-container">
+								<h5 class="spacing" style="text-transform: uppercase">{{ item.key }}</h5>
+								<div style="margin-top: 0.4rem">
+									<p-table styleClass="p-datatable-striped" [value]="item.value" [scrollable]="true" scrollHeight="250px">
+										<ng-template pTemplate="header">
+											<tr class="tw-h-10">
+												<th [ngStyle]="{ minWidth: '280px' }" translate>Name</th>
+												<th [ngStyle]="{ maxWidth: '73px' }" translate>sidebar.result</th>
+												<th
+													style="justify-content: center"
+													[ngStyle]="{ maxWidth: '75px' }"
+													translate
+												>
+													threshold
+												</th>
+												<th [ngStyle]="{ maxWidth: '65px' }" translate>% Diff</th>
+												<th [ngStyle]="{ minWidth: '85px' }" translate>Last</th>
+												<th [ngStyle]="{ minWidth: '85px' }" translate>previous</th>
+											</tr>
+										</ng-template>
+										<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+											<tr class="tw-h-10">
+												<td [ngStyle]="{ minWidth: '280px' }">
+													{{ rowData.testName }} - {{ rowData.metricName }}
+												</td>
+												<td [ngStyle]="{ maxWidth: '73px' }">
+													{{ rowData.valueCurrent ? (rowData.valueCurrent | number : '0.0-2') : '-' }}
+												</td>
+												<td style="justify-content: center" [ngStyle]="{ maxWidth: '75px' }">
+													<span
+														class="iterpro-point"
+														[style.background-color]="rowData.diffThresholdColor"
+														[pTooltip]="rowData.tooltip?.value"
+													>
+													</span>
+												</td>
+												<td [ngStyle]="{ maxWidth: '65px' }">
+													<span>
+														{{ rowData.valuePrev ? rowData.diffValuePercentage : '-' }}
+													</span>
+												</td>
+												<td [ngStyle]="{ minWidth: '85px' }">
+													<span>
+														{{ rowData.valueCurrent && rowData.date ? (rowData.date | formatDateBySetting) : '-' }}
+														<span
+															*ngIf="!isOutsideCurrentSeason(rowData.date)"
+															pTooltip="{{ 'profile.fitness.outside' | translate }}"
+															class="fas fa-exclamation"
+														></span>
+													</span>
+												</td>
+												<td [ngStyle]="{ minWidth: '85px' }">
+													<span>
+														{{ rowData.datePrev ? (rowData.datePrev | formatDateBySetting) : '-' }}
+														<span
+															*ngIf="!isOutsideCurrentSeason(rowData.datePrev)"
+															pTooltip="{{ 'profile.fitness.outside' | translate }}"
+															class="fas fa-exclamation"
+														></span>
+													</span>
+												</td>
+											</tr>
+										</ng-template>
+										<ng-template pTemplate="emptymessage">
+											<tr>
+												<td translate>information.generic.notAvailable</td>
+											</tr>
+										</ng-template>
+									</p-table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

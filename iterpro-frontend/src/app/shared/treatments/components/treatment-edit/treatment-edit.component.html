@@ -1,0 +1,310 @@
+<div class="tw-h-full tw-relative" *ngIf="!isLoading">
+	<form [formGroup]="treatmentForm" class="tw-p4 tw-pt-0">
+		<!-- Last author and date -->
+		<div class="tw-flex tw-justify-end">
+			<div>
+				<h5 class="tw-mb-1" translate>lastAuthor</h5>
+				<div class="tw-flex tw-gap-2" *ngIf="customerOptions && treatmentForm.get('lastUpdateAuthorId')?.value">
+					<span>{{ treatmentForm.get('lastUpdateAuthorId')?.value | customerNameSelectItems : customerOptions }}</span>
+					<span>-</span>
+					<span>{{ treatmentForm.get('lastUpdateDate')?.value | formatDateBySetting : 'HH:mm' }}</span>
+				</div>
+			</div>
+		</div>
+		<div class="tw-grid tw-grid-cols-12 tw-gap-8">
+			<div class="tw-col-span-12 md:tw-col-span-6">
+				<!-- Date & Time -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<div class="tw-flex tw-justify-between tw-items-baseline tw-gap-2">
+							<div>
+								<h5 class="tw-mb-1" translate>medical.infirmary.assessments.date</h5>
+								<p-calendar showButtonBar="true" formControlName="date"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+								<ng-container
+									[ngTemplateOutlet]="errorMessageTemplate"
+									[ngTemplateOutletContext]="{ field: 'date', label: 'medical.infirmary.assessments.date' | translate }"
+								></ng-container>
+							</div>
+							<div>
+								<h5 class="tw-mb-1" translate>prevention.treatments.time</h5>
+								<iterpro-form-timepicker [controlName]="'time'"></iterpro-form-timepicker>
+								<ng-container
+									[ngTemplateOutlet]="errorMessageTemplate"
+									[ngTemplateOutletContext]="{ field: 'time', label: 'prevention.treatments.time' | translate }"
+								></ng-container>
+							</div>
+							<div>
+								<h5 class="tw-mb-1" translate>prevention.treatments.complete</h5>
+								<p-inputSwitch formControlName="complete"></p-inputSwitch>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Treatment Type -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>Treatment Type</h5>
+						<p-dropdown
+							formControlName="treatmentType"
+							[options]="treatmentTypesOptions"
+							[placeholder]="'dropdown.placeholder' | translate"
+						>
+							<ng-template let-tooltip pTemplate="selectedItem">
+								<div>{{ tooltip.label | translate }}</div>
+							</ng-template>
+						</p-dropdown>
+						<ng-container
+							[ngTemplateOutlet]="errorMessageTemplate"
+							[ngTemplateOutletContext]="{ field: 'treatmentType', label: 'Treatment Type' | translate }"
+						></ng-container>
+					</div>
+				</div>
+
+				<!-- Category -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4" *ngIf="treatmentForm.get('treatmentType')?.value === 'physiotherapy'">
+						<h5 class="tw-mb-1" translate>medical.infirmary.details.category</h5>
+						<p-multiSelect
+							appendTo="body"
+							maxSelectedLabels="1000"
+							formControlName="category"
+							[options]="physioCategoriesOptions"
+							[placeholder]="'multiselect.placeholder' | translate"
+						>
+						</p-multiSelect>
+						<ng-container
+							[ngTemplateOutlet]="errorMessageTemplate"
+							[ngTemplateOutletContext]="{ field: 'category', label: 'medical.infirmary.details.category' | translate }"
+						></ng-container>
+					</div>
+				</div>
+
+				<!-- Treatment -->
+				<div class="tw-col-span-10">
+					<div
+						class="tw-my-4"
+						*ngIf="treatmentForm.get('treatmentType')?.value === 'physiotherapy' || treatmentForm.get('treatmentType')?.value === 'SeC'"
+					>
+						<h5 class="tw-mb-1" translate>prevention.treatments.treatment</h5>
+						<i
+							*ngIf="hasCustomTreatments()"
+							class="treatment-detail-icon fas fa-eye"
+							(click)="openCustomTreatmentDialog()"
+							[pTooltip]="'icon.protocols' | translate"
+						></i>
+						<ng-container *ngIf="treatmentForm.get('treatmentType')?.value === 'SeC'">
+							<p-multiSelect
+								*ngIf="!treatmentForm.get('completed')?.value && !!secTreatmentsOptions"
+								appendTo="body"
+								maxSelectedLabels="1000"
+								formControlName="treatment"
+								[options]="secTreatmentsOptions"
+								[placeholder]="'multiselect.placeholder' | translate"
+							>
+								<ng-template let-treatment pTemplate="item">
+									<div *ngTemplateOutlet="treatmentListTemplate; context: { $implicit: treatment }"></div>
+								</ng-template>
+							</p-multiSelect>
+						</ng-container>
+						<ng-container *ngIf="treatmentForm.get('treatmentType')?.value === 'physiotherapy'">
+							<p-multiSelect
+								*ngIf="!treatmentForm.get('completed')?.value"
+								appendTo="body"
+								maxSelectedLabels="1000"
+								formControlName="treatment"
+								[options]="physioTreatmentsOptions"
+								[placeholder]="'multiselect.placeholder' | translate"
+							>
+								<ng-template let-treatment pTemplate="item">
+									<div *ngTemplateOutlet="treatmentListTemplate; context: { $implicit: treatment }"></div>
+								</ng-template>
+							</p-multiSelect>
+						</ng-container>
+						<ng-container
+							[ngTemplateOutlet]="errorMessageTemplate"
+							[ngTemplateOutletContext]="{ field: 'treatment', label: 'prevention.treatments.treatment' | translate }"
+						></ng-container>
+					</div>
+				</div>
+
+				<!-- Drug & Drug dose -->
+				<div class="tw-col-span-10">
+					<ng-container *ngIf="treatmentForm.get('treatmentType')?.value === 'medicationSupplements'">
+						<!-- Drug -->
+						<div class="tw-my-4">
+							<h5 class="tw-mb-1" translate>prevention.treatments.drug</h5>
+							<span [style.cursor]="'pointer'" (click)="showMedSuppDialog()">
+								{{ treatmentForm.get('drug')?.value ? (treatmentForm.get('drug')?.value | medicationLabel : currentTeam) : 'Select drug' }}
+							</span>
+						</div>
+
+						<!-- Drug Dose -->
+						<div class="tw-my-4">
+							<h5 class="tw-mb-1" translate>prevention.treatments.dose</h5>
+							<ng-container>
+								<input pInputText type="text" formControlName="drugDose" />
+							</ng-container>
+						</div>
+					</ng-container>
+				</div>
+
+				<!-- Prescriptor -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>prevention.treatments.prescription</h5>
+						<p-dropdown
+							[filter]="true"
+							[options]="customerOptions"
+							[placeholder]="'dropdown.placeholder' | translate"
+							formControlName="prescriptor"
+						></p-dropdown>
+					</div>
+				</div>
+
+				<!-- Author -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>prevention.treatments.author</h5>
+						<p-dropdown
+							[filter]="true"
+							[options]="customerOptions"
+							[placeholder]="'dropdown.placeholder' | translate"
+							formControlName="author"
+						></p-dropdown>
+					</div>
+				</div>
+			</div>
+
+			<div class="tw-col-span-12 md:tw-col-span-6">
+				<!-- Attachment -->
+				<div class="tw-my-4">
+					<h5 class="tw-mb-1" translate>medical.infirmary.treatment.attachment</h5>
+					<iterpro-table-attachment
+						accept="*"
+						[editable]="true"
+						[deletable]="true"
+						[attachment]="
+							treatmentForm.get('attachedFile')?.value ? treatmentForm.get('attachedFile').value : treatmentForm.get('_attachment')?.value
+						"
+						(file)="selectFile($event)"
+						(error)="attachmentError($event)"
+						(attachmentDeleted)="attachmentDeletedDone()"
+					>
+					</iterpro-table-attachment>
+				</div>
+
+				<!-- Injury -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>medical.infirmary.details.issue.injury</h5>
+						<p-dropdown
+							[filter]="true"
+							[options]="injuryOptions"
+							[showClear]="true"
+							[placeholder]="'dropdown.placeholder' | translate"
+							formControlName="injuryId"
+							[dropdownIcon]="treatmentForm.get('injuryId')?.disabled ? 'none' : 'fas fa-chevron-down'"
+						></p-dropdown>
+					</div>
+				</div>
+
+				<!-- Location -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>prevention.treatments.location</h5>
+						<p-dropdown
+							[filter]="true"
+							[options]="locationOptions"
+							[showClear]="true"
+							[placeholder]="'dropdown.placeholder' | translate"
+							formControlName="location"
+						>
+							<ng-template let-tooltip pTemplate="selectedItem">
+								<div>{{ tooltip.label | translate }}</div>
+							</ng-template>
+						</p-dropdown>
+					</div>
+				</div>
+
+				<!-- Injury Type -->
+				<div class="tw-col-span-10">
+					<div class="tw-my-4">
+						<h5 class="tw-mb-1" translate>prevention.treatments.type</h5>
+						<p-dropdown
+							[options]="injuryTypeOptions"
+							[showClear]="true"
+							[placeholder]="'dropdown.placeholder' | translate"
+							formControlName="injuryType"
+							[filter]="true"
+						>
+							<ng-template let-tooltip pTemplate="selectedItem">
+								<div>{{ tooltip.label | translate }}</div>
+							</ng-template>
+						</p-dropdown>
+					</div>
+				</div>
+
+				<!-- Notes -->
+				<div class="tw-my-4">
+					<h5 class="tw-mb-1" translate>prevention.treatments.note</h5>
+					<editor formControlName="notes" [initialValue]="'input-text.placeholder' | translate" [inline]="false" [init]="tinyEditorInit">
+					</editor>
+				</div>
+			</div>
+		</div>
+		@if (treatmentForm.dirty) {
+			<iterpro-dialog-footer-buttons (discardClicked)="discard()" (confirmClicked)="save()"></iterpro-dialog-footer-buttons>
+		}
+	</form>
+</div>
+
+<iterpro-medical-supplements-dialog
+	*ngIf="medicalSuppDialog.visible"
+	[visible]="medicalSuppDialog.visible"
+	[model]="medicalSuppDialog.model"
+	[pinnedTreatments]="pinnedTreatments"
+	(onSave)="onSaveMedSuppDialog($event)"
+	(onDiscard)="onDiscardMedSuppDialog()"
+	(savePinEmitter)="onSaveMedicationPin($event)"
+>
+</iterpro-medical-supplements-dialog>
+
+<iterpro-treatment-dialog
+	[visible]="customTreatmentDialog?.visible"
+	[treatments]="customTreatmentDialog?.treatments"
+	[newMetric]="false"
+	[editable]="false"
+	(discard)="closeCustomTreatmentDialog()"
+>
+</iterpro-treatment-dialog>
+
+<!-- Error messages -->
+<ng-template #errorMessageTemplate let-field="field" let-label="label">
+	<div
+		*ngIf="treatmentForm.get(field).invalid && (saveClicked || treatmentForm.get(field).dirty || treatmentForm.get(field).touched)"
+		class="error-message"
+	>
+		{{ 'formField.isRequired' | translate : { value: label } }}
+	</div>
+</ng-template>
+
+<!-- Treatment Pinned List -->
+<ng-template #treatmentListTemplate let-treatment>
+	<div class="test-list">
+		<div (click)="savePinnedTreatments($event, treatment.value)">
+			<div *ngIf="treatment.value | isInclude : pinnedTreatments" class="hide-solid-pin">
+				<i class="fas fa-thumbtack" [pTooltip]="'test.list.star.unpin.icon' | translate" tooltipPosition="bottom"></i>
+			</div>
+			<div *ngIf="treatment.value | isInclude : pinnedTreatments" class="unpinned">
+				<i class="fal fa-thumbtack" [pTooltip]="'test.list.star.unpin.icon' | translate" tooltipPosition="bottom"></i>
+			</div>
+			<div *ngIf="!(treatment.value | isInclude : pinnedTreatments)" class="pin">
+				<i class="fas fa-thumbtack" [pTooltip]="'test.list.star.pin.icon' | translate" tooltipPosition="bottom"></i>
+			</div>
+		</div>
+		<span style="margin-left: 1em">{{ treatment.label | translate }}</span>
+	</div>
+</ng-template>

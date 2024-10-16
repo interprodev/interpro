@@ -1,0 +1,100 @@
+<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+	<!-- MAIN CONTAINER -->
+	<div class="tw-col-span-10 tw-p-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded-lg" [class.tw-col-span-12]="!sideBarExpanded">
+		<p-tabMenu [model]="menuItems" [activeItem]="activeMenu"/>
+		<div class="tw-mt-2 tw-p-2">
+			@switch (activeMenu) {
+				@case (menuItems[0]) {
+					<!-- DETAILS TAB VIEW -->
+					<iterpro-injury-details
+						[customers]="customers"
+						[player]="selectedPlayer"
+						[injury]="selectedInjury"
+						[injuryMedicalTreatments]="injuryMedicalTreatments"
+						[editFlag]="editService.editMode"
+						[newInj]="newInj"
+						[(updateDate)]="updateDate"
+						(deleteEmitter)="deleteInjury($event)"
+						(discardEmitter)="discardInjury($event)"
+						(saveEmitter)="onSaveInjury($event)"
+					/>
+				}
+				@case (menuItems[1]) {
+					<!-- INJURY ASSESSMENTS TAB VIEW -->
+					<iterpro-injury-assessments
+						[injury]="selectedInjury"
+						[customers]="customers"
+						[editFlagAss]="editService.editMode"
+						(saveClicked)="saveEmitter.emit($event)"
+						(deleteClicked)="deleteEmitter.emit($event)"
+						(editClicked)="editExamFlag($event)"
+					/>
+				}
+				@case (menuItems[2]) {
+					<!-- TREATMENT TAB VIEW -->
+					<iterpro-medical-treatments
+						[allInjuries]="injuries"
+						[injury]="selectedInjury"
+						[medicalTreatments]="injuryMedicalTreatments"
+						[player]="selectedPlayer"
+						(treatmentAddedEmitter)="saveEmitter.emit($event)"
+						(expand)="expandView($event)"
+						(treatmentDeletedEmitter)="deleteEmitter.emit($event)"
+					/>
+				}
+			}
+		</div>
+	</div>
+	<!-- INJURY LIST -->
+	<div class="tw-col-span-2" *ngIf="sideBarExpanded">
+		<p-tabView [styleClass]="'tw-rounded-lg'">
+			<p-tabPanel>
+				<ng-template pTemplate="header">
+					<h3 translate>sidebar.injuryHistory</h3>
+				</ng-template>
+				<p-listbox
+					[listStyle]="{ 'max-height': '500px' }"
+					[(ngModel)]="selectedInjury"
+					[disabled]="editService.editMode || editExFlag"
+					[options]="injuryList"
+					[style]="{ width: '100%' }"
+					(onChange)="onSelectInjury($event)"
+				>
+					<ng-template let-injury pTemplate="item">
+						<div>
+							<i
+								*ngIf="!injury.value.endDate && injury.value.issue === 'medical.infirmary.details.issue.injury'"
+								class="fas fa-plus injury-list-icon"
+								style="color: red"
+							></i>
+							<i
+								*ngIf="!injury.value.endDate && injury.value.issue === 'medical.infirmary.details.issue.complaint'"
+								class="fas fa-plus injury-list-icon"
+								style="color: yellow"
+							></i>
+							<i *ngIf="injury.value.endDate" class="fas fa-plus injury-list-icon" style="color: green"></i>
+							<i
+								*ngIf="injury.value.chronicInjuryId"
+								class="fas fa-fire injury-list-icon"
+								style="color: var(--color-primary-500)"
+								pTooltip="Generated from chronic"
+							></i>
+							<span
+								*ngIf="injury.value.currentStatus === 'medical.infirmary.details.statusList.healed'"
+								class="injury-label"
+								style="color: grey"
+							>{{ injury.label | capitalize }}</span
+							>
+							<span
+								*ngIf="injury.value.currentStatus !== 'medical.infirmary.details.statusList.healed'"
+								class="injury-label"
+							>{{ injury.label | capitalize }}</span
+							>
+						</div>
+					</ng-template>
+				</p-listbox>
+				<br />
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+</div>

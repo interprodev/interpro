@@ -1,0 +1,61 @@
+{
+	"name": "Wellness",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"wellness_sleep": {
+			"type": "number",
+			"default": 0
+		},
+		"wellness_stress": {
+			"type": "number",
+			"default": 0
+		},
+		"wellness_fatigue": {
+			"type": "number",
+			"default": 0
+		},
+		"wellness_soreness": {
+			"type": "number",
+			"default": 0
+		},
+		"wellness_mood": {
+			"type": "number",
+			"default": 0
+		},
+		"sleep_start": {
+			"type": "string"
+		},
+		"sleep_end": {
+			"type": "string"
+		},
+		"sleep_hours": {
+			"type": "string"
+		},
+		"locations": {
+			"type": "array"
+		},
+		"score": {
+			"type": "number"
+		},
+		"date": {
+			"type": "date"
+		},
+		"playerId": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

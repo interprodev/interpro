@@ -1,0 +1,113 @@
+.content-no-bg {
+	background-color: transparent;
+	padding: 0 1em 0 0;
+}
+.medical-player-report {
+	margin-bottom: 20px;
+	background-color: var(--color-bg-600);
+	border-radius: 3px;
+	border-left: 3px solid transparent;
+	overflow-x: auto;
+	padding: 0 1rem;
+}
+.medical-player-report:last-child {
+	margin-bottom: 0px;
+}
+.medical-status-red {
+	border-color: #c1272d;
+}
+.medical-status-blue {
+	border-color: #3fa9f5;
+}
+.medical-status-yellow {
+	border-color: #fcee21;
+}
+.medical-status-green {
+	border-color: #3bf100;
+}
+.medical-status-white {
+	border-color: #dddddd;
+}
+.medical-player-pic {
+	width: 100%;
+	border-radius: 3px;
+}
+.report-table {
+	width: 100%;
+	font-size: 0.8rem;
+	border-collapse: separate;
+	padding: 0.5rem;
+}
+.report-table th {
+	font-family: 'Gotham', sans-serif;
+	text-transform: capitalize;
+	text-align: left !important;
+	text-size: 0.8rem;
+	padding: 0.5rem 0.5rem 0 0.5rem;
+	font-weight: normal;
+	color: #bbbbbb;
+}
+.report-table th.th-title {
+	color: #fff;
+}
+.report-table td {
+	font-size: 0.8rem;
+	font-weight: normal;
+	vertical-align: top;
+	color: #fff;
+	padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
+.report-table .treatment-multiple td {
+	padding: 0.5rem;
+}
+.report-table tbody tr.treatment-multiple:nth-child(even) td {
+	background-color: var(--color-neutral-300);
+}
+.report-table td.pic-td {
+	width: 120px;
+	padding-right: 1rem;
+}
+.treatment-table {
+	margin-bottom: 1rem;
+}
+.assessment-headers th {
+	width: 12.5%;
+}
+.treatment-headers th {
+	width: 12.5%;
+	padding-bottom: 0.5rem;
+}
+.treatment-headers th.treatment-header-desc {
+	width: 37.5%;
+}
+.treatment-headers th.treatment-header-author,
+.assessment-headers > th.treatment-header-author {
+	width: 25%;
+}
+.player-name {
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	padding-bottom: 0.5rem;
+}
+.side-th {
+	vertical-align: top;
+}
+
+.report-table .uppercase {
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.download {
+	float: right;
+	cursor: pointer;
+}
+
+.spacing {
+	color: #bbbbbb;
+	font-size: 0.85rem;
+	font-weight: normal;
+}
+
+.col-sidebar {
+	padding-left: 0.3rem;
+}

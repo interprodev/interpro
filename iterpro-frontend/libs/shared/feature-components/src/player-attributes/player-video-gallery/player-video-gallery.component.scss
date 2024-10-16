@@ -1,0 +1,25 @@
+.edit-header {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: 1.5em;
+	column-gap: 1em;
+	width: 100%;
+}
+
+.video-attachment-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 0.5em;
+}
+
+.video-filename-container {
+	max-width: 350px;
+}
+
+.invalid-feedback {
+	font-size: 0.8rem;
+	color: #dc3545;
+}

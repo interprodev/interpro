@@ -1,0 +1,108 @@
+<div class="tw-mb-4 tw-flex tw-items-center tw-justify-end tw-gap-4">
+	<i
+		(click)="treatmentTable.toggleFilters()"
+		style="color: rgb(250, 250, 250); opacity: 1 !important"
+		[class]="treatmentTable.showFilters ? 'fas fa-filter-slash tw-cursor-pointer' : 'fas fa-filter tw-cursor-pointer'"
+		tooltipPosition="left"
+		[pTooltip]="(treatmentTable.showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+	></i>
+	<div class="tw-flex tw-items-center tw-gap-4">
+		<i
+			*ngIf="!currentEventDate"
+			(click)="openMultiTreatmentsDialog()"
+			aria-hidden="true"
+			class="fas fa-layer-plus"
+			[style.cursor]="!isEditMode() ? 'default' : 'pointer'"
+			[pTooltip]="'prevention.tooltip.add.treatmentMulti' | translate"
+		></i>
+		<i
+			*ngIf="injury"
+			class="fas fa-info-circle"
+			style="float: right"
+			[pTooltip]="
+				injury?.treatInstruction ? parseTooltip(injury.treatInstruction) : ('No Instructions Available' | translate)
+			"
+		>
+		</i>
+		<i
+			*ngIf="injury"
+			class="fas fa-medkit"
+			style="cursor: pointer; float: right"
+			href="#"
+			[routerLink]="redirectToPlayerMedicalRecords(injury.playerId)"
+			[pTooltip]="'event.medicalRecords.redirect' | translate"
+		>
+		</i>
+		<iterpro-report-download
+			class="download"
+			(downloadPDF)="treatmentTable.downloadReportPdf()"
+			(downloadCSV)="treatmentTable.downloadReportCSV()"
+		/>
+	</div>
+	<ng-container *ngIf="!currentEventDate">
+		<span
+			*ngIf="sidebarOpened"
+			class="sidebar-handler rel"
+			(click)="onToggleSidebar()"
+			[pTooltip]="'button.expand' | translate"
+		>
+			<i class="fas fa-expand tw-cursor-pointer"></i>
+		</span>
+		<span
+			*ngIf="!sidebarOpened"
+			class="sidebar-handler rel"
+			(click)="onToggleSidebar()"
+			[pTooltip]="'button.collapse' | translate"
+		>
+			<i class="fas fa-compress"></i>
+		</span>
+	</ng-container>
+</div>
+
+<iterpro-treatment-table
+	#treatmentTable
+	[section]="section"
+	[mode]="'single'"
+	[showFilters]="showFilters"
+	[readonlyMode]="readonlyMode"
+	[tableScrollHeight]="tableScrollHeight"
+	[rows]="medicalTreatments"
+	[injuries]="allInjuries"
+	[injury]="injury"
+	[player]="player"
+	[players]="players"
+	[currentEventDate]="currentEventDate"
+	(deleteRow)="deleteRow($event)"
+	(saveRow)="confirmSaveRow($event)"
+	(applyToPlayers)="applyToPlayers($event)"
+/>
+
+<p-dialog
+	*ngIf="multipleTreatmentsDialog.visible"
+	[visible]="multipleTreatmentsDialog.visible"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="false"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+	[style]="{ width: '90%', height: '80%' }"
+>
+	<div class="tw-relative tw-h-full">
+		<h2 translate>medical.prevention.multipleTreatments</h2>
+		<iterpro-treatment-table
+			#multipleTreatmentTable
+			[section]="section"
+			[mode]="'multiple'"
+			[injuries]="allInjuries"
+			[rows]="multipleTreatmentsDialog.rows"
+			[injury]="injury"
+			[player]="player"
+			[players]="players"
+		/>
+		<iterpro-dialog-footer-buttons
+			(discardClicked)="discardMultipleTreatments()"
+			(confirmClicked)="saveMultipleTreatments()"
+		></iterpro-dialog-footer-buttons>
+	</div>
+</p-dialog>

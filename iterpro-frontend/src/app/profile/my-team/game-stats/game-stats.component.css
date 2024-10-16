@@ -1,0 +1,135 @@
+.data-col {
+	padding: 0 1rem;
+}
+
+.data-col h3 {
+	margin-bottom: 20px;
+}
+
+h5 + .small-table {
+	margin-top: 1rem;
+}
+h3,
+h4 {
+	text-transform: uppercase;
+}
+
+.profile-control {
+	padding: 2em;
+}
+
+.section {
+	width: 100%;
+}
+
+.profile-data-personal {
+	width: 100%;
+}
+
+.profile-data-position {
+	width: 100%;
+}
+
+.profile-data-contract {
+	width: 100%;
+}
+
+.chart {
+	width: 100% !important;
+	display: block;
+}
+
+.editImg {
+	width: 50%;
+}
+
+.col-left-profile {
+	width: 14%;
+	padding-right: 2em;
+	flex-shrink: 0;
+}
+
+.col-right-profile-thre {
+	flex-grow: 1;
+	display: flex;
+	justify-content: space-between;
+}
+
+.rowProfile {
+	display: flex;
+}
+
+.profile-picture {
+	width: 100%;
+	margin: 1rem 0;
+	position: relative;
+}
+
+.profile-picture img {
+	width: 100%;
+}
+
+.type-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1em;
+}
+
+.icon {
+	cursor: pointer;
+	margin-left: 10px;
+}
+
+.player-pic {
+	box-shadow: inset 1px 1px 40px 0 rgba(0, 0, 0, 0.45);
+	opacity: 1;
+	display: block;
+	transition: 0.5s ease;
+	backface-visibility: hidden;
+}
+
+.row-column {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.chart-container {
+	height: 100%;
+	width: 100%;
+}
+
+.point {
+	display: block;
+}
+
+.report-download {
+	position: relative;
+	cursor: pointer;
+}
+.report-submenu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 5px;
+	background-color: var(--color-neutral-300);
+	z-index: 100;
+}
+.report-item {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+.report-item:hover {
+	background-color: #171717;
+}
+.report-item .fas {
+	margin-right: 0.5rem;
+}
+
+.table-container {
+	width: 100%;
+}

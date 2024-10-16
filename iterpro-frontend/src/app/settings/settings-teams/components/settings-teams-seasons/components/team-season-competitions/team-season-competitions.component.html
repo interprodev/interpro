@@ -1,0 +1,200 @@
+<ng-container [formGroup]="competitionsForm">
+	<div class="tw-flex tw-justify-between tw-mb-8">
+		<div>
+			<div class="tw-text-sm iterpro-text-color-900" translate>preferences.wyscout.areaId</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					appendTo="body"
+					maxSelectedLabels="1"
+					formControlName="wyscoutAreas"
+					[showClear]="true"
+					[selectAll]="false"
+					[options]="areaIds"
+					[filter]="true"
+					[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="'dropdown.placeholder' | translate"
+					(onChange)="onAreaIdsChange($event)"
+				></p-multiSelect>
+			</div>
+			<div class="tw-mt-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'wyscoutAreas'" [label]="'preferences.wyscout.areaId' | translate"></iterpro-form-feedback>
+			</div>
+		</div>
+		<div>
+			<div class="tw-text-sm iterpro-text-color-900">
+				<div class="tw-flex tw-gap-2">
+					<div translate>preferences.wyscout.competitions</div>
+					@if (editMode) {
+						<iterpro-icon-button [icon]="'fas fa-plus'" [tooltip]="'addCustomCompetition' | translate" (click)="openCustomCompetitionDialog()"></iterpro-icon-button>
+					}
+				</div>
+			</div>
+			<div class="iterpro-item-container tw-mt-1">
+				<p-multiSelect
+					appendTo="body"
+					maxSelectedLabels="1"
+					formControlName="selectedCompetitions"
+					[selectAll]="false"
+					[options]="thirdPartyCompetitions"
+					[filter]="true"
+					[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+					[placeholder]="'dropdown.placeholder' | translate"
+					[emptyMessage]="'dropdown.selectGeoAreas' | translate"
+					(onChange)="onCompetitionsChange($event)"
+				></p-multiSelect>
+			</div>
+			<div class="tw-mt-1">
+				<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'selectedCompetitions'" [label]="'preferences.wyscout.competitions' | translate"></iterpro-form-feedback>
+			</div>
+		</div>
+		@if (!isNationalClub) {
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>preferences.wyscout.nationalLeague</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-dropdown
+						appendTo="body"
+						formControlName="wyscoutNationalLeague"
+						[showClear]="true"
+						[options]="selectedCompetitionsOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="'dropdown.placeholder' | translate"
+						[emptyMessage]="'dropdown.selectCompetitions' | translate"
+					></p-dropdown>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'wyscoutNationalLeague'" [label]="'preferences.wyscout.nationalLeague' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>preferences.wyscout.nationalCup</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-dropdown
+						appendTo="body"
+						formControlName="wyscoutNationalCup"
+						[showClear]="true"
+						[options]="selectedCompetitionsOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="'dropdown.placeholder' | translate"
+						[emptyMessage]="'dropdown.selectCompetitions' | translate"
+					></p-dropdown>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'wyscoutNationalCup'" [label]="'preferences.wyscout.nationalCup' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+		} @else {
+			<!-- National Club -->
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>tournamentQualifiers</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-dropdown
+						appendTo="body"
+						formControlName="wyscoutTournamentQualifiers"
+						[showClear]="true"
+						[options]="selectedCompetitionsOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="'dropdown.placeholder' | translate"
+						[emptyMessage]="'dropdown.selectCompetitions' | translate"
+					></p-dropdown>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'wyscoutTournamentQualifiers'" [label]="'tournamentQualifiers' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+			<div>
+				<div class="tw-text-sm iterpro-text-color-900" translate>tournamentFinalStages</div>
+				<div class="iterpro-item-container tw-mt-1">
+					<p-dropdown
+						appendTo="body"
+						formControlName="wyscoutTournamentFinalStages"
+						[showClear]="true"
+						[options]="selectedCompetitionsOptions"
+						[filter]="true"
+						[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+						[placeholder]="'dropdown.placeholder' | translate"
+						[emptyMessage]="'dropdown.selectCompetitions' | translate"
+					></p-dropdown>
+				</div>
+				<div class="tw-mt-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'wyscoutTournamentFinalStages'" [label]="'tournamentFinalStages' | translate"></iterpro-form-feedback>
+				</div>
+			</div>
+		}
+	</div>
+	<div class="tw-mt-2">
+		<p-table [value]="competitionsForm.controls.competitionInfo.controls" [scrollable]="true" [scrollHeight]="'70vh'"
+						 [styleClass]="'p-datatable-gridlines'">
+			<ng-template pTemplate="header">
+				<tr class="tw-h-10">
+					<th translate>{{ 'clubSettings.' + (provider | lowercase) + '.competition' }}</th>
+					@if (provider !== 'Dynamic') {
+						<th translate>{{ 'clubSettings.' + (provider | lowercase) + '.season' }}</th>
+					}
+					<th translate>clubSettings.wyscout.playerList</th>
+					@if (provider !== 'Dynamic') {
+						<th translate>clubSettings.wyscout.sync</th>
+					}
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-competitionInfoControl>
+				<tr class="tw-h-10 tw-cursor-pointer" [formGroup]="competitionInfoControl">
+					<td>{{ competitionInfoControl.getRawValue() | competitionNamePipe : provider : thirdPartyCompetitions }}</td>
+					@if (provider !== 'Dynamic') {
+						<td>
+							@if (competitionInfoControl.controls.manual.value) {
+								<span>Custom Competition</span>
+							} @else {
+								@if (competitionInfoControl.controls.competition.value) {
+									@if ((competitionInfoControl.controls.competition.value | competitionSeasons : wyscoutSeasonOptions)?.length > 0) {
+										<p-dropdown
+											appendTo="body"
+											formControlName="season"
+											[optionValue]="'value.wyId'"
+											[options]="competitionInfoControl.controls.competition.value | competitionSeasons : wyscoutSeasonOptions"
+											[filter]="true"
+											[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+											[placeholder]="'dropdown.placeholder' | translate"
+										></p-dropdown>
+									} @else {
+										<p-progressSpinner [style]="{ width: '15px', height: '15px', 'margin-left': '0.5vw' }" strokeWidth="6"></p-progressSpinner>
+									}
+								} @else {
+									<span>No active seasons for this competition</span>
+								}
+							}
+						</td>
+					}
+					<td>
+						<p-multiSelect
+							appendTo="body"
+							formControlName="lineup"
+							[options]="seasonPlayers"
+							[filter]="true"
+							[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+							[placeholder]="'dropdown.placeholder' | translate"
+							[emptyMessage]="'dropdown.selectPlayersIntoLineup' | translate"
+						></p-multiSelect>
+						<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'lineup'" [label]="'clubSettings.wyscout.playerList' | translate"></iterpro-form-feedback>
+					</td>
+					<td>
+						@if (provider !== 'Dynamic' && !competitionInfoControl.controls.manual.value && competitionInfoControl.controls.season.value) {
+							<p-checkbox
+								formControlName="sync"
+								binary="true"
+							></p-checkbox>
+						}
+					</td>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="emptymessage">
+				<tr>
+					<td class="tw-pt-4" colspan="4"><span>{{'alert.noRecordsFound' | translate}}</span>. <span class="tw-ml-2">{{'dropdown.selectCompetitions' | translate}}</span></td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</ng-container>
+

@@ -1,0 +1,135 @@
+{
+	"name": "CustomerPlayer",
+	"plural": "customerPlayers",
+	"base": "User",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"isTempPassword": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationEvents": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationSurveys": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationVideoShared": {
+			"type": "boolean",
+			"default": false
+		},
+		"notificationVideoComments": {
+			"type": "boolean",
+			"default": false
+		},
+		"eventReminders": {
+			"type": "array"
+		},
+		"globalEventReminders": {
+			"type": "array"
+		},
+		"mobileLatestLogin": {
+			"type": "date"
+		},
+		"email": {
+			"type": "string",
+			"required": false
+		},
+		"currentLanguage": {
+			"type": "string",
+			"default": "en-GB"
+		},
+		"currentDateFormat": {
+			"type": "number",
+			"default": 1
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": "playerId"
+		},
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		}
+	},
+	"acls": [
+		{
+			"accessType": "EXECUTE",
+			"principalType": "ROLE",
+			"principalId": "$authenticated",
+			"permission": "ALLOW"
+		}
+	],
+	"methods": {
+		"sendWelcomeEmail": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/welcome-email",
+				"verb": "post"
+			}
+		},
+		"resetPlayerAppCredentials": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/reset",
+				"verb": "post"
+			}
+		},
+		"resetPasswordRequest": {
+			"accepts": [
+				{
+					"arg": "email",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/password-reset",
+				"verb": "post"
+			}
+		}
+	}
+}

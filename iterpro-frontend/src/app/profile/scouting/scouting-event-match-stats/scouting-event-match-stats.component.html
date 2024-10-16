@@ -1,0 +1,42 @@
+<div class="content">
+	<div class="info-container">
+		<span class="info-date" *ngIf="locale">{{ game?.start | date: 'fullDate':'':locale | capitalize }} </span>
+		<span class="info-competition"> {{ game?.competition?.name }}</span>
+	</div>
+	<div class="res-container">
+		<div class="res-home">
+			<div class="crest"><img src="{{ home?.imageDataURL }}" /></div>
+			<div class="goals">
+				<p>{{ homeScorersDisplay }}</p>
+			</div>
+		</div>
+
+		<div class="res-results-container">
+			<div class="res-results">{{ home?.score }}</div>
+			<div class="res-results">{{ away?.score }}</div>
+		</div>
+
+		<div class="res-away">
+			<div class="crest"><img src="{{ away?.imageDataURL }}" /></div>
+			<div class="goals">
+				<p>{{ awayScorersDisplay }}</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="stats-container">
+		<div *ngFor="let stat of parsedStats">
+			<p class="stats-title">{{ stat.label | translate }}</p>
+			<div class="bars">
+				<div class="bar-display bar-display-left">
+					<div [style.width]="stat.homePercentage + '%'"></div>
+				</div>
+				<div class="bar-value">{{ stat.homePercentage || '-' }}</div>
+				<div class="bar-value">{{ stat.awayPercentage || '-' }}</div>
+				<div class="bar-display">
+					<div [style.width]="stat.awayPercentage + '%'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

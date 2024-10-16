@@ -1,0 +1,96 @@
+<p-tabView class="mainMenu" [activeIndex]="activeIndex" (onChange)="onTabChange($event)">
+	<p-tabPanel
+		*ngIf="canAccessToModule('overview').response || (!canAccessToModule('overview').response && hideDisabledModules)"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('overview'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('overview'))?.response ? 'ui-state-disabled' : null"
+		class="info selected"
+		[tooltip]="(canAccessToModule('overview')).error | translate"
+		[header]="'profile.tabs.overview' | translate"
+	>
+		<iterpro-overview name="overview" [player]="player" [sportType]="sportType" [editMode]="editMode" />
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="
+			canAccessToModule('profile-attributes').response ||
+			(!canAccessToModule('profile-attributes').response && hideDisabledModules)
+		"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('profile-attributes'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('profile-attributes'))?.response ? 'ui-state-disabled' : null"
+		class="info"
+		[tooltip]="(canAccessToModule('profile-attributes'))?.error | translate"
+		[header]="'profile.tabs.playerReport' | translate"
+		[cache]="false"
+	>
+		<ng-template pTemplate="content">
+			<iterpro-player-report [player]="player" [type]="'Player'" />
+		</ng-template>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="
+			canAccessToModule('game-stats').response || (!canAccessToModule('game-stats').response && hideDisabledModules)
+		"
+		class="info"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('game-stats'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('game-stats'))?.response ? 'ui-state-disabled' : null"
+		[tooltip]="(canAccessToModule('game-stats'))?.error | translate"
+		[header]="'profile.tabs.gameStats' | translate"
+	>
+		<ng-template pTemplate="content">
+			<iterpro-game-stats [player]="player" [customer]="user" [seasons]="seasons" />
+		</ng-template>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="canAccessToModule('fitness').response || (!canAccessToModule('fitness').response && hideDisabledModules)"
+		class="info"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('fitness'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('fitness'))?.response ? 'ui-state-disabled' : null"
+		[tooltip]="(canAccessToModule('fitness'))?.error | translate"
+		[header]="'profile.tabs.fitness' | translate"
+	>
+		<ng-template pTemplate="content">
+			<iterpro-fitness [player]="player" [customer]="user" [seasons]="seasons" />
+		</ng-template>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="
+			canAccessToModule('robustness').response || (!canAccessToModule('robustness').response && hideDisabledModules)
+		"
+		class="info"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('robustness'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('robustness'))?.response ? 'ui-state-disabled' : null"
+		[tooltip]="(canAccessToModule('robustness'))?.error | translate"
+		[header]="'profile.tabs.robustness' | translate"
+	>
+		<ng-template pTemplate="content">
+			<iterpro-robustness [player]="player" [customer]="user" [seasons]="seasons" />
+		</ng-template>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="
+			canAccessToModule('thresholds').response || (!canAccessToModule('thresholds').response && hideDisabledModules)
+		"
+		class="info"
+		[disabled]="editMode || attributesEdit || !(canAccessToModule('thresholds'))?.response"
+		[ngClass]="editMode || !(canAccessToModule('thresholds'))?.response ? 'ui-state-disabled' : null"
+		[tooltip]="(canAccessToModule('thresholds'))?.error | translate"
+		[header]="'profile.tabs.thresholds' | translate"
+		[cache]="false"
+	>
+		<ng-template pTemplate="content">
+			<iterpro-thresholds
+				name="threshold"
+				[user]="user"
+				[player]="player"
+				[players]="players"
+				[editMode]="editMode"
+				[discarded]="discarded"
+				(reloadPlayers)="reloadPlayers.emit()"
+			/>
+		</ng-template>
+	</p-tabPanel>
+</p-tabView>

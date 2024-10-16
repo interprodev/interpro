@@ -1,0 +1,243 @@
+<div class="card">
+	<div class="teamView-header">
+		<h3 class="centered" translate>surveys.wellness.teamSummary</h3>
+		<div class="tw-flex tw-justify-end tw-items-center tw-gap-4">
+			<input
+				type="file"
+				#inputjson
+				accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+				#file
+				style="display: none"
+				(change)="fileChanged($event)"
+			/>
+			<i class="fas fa-file-excel tw-cursor-pointer" (click)="downloadCsv()" pTooltip="{{ 'surveys.csvDownload' | translate }}"></i>
+			<i class="fas fa-upload tw-cursor-pointer" (click)="file.click()" pTooltip="{{ 'surveys.csvUpload' | translate }}"></i>
+			<i
+				class="fas fa-save tw-cursor-pointer"
+				[class.icon-disabled]="!editService.editMode"
+				(click)="saveMultipleWellness()"
+				pTooltip="{{ 'buttons.save' | translate }}"
+			></i>
+			<i class="fas fa-trash tw-cursor-pointer" (click)="deleteMultipleWellness()" pTooltip="{{ 'buttons.delete' | translate }}"></i>
+		</div>
+	</div>
+	<table class="default-table summary-table" cellpadding="0" cellspacing="0">
+		<thead>
+			<tr>
+				<th translate>sidebar.player</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.sleep
+						<i class="fas fa-face-sleeping question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.sleepTimeWithoutHours
+						<i class="fas fa-bed question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.wakeUpTime
+						<i class="fas fa-alarm-clock question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.sleepDuration
+						<i class="fas fa-clock question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.stress
+						<i class="fas fa-brain question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.fatigue
+						<i class="fas fa-battery-three-quarters question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.soreness
+						<i class="question-icon">
+							<svg
+								width="21px"
+								height="19px"
+								viewBox="0 0 407 472"
+								version="1.1"
+								xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink"
+							>
+								<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+									<g
+										id="musculous-arm-silhouette"
+										transform="translate(0.000000, 0.000045)"
+										fill="#FFFFFF"
+										fill-rule="nonzero"
+									>
+										<path
+											d="M328.097,35.1419547 C312.62,17.0859547 225.761,-26.4840453 178.472,22.5269547 C131.182,71.5369547 181.424,106.162955 199.484,114.496955 C217.541,122.830955 269.131,135.562955 287.838,102.889955 C292.828,115.674955 289.461,222.020955 259.973,249.059955 C245.031,234.813955 223.463,225.869955 199.485,225.869955 C179.796,225.869955 161.739,231.900955 147.635,241.942955 C129.016,212.058955 93.79,191.880955 53.364,191.880955 C33.981,191.880955 15.801,196.539955 0.056,204.662955 L0.056,215.110955 C0.043,215.107955 0,215.097955 0,215.097955 L0,471.759955 C0,471.759955 74.807,475.629955 80.791,389.215955 C80.789,389.210955 80.786,389.205955 80.786,389.200955 C98.984,415.627955 156.966,435.741955 192.695,434.555955 C248.816,432.694955 323.388,430.234955 386.56,369.674955 C392.398,363.865955 397.08,357.005955 400.261,349.415955 C400.261,349.413955 400.261,349.413955 400.261,349.411955 C429.487,288.614955 343.573,53.1979547 328.097,35.1419547 Z"
+											id="Path"
+										></path>
+									</g>
+								</g>
+							</svg>
+						</i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.sorenessLocation
+						<i class="fas fa-male question-icon"></i>
+					</span>
+				</th>
+				<th>
+					<span class="question-label" translate>
+						wellness.mood
+						<i class="fas fa-theater-masks question-icon"></i>
+					</span>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="tw-h-10" *ngFor="let player of players">
+				<td class="player-name">{{ player.displayName }}</td>
+				<td>
+					<span class="score-container">
+						<i class="point" [style.background-color]="getColorScore(player.wellness_sleep)"></i>
+						<input
+							[(ngModel)]="player.wellness_sleep"
+							[ngModelOptions]="{ standalone: true }"
+							type="number"
+							min="1"
+							max="5"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+							(ngModelChange)="edit($event)"
+						/>
+					</span>
+				</td>
+				<td>
+					<div class="pflex-flex pflex-justify-content-center">
+						<iterpro-timepicker
+							[ngModel]="player.sleep_start"
+							[disabled]="false"
+							(timeChanged)="onSleepStartChange($event, player)"
+							name="sleep_start"
+						></iterpro-timepicker>
+					</div>
+				</td>
+				<td>
+					<div class="pflex-flex pflex-justify-content-center">
+						<iterpro-timepicker
+							[ngModel]="player.sleep_end"
+							[disabled]="false"
+							(timeChanged)="onSleepEndChange($event, player)"
+							name="sleep_end"
+						></iterpro-timepicker>
+					</div>
+				</td>
+				<td>
+					<span>
+						<input
+							[(ngModel)]="player.sleep_hours"
+							[ngModelOptions]="{ standalone: true }"
+							type="text"
+							pInputText
+							readonly
+						/>
+					</span>
+				</td>
+				<td>
+					<span class="score-container">
+						<i class="point" [style.background-color]="getColorScore(player.wellness_stress)"></i>
+
+						<input
+							[(ngModel)]="player.wellness_stress"
+							[ngModelOptions]="{ standalone: true }"
+							type="number"
+							min="1"
+							max="5"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+							(ngModelChange)="edit($event)"
+						/>
+					</span>
+				</td>
+				<td>
+					<span class="score-container">
+						<i class="point" [style.background-color]="getColorScore(player.wellness_fatigue)"></i>
+						<input
+							[(ngModel)]="player.wellness_fatigue"
+							[ngModelOptions]="{ standalone: true }"
+							type="number"
+							min="1"
+							max="5"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+							(ngModelChange)="edit($event)"
+						/>
+					</span>
+				</td>
+				<td>
+					<span class="score-container">
+						<i class="point" [style.background-color]="getColorScore(player.wellness_soreness)"></i>
+						<input
+							[(ngModel)]="player.wellness_soreness"
+							[ngModelOptions]="{ standalone: true }"
+							type="number"
+							min="1"
+							max="5"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+							(ngModelChange)="editSoreness(player)"
+						/>
+					</span>
+				</td>
+				<td>
+					<p-multiSelect
+						appendTo="body"
+						maxSelectedLabels="1"
+						selectedItemsLabel="{0} selected"
+						[disabled]="!player.wellness_soreness || player.wellness_soreness > 2"
+						[options]="locationOptions"
+						[(ngModel)]="player.locations"
+						(ngModelChange)="edit($event)"
+						[pTooltip]="player.locations | locationsLabel"
+						[placeholder]="
+							player.wellness_soreness && player.wellness_soreness <= 2 ? ('dropdown.placeholder' | translate) : null
+						"
+						[dropdownIcon]="player.wellness_soreness && player.wellness_soreness <= 2 ? 'fas fa-chevron-down' : 'none'"
+						[virtualScroll]="true"
+						virtualScrollItemSize="30"
+					/>
+				</td>
+				<td>
+					<span class="score-container">
+						<i class="point" [style.background-color]="getColorScore(player.wellness_mood)"></i>
+						<input
+							[(ngModel)]="player.wellness_mood"
+							[ngModelOptions]="{ standalone: true }"
+							type="number"
+							min="1"
+							max="5"
+							step="1"
+							oninput="validity.valid||(value='');"
+							pInputText
+							(ngModelChange)="edit($event)"
+						/>
+					</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

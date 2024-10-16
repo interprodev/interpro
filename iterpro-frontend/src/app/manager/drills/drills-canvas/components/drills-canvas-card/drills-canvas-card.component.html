@@ -1,0 +1,27 @@
+<div class="tw-relative tw-flex tw-grid-cols-1 tw-items-center tw-justify-center">
+	<div class="tw-relative tw-block tw-overflow-hidden tw-rounded-md tw-shadow-md" (click)="cardClicked.emit()">
+		<!-- Z-INDEX 0: Image -->
+		<img
+			class="tw-relative tw-z-0 tw-h-full tw-w-full tw-opacity-80 tw-transition-transform tw-duration-200 tw-ease-linear"
+			[src]="template.previewUrl | azureUrl"
+			[alt]="template.name"
+		/>
+		<!-- Z-INDEX 2: Text -->
+		<div class="tw-z-1 iterpro-bg-700 tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-p-2">
+			<h3 class="text-box tw-uppercase tw-transition-transform tw-duration-100 tw-ease-linear">{{ template.name }}</h3>
+			<!-- Author and Date -->
+			<div class="tw-flex tw-justify-end tw-gap-1 tw-items-center tw-mt-1">
+				<p class="tw-text-shark-200 tw-text-xs">{{ template.lastUpdated.authorName }}</p>
+				<p class="tw-text-shark-200 tw-text-xs">{{ template.lastUpdated.timestamp | formatDateBySetting : 'HH:mm' }}</p>
+			</div>
+		</div>
+	</div>
+	<!-- Z-INDEX 3: Checkbox -->
+	@if (editMode) {
+		<p-checkbox
+			binary="true"
+			(onChange)="onCheckedChange($event)"
+			class="tw-z-3 tw-absolute tw-right-1 tw-top-1"
+		></p-checkbox>
+	}
+</div>

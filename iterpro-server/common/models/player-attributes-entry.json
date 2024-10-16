@@ -1,0 +1,33 @@
+{
+	"name": "PlayerAttributesEntry",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date"
+		},
+		"values": {
+			"type": ["object"]
+		},
+		"notesThreads": {
+			"type": ["object"]
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"polymorphic": true
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

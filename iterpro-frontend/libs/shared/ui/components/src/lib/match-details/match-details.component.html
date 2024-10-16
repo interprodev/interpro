@@ -1,0 +1,109 @@
+
+<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-rounded-lg tw-mr-4" [ngStyle]="style">
+	@if (!isLoading) {
+		<div class="info-container">
+			<span class="info-date" *ngIf="locale">{{ date | date: 'fullDate':'':locale | capitalize }}</span>
+			<span class="info-competition"> {{ selected?.match?.competition?.name }}</span>
+		</div>
+		<div class="res-container">
+			<div class="res-home">
+				<div class="crest">
+					<img [src]="selected?.home?.imageDataURL" onError="this.src='assets/img/default_crest.png';" alt="club crest" />
+				</div>
+				<div class="goals">
+					<ul>
+						@for ( scorer of homeScorersDisplay; track scorer)  {
+							<li >
+						  		{{ scorer }}
+							</li>
+					}
+					  </ul>
+				</div>
+			</div>
+
+			<div class="res-results-container">
+				<div class="res-results">{{ homeScore }}</div>
+				<div class="res-results">{{ awayScore }}</div>
+			</div>
+
+			<div class="res-away">
+				<div class="crest"><img src="{{ selected?.away?.imageDataURL }}" onError="this.src='assets/img/default_crest.png';" alt="club crest" /></div>
+				<div class="goals">
+					<ul>
+						@for ( scorer of awayScorersDisplay; track scorer)  {
+						  	<li >
+						  		{{ scorer }}
+							</li>
+					}
+					  </ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="stats-container">
+			<div *ngFor="let stat of stats">
+				<ng-container *ngIf="stat">
+					<p class="stats-title">{{ stat.item.label | translate }}</p>
+					<div class="bars">
+						<div class="bar-display bar-display-left">
+							<div [style.width]="stat.homePerc + '%'"></div>
+						</div>
+						<div class="bar-value">{{ stat.home || '-' }}</div>
+						<div class="bar-value">{{ stat.away || '-' }}</div>
+						<div class="bar-display">
+							<div [style.width]="stat.awayPerc + '%'"></div>
+						</div>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	} @else {
+		<div class="info-container tw-flex tw-justify-center tw-gap-2">
+			<p-skeleton width="200px" height="15px"></p-skeleton>
+			<p-skeleton width="300px" height="15px"></p-skeleton>
+		</div>
+		<div class="res-container">
+			<div class="res-home">
+				<div class="crest">
+					<p-skeleton height="100px" width="100px"></p-skeleton>
+				</div>
+				<div class="goals">
+					<p><p-skeleton width="200px" height="20px"></p-skeleton></p>
+				</div>
+			</div>
+
+			<div class="res-results-container">
+				<p-skeleton width="40px" height="40px"></p-skeleton>
+				<p-skeleton width="40px" height="40px"></p-skeleton>
+			</div>
+
+			<div class="res-away">
+				<div class="crest">
+					<p-skeleton height="100px" width="100px"></p-skeleton>
+				</div>
+				<div class="goals">
+					<p><p-skeleton width="200px" height="20px"></p-skeleton></p>
+				</div>
+			</div>
+		</div>
+		<div class="stats-container">
+			<div *ngFor="let stat of 8 | arrayFromNumber">
+				<ng-container *ngIf="stat">
+					<div class="tw-full tw-flex tw-justify-center tw-mb-2">
+						<p-skeleton width="130px" height="10px"></p-skeleton>
+					</div>
+					<div class="bars">
+						<div class="bar-display bar-display-left">
+							<div [style.width]="0 + '%'"></div>
+						</div>
+						<div class="bar-value"><p-skeleton width="15px" height="10px"></p-skeleton></div>
+						<div class="bar-value"><p-skeleton width="15px" height="10px"></p-skeleton></div>
+						<div class="bar-display">
+							<div [style.width]="0 + '%'"></div>
+						</div>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	}
+</div>

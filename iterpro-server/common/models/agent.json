@@ -1,0 +1,91 @@
+{
+	"name": "Agent",
+	"plural": "Agents",
+	"base": "Person",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"mixins": {
+		"Encryption": {
+			"fields": ["company", "legalRepresentant", "federalId", "biography"]
+		}
+	},
+	"properties": {
+		"company": {
+			"type": "string"
+		},
+		"legalRepresentant": {
+			"type": "string"
+		},
+		"federalId": {
+			"type": "string"
+		},
+		"biography": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"club": {
+			"type": "belongsTo",
+			"model": "Club",
+			"foreignKey": "clubId"
+		},
+		"team": {
+			"type": "belongsTo",
+			"model": "Team",
+			"foreignKey": "teamId"
+		},
+		"assisted": {
+			"type": "referencesMany",
+			"model": "Player",
+			"foreignKey": "assistedIds",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"costItems": {
+			"type": "hasMany",
+			"model": "PersonCostItem",
+			"polymorphic": "person"
+		},
+		"agentContracts": {
+			"type": "hasMany",
+			"model": "AgentContracts",
+			"property": "agentContracts"
+		}
+	},
+	"acls": [],
+	"methods": {
+		"getBonuses": {
+			"accepts": [
+				{
+					"arg": "id",
+					"type": "string",
+					"http": {
+						"source": "path"
+					}
+				},
+				{
+					"arg": "filters",
+					"type": "object",
+					"http": {
+						"source": "query"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/:id/bonuses",
+				"verb": "get"
+			},
+			"description": "Returns all the bonuses of the agent"
+		}
+	}
+}

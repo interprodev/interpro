@@ -1,0 +1,66 @@
+{
+	"name": "PlayerCostItem",
+	"plural": "PlayerCostItems",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"type": {
+			"type": "string",
+			"required": true
+		},
+		"creationDate": {
+			"type": "date",
+			"required": true
+		},
+		"description": {
+			"type": "string"
+		},
+		"value": {
+			"type": "number",
+			"required": true
+		},
+		"paymentDate": {
+			"type": "date",
+			"required": true
+		},
+		"paid": {
+			"type": "boolean"
+		},
+		"expiryDate": {
+			"type": "date"
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"player": {
+			"type": "belongsTo",
+			"model": "Player",
+			"foreignKey": "",
+			"options": {
+				"nestRemoting": true
+			}
+		},
+		"clubSeason": {
+			"type": "belongsTo",
+			"model": "ClubSeason",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_attachments",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

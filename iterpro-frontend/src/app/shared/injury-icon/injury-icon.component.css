@@ -1,0 +1,21 @@
+.fas {
+	cursor: pointer;
+	float: right;
+}
+
+.bordered-red {
+	width: unset;
+	height: unset;
+	border-radius: 5%;
+	padding: 0.1em 0.1em;
+	background-color: crimson;
+	float: right;
+}
+
+.bordered-yellow {
+	width: unset;
+	height: unset;
+	border-radius: 5%;
+	color: yellow;
+	float: right;
+}

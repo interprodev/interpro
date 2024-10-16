@@ -1,0 +1,76 @@
+.thread-cols {
+	display: flex;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+.thread-comments {
+	flex-grow: 1;
+}
+.top-input-section {
+	margin-bottom: 12px;
+}
+.filter {
+	@apply tw-bg-shark-900 tw-opacity-85 tw-rounded;
+	margin-bottom: 12px;
+	padding: 0.5rem;
+	display: flex;
+	align-items: center;
+}
+.filter input {
+	border: 0 !important;
+	flex-grow: 1;
+}
+.filter > .fas {
+	flex-shrink: 0;
+	flex-grow: 0;
+	margin-right: 5px;
+	color: var(--color-neutral-900);
+}
+.comment-list-container {
+	max-height: 500px;
+	overflow-y: auto;
+}
+.comments-list {
+}
+.comments-list > li {
+	margin: 38px 0;
+}
+.comments-list > li:first-child {
+	margin-top: 0;
+}
+.comments-list > li:last-child {
+	margin-bottom: 0;
+}
+.comment-show-replies {
+	margin-top: 12px;
+	padding: 12px;
+	@apply tw-border-solid tw-border-[0.3px] tw-border-shark-950 tw-opacity-75 tw-rounded;
+	transition: background-color 0.2s ease-in-out;
+	cursor: pointer;
+}
+.comment-show-replies:hover {
+	@apply tw-bg-shark-900 tw-opacity-85 tw-rounded;
+}
+.show-replies-active {
+	@apply tw-bg-shark-900 tw-opacity-85 tw-rounded;
+}
+.show-replies-active:hover {
+	@apply tw-bg-shark-900 tw-opacity-85 tw-rounded;
+}
+.comment-show-replies b {
+	margin-right: 10px;
+}
+.thread-detail {
+	flex-shrink: 0;
+	width: 40%;
+	padding-left: 12px;
+}
+.thread-scrollable {
+	max-height: 544px;
+	overflow-y: auto;
+}
+.thread-detail-container {
+	padding: 12px;
+	border-radius: 3px;
+	@apply tw-bg-shark-900 tw-opacity-85 tw-rounded;
+}

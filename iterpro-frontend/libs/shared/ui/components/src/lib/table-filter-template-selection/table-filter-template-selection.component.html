@@ -1,0 +1,68 @@
+<div class="container">
+	<div class="actions-container">
+		<label class="container-title" translate>Template List</label>
+	</div>
+	<div class="items-container">
+		<input
+			*ngIf="editMode"
+			pInputText
+			type="text"
+			[ngModel]="selectedTemplate.templateName"
+			(ngModelChange)="onUpdateName($event)"
+		/>
+		<p-dropdown
+			*ngIf="!editMode"
+			[options]="templates"
+			[ngModel]="selectedTemplate"
+			[placeholder]="'dropdown.placeholder' | translate"
+			[optionLabel]="'templateName'"
+			(onChange)="onSelectTemplate($event)"
+		></p-dropdown>
+		<div class="icons">
+			<i
+				*ngIf="!editMode"
+				class="fas fa-thumbtack iterpro-clickable-icon"
+				[class.favorite]="selectedTemplate.id === favoriteTemplate.id"
+				(click)="onMarkAsFavorite()"
+				[pTooltip]="
+					selectedTemplate.id === favoriteTemplate.id
+						? ('Favorite template' | translate)
+						: ('Set as favorite' | translate)
+				"
+			>
+			</i>
+			<i
+				*ngIf="selectedTemplate.id !== 'default' && editMode"
+				class="fas fa-save iterpro-clickable-icon"
+				[class.icon-disabled]="!editMode && !hasChanged"
+				(click)="onSaveTemplate()"
+				[pTooltip]="'buttons.save' | translate"
+			></i>
+			<i
+				*ngIf="selectedTemplate.id === 'default'"
+				class="fas fa-add iterpro-clickable-icon"
+				[class.icon-disabled]="!editMode && !hasChanged"
+				(click)="onSaveTemplate()"
+				[pTooltip]="'buttons.addNew' | translate"
+			></i>
+			<i
+				*ngIf="!editMode && selectedTemplate.id !== 'default'"
+				class="fas fa-pencil iterpro-clickable-icon"
+				(click)="onEditTemplate()"
+				[pTooltip]="'buttons.editName' | translate"
+			></i>
+			<i
+				*ngIf="editMode && selectedTemplate.id !== 'default'"
+				class="fas fa-times iterpro-clickable-icon"
+				(click)="onDiscard()"
+				[pTooltip]="'buttons.discard' | translate"
+			></i>
+			<i
+				*ngIf="!editMode && selectedTemplate.id !== 'default'"
+				class="fas fa-trash iterpro-clickable-icon"
+				(click)="onDeleteTemplate()"
+				[pTooltip]="'buttons.delete' | translate"
+			></i>
+		</div>
+	</div>
+</div>

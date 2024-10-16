@@ -1,0 +1,82 @@
+
+.pt-pic img {
+  width: 100%;
+}
+.pt-readiness {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #000;
+}
+.fa-red {
+  color: red;
+}
+
+.bordered-red {
+	width:unset;
+	height:unset;
+	border-radius: 5%;
+	padding: 0.1em 0.1em;
+	color:crimson;
+	/* float: right; */
+}
+
+.bordered-yellow {
+	width:unset;
+	height:unset;
+	border-radius: 5%;
+	color:yellow;
+	/* float: right; */
+}
+
+.row {
+	justify-content: space-between;
+	align-items: center;
+	display: flex;
+}
+
+.row > input {
+	width: auto;
+}
+
+.results-list {
+	margin-top: 2em;
+}
+
+.cell {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.cell > span {
+	margin-right: 1em;
+}
+
+.inline-label {
+	font-weight: normal;
+  color: #bbbbbb;
+}
+
+.inline-val {
+	font-size: 0.9em;
+}
+
+.container {
+	margin: 0em 1.5em;
+  font-size: 0.9rem;
+}
+.short-name:hover {
+  text-decoration: underline;
+  cursor: default;
+}
+
+.disabled {
+	color: #757575 !important;
+}
+
+.disabled > * {
+	color: #757575 !important;
+}
+

@@ -1,0 +1,62 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [title]="'settings.teams.playerGroups'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode" [loading]="isLoading" (edit)="edit()" (discard)="discard()" (create)="addGroup()"
+													(delete)="confirmDelete()" [deleteLabel]="'buttons.delete' | translate" (save)="confirmEdit()"
+													[buttonTypes]="hasChanges() ? ['edit', 'save', 'discard', 'addNew', 'delete'] : ['edit', 'addNew', 'discard', 'delete']"></iterpro-action-buttons>
+</div>
+<div class="tw-mt-8 tw-mv-4 tw-flex tw-items-center tw-gap-4">
+	<iterpro-settings-teams-dropdown></iterpro-settings-teams-dropdown>
+	<!-- Divider -->
+	<div class="tw-w-0.5 tw-h-6 tw-bg-shark-800 tw-mx-2"></div>
+	<div class="tw-flex tw-items-end tw-gap-2">
+		@if (!editMode) {
+			@if (!isLoading) {
+				@if (selectedGroup) {
+					<div class="tw-text-lg">{{'dropdown.groupPlaceholder' | translate}}</div>
+					<div class="iterpro-item-container tw-p-0">
+						<p-dropdown [(ngModel)]="selectedGroup" [options]="groups" optionLabel="name" (onChange)="onSelectGroup($event)" [placeholder]="editMode ? ('dropdown.placeholder' | translate) : null">
+							<ng-template let-selectedItem pTemplate="selectedItem">
+								<div class="tw-text-xl">{{ selectedItem.name }}</div>
+							</ng-template>
+							<ng-template let-item pTemplate="item">
+								<div class="tw-text-md">{{ item.name }}</div>
+							</ng-template>
+						</p-dropdown>
+					</div>
+				} @else {
+					<div class="tw-text-red-500" translate>alert.noGroupsFound</div>
+				}
+			} @else {
+				<iterpro-skeleton-dropdown></iterpro-skeleton-dropdown>
+			}
+		} @else {
+			<div class="iterpro-item-container tw-p-1">
+				<input [(ngModel)]="selectedGroup.name" pInputText />
+			</div>
+		}
+	</div>
+</div>
+<div class="tw-mt-2 tw-flex tw-flex-col">
+	@if (!isLoading) {
+		<div class="tw-p-4">
+			<p-pickList [disabled]="!editMode" [showSourceControls]="false" [showTargetControls]="false"
+				[source]="activePlayers" [target]="selectedPlayers" [responsive]="true"
+				[filterBy]="'displayName'"
+				[sourceHeader]="'preferences.groups.available' | translate"
+				[targetHeader]="'preferences.groups.included' | translate"
+				[showSourceFilter]="editMode"
+				[showTargetFilter]="editMode"
+				[sourceFilterPlaceholder]="editMode ? ('videogallery.search.placeholder' | translate) : null"
+				[targetFilterPlaceholder]="editMode ? ('videogallery.search.placeholder' | translate) : null">
+				<ng-template let-player pTemplate="item">
+					<div class="tw-flex tw-items-center tw-p-1" (dblclick)="stop($event)">
+						<iterpro-picture [photoUrl]="player.downloadUrl" class="tw-block tw-w-12" />
+						<div class="tw-ml-2">{{ player.displayName }}</div>
+					</div>
+				</ng-template>
+			</p-pickList>
+		</div>
+	} @else {
+		<iterpro-skeleton-picklist [sourceLabel]="'preferences.groups.available' | translate" [targetLabel]="'preferences.groups.included' | translate" [sourceItems]="3" targetItems="10"></iterpro-skeleton-picklist>
+	}
+</div>

@@ -1,0 +1,115 @@
+.content {
+  margin-right: 1em;
+  border-radius: 2px;
+  .icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1rem !important;
+    height: 24px;
+  }
+  .info-container {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1rem;
+    .info-date {
+      font-weight: bold;
+    }
+    .info-competition {
+      text-transform: uppercase;
+      color: #bbbbbb;
+    }
+  }
+  .res-container {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    .goals {
+      padding: 10px;
+      text-align: center;
+      max-width: 300px;
+      font-size: 0.85rem;
+    }
+    .res-home,
+    .res-away {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .res-away .goals {
+      text-align: center;
+    }
+    .res-results-container {
+      display: flex;
+      margin-top: 1.2rem;
+      .res-results {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(68, 68, 68, 0.55);
+        text-align: center;
+        line-height: 44px;
+        font-size: 30px;
+        font-weight: bold;
+        border-radius: 3px;
+        margin: 0.5rem;
+      }
+    }
+  }
+}
+
+.stats-container {
+  padding: 1rem;
+  .stats-title {
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 0.7em;
+    font-size: 0.85rem;
+  }
+  .bars {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 1.2em;
+    height: 1em;
+    .bar-value {
+      width: 50px;
+      background-color: rgba(68, 68, 68, 0.55);
+      border-radius: 2px;
+      margin-left: 10px;
+      margin-right: 5px;
+      padding: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8em;
+    }
+    .bar-value + .bar-value {
+      margin-left: 5px;
+      margin-right: 10px;
+    }
+    .bar-display {
+      border-radius: 2px;
+      flex-grow: 1;
+      display: flex;
+      background-color: rgba(68, 68, 68, 0.55);
+    }
+    .bar-display > div {
+      background-color: var(--color-primary-500);
+      border-radius: 2px;
+    }
+    .bar-display-left {
+      justify-content: flex-end;
+    }
+  }
+}
+
+.crest {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.crest > img {
+  width: 80%;
+}

@@ -1,0 +1,13 @@
+.header-with-search-container {
+	display: flex;
+	align-items: baseline;
+	width: 100%;
+	p-columnFilter {
+		width: 100%;
+		margin-left: 6px;
+	}
+}
+.drill-filters-container {
+	display: flex;
+	justify-content: space-between;
+}

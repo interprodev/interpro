@@ -1,0 +1,92 @@
+<div>
+	<div class="tw-w-full tw-flex tw-justify-end tw-items-center">
+		<iterpro-report-download class="download" (downloadPDF)="downloadReport()" />
+	</div>
+	<div class="tw-flex tw-items-center tw-justify-end tw-mt-4 tw-mb-4">
+		<iterpro-action-buttons [buttonTypes]="['addNew', 'edit', 'discard', 'save']" [editMode]="editService.editMode" (create)="addAnamnesys()" (edit)="editAnamnesys()" (discard)="onDiscard()" (save)="onSave()"></iterpro-action-buttons>
+	</div>
+	<p-table [value]="anamnesys" [scrollable]="true" styleClass="p-datatable-striped">
+		<ng-template pTemplate="header">
+			<tr class="tw-h-10">
+				<th></th>
+				<th style="width: 25%" translate>medical.infirmary.report.author</th>
+				<th style="width: 20%" translate>profile.document.issuedDate</th>
+				<th style="width: 20%" translate>profile.idCard.idCardExpireDate</th>
+				<th style="width: 15%; text-align: center" translate>profile.archive.notes</th>
+				<th style="width: 10%" translate>admin.contracts.document</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+			<tr class="tw-h-10">
+				<td style="width: 10%; text-align: center">
+					<div class="tw-text-center">
+						<i
+							*ngIf="editService.editMode"
+							class="fas fa-trash iterpro-clickable-icon"
+							[pTooltip]="'buttons.delete' | translate"
+							(click)="deleteAnamnesys(rowData, rowIndex)"
+						></i>
+					</div>
+				</td>
+				<td style="width: 25%">
+					<p-dropdown
+						appendTo="body"
+						*ngIf="customerTeamSettings.length > 0"
+						[style]="{ width: '100%' }"
+						[options]="customerTeamSettings"
+						[(ngModel)]="rowData.author"
+						[disabled]="!editService.editMode"
+						[dropdownIcon]="!editService.editMode ? 'none' : 'fas fa-chevron-down'"
+						[placeholder]="!editService.editMode ? null : ('dropdown.placeholder' | translate)"
+					>
+						<ng-template let-tooltip pTemplate="selectedItem">
+							<div [pTooltip]="tooltip.label">{{ tooltip.label }}</div>
+						</ng-template>
+					</p-dropdown>
+				</td>
+				<td style="width: 20%">
+					<p-calendar
+						showButtonBar="true"
+						appendTo="body"
+						[disabled]="!editService.editMode"
+						[(ngModel)]="rowData.date"
+						[pTooltip]="rowData.date | formatDateBySetting"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					>
+					</p-calendar>
+				</td>
+				<td style="width: 20%">
+					<span class="point pflex-mr-2" [style.background-color]="rowData.expirationDate | expirationPipe"></span>
+					<p-calendar
+						showButtonBar="true"
+						appendTo="body"
+						[disabled]="!editService.editMode"
+						[(ngModel)]="rowData.expirationDate"
+						[pTooltip]="rowData.expirationDate | formatDateBySetting"
+						[clearButtonStyleClass]="'p-button-sm'"
+						[todayButtonStyleClass]="'p-button-sm'"
+					>
+					</p-calendar>
+				</td>
+				<td style="width: 15%; text-align: center">
+					<i
+						(click)="openDialogNote(rowData)"
+						aria-hidden="true"
+						class="pflex-cursor-pointer fas fa-search iterpro-clickable-icon"
+						[pTooltip]="'tooltip.add.notes' | translate"
+					></i>
+				</td>
+				<td style="width: 10%">
+					<iterpro-multiple-file-upload
+						[visible]="true"
+						[oneForRowMode]="true"
+						[editMode]="editService.editMode"
+						[attachmentModel]="rowData._attachments"
+						(save)="saveAttachments($event, rowData)"
+					/>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>

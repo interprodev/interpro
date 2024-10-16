@@ -1,0 +1,13 @@
+{
+	"name": "domains-players-scouting-event-feature-detail",
+	"$schema": "../../../../../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/domains/players/scouting/event/feature-detail/src",
+	"prefix": "iterpro-frontend",
+	"tags": ["scope:scouting-event", "type:feature"],
+	"projectType": "library",
+	"targets": {
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
+}

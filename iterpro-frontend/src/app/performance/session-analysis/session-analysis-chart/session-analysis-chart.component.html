@@ -1,0 +1,4 @@
+<div class="chart__graph">
+  <p-chart *ngIf="!viewFlags.isLoading && chartData" height="400px" [data]="chartData.data" [options]="chartData.options" type="bar"></p-chart>
+  <p-progressSpinner *ngIf="viewFlags.isLoading" [style]="{ width: '5rem', height: '5rem' }" strokeWidth="10"></p-progressSpinner>
+</div>

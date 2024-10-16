@@ -1,0 +1,70 @@
+<form id="csvForm" [formGroup]="csvForm" *ngIf="table">
+	<div class="p-datatable-striped" formArrayName="rows">
+		<p-table
+      [columns]="table.headers"
+      [value]="table.rows"
+      [rowHover]="true"
+      [scrollable]="true"
+			selectionMode="single"
+      dataKey="id" scrollHeight="500px"
+      [customSort]="true"
+      [paginator]="paginator"
+      [rows]="rows"
+			(sortFunction)="customSort($event)"
+			(onPage)="changePage($event)">
+			<ng-template pTemplate="header" let-columns>
+				<tr class="tw-h-10">
+					<th *ngFor="let header of columns"
+            class="tw-text-left"
+						[pSortableColumn]="header.header.sortable ? header.header.field : false"
+            [ngStyle]="{
+              minWidth: header.header.width ? header.header.width + 'px' : '200px',
+              width: header.header.width ? header.header.width + 'px' : '200px',
+              maxWidth: header.header.width ? header.header.width + 'px' : '200px'
+            }"
+            pFrozenColumn [frozen]="header.header.frozen">
+						<p-sortIcon *ngIf="header.header.sortable" [field]="header.header.field"></p-sortIcon>
+						<span pTooltip="{{ header.value }}">{{ header.value }}</span>
+					</th>
+				</tr>
+			</ng-template>
+			<ng-template pTemplate="body" let-row let-rowIndex="rowIndex" let-columns="columns">
+				<tr class="tw-h-10" [formGroupName]="row.index">
+					<td *ngFor="let col of columns; first as isFirst"
+            class="{{ row.fields[col.header.field].class }}"
+            [ngStyle]="{
+              height: table.height,
+              minWidth: col.header.width ? col.header.width + 'px' : '200px',
+              width: col.header.width ? col.header.width + 'px' : '200px',
+              maxWidth: col.header.width ? col.header.width + 'px' : '200px'
+            }"
+            pFrozenColumn [frozen]="col.header.frozen"
+            [ngSwitch]="row.fields[col.header.field].type"
+						[class.formIndexError]="isFirst && col.header.frozen && rowHasErrors(row.index)">
+						<span *ngSwitchCase="'index'" style="text-align: left;">
+							{{ rowIndex + 1 }}
+						</span>
+						<span *ngSwitchCase="'text'">
+							<div class="pflex-text-left">
+								<i class="fas fa-exclamation" style="color: red" *ngIf="isRequired(row.index, col.header.field)"></i>
+								<input type="text" [pTooltip]="row.fields[col.header.field].value"
+									[formControlName]="col.header.field" [class.formError]="hasErrors(row.index, col.header.field)" />
+							</div>
+						</span>
+						<span *ngSwitchCase="'flag'">
+							<div class="pflex-text-left">
+								<iterpro-player-flag [lang]="getCellValue(row.index, col.header.field)"
+									[style.display]="hasErrors(row.index, col.header.field) ? 'none' : 'inline'" />
+								<input type="text" [pTooltip]="row.fields[col.header.field].value"
+									[formControlName]="col.header.field" [class.formError]="hasErrors(row.index, col.header.field)"
+									[style.display]="isEnabled(row.index, col.header.field) ? 'inline' : 'none'" />
+							</div>
+						</span>
+						<img *ngSwitchCase="'image'" style="background-color:white" src="{{ row.fields[col.header.field].value }}"
+							onError="this.src='assets/img/default_icon.png';" />
+					</td>
+				</tr>
+			</ng-template>
+		</p-table>
+	</div>
+</form>

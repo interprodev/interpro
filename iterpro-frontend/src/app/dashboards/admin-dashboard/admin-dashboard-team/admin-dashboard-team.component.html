@@ -1,0 +1,194 @@
+<div>
+	<header class="header">
+		<h1>
+			{{ team.name }}
+		</h1>
+		<div class="header-actions">
+			<i class="fas fa-sync" style="margin-right: 1em" pTooltip="{{ 'dashboard.resync' | translate }}"
+				(click)="resync()"></i>
+			<div class="header-buttons">
+				<p-dropdown [options]="teams" optionLabel="name" [(ngModel)]="team"
+					(onChange)="onSelectTeam($event)" [style]="{
+						display: 'flex',
+						'align-items': 'center',
+						width: '200px',
+						'background-color': 'var(--color-bg-600)',
+						height: '30px',
+						'margin-right': '1em'
+					}">
+					<ng-template let-item pTemplate="item">
+						<span style="vertical-align: middle">{{ item.name }}</span>
+					</ng-template>
+				</p-dropdown>
+				<p-dropdown *ngIf="!isEmpty(team.teamSeasons)" [options]="team.teamSeasons"
+					optionLabel="name" [(ngModel)]="selectedSeason" (onChange)="onSelectSeason($event)" [style]="{
+						display: 'flex',
+						'align-items': 'center',
+						width: '200px',
+						'background-color': 'var(--color-bg-600)',
+						height: '30px',
+						'margin-right': '1em'
+					}">
+				</p-dropdown>
+				<iterpro-player-dropdown *ngIf="!isEmpty(team.teamSeasons)" [style]="{
+						display: 'flex',
+						'align-items': 'center',
+						width: '200px',
+						'background-color': 'var(--color-bg-600)',
+						height: '30px',
+						'margin-right': '1em'
+					}"
+				  [imgHeight]="'30px'"
+				  [playerId]="selectedPlayer?.id"
+				  [options]="players"
+				  [showClear]="true"
+					(playerIdChanged)="onSelectPlayer($event)"/>
+				<p-button size="small" *ngIf="selectedPlayer" (click)="backToTeam()" translate>buttons.backToTeam</p-button>
+				<p-button size="small" *ngIf="selectedPlayer" class="info" (click)="playerReport()" translate>buttons.report</p-button>
+			</div>
+		</div>
+	</header>
+
+	<div *ngIf="!selectedPlayer" class="content">
+		<div *ngIf="!selectedSeason || (players && players.length === 0)" class="row container"
+			style="min-height: 250px; background-color: var(--color-bg-600); padding: 1em; min-width: 300px">
+			<div style="width: 100%; align-items: center; display: flex; justify-content: center">
+				<div class="text-center">{{ getMessageForNoTeamSeasons() }}</div>
+				<i href="#" style="cursor: pointer; float: right; display: flex; justify-content: center"
+					[routerLink]="getClubSettingsLink()">{{ getRedirectText() }}
+				</i>
+			</div>
+		</div>
+
+		<div *ngIf="selectedSeason && players && players.length > 0">
+			<div class="row container" style="max-height: 250px">
+				<div class="col-4" style="width: 40%">
+					<h4 translate>admin.dashboard.playersInSquad</h4>
+					<div style="margin-left: auto; margin-right: auto; width: 85%; height: 80%">
+						<p-chart *ngIf="dataPlayerSquad" [data]="dataPlayerSquad" [options]="optionsPlayerSquad" type="doughnut"
+							[width]="'100%'" [plugins]="plugins">
+						</p-chart>
+					</div>
+				</div>
+				<div class="col-4 column" style="width: 20%">
+					<h4 translate>admin.dashboard.avgSquadAge</h4>
+					<span class="value" style="font-size: 3.5vw; margin-top: auto; margin-bottom: auto">{{
+						teamData?.averageSquadAge
+						}}</span>
+				</div>
+				<div class="col-4 column" style="width: 20%">
+					<h4>{{ 'admin.dashboard.totSquadSalary' | translate }} (p/a)</h4>
+					<div class="pflex-col-12" style="margin-top: auto; margin-bottom: auto">
+						<span class="value" style="font-size: 3.5vw">{{ currency }}{{ teamData?.totalSalaries |
+							shortNumber : true }}</span>
+					</div>
+				</div>
+				<div class="col-4 column" style="width: 20%">
+					<h4 translate>admin.dashboard.totalSquadValue</h4>
+					<div class="pflex-col-12" style="margin-top: auto; margin-bottom: auto">
+						<span class="value" style="font-size: 3.5vw">{{ currency }}{{ teamData?.totalSquadValue |
+							shortNumber : true }}</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-3 container column">
+					<h3 translate>admin.dashboard.season</h3>
+					<div style="margin-bottom: 1em; display: flex; align-items: center">
+						<div class="col-2" style="display: flex; align-items: center; justify-content: center">
+							<span class="label" style="margin-right: 1em" translate>admin.dashboard.gamesRemaining</span>
+							<span class="value">{{ teamData?.gamesRemaining }}</span>
+						</div>
+						<div class="col-2" style="display: flex; align-items: center; justify-content: center">
+							<span class="label" style="margin-right: 1em" translate>admin.dashboard.gamesPlayed</span>
+							<span class="value">{{ teamData?.gamesPlayed }}</span>
+						</div>
+					</div>
+					<div class="row" style="align-items: center">
+						<div class="col-3 column" style="min-width: unset; text-align: center">
+							<span class="label" style="color: #008000" translate>admin.dashboard.wins</span>
+							<span class="value">{{ teamData?.wins }}</span>
+						</div>
+						<div class="col-3 column" style="min-width: unset; text-align: center">
+							<span class="label" style="color: #ffff00" translate>admin.dashboard.draws</span>
+							<span class="value">{{ teamData?.draw }}</span>
+						</div>
+						<div class="col-3 column" style="min-width: unset; text-align: center">
+							<span class="label" style="color: #ff0000" translate>admin.dashboard.losses</span>
+							<span class="value">{{ teamData?.losses }}</span>
+						</div>
+					</div>
+					<p-chart style="margin: auto; width: 50%" *ngIf="dataSeason" [data]="dataSeason" [options]="optionsSeason"
+						type="doughnut"></p-chart>
+				</div>
+				<div *ngIf="teamData" class="col-3 container">
+					<h3 translate>admin.dashboard.resultsAndFixtures</h3>
+					<div *ngFor="let data of teamData.fixtures">
+						<div class="info-container">
+							<span class="info-date">{{ data.start | date : 'fullDate' : '' | capitalize }} </span>
+						</div>
+						<div class="res-container">
+							<div class="res-home">
+								<div class="crest">
+									<i *ngIf="data.home === true ? !club?.crest : !data?.opponentImage" class="fas fa-shield-alt fa-2x"
+										style="float: right" pTooltip="{{ data.home === true ? data?.opponent : '' }}"
+										tooltipPosition="left"></i>
+									<iterpro-picture style="float: right"
+																				class="tw-w-1/4"
+																				*ngIf="data.home === true ? club?.crest : data?.opponentImage"
+																				[photoUrl]="data.home === true ? club?.crest : data?.opponentImage"
+																				[pTooltip]="data.home === false ? data?.opponent : ''"/>
+								</div>
+							</div>
+
+							<div class="res-results-container">
+								<div class="res-results">{{ data.homeScore }}</div>
+								<div class="res-results">{{ data.awayScore }}</div>
+							</div>
+
+							<div class="res-away">
+								<div class="crest">
+									<i *ngIf="data.home === true ? !data?.opponentImage : !club?.crest" class="fas fa-shield-alt fa-2x"
+										pTooltip="{{ data.home === true ? data?.opponent : '' }}" tooltipPosition="left"></i>
+									<iterpro-picture style="float: left"
+																				class="tw-w-1/4"
+																				*ngIf="data.home === true ? data?.opponentImage : club?.crest"
+																				[photoUrl]="data.home === true ? data?.opponentImage : club?.crest"
+																				[pTooltip]="data.home === true ? data?.opponent : ''"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-3 container column">
+					<h3 translate>admin.dashboard.medical</h3>
+					<div class="row" style="align-items: center">
+						<div class="col-2 column" style="min-width: unset; text-align: center">
+							<span class="label" translate>admin.dashboard.currentInjuries</span>
+							<span class="value">{{ teamData?.currentInjuries }}</span>
+						</div>
+						<div class="col-2 column" style="min-width: unset; text-align: center">
+							<span class="label" translate>admin.dashboard.totalInjuries</span>
+							<span class="value">{{ teamData?.totalInjuries }}</span>
+						</div>
+					</div>
+					<div class="row" style="align-items: center">
+						<div class="col-2 column" style="min-width: unset; text-align: center">
+							<span class="label" translate>admin.dashboard.trauma</span>
+							<span class="value">{{ teamData?.trauma }}</span>
+						</div>
+						<div class="col-2 column" style="min-width: unset; text-align: center">
+							<span class="label" translate>admin.dashboard.overuse</span>
+							<span class="value">{{ teamData?.overuse }}</span>
+						</div>
+					</div>
+					<p-chart style="margin: auto; width: 50%" *ngIf="dataMedical" [data]="dataMedical" [plugins]="plugins"
+						[options]="optionsMedical" type="doughnut"></p-chart>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<iterpro-admin-dashboard-player *ngIf="selectedPlayer" [player]="selectedPlayer" [playerData]="playerData" />
+</div>

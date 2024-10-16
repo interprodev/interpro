@@ -1,0 +1,1 @@
+export const NGRX_MAX_ACTIONS_HISTORY = 25;

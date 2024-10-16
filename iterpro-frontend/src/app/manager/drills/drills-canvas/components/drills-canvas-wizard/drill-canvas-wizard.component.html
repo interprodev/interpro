@@ -1,0 +1,38 @@
+<div class="tw-space-y-8">
+  <div>
+    <label for="drill-canvas-wizard" class="text-lg tw-mb-4 tw-block tw-text-base tw-opacity-75">{{
+      'drillCanvas.wizard.title' | translate
+    }}</label>
+
+    <div class="iterpro-item-container">
+      <p-dropdown
+        id="drill-canvas-wizard"
+        appendTo="body"
+        [options]="drillCanvasOptions"
+        [(ngModel)]="selectedDrillCanvasId"
+        [filter]="true"
+        [placeholder]="'drillCanvas.wizard.placeholder' | translate"
+      >
+				<ng-template let-item pTemplate="item">
+					<span [class.tw-font-bold]="item.value === 'new'">{{item.label}}</span>
+				</ng-template>
+			</p-dropdown>
+    </div>
+  </div>
+
+  <div class="tw-flex tw-justify-between tw-gap-4">
+    <p-button
+      [label]="'drillCanvas.wizard.cancel' | translate"
+			[outlined]="true"
+      [size]="'small'"
+      (click)="cancel()"
+    />
+
+    <p-button
+      [label]="'drillCanvas.startDrawing' | translate"
+			styleClass="p-button-primary"
+      [size]="'small'"
+      (click)="createNew()"
+    />
+  </div>
+</div>

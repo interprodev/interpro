@@ -1,0 +1,27 @@
+
+
+.profile-content {
+	overflow: auto;
+	text-overflow: ellipsis;
+}
+
+.pt-readiness {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 5px;
+	background-color: #000;
+	margin-left: 4px;
+}
+.green-color {
+	color: green;
+}
+.red-color {
+	color: red;
+}
+.unset-color {
+	color: unset;
+}
+.icon {
+	margin: 0.5rem;
+}

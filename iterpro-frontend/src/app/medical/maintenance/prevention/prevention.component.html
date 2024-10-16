@@ -1,0 +1,205 @@
+<div #body class="main with-tooltips tw-mt-8" *blockUI="'containerProf'">
+
+	@if (activeViewType.id == medicalRecordsViewTypes.Card || activeViewType.id == medicalRecordsViewTypes.List || medicalRecordsViewTypes === medicalRecordsViewTypes.Calendar) {
+		<!-- Prevention Header -->
+		<header>
+			@if (!selected) {
+				<!-- Toolbar -->
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-8">
+					<!-- Main Title -->
+					<h1 translate>navigator.medicalRecords2</h1>
+					<div class="tw-flex tw-gap-4">
+						<!-- Search Bar -->
+						<div class="tw-flex tw-items-center tw-gap-4 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+							<div class="tw-relative tw-w-full tw-rounded tw-shadow-lg">
+								<input
+									type="text"
+									class="tw-w-80 tw-text-shark-200 tw-placeholder-shark-200 tw-border-shark-800 tw-transition-colors"
+									[placeholder]="'admin.squads.search' | translate"
+									[(ngModel)]="filterPlayer"
+								/>
+								<i class="fas fa-search tw-absolute tw-top-0 tw-right-0 tw-m-1 tw-text-shark-200"></i>
+							</div>
+						</div>
+						<!-- Download PDF / Filters / Legend -->
+						<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+							<ng-container *ngIf="activeViewType.id === medicalRecordsViewTypes.List; else showDownloadReport">
+								<iterpro-report-download (downloadPDF)="getReport()" (downloadCSV)="downloadCsv()" />
+							</ng-container>
+							<ng-template #showDownloadReport>
+								<iterpro-report-download (downloadPDF)="getReport()" />
+							</ng-template>
+							<iterpro-icon-button
+								[icon]="showFilters || showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+								[tooltip]="(showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+								(click)="toggleFilters()">
+							</iterpro-icon-button>
+							<iterpro-icon-button *ngIf="activeViewType.id === medicalRecordsViewTypes.List"
+																	 [icon]="'fas fa-question'" [tooltip]="'bodychart.showLegend' | translate" (click)="op.toggle($event)">
+							</iterpro-icon-button>
+							<iterpro-icon-button [icon]="'fas fa-cog'" [tooltip]="'buttons.goToPreferencesMetrics' | translate"
+																	 routerLink="/settings/teams/metrics">
+							</iterpro-icon-button>
+						</div>
+						<div class="tw-bg-shark-950 tw-bg-opacity-85 tw-px-2 tw-py-1 tw-rounded">
+							<!-- Card View / List View -->
+							<p-tabMenu [model]="viewTypes" [activeItem]="activeViewType" (activeItemChange)="viewTypeChanged()">
+								<ng-template pTemplate="item" let-item>
+									<a class="p-menuitem-link tw-px-2 tw-py-1">
+										<i [class]="item.icon" [pTooltip]="item.label | translate"></i>
+									</a>
+								</ng-template>
+							</p-tabMenu>
+						</div>
+					</div>
+				</div>
+			} @else {
+				<!-- Player Header -->
+				<h1 translate>navigator.medicalRecords2</h1>
+				<div class="tw-flex tw-items-center tw-justify-between tw-mb-8 tw-mt-4">
+					<!-- Player Dropdown -->
+					<iterpro-search-dropdown [showCaretIcon]="true" [selectedPerson]="selected" (selectPerson)="onSelectFromDropdown($event)" [people]="searchDropdownElements" />
+					<p-button size="small" styleClass="p-button-contrast" (click)="onCloseProfile()" [label]="'buttons.close' | translate"></p-button>
+				</div>
+			}
+		</header>
+	}
+
+	<!-- Filers & Table Columns -->
+	<div class="tw-mt-4" [hidden]="activeViewType.id === medicalRecordsViewTypes.Calendar || selected">
+		<iterpro-table-filter-template
+			*ngIf="showFilterTemplateSelection && activeViewType.id === medicalRecordsViewTypes.List"
+			[ngClass]="{ 'pflex p-hidden': !showFilters }" [tableId]="'medical_records_table'"
+			[filters]="filtersForTemplate" [visibility]="visibleColumns"
+			(templateChanged)="handleFilterTemplateChanged($event)" />
+		<!-- FILTERS -->
+		<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded tw-mb-4" [hidden]="!showFilters">
+			<div class="tw-w-full tw-flex tw-justify-end">
+				<!-- Card View / List View -->
+				<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+					<ng-template pTemplate="item" let-item>
+						<a class="p-menuitem-link tw-px-2 tw-py-1">
+							<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+							<i class="tw-ml-2" [class]="item.icon"></i>
+						</a>
+					</ng-template>
+				</p-tabMenu>
+			</div>
+			<div>
+				@switch (activeFilterTabType) {
+					@case (filtersTabTypes[0]) {
+						<iterpro-table-filter class="flex-grow-two"
+																	[class.maximize]="activeViewType.id === medicalRecordsViewTypes.Card" [items]="completedPlayers"
+																	[options]="filterOptions" [hideReset]="true" (filterEmitter)="handleFilterStateUpdated($event)" />
+					}
+					@case (filtersTabTypes[1]) {
+						<iterpro-table-column-filter class="flex-grow-one" [options]="columnOptions" [hideReset]="true"
+																				 (onChange)="changeViewableColumns($event)">
+						</iterpro-table-column-filter>
+					}
+				}
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Not selected Player -->
+	<ng-container *ngIf="!selected; else selectedPlayer">
+		<ng-container *ngIf="!!players" [ngSwitch]="activeViewType.id">
+			<ng-container *ngSwitchCase="medicalRecordsViewTypes.Calendar">
+				<iterpro-maintenance-calendar *ngIf="customers$ | async as customers" [players]="players"
+					[customers]="customers" (changeViewType)="setViewMode($event)" />
+			</ng-container>
+
+			<ng-container *ngSwitchCase="medicalRecordsViewTypes.List">
+				<iterpro-prevention-table-view #playersTable [players]="filteredPlayers | playersPipe : filterPlayer"
+					[testColumns]="testColumns" [visibleColumns]="visibleColumns" (onPlayerClick)="onClickPlayer($event)" />
+			</ng-container>
+
+			<ng-container *ngSwitchCase="medicalRecordsViewTypes.Card">
+				@if (!isLoading) {
+					<ng-container *ngFor="let item of categories">
+						<ng-container *ngIf="item.name !== 'noPosition'; else noPositions">
+							<div class="tw-font-light tw-uppercase tw-mb-2">
+								<h3 translate>roles.categories.{{ item.name }}s</h3>
+							</div>
+							<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+								<iterpro-player-card *ngFor="let player of item.players | playersPipe : filterPlayer"
+																		 [player]="player" [maintenance]="true" (clickedPlayer)="onClickPlayer($event)" />
+							</div>
+						</ng-container>
+						<ng-template #noPositions>
+							<ng-container *ngIf="item.players.length > 0">
+								<div class="tw-font-light tw-uppercase tw-mb-2">
+									<h3 translate>roles.categories.noPosition</h3>
+								</div>
+								<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+									<iterpro-player-card *ngFor="let player of item.players | playersPipe : filterPlayer"
+																			 [player]="player" [maintenance]="true" (clickedPlayer)="onClickPlayer($event)" />
+								</div>
+							</ng-container>
+						</ng-template>
+					</ng-container>
+				} @else {
+					@for (item of categoryLabelForSkeletons; track item) {
+						<div class="tw-font-light tw-uppercase tw-mb-2">
+							<h3 translate>{{ 'roles.categories.' + item + 's' }}</h3>
+						</div>
+						<div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-8">
+							@for (player of 5 | arrayFromNumber; track player) {
+								<iterpro-player-card [isPlayersLoading]="true" />
+							}
+						</div>
+					}
+				}
+			</ng-container>
+		</ng-container>
+	</ng-container>
+
+	<!-- Selected Player Template -->
+	<ng-template #selectedPlayer>
+		<iterpro-prevention-player *ngIf="players" [player]="selected" [players]="players"
+			[chronicInjuryId]="chronicIdParam" [injuries]="selected.injuries" [sorenessInjuries]="sorenessInjuries"
+			[chronicInjuries]="selected._chronicInjuries" (onUpdatePlayer)="updateList($event)"
+			(onAnamnesysSaveEmitter)="updateAnamnesys($event)" />
+	</ng-template>
+
+</div>
+
+<!-- Overlay -->
+<p-overlayPanel #op appendTo="body" [style]="{ 'background-color': 'transparent' }">
+	<div class="content">
+		<ul>
+			<li>
+				<span style="display: flex; width: 100%; align-items: center">
+					<i style="font-size: 2em" class="fas fa-ambulance"></i><span style="margin-left: 1em"
+						translate>prevention.legend.ambulance</span>
+				</span>
+			</li>
+			<li>
+				<span style="display: flex; width: 100%; align-items: center">
+					<i style="font-size: 2em" class="fas fa-band-aid"></i><span style="margin-left: 1em"
+						translate>prevention.legend.plaster</span>
+				</span>
+			</li>
+			<li>
+				<span style="display: flex; width: 100%; align-items: center">
+					<i style="font-size: 2em" class="fas fa-exclamation-triangle"></i><span style="margin-left: 1em"
+						translate>prevention.legend.warning</span>
+				</span>
+			</li>
+			<li>
+				<span style="display: flex; width: 100%; align-items: center">
+					<i style="font-size: 2em" class="fas fa-frown"></i><span style="margin-left: 1em"
+						translate>prevention.legend.emoji</span>
+				</span>
+			</li>
+			<li>
+				<span style="display: flex; width: 100%; align-items: center">
+					<i style="font-size: 2em" class="fas fa-thermometer-three-quarters"></i><span style="margin-left: 1em"
+						translate>prevention.legend.thermo</span>
+				</span>
+			</li>
+		</ul>
+	</div>
+</p-overlayPanel>

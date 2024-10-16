@@ -1,0 +1,349 @@
+<div class="main tw-mt-8">
+	<!-- Header -->
+	<header *ngIf="!display">
+		<h1 translate>navigator.tactics</h1>
+	</header>
+	<!-- Main Content -->
+	<div class="tw-grid tw-grid-cols-12 tw-gap-4 tw-mt-8">
+		<div [ngClass]="sidebarOpen ? 'tw-col-span-12 lg:tw-col-span-10' : 'tw-col-span-12'" *ngIf="!displayPlayerDialog">
+			<div *blockUI="'containerTactics'">
+
+				<!-- Col: Match Preparation -->
+				<div *ngIf="!display && currentViewState === currentViewStates.Preparation">
+					<iterpro-match-preparation
+						*ngIf="selectedPhase"
+						style="width: 100%; display: flex; flex-direction: row; justify-content: center"
+						[phase]="selectedPhase"
+						[phaseType]="phaseItem"
+						[injuryMap]="injuryMapPlayer"
+						[playerList]="playerList"
+						[getMatchReport]="getMatchReport"
+						(saveEmitter)="onSaveEmitted($event)"
+						(saveAttachmentsEmitter)="saveAttachments()"
+						(showPlayerDialogEmitter)="showDialogPlayer($event)"
+						[match]="match"
+						[sportType]="sportType"
+					/>
+				</div>
+
+				<!-- Col: Match Analysis -->
+				<div *ngIf="!display && currentViewState === currentViewStates.Analysis">
+					<iterpro-match-analysis
+						[selectedType]="selectedType"
+						[match]="match"
+						[playerView]="playerView"
+						[playerStat]="selectedPlayerStat"
+						[metrics]="playerView ? metricsPlayer : metricsTeam"
+						[thresholds]="currentThresholds"
+						[matches]="pastMatches"
+						[metricsTeam]="selectedMetricTeam"
+						[metricsPlayer]="selectedMetricPlayer"
+						[playerStatsForComparison]="selectedPlayerStatComparison"
+						[comparisonThresholdsMap]="comparisonThresholdsMap"
+						[allPlayersStats]="playerStats"
+						[sidebarOpen]="sidebarOpen"
+						(sidebarEmitter)="setSidebar($event)"
+						(saveAttachmentsEmitter)="saveAttachments()"
+					/>
+				</div>
+
+				<!-- Col: Video Gallery -->
+				<div *ngIf="display">
+					<iterpro-video-gallery
+						(close)="closeVideoGallery()"
+						[players]="playerList"
+						[videos]="videoMatches$ | async"
+						[categories]="['GAMES']"
+					/>
+				</div>
+			</div>
+		</div>
+		<!-- SIDEBAR -->
+		<div class="tw-col-span-12 lg:tw-col-span-2" *ngIf="sidebarOpen && !displayPlayerDialog">
+			<p-tabView
+				[activeIndex]="currentViewState"
+				(onChange)="handleChangeTab($event)"
+			>
+				<!--PREPARATION-->
+				<p-tabPanel header="{{ 'sidebar.preparation' | translate }}">
+					<div class="side-col">
+						<div class="side-section">
+							<!-- Season -->
+							<h3 class="spacing greyed" translate>profile.season</h3>
+							<iterpro-change-season [disabled]="isSavingSelectedTactics" />
+
+							<!-- Game -->
+							<h3 class="spacing greyed" translate>sidebar.game</h3>
+
+							<p-dropdown
+								[options]="matchList"
+								[ngModel]="matchItem"
+								[style]="{ width: '100%' }"
+								(onChange)="handleMatchSelect($event)"
+								[placeholder]="'dropdown.placeholder' | translate"
+								[disabled]="isSavingSelectedTactics"
+							>
+								<ng-template let-status pTemplate="selectedItem">
+									<div class="ui-helper-clearfix" style="display: flex; align-items: center; width: auto">
+										<div *ngIf="status?.value" [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+										<div class="crest">
+											<img *ngIf="status?.value?.crest?.length > 0" [src]="status.value.crest" alt="club crest" />
+										</div>
+										<div class="event-name">{{ status?.label }}</div>
+									</div>
+								</ng-template>
+								<ng-template let-status pTemplate="item">
+									<div class="ui-helper-clearfix" style="display: flex; align-items: center; width: auto">
+										<div [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+										<div class="crest">
+											<img *ngIf="status.value?.crest?.length > 0" [src]="status.value.crest" alt="club crest" />
+										</div>
+										<div class="event-name">{{ status.label }}</div>
+									</div>
+								</ng-template>
+							</p-dropdown>
+						</div>
+
+						<ng-container *ngIf="matchItem">
+							<div class="side-section" *ngIf="matchItem.event?.subformatDetails?.length > 0">
+								<h3 class="spacing greyed" translate>sidebar.type</h3>
+								<span>{{ getCompetition(matchItem.event.subformat) }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.opponent</h3>
+								<span>{{ matchItem.opponent }}</span>
+							</div>
+							<div class="side-by-side">
+								<div class="side-section">
+									<h3 class="spacing greyed" translate>sidebar.date</h3>
+									<span>{{ matchItem.date | formatDateBySetting }}</span>
+								</div>
+								<div class="side-section">
+									<h3 class="spacing greyed" translate>sidebar.time</h3>
+									<span>{{ matchItem.date | date : 'HH:mm' }}</span>
+								</div>
+							</div>
+							<div class="side-by-side">
+								<div class="side-section">
+									<h3 class="spacing greyed"><span translate>home</span>/<span translate>away</span></h3>
+									<span>{{ (matchItem.home ? 'home' : 'away') | translate }}</span>
+								</div>
+								<div class="side-section">
+									<h3 class="spacing greyed" translate>sidebar.result</h3>
+									<span>{{ matchItem.result ? matchItem.result : '-' }}</span>
+								</div>
+							</div>
+						</ng-container>
+
+						<div class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.phase</h3>
+							<p-dropdown
+								[readonly]="!this.matches || this.matches.length === 0"
+								[disabled]="isSavingSelectedTactics"
+								[options]="phaseList"
+								[(ngModel)]="phaseItem"
+								[style]="{ width: '100%' }"
+								(onChange)="handlePhaseSelect($event)"
+							>
+							</p-dropdown>
+						</div>
+
+						<div *ngIf="sportType === 'football'" class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.yourTactic</h3>
+							<p-dropdown
+								*ngIf="selectedPhase"
+								[disabled]="isSavingSelectedTactics"
+								[options]="tacticsList"
+								[(ngModel)]="selectedPhase.tactic"
+								[style]="{ width: '100%' }"
+								(onChange)="handleTacticSelect($event)"
+							></p-dropdown>
+						</div>
+
+						<div class="side-section spacing">
+							<div class="videogallery-button-container">
+								<p-button
+									[disabled]="!matches || matches.length === 0"
+									(click)="reloadVideos()"
+									[text]="true"
+									styleClass="tw-w-full"
+								>
+									<img
+										class="videogallery-icon"
+										[title]="'navigator.videogallery' | translate"
+										src="/assets/img/custom-icons/videogallery.png"
+										alt="videogallery"
+									/>
+								</p-button>
+								<div>({{ videosLength }})</div>
+							</div>
+						</div>
+					</div>
+				</p-tabPanel>
+
+				<!--ANALYSIS-->
+				<p-tabPanel
+					header="{{ 'sidebar.analysis' | translate }}"
+					[disabled]="isSavingSelectedTactics || !match || display"
+				>
+					<div class="side-col" *ngIf="currentViewState === currentViewStates.Analysis">
+						<div class="side-section">
+							<h3 class="spacing greyed" translate>profile.season</h3>
+							<iterpro-change-season />
+							<h3 class="spacing greyed" translate>sidebar.game</h3>
+							<p-dropdown
+								[options]="matchListAnalysis"
+								[(ngModel)]="matchItem"
+								[style]="{ width: '100%' }"
+								(onChange)="handleMatchSelect($event)"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"
+							>
+								<ng-template let-status pTemplate="selectedItem">
+									<div class="ui-helper-clearfix" style="display: flex; align-items: center; width: auto">
+										<div [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+										<div class="crest">
+											<img *ngIf="status.value?.crest?.length > 0" [src]="status.value.crest" alt="club crest" />
+										</div>
+										<div class="event-name">{{ status.label }}</div>
+									</div>
+								</ng-template>
+								<ng-template let-status pTemplate="item">
+									<div class="ui-helper-clearfix" style="display: flex; align-items: center; width: auto">
+										<div [ngStyle]="getBackgroundColor(status.value)" class="point"></div>
+										<div class="crest">
+											<img *ngIf="status.value?.crest?.length > 0" [src]="status.value.crest" alt="club crest" />
+										</div>
+										<div class="event-name">{{ status.label }}</div>
+									</div>
+								</ng-template>
+							</p-dropdown>
+						</div>
+						<ng-container *ngIf="matchItem">
+							<div class="side-section" *ngIf="matchItem.event?.subformatDetails?.length > 0">
+								<h3 class="spacing greyed" translate>event.subformat</h3>
+								<span> {{ getCompetition(matchItem.event.subformat) }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.opponent</h3>
+								<span>{{ matchItem.opponent }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.date</h3>
+								<span>{{ matchItem.date | formatDateBySetting }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.time</h3>
+								<span>{{ matchItem.date | date : 'HH:mm' }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.home</h3>
+								<span>{{ (matchItem.home ? 'sidebar.homeValue' : 'sidebar.awayValue') | translate }}</span>
+							</div>
+							<div class="side-section">
+								<h3 class="spacing greyed" translate>sidebar.result</h3>
+								<span>{{ matchItem.result ? matchItem.result : '-' }}</span>
+							</div>
+						</ng-container>
+						<div class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.analysis</h3>
+							<p-dropdown
+								[options]="analysisType"
+								[(ngModel)]="selectedType"
+								[style]="{ width: '100%' }"
+								(onChange)="handleChangeAnalysis($event)"
+							></p-dropdown>
+						</div>
+
+						<div *ngIf="selectedType === 'summary'" class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.player</h3>
+							<p-dropdown
+								[options]="playerStatList"
+								[ngModel]="selectedPlayerStat"
+								[style]="{ width: '100%' }"
+								(onChange)="handlePlayerSelect($event)"
+							>
+							</p-dropdown>
+						</div>
+
+						<div *ngIf="selectedType === 'comparison'" class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.player</h3>
+							<p-multiSelect
+								appendTo="body"
+								[options]="playerStatListComparison"
+								[ngModel]="selectedPlayerStatComparison"
+								(onChange)="handleChangeComparisonPlayer($event)"
+								selectedItemsLabel="{0} selected"
+								maxSelectedLabels="2"
+							></p-multiSelect>
+						</div>
+
+						<div class="side-section">
+							<h3 class="spacing greyed" translate>sidebar.metrics</h3>
+							<p-multiSelect
+								appendTo="body"
+								[selectionLimit]="2"
+								*ngIf="playerView === true || selectedType === 'comparison'"
+								[options]="metricsIndividualOptions"
+								[(ngModel)]="selectedMetricPlayer"
+								selectedItemsLabel="{0} selected"
+								maxSelectedLabels="2"
+								(onChange)="handleChangeMetricPlayer($event)"
+							>
+								<ng-template let-metric pTemplate="item">
+									{{ metric.label | capitalize }}
+								</ng-template>
+								<ng-template let-metric pTemplate="selectedItem">
+									{{ metric.label | capitalize }}
+								</ng-template>
+							</p-multiSelect>
+							<p-multiSelect
+								appendTo="body"
+								[selectionLimit]="2"
+								*ngIf="playerView === false && selectedType === 'summary'"
+								[options]="metricsTeamOptions"
+								[(ngModel)]="selectedMetricTeam"
+								selectedItemsLabel="{0} selected"
+								maxSelectedLabels="2"
+								(onChange)="handleChangeMetricTeam($event)"
+							>
+								<ng-template let-metric pTemplate="item">
+									{{ metric.label | capitalize }}
+								</ng-template>
+								<ng-template let-metric pTemplate="selectedItem">
+									{{ metric.label | capitalize }}
+								</ng-template>
+							</p-multiSelect>
+						</div>
+						<div class="side-section spacing">
+							<p-button
+								size="small"
+								styleClass="tw-w-full"
+								[disabled]="!matches || matches.length === 0"
+								(click)="reloadVideos()"
+								icon="fas fa-external-link-square"
+								[label]="'buttons.video' | translate"
+							>
+							</p-button>
+						</div>
+					</div>
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+
+		<div class="tw-col-span-12">
+			<iterpro-player-card-details
+				*ngIf="displayPlayerDialog"
+				[phase]="openedPhase"
+				[player]="openedPlayer"
+				[match]="match"
+				[team]="currentTeam"
+				[user]="currentUser"
+				[injuryMapObj]="injuryMapPlayer"
+				[tacticData]="dialogPlayer"
+				[sportType]="sportType"
+				(onClose)="onCloseDetails()"
+				(onSave)="savePlayerDetails($event)"
+			/>
+		</div>
+	</div>
+</div>

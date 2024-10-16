@@ -1,0 +1,19 @@
+<ng-container *ngIf="category !== '_thresholds'; else thresholdInline">
+	<span class="inline-container">
+		<span>{{ 'threshold' | translate }}: </span>
+		<input pInputText type="number" class="semaphore-input" [(ngModel)]="thresholdValue" [disabled]="!isCustom()" />
+		<p-dropdown
+			[(ngModel)]="model.format"
+			[options]="selectableThresholdTypes"
+			name="thresholdType"
+			placeholder="{{ 'dropdown.placeholder' | translate }}"
+			appendTo="body"
+			[style]="{ 'margin-left': '0.5em', 'min-width': 'auto' }"
+			(onChange)="updateModelValue($event)"
+			styleClass="ui-test"
+		></p-dropdown>
+	</span>
+</ng-container>
+<ng-template #thresholdInline>
+	<span>{{ 'threshold' | translate }}</span>
+</ng-template>

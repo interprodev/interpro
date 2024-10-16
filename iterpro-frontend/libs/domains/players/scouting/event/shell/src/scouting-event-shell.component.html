@@ -1,0 +1,192 @@
+<div class="tw-flex tw-items-center tw-justify-end tw-mb-4 tw-gap-4">
+	<ng-container *ngIf="(sandBoxDetail.isOnEdit$ | async) === false; else isOnEdit">
+		<p-button size="small" styleClass="p-button-contrast" (click)="onClickCloseButton()" [label]="backButtonLabel | translate">
+		</p-button>
+		<p-button size="small" styleClass="p-button-contrast" (click)="onClickEditButton()" [label]="'buttons.edit' | translate"></p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-danger"
+			*ngIf="sandBoxDetail.isDeletableByAdmin$ | async"
+			(click)="onClickDeleteButton()"
+			[label]="'buttons.delete' | translate"
+		>
+		</p-button>
+	</ng-container>
+	<ng-template #isOnEdit>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			(click)="onClickSaveButton()"
+			[disabled]="
+				!(sandBoxDetail.isOnEdit$ | async) ||
+				(sandBoxDetail.isGameDataLoading$ | async) ||
+				(sandBoxGameReport.isLoading$ | async) ||
+				(sandBoxGameReport.isTeamSquadLoading$ | async)
+			"
+			[label]="'buttons.save' | translate"
+		>
+		</p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast"
+			(click)="onClickDiscardButton()"
+			*ngIf="(sandBoxDetail.gameData$ | async)?.id"
+			[disabled]="sandBoxDetail.isGameDataLoading$ | async"
+			[label]="'buttons.discard' | translate"
+		>
+		</p-button>
+		<p-button
+			size="small"
+			styleClass="p-button-contrast"
+			(click)="onClickCloseButton()"
+			*ngIf="!(sandBoxDetail.gameData$ | async)?.id"
+			[disabled]="sandBoxDetail.isGameDataLoading$ | async"
+			[label]="'buttons.discard' | translate"
+		>
+		</p-button>
+	</ng-template>
+</div>
+
+<div class="pflex-grid">
+	<div class="pflex-col-7" [ngClass]="{ 'lg:pflex-col-3': (sandBoxDetail.leftPanelMaximize$ | async) === false }">
+		<p-tabView>
+			<p-tabPanel header="{{ 'admin.details' | translate }}">
+				<iterpro-scouting-event-detail
+					[isScoutingAdmin]="sandBoxDetail.isScoutingAdmin$ | async"
+					[matchProvider]="sandBoxDetail.matchProvider$ | async"
+					[game]="sandBoxDetail.gameData$ | async"
+					[homeTeamGender]="sandBoxMatchStats.homeTeamGender$ | async"
+					[awayTeamGender]="sandBoxMatchStats.awayTeamGender$ | async"
+					[currentTeamGender]="sandBoxDetail.currentTeamGender$ | async"
+					[lastAuthor]="sandBoxDetail.lastAuthor$ | async"
+					[competitionIds]="sandBoxDetail.gameCompetitionIds$ | async"
+					[isCustomTeamEditable]="
+						(sandBoxDetail.isCustomTeamEditable$ | async) && (sandBoxGameReport.noReportsInGame | async)
+					"
+					[isOnEdit]="sandBoxDetail.isOnEdit$ | async"
+					[isEditable]="(sandBoxDetail.isOnEdit$ | async) && (sandBoxDetail.canUserEditDetailPanel$ | async)"
+					[gameName]="sandBoxDetail.gameName$ | async"
+					[gameDuration]="sandBoxDetail.gameDuration$ | async"
+					[gamesInCompetitions]="sandBoxDetail.gamesInCompetition$ | async"
+					[customersOptions]="sandBoxDetail.customersOptions$ | async"
+					[attachmentDialogVisibility]="sandBoxDetail.attachmentDialogVisibility$ | async"
+					[isLeftPanelMaximized]="sandBoxDetail.leftPanelMaximize$ | async"
+					[isFuture]="sandBoxDetail.isFuture$ | async"
+					(toggleLeftPanelMaximize)="onToggleLeftPanelMaximize()"
+				/>
+			</p-tabPanel>
+			<p-tabPanel header="{{ 'admin.lineup' | translate }}" [disabled]="(sandBoxDetail.thirdPartyId | async) <= 0">
+				<ng-container *ngIf="(sandBoxLineUp.isLineupLoading$ | async) === false; else thirdPartyFormationSpinner">
+					<iterpro-scouting-event-line-up
+						[sportType]="'football'"
+						[formation]="sandBoxLineUp.formation$ | async"
+						[isLeftPanelMaximized]="sandBoxDetail.leftPanelMaximize$ | async"
+						[matchProvider]="sandBoxDetail.matchProvider$ | async"
+						[hasProviderStatsAvailable]="sandBoxLineUp.hasProviderStatsAvailable$ | async"
+						(toggleLeftPanelMaximize)="onToggleLeftPanelMaximize()"
+					/>
+				</ng-container>
+				<ng-template #thirdPartyFormationSpinner>
+					<div class="pflex-w-full pflex-text-center">
+						<p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+					</div>
+				</ng-template>
+			</p-tabPanel>
+			<p-tabPanel header="{{ 'event.game.stats' | translate }}" [disabled]="(sandBoxDetail.thirdPartyId | async) <= 0">
+				<div class="match-stats">
+					<ng-container *ngIf="(sandBoxMatchStats.isMatchStatsLoading$ | async) === false; else thirdPartyStatsSpinner">
+						<iterpro-scouting-event-match-stats
+							[game]="sandBoxDetail.gameData$ | async"
+							[matchProvider]="sandBoxDetail.matchProvider$ | async"
+							[hasProviderStatsAvailable]="sandBoxLineUp.hasProviderStatsAvailable$ | async"
+							[competitionName]="sandBoxLineUp.competitionName$ | async"
+							[stats]="sandBoxMatchStats.thirdPartyGameStats$ | async"
+							[homeTeamData]="sandBoxMatchStats.homeTeamData$ | async"
+							[awayTeamData]="sandBoxMatchStats.awayTeamData$ | async"
+							[homeTeamCrest]="sandBoxMatchStats.homeTeamCrest$ | async"
+							[awayTeamCrest]="sandBoxMatchStats.awayTeamCrest$ | async"
+							[parsedStats]="sandBoxMatchStats.parsedStats$ | async"
+							[goals]="sandBoxDetail.goals$ | async"
+							[isLeftPanelMaximized]="sandBoxDetail.leftPanelMaximize$ | async"
+							(toggleLeftPanelMaximize)="onToggleLeftPanelMaximize()"
+						/>
+					</ng-container>
+					<ng-template #thirdPartyStatsSpinner>
+						<div class="progress-bar-container">
+							<p-progressSpinner [style]="{ width: '30px', height: '30px' }"></p-progressSpinner>
+						</div>
+					</ng-template>
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+	<div class="pflex-col-5" [ngClass]="{ 'lg:pflex-col-9': (sandBoxDetail.leftPanelMaximize$ | async) === false }">
+		<ng-container>
+			<iterpro-scouting-event-game-report-list
+				[clubId]="clubId"
+				[isScoutingAdmin]="sandBoxDetail.isScoutingAdmin$ | async"
+				[activeGameReportTemplate]="activeGameReportTemplate"
+				[currentScout]="sandBoxGameReport.currentScout$ | async"
+				[gameReportTemplates]="sandBoxGameReport.reportTemplates$ | async"
+				[gameReportsHome]="sandBoxGameReport.gameReportsHome$ | async"
+				[gameReportsAway]="sandBoxGameReport.gameReportsAway$ | async"
+				[isGameDataLoading]="sandBoxDetail.isGameDataLoading$ | async"
+				[isLineUpLoading]="sandBoxMatchStats.isMatchStatsLoading$ | async"
+				[homeTeamCrest]="(sandBoxDetail.homeTeamCrest$ | async) || (sandBoxMatchStats.homeTeamCrest$ | async)"
+				[awayTeamCrest]="(sandBoxDetail.awayTeamCrest$ | async) || (sandBoxMatchStats.awayTeamCrest$ | async)"
+				[isEditable]="sandBoxDetail.isOnEdit$ | async"
+				[gameData]="sandBoxDetail.gameData$ | async"
+				[homeScouts]="sandBoxGameReport.homeScoutOptions$ | async"
+				[awayScouts]="sandBoxGameReport.awayScoutOptions$ | async"
+				[homeAvailablePlayers]="sandBoxGameReport.homeAvailablePlayers$ | async"
+				[awayAvailablePlayers]="sandBoxGameReport.awayAvailablePlayers$ | async"
+				[isGameReportNotCategorized]="sandBoxGameReport.isGameReportNotCategorized | async"
+				[gameReportsWithPlayersNotCategorized]="sandBoxGameReport.gameReportsWithPlayersNotCategorized$ | async"
+				[isGameReportsLoading]="sandBoxGameReport.isLoading$ | async"
+				[isTeamSquadLoading]="sandBoxGameReport.isTeamSquadLoading$ | async"
+				[isTemplatesLoading]="sandBoxGameReport.isTemplatesLoading$ | async"
+			/>
+		</ng-container>
+	</div>
+</div>
+
+<p-dialog
+	*ngIf="sandBoxGameReport.confirmPlayerCreationVisibility$ | async"
+	[visible]="!!(sandBoxGameReport.confirmPlayerCreationVisibility$ | async)"
+	[showHeader]="true"
+	[closable]="false"
+	[closeOnEscape]="true"
+	[draggable]="false"
+	[resizable]="false"
+	[modal]="true"
+	[style]="{ width: '700px' }"
+>
+	<p-header>Game Report</p-header>
+	<div class="flexed" style="flex-direction: column; align-items: flex-start; min-height: 30vh">
+		<span style="margin-bottom: 1em" translate>scouting.confirmCreatePlayersFromObserved</span>
+		<p-multiSelect
+			[options]="(sandBoxGameReport.observedPlayersForCreationList$ | async) || []"
+			[ngModel]="sandBoxGameReport.playersToCreate$ | async"
+			(onChange)="onChangePlayersToCreate($event)"
+			placeholder="{{ 'multiselect.placeholder' | translate }}"
+		></p-multiSelect>
+	</div>
+	<p-footer>
+		<p-button
+			size="small"
+			styleClass="p-button-primary"
+			icon="fas fa-check"
+			(click)="onConfirmCreatePlayers()"
+			label="{{ 'buttons.save' | translate }}"
+		></p-button>
+		<p-button
+			size="small"
+			[outlined]="true"
+			icon="fas fa-times"
+			(click)="onDiscardCreatePlayers()"
+			label="{{ 'buttons.discard' | translate }}"
+		></p-button>
+	</p-footer>
+</p-dialog>
+
+<iterpro-alert />

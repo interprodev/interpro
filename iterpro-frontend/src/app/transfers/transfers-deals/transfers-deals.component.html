@@ -1,0 +1,69 @@
+<div>
+	<!-- Header: Transfer Window Selector and Filters -->
+	<div class=" tw-p-4 tw-bg-shark-1000 tw-rounded pflex-flex pflex-gap-4 pflex-justify-content-between pflex-align-items-center pflex-p-4 pflex-w-full">
+		<!-- Transfer Window Selector -->
+		<iterpro-transfers-window-selection
+			[clubSeasons]="clubSeasons"
+			[transferWindow]="transferWindow"
+			(changeTransferWindow)="chooseTransferWindowByClubSeason($event)"
+		/>
+
+		<!-- Filters -->
+		@if(transferWindow) {
+		<iterpro-transfers-deals-filter
+			[clubTransfers]="clubTransfers"
+			[currencyCode]="currencyCode$ | async"
+			[breakdown]="selectedKanban === 'sales' ? breakdown?.salesBreakdown : breakdown?.purchasesBreakdown"
+			(updateFilters)="filterTransfers($event)"
+		/>
+		}
+	</div>
+
+	<!-- Main content -->
+	@if(transferWindow) {
+	<!-- Header -->
+	<div class="pflex-flex pflex-py-4 pflex-px-2 pflex-gap-8 pflex-align-items-center pflex-justify-content-between">
+		<!-- Kanban Type Selector -->
+		<div class="selector-container">
+			<h4 class="selector" [ngClass]="selectedKanban === 'sales' ? 'selected' : ''" (click)="selectKanban('sales')">
+				{{ 'transfers.sales' | translate }}
+			</h4>
+			<span class="divisor">/</span>
+			<h4 class="selector" [ngClass]="selectedKanban === 'purchases' ? 'selected' : ''" (click)="selectKanban('purchases')">
+				{{ 'transfers.purchase' | translate }}
+			</h4>
+		</div>
+
+		<!-- Add Deal: Purchase or Sale -->
+		@if(selectedKanban === 'sales') {
+		<iterpro-transfers-deals-add-sale [transferWindow]="transferWindow" [teams]="teams" (addSale)="addDeal($event)" />
+		} @if(selectedKanban === 'purchases') {
+		<iterpro-transfers-deals-add-purchase
+			[alreadyImportedPlayers]="alreadyImportedPlayers"
+			[transferWindow]="transferWindow"
+			[scoutingPlayers]="scoutings"
+			[currentTeam]="currentTeam$ | async"
+			(addPurchase)="addDeal($event)"
+		/>
+		}
+	</div>
+
+	<!-- Kanban -->
+	@if (selectedKanban === 'sales') {
+	<iterpro-transfers-deals-kanban
+		[sales]="sales"
+		[salesBreakdown]="salesBreakdown"
+		[kanbanType]="selectedKanban"
+		(transferDropped)="onDropKanbanElement($event)"
+		(transferClick)="onClickKanbanElement($event)"
+	/>
+	} @if (selectedKanban === 'purchases') {
+	<iterpro-transfers-deals-kanban
+		[purchases]="purchases"
+		[purchasesBreakdown]="purchasesBreakdown"
+		[kanbanType]="selectedKanban"
+		(transferDropped)="onDropKanbanElement($event)"
+		(transferClick)="onClickKanbanElement($event)"
+	/>
+	} }
+</div>

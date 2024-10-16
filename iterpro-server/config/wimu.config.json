@@ -1,0 +1,37 @@
+{
+	"baseURL": "http://wimupro.wimucloud.com/apis/rest",
+	"metricsCategories": [
+		"distance",
+		"accelerations",
+		"heartRate",
+		"sprint",
+		"horizontalImpacts",
+		"steps",
+		"ftt",
+		"load",
+		"rpe"
+	],
+	"ignore": [
+		"end",
+		"start",
+		"duration",
+		"range",
+		"ranges",
+		"rangesPercentage",
+		"rangesMinute",
+		"rangeMinute",
+		"rangesMinutePercentage",
+		"rangeJump",
+		"rangeJumpMinute",
+		"rangesMeters",
+		"rangesWork",
+		"HMLRanges",
+		"hmlRangesV2",
+		"rangesDistance",
+		"jumps",
+		"freeJumps",
+		"freeJumpTakeOffs",
+		"freeJumpLandings",
+		"sprints"
+	]
+}

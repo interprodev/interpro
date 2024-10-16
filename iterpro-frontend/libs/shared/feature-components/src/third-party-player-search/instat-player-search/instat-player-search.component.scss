@@ -1,0 +1,23 @@
+/* TODO should stay in style.css with other utility classes */
+.container {
+	padding-bottom: 2rem;
+}
+.margin-right {
+	margin-right: 2rem;
+}
+.spinner-container {
+	width: 100%;
+	min-height: 30vh;
+}
+.relative {
+	position: relative;
+}
+
+.spinner {
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

@@ -1,0 +1,16 @@
+<div class="file-messages">
+	<div *ngFor="let msg of messages" class="message-container">
+		<p-messages [value]="[msg]" styleClass="message" [closable]="false"> </p-messages>
+
+		<div class="message-icon" *ngIf="msg.link">
+
+			<iterpro-redirect-icon color="#22543D" *ngIf="msg.type === 'gps'" path="/performance/workload-analysis"
+				[params]="getLinkParams(msg.link)" tooltip="to.workloadAnalysis.redirect" />
+
+			<iterpro-redirect-icon color="#22543D" *ngIf="msg.type === 'stats'" path="/manager/tactics" [params]="getLinkParams(msg.link)"
+				tooltip="event.drill.redirectMA" />
+
+			<iterpro-redirect-icon class="tw-text-success-800" icon="fas fa-eye" path="/manager/planning" [params]="getLinkParams(msg.link)" />
+		</div>
+	</div>
+</div>

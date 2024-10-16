@@ -1,0 +1,47 @@
+.side-tabs {
+	display: flex;
+
+	.side-tabs-headers-container {
+		flex-shrink: 0;
+
+		.side-tabs-headers {
+			cursor: pointer;
+			font-family: 'Gotham';
+			font-weight: bold;
+			font-size: 1rem;
+			padding: 0.5rem 1rem 0.5rem 0.5rem;
+			border-bottom: 2px solid transparent;
+			color: #bbbbbb;
+			text-transform: uppercase;
+
+			&:hover {
+				color: #fff;
+			}
+		}
+	}
+
+	.side-tabs-contents {
+		flex-grow: 1;
+		border-left: 2px solid #444;
+		padding: 1rem;
+	}
+}
+
+.side-tab-active {
+	color: #fff !important;
+	border-color: #444 !important;
+}
+
+.side-tab-fixed {
+	border-bottom: 1px solid var(--color-neutral-900) !important;
+	margin-bottom: 1em !important;
+}
+
+.side-tab-disabled {
+	cursor: not-allowed !important;
+	color: #656565 !important;
+
+	&:hover {
+		color: #656565 !important;
+	}
+}

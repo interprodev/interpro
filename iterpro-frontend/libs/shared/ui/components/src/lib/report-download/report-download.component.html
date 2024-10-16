@@ -1,0 +1,24 @@
+<span class="report-download">
+	<ng-container *ngIf="!isLoading; else showLoading">
+		<iterpro-icon-button
+			[tooltip]="tooltip | translate"
+			[icon]="'fas fa-file-pdf'"
+			(click)="setOpen(!isOpen)"
+			(iterproClickOutside)="setOpen(false)"
+		></iterpro-icon-button>
+		<div class="report-submenu" [ngStyle]="{ display: isOpen ? 'block' : 'none' }">
+			<div
+				*ngFor="let item of items"
+				class="report-item"
+				(click)="itemClick(item)"
+				[pTooltip]="item.tooltip | translate"
+				tooltipPosition="left"
+			>
+				<span class="fas {{ item.icon }}"></span><span>{{ item.label }}</span>
+			</div>
+		</div>
+	</ng-container>
+	<ng-template #showLoading>
+		<p-progressSpinner [style]="{ width: '15px', height: '15px' }" strokeWidth="8"></p-progressSpinner>
+	</ng-template>
+</span>

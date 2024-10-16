@@ -1,0 +1,48 @@
+<div>
+	@if (!loading) {
+		@if (displayedItems.length === 0) {
+			<div class="empty-video" translate>
+				videogallery.empty
+			</div>
+		} @else {
+			<div class="video-row">
+				<div class="scrolling-wrapper-flexbox no-scrollbar" #list>
+					@for (item of displayedItems; track $any(item)._id) {
+						<iterpro-video-list-item
+							class="video-item"
+							[item]="item"
+							[customers]="customers"
+							(select)="selectItem(item)"
+						/>
+					}
+				</div>
+				<button
+					pButton
+					type="button"
+					icon="fa-solid fa-chevron-left"
+					class="left-arrow p-button-raised"
+					[rounded]="true"
+					(click)="scrollBackward()"
+					[disabled]="isScrollBackwardDisabled()"
+				></button>
+				<button
+					pButton
+					type="button"
+					icon="fa-solid fa-chevron-right"
+					class="right-arrow p-button-raised"
+					[rounded]="true"
+					(click)="scrollForward()"
+					[disabled]="isScrollForwardDisabled()"
+				></button>
+			</div>
+		}
+	} @else {
+		<div class="pflex-flex pflex-grid pflex-p-2">
+			@for (item of columnsToDisplay | arrayFromNumber; track item) {
+				<div class="pflex-col-3">
+					<p-skeleton width="100%" height="300px"></p-skeleton>
+				</div>
+			}
+		</div>
+	}
+</div>

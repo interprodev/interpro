@@ -1,0 +1,12 @@
+<div *ngIf="shouldShowLabel()">
+	<span>{{ model[from] }}</span>
+	<span *ngIf="shouldShowTrait()"> - </span>
+	<span>{{ model[to] }}</span>
+	<span> M</span>
+</div>
+<div class="price-range" *ngIf="editMode">
+	<input pInputText type="text" [(ngModel)]="model[from]" (change)="updateRangeFrom()" />
+	<span> - </span>
+	<input pInputText type="text" [(ngModel)]="model[to]" (change)="updateRangeTo()" />
+	<span> {{ suffix }}</span>
+</div>

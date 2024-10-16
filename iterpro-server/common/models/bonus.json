@@ -1,0 +1,38 @@
+{
+	"name": "Bonus",
+	"plural": "Bonuses",
+	"base": "ContractOption",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"repeat": {
+			"type": "boolean",
+			"default": false
+		},
+		"cap": {
+			"type": "boolean",
+			"default": false
+		},
+		"preconditioned": {
+			"type": "boolean",
+			"default": false
+		},
+		"precondition": {
+			"type": "object"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"contract": {
+			"type": "belongsTo",
+			"polymorphic": {
+				"foreignKey": "contractId",
+				"discriminator": "contractType"
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,1149 @@
+<div class="pflex-grid">
+	<div class="pflex-flex pflex-w-full pflex-justify-content-end pflex-pt-2 pflex-pr-2">
+		<iterpro-report-download (downloadPDF)="getReport()" />
+	</div>
+	<div class="pflex-col-12 md:pflex-col-2 pflex-flex md:pflex-flex-column pflex-gap-3 md:pflex-px-4">
+		<div>
+			<div class="pflex-mb-3">
+				<h3 *ngIf="playerMode; else staffName">{{ person.displayName }}</h3>
+				<ng-template #staffName>{{ person.firstName }} {{ person.lastName }}</ng-template>
+			</div>
+			<div class="tw-bg-white tw-rounded tw-overflow-hidden tw-relative">
+				<iterpro-player-provider-widget [wyscoutId]="person?.wyscoutId" [instatId]="person?.instatId" />
+
+				<iterpro-picture [photoUrl]="person.downloadUrl" class="tw-block tw-w-full" />
+
+				<div *ngIf="editMode && person.downloadUrl" class="profile-picture-overlay">
+					<i class="fas fa-trash" style="cursor: pointer" (click)="deleteImage()"></i>
+				</div>
+			</div>
+			<div *ngIf="editMode" class="pflex-mt-3">
+				<iterpro-cloud-upload
+					[crop]="true"
+					(completedEmitter)="onUploadImagePic($event)"
+					[spinner]="true"
+					[maxFileSize]="1000000"
+					accept="image/*"
+				/>
+			</div>
+		</div>
+		<div>
+			<iterpro-tactic-board
+				[first]="person.position"
+				[second]="person.position2"
+				[third]="person.position3"
+				[sportType]="sportType"
+			/>
+		</div>
+		<div *ngIf="playerMode && !transfer">
+			<h4 class="pflex-flex pflex-justify-content-between pflex-mb-1">
+				<span>{{ 'profile.clinicalRecord' | translate }}</span>
+				<i
+					class="fas fa-external-link"
+					[ngClass]="{ disabled: !hasPermissionForMedical }"
+					[pTooltip]="(hasPermissionForMedical ? 'goToMedicalRecords' : 'noPermissionMedicalRecords') | translate"
+					[routerLink]="medicalRecordsLink"
+				></i>
+			</h4>
+			<div style="font-size: 0.9em">
+				<div *ngIf="issued && expiration" class="pflex-flex pflex-justify-content-between pflex-mb-1">
+					{{ 'issued' | translate }}: <span>{{ issued | formatDateBySetting }}</span>
+				</div>
+				<div *ngIf="issued && expiration" class="pflex-flex pflex-justify-content-between pflex-mb-1">
+					{{ 'attributes.expiry' | translate }}:
+					<span>{{ expiration | formatDateBySetting }}</span>
+				</div>
+				<div *ngIf="!issued && !expiration" class="pflex-flex pflex-justify-content-between pflex-mb-1">
+					<span translate>admin.contract.option.none</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="pflex-col-10 pflex-grid pflex-align-content-start">
+		<p-accordion [multiple]="true" class="pflex-col-12 md:pflex-col-6 pflex-pb-0">
+			<p-accordionTab [header]="'profile.personal' | translate">
+				<table class="fields-table" style="width: 100%">
+					<tr *ngIf="!playerMode && agentMode">
+						<th translate>profile.overview.company</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.company" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.name</th>
+						<td style="width: 70%">
+							<input *ngIf="playerMode" pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.name" />
+							<input *ngIf="!playerMode" pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.firstName" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.surname</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.lastName" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.displayName</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.displayName" />
+						</td>
+					</tr>
+					<tr *ngIf="!playerMode && agentMode">
+						<th translate>admin.contracts.agent.legalRepresentant</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.legalRepresentant" />
+						</td>
+					</tr>
+					<tr *ngIf="!playerMode && agentMode">
+						<th translate>admin.contracts.agent.federalId</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.federalId" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.gender</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="genders"
+								[(ngModel)]="person.gender"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							></p-dropdown>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.birth</th>
+						<td style="width: 70%">
+							<p-inputMask
+								[disabled]="!editMode"
+								[mask]="dateMask"
+								[placeholder]="dateFormat"
+								[slotChar]="dateFormat"
+								(onComplete)="updateAge()"
+								[(ngModel)]="birthDate"
+							></p-inputMask>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.birthPlace</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.birthPlace" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.fiscalIssue</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.fiscalIssue" />
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.nationality</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="nationalities"
+								[(ngModel)]="person.nationality"
+								[filter]="true"
+								[showClear]="true"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								(onChange)="onSelectNationality($event)"
+							>
+								<ng-template let-lang pTemplate="selectedItem">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+								<ng-template let-lang pTemplate="item">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="person.nationality">
+						<th translate>profile.overview.altNationality</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="altNationalities"
+								[(ngModel)]="person.altNationality"
+								[showClear]="true"
+								[filter]="true"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+								<ng-template let-lang pTemplate="selectedItem">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+								<ng-template let-lang pTemplate="item">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.passport</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="nationalities"
+								[(ngModel)]="person.passport"
+								[filter]="true"
+								[showClear]="true"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								(onChange)="onSelectPassport($event)"
+							>
+								<ng-template let-lang pTemplate="selectedItem">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+								<ng-template let-lang pTemplate="item">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.altPassport</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="altPassport"
+								[(ngModel)]="person.altPassport"
+								[filter]="true"
+								[showClear]="true"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+								<ng-template let-lang pTemplate="selectedItem">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+								<ng-template let-lang pTemplate="item">
+									<iterpro-player-flag [lang]="lang.value" />
+									<span class="tw-ml-2">{{ lang.label }}</span>
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="!agentMode">
+						<th translate>profile.overview.education</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[showClear]="true"
+								[disabled]="!editMode"
+								[options]="educations"
+								[(ngModel)]="person.education"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+								<ng-template let-education pTemplate="item">
+									{{ education.label | translate }}
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="person.education">
+						<th translate></th>
+						<td style="width: 70%" class="pflex-flex pflex-justify-content-between">
+							<p-checkbox [disabled]="!editMode" [(ngModel)]="school" binary="true" label="School"> </p-checkbox>
+							<input
+								*ngIf="school"
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.school"
+							/>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.overview.nationalityOrigins</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="nationalityOrigins"
+								[(ngModel)]="person.nationalityOrigin"
+								[showClear]="true"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+								<ng-template let-orig pTemplate="item">
+									{{ orig.label | translate }}
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.overview.maritalStatus</th>
+						<td style="width: 70%">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="maritalStatus"
+								[showClear]="true"
+								[(ngModel)]="person.maritalStatus"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+								<ng-template let-status pTemplate="item">
+									{{ status.label | translate }}
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="!agentMode">
+						<th translate>admin.profile.federalId</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.federalId" />
+						</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+			<p-accordionTab *ngIf="playerMode" [header]="'profile.physical' | translate">
+				<table class="fields-table" style="width: 100%">
+					<tr>
+						<th translate>profile.overview.weight</th>
+						<td style="width: 70%">{{ person.weight }}</td>
+					</tr>
+					<tr>
+						<th translate>profile.overview.height</th>
+						<td style="width: 70%">{{ person.height }}</td>
+					</tr>
+					<tr>
+						<th translate>profile.position.{{ getLimb() }}</th>
+						<td style="width: 70%">{{ person.foot | capitalize }}</td>
+					</tr>
+					<tr>
+						<th translate>profile.position.shoeSize</th>
+						<td style="width: 70%">{{ person.shoeSize }}</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+			<p-accordionTab [header]="'profile.team' | translate">
+				<table class="fields-table" style="width: 100%">
+					<tr *ngIf="playerMode">
+						<th translate>settings.preferences.currentTeam</th>
+						<td style="width: 70%">
+							<p-dropdown
+								[disabled]="!editMode"
+								[options]="teams"
+								[(ngModel)]="person.teamId"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								(onChange)="checkPresenceInCurrentSeason($event)"
+							></p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.positon.jerseyNumber</th>
+						<td style="width: 70%">
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.jersey" />
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.position.captain</th>
+						<td style="width: 70%">
+							<p-inputSwitch [disabled]="!editMode" [(ngModel)]="person.captain"></p-inputSwitch>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.position.firstPosition</th>
+						<td style="width: 70%">
+							<span *ngIf="!editMode">
+								{{ person.position | translate }}
+							</span>
+							<p-dropdown
+								*ngIf="editMode"
+								appendTo="body"
+								[disabled]="!editMode"
+								showClear="true"
+								[options]="positions1"
+								[(ngModel)]="person.position"
+								(onChange)="onSelectPosition1($event)"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.position.secondPosition</th>
+						<td style="width: 70%">
+							<span *ngIf="!editMode">
+								{{ person.position2 | translate }}
+							</span>
+							<p-dropdown
+								*ngIf="editMode"
+								appendTo="body"
+								[disabled]="!editMode"
+								showClear="true"
+								[options]="positions2"
+								[(ngModel)]="person.position2"
+								(onChange)="onSelectPosition2($event)"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="playerMode">
+						<th translate>profile.position.thirdPosition</th>
+						<td style="width: 70%">
+							<span *ngIf="!editMode">
+								{{ person.position3 | translate }}
+							</span>
+							<p-dropdown
+								*ngIf="editMode"
+								appendTo="body"
+								[disabled]="!editMode"
+								showClear="true"
+								[options]="positions3"
+								[(ngModel)]="person.position3"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+							>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="!playerMode">
+						<th translate>profile.overview.jobPosition</th>
+						<td class="tw-size-full" class="pflex-flex pflex-justify-content-between">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="positions"
+								[(ngModel)]="person.position"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								class="tw-size-full"
+							>
+								<ng-template let-position pTemplate="item">
+									{{ position.label | translate }}
+								</ng-template>
+							</p-dropdown>
+						</td>
+					</tr>
+					<tr *ngIf="!playerMode">
+						<th translate>profile.overview.customer</th>
+						<td class="tw-size-full" class="pflex-flex pflex-justify-content-between">
+							<p-dropdown
+								appendTo="body"
+								[disabled]="!editMode"
+								[options]="customersItems"
+								[(ngModel)]="person.customerId"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+								[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								class="tw-size-full"
+							>
+							</p-dropdown>
+						</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+			<p-accordionTab [header]="'profile.biography' | translate">
+				<table class="fields-table" style="width: 100%">
+					<tr>
+						<td style="width: 70%">
+							<textarea
+								[disabled]="!editMode"
+								[(ngModel)]="person.biography"
+								style="color: white"
+								rows="15"
+								cols="45"
+								pInputTextarea
+								class="p-inputtext p-component textAreaInjury"
+							></textarea>
+						</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+		</p-accordion>
+		<p-accordion [multiple]="true" class="pflex-col-12 md:pflex-col-6 pflex-pb-0">
+			<p-accordionTab [header]="'profile.identification' | translate">
+				<div class="pflex-flex pflex-align-items-center pflex-justify-content-end pflex-mb-2">
+					<p-button
+						*ngIf="editMode"
+						type="button"
+						icon="fas fa-plus"
+						iconPos="left"
+						[size]="'small'"
+						[label]="'buttons.addNew' | translate"
+						(onClick)="addDocument()"
+					></p-button>
+				</div>
+				<ng-container *ngIf="person?.documents?.length > 0; else noDocumentsAttached">
+					<div *ngFor="let document of person.documents; let i = index" style="margin-top: 1em">
+						<div class="pflex-flex pflex-justify-content-end pflex-align-items-center">
+							<i
+								class="fas fa-trash"
+								*ngIf="editMode"
+								(click)="removeDocument(i)"
+								[pTooltip]="'buttons.deleteDocument' | translate"
+							></i>
+						</div>
+						<table class="fields-table" style="width: 100%">
+							<tr>
+								<th translate>profile.document.type</th>
+								<td style="width: 70%">
+									<p-dropdown
+										appendTo="body"
+										[disabled]="!editMode"
+										[style]="{ width: '100%' }"
+										[editable]="editMode && isCustomDocumentType(document.type)"
+										[options]="documentTypeOptions"
+										[showClear]="true"
+										[(ngModel)]="document.type"
+										[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+										[placeholder]="'dropdown.placeholder' | translate"
+									></p-dropdown>
+								</td>
+							</tr>
+							<tr>
+								<th translate>profile.document.number</th>
+								<td style="width: 70%">
+									<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="document.number" />
+								</td>
+							</tr>
+							<tr>
+								<th translate>profile.document.issuedBy</th>
+								<td style="width: 70%">
+									<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="document.issuedBy" />
+								</td>
+							</tr>
+							<tr>
+								<th translate>profile.document.issuedDate</th>
+								<td style="width: 70%">
+									<p-calendar
+										appendTo="body"
+										showButtonBar="true"
+										[style]="{ width: '100%' }"
+										[disabled]="!editMode"
+										[(ngModel)]="document.issuedDate"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"
+									>
+									</p-calendar>
+								</td>
+							</tr>
+							<tr>
+								<th translate>profile.document.expiryDate</th>
+								<td style="width: 70%">
+									<p-calendar
+										appendTo="body"
+										showButtonBar="true"
+										[style]="{ width: '100%' }"
+										[disabled]="!editMode"
+										[(ngModel)]="document.expiryDate"
+										[clearButtonStyleClass]="'p-button-sm'"
+										[todayButtonStyleClass]="'p-button-sm'"
+									>
+									</p-calendar>
+								</td>
+							</tr>
+							<tr>
+								<th translate>profile.document.attachment</th>
+								<td class="pflex-flex pflex-flex-column">
+									<div
+										*ngIf="document.imageUrl"
+										class="pflex-flex pflex-justify-content-between pflex-align-items-center"
+										title="{{ document.filename }}"
+									>
+										<span class="id-title">{{ document.filename }}</span>
+										<i
+											*ngIf="!editMode && document.imageUrl"
+											class="fas fa-download"
+											(click)="downloadFile(document)"
+										></i>
+										<i
+											*ngIf="editMode && document.imageUrl"
+											pTooltip="{{ 'buttons.deleteAttachment' | translate }}"
+											class="fas fa-trash"
+											(click)="deleteDocument(i)"
+										></i>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-align-items-center">
+										<span *ngIf="!editMode && document.url" (click)="downloadFile(document)">{{ document.url }}</span>
+										<input
+											*ngIf="editMode"
+											style="margin-right: 1em"
+											pInputText
+											placeholder="Link"
+											[(ngModel)]="document.url"
+										/>
+										<i *ngIf="editMode" class="fas fa-upload custom" (click)="idInputID.forceInputChoose()"></i>
+										<iterpro-cloud-upload
+											#idInputID
+											class="hidden"
+											(completedEmitter)="onUpload($event, i)"
+											[spinner]="false"
+											accept="*"
+										/>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</ng-container>
+				<ng-template #noDocumentsAttached>
+					<p>{{ 'alert.noDocumentsAttached' | translate }}</p>
+				</ng-template>
+			</p-accordionTab>
+
+			<p-accordionTab [header]="'profile.contact' | translate">
+				<ng-container>
+					<table class="fields-table" style="width: 100%">
+						<tr>
+							<th translate>profile.contact.resident</th>
+							<td style="width: 80%">
+								<div *ngIf="person.address" class="pflex-flex pflex-flex-column pflex-justify-content-between">
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2" style="width: 100%">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.street</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.address.street"
+										/>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.city</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.address.city"
+										/>
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.zipCode</span
+										><input
+											class="pflex-mr-3"
+											style="width: 20%"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.address.zipCode"
+										/>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.state</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.address.state"
+										/>
+										<div class="pflex-flex pflex-justify-content-between pflex-mb-2" style="align-items: center">
+											<span class="pflex-mr-3 inline-label" translate>profile.contact.nation</span>
+											<p-dropdown
+												appendTo="body"
+												[disabled]="!editMode"
+												[options]="nationalities"
+												[(ngModel)]="person.address.nation"
+												[filter]="true"
+												[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+												[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+												(onChange)="onSelectNationality($event)"
+											>
+												<ng-template let-nationality pTemplate="item">
+													{{ nationality.label | translate }}
+												</ng-template>
+											</p-dropdown>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th translate>profile.contact.domicile</th>
+							<td style="width: 80%">
+								<div
+									*ngIf="person.domicile"
+									class="pflex-flex pflex-flex-column pflex-justify-content-between pflex-align-items-start"
+								>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.same</span>
+										<p-checkbox [disabled]="!editMode" (onChange)="copyAddressToDomicile($event)" binary="true">
+										</p-checkbox>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2" style="width: 100%">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.street</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.domicile.street"
+										/>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.city</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.domicile.city"
+										/>
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.zipCode</span
+										><input
+											class="pflex-mr-3"
+											style="width: 20%"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.domicile.zipCode"
+										/>
+									</div>
+									<div class="pflex-flex pflex-justify-content-between pflex-mb-2">
+										<span class="pflex-mr-3 inline-label" translate>profile.contact.state</span
+										><input
+											class="pflex-mr-3"
+											pInputText
+											[disabled]="!editMode"
+											type="text"
+											[(ngModel)]="person.domicile.state"
+										/>
+										<div class="pflex-flex pflex-justify-content-between pflex-mb-2" style="align-items: center">
+											<span class="pflex-mr-3 inline-label" translate>profile.contact.nation</span>
+											<p-dropdown
+												appendTo="body"
+												[disabled]="!editMode"
+												[options]="nationalities"
+												[(ngModel)]="person.domicile.nation"
+												[filter]="true"
+												[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+												[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+												(onChange)="onSelectNationality($event)"
+											>
+												<ng-template let-nationality pTemplate="item">
+													{{ nationality.label | translate }}
+												</ng-template>
+											</p-dropdown>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th translate>profile.contact.email</th>
+							<td style="width: 80%">
+								<input pInputText [disabled]="!editMode" type="email" [(ngModel)]="person.email" />
+							</td>
+						</tr>
+						<tr>
+							<th translate>profile.contact.phone</th>
+							<td style="width: 80%">
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.phone" />
+							</td>
+						</tr>
+						<tr>
+							<th translate>profile.contact.mobilePhone</th>
+							<td style="width: 80%">
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.mobilePhone" />
+							</td>
+						</tr>
+						<tr *ngFor="let contact of person.otherMobile; index as i">
+							<th>
+								<input [disabled]="!editMode" pInputText [(ngModel)]="contact['name']" placeholder="Contact" />
+							</th>
+							<td class="pflex-flex pflex-justify-content-between pflex-align-items-center">
+								<input
+									[disabled]="!editMode"
+									pInputText
+									[(ngModel)]="contact['number']"
+									placeholder="Number"
+									style="width: 50%; margin-right: 1em"
+								/>
+								<p-checkbox
+									[(ngModel)]="contact['primary']"
+									label="{{ 'admin.contracts.contact.primary' | translate }}"
+									binary="true"
+								></p-checkbox>
+								<i *ngIf="editMode" class="fas fa-trash iterpro-clickable-icon" (click)="removeContact(i)"></i>
+							</td>
+						</tr>
+					</table>
+					<div class="pflex-flex pflex-justify-content-end pflex-align-items-center pflex-mt-2">
+						<p-button
+							*ngIf="editMode"
+							type="button"
+							icon="fas fa-plus"
+							iconPos="left"
+							[size]="'small'"
+							[label]="'profile.contact.other' | translate"
+							(onClick)="addOtherMobile()"
+						></p-button>
+					</div>
+				</ng-container>
+			</p-accordionTab>
+
+			<p-accordionTab [header]="'profile.bank' | translate">
+				<table *ngIf="person.bankAccount" class="fields-table" style="width: 100%">
+					<tr>
+						<th translate>profile.bank.name</th>
+						<td>
+							<input
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.bankAccount.bank"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.bank.accountNumber</th>
+						<td>
+							<input
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.bankAccount.accountNumber"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.bank.routingNumber</th>
+						<td>
+							<input
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.bankAccount.routingNumber"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.bank.iban</th>
+						<td>
+							<input
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.bankAccount.iban"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<th translate>profile.bank.swift</th>
+						<td>
+							<input
+								style="width: 80%"
+								pInputText
+								[disabled]="!editMode"
+								type="text"
+								[(ngModel)]="person.bankAccount.swift"
+							/>
+						</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+
+			<p-accordionTab [header]="'profile.social' | translate">
+				<table class="fields-table" style="width: 100%">
+					<tr>
+						<th>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Facebook"
+								class="fab fa-facebook-square"
+								href="{{ getFacebook(person) }}"
+							></a>
+						</th>
+						<td>
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.facebook" />
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Instagram"
+								class="fab fa-instagram"
+								href="{{ getInstagram(person) }}"
+							></a>
+						</th>
+						<td>
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.instagram" />
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Twitter"
+								class="fab fa-twitter-square"
+								href="{{ getTwitter(person) }}"
+							></a>
+						</th>
+						<td>
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.twitter" />
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Linkedin"
+								class="fab fa-linkedin"
+								href="{{ getLinkedin(person) }}"
+							></a>
+						</th>
+						<td>
+							<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="person.linkedin" />
+						</td>
+					</tr>
+				</table>
+			</p-accordionTab>
+		</p-accordion>
+		<p-accordion [multiple]="true" class="pflex-col-12 pflex-pt-0 pflex-pb-0">
+			<p-accordionTab [header]="'profile.federal' | translate">
+				<p-table styleClass="p-datatable-striped" [value]="person.federalMembership">
+					<ng-template pTemplate="caption">
+						<div class="pflex-flex pflex-justify-content-end">
+							<i class="fas fa-upload" *ngIf="editMode" (click)="uploadCsv()"></i>
+							<i class="fas fa-plus" *ngIf="editMode" (click)="addFederalMembership()"></i>
+						</div>
+					</ng-template>
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th><span translate>admin.profile.federalId</span></th>
+							<th><span translate>profile.federal.issueDate</span></th>
+							<th><span translate>profile.federal.expiryDate</span></th>
+							<th><span translate>profile.federal.filingDate</span></th>
+							<th><span translate>profile.federal.type</span></th>
+							<th><span translate>profile.federal.status</span></th>
+							<th><span translate>profile.federal.from</span></th>
+							<th><span translate>profile.federal.details</span></th>
+							<th><span translate>Files</span></th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template let-rowData let-rowIndex="rowIndex" pTemplate="body">
+						<tr class="tw-h-10">
+							<td>
+								<input pInputText [disabled]="true" type="text" [(ngModel)]="person.federalId" />
+							</td>
+							<td>
+								<p-calendar appendTo="body" [disabled]="!editMode" [(ngModel)]="rowData.issueDate"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+							</td>
+							<td>
+								<p-calendar appendTo="body" [disabled]="!editMode" [(ngModel)]="rowData.expiryDate"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+							</td>
+							<td>
+								<p-calendar appendTo="body" [disabled]="!editMode" [(ngModel)]="rowData.filingDate"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!editMode"
+									[options]="federalTypeOptions"
+									[(ngModel)]="rowData.type"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								></p-dropdown>
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!editMode"
+									[options]="federalTypeStatus"
+									[(ngModel)]="rowData.status"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								></p-dropdown>
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.from" />
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!editMode"
+									[options]="details"
+									[(ngModel)]="rowData.details"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								></p-dropdown>
+							</td>
+							<td>
+								<i
+									class="fas fa-folder-open"
+									(click)="openFileDialog('federalMembership', rowIndex)"
+									pTooltip="{{ 'dialog.file.showDialog' | translate }}"
+								></i>
+							</td>
+							<td>
+								<i
+									*ngIf="editMode"
+									class="fas fa-trash"
+									(click)="deleteRow('federalMembership', rowIndex)"
+									pTooltip="{{ 'buttons.delete' | translate }}"
+								></i>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</p-accordionTab>
+		</p-accordion>
+		<p-accordion [multiple]="true" class="pflex-col-12 pflex-pt-0">
+			<p-accordionTab [header]="'profile.sportPassport' | translate">
+				<p-table styleClass="p-datatable-striped" [value]="person.sportPassport">
+					<ng-template pTemplate="caption">
+						<div class="pflex-flex pflex-justify-content-end">
+							<i class="fas fa-plus" *ngIf="editMode" (click)="addSportPassport()"></i>
+						</div>
+					</ng-template>
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th><span translate>profile.sportPassport.season</span></th>
+							<th><span translate>profile.sportPassport.dateFrom</span></th>
+							<th><span translate>profile.sportPassport.dateTo</span></th>
+							<th><span translate>profile.sportPassport.age</span></th>
+							<th><span translate>profile.sportPassport.club</span></th>
+							<th><span translate>profile.sportPassport.category</span></th>
+							<th><span translate>profile.sportPassport.nation</span></th>
+							<th><span translate>profile.sportPassport.status</span></th>
+							<th><span translate>profile.sportPassport.basis</span></th>
+							<th><span translate>admin.contracts.notes</span></th>
+							<th><span translate>Files</span></th>
+							<th></th>
+						</tr>
+					</ng-template>
+					<ng-template let-rowData let-rowIndex="rowIndex" pTemplate="body">
+						<tr class="tw-h-10">
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.season" />
+							</td>
+							<td>
+								<p-calendar
+									appendTo="body"
+									[disabled]="!editMode"
+									[(ngModel)]="rowData.dateFrom"
+									(onSelect)="computeAge($event, rowIndex)"
+									(onInput)="computeAge($event, rowIndex)"
+									[clearButtonStyleClass]="'p-button-sm'"
+									[todayButtonStyleClass]="'p-button-sm'"
+								></p-calendar>
+							</td>
+							<td>
+								<p-calendar appendTo="body" [disabled]="!editMode" [(ngModel)]="rowData.dateTo"
+														[clearButtonStyleClass]="'p-button-sm'"
+														[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.age" />
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.club" />
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.category" />
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.nation" />
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!editMode"
+									[options]="sportPassportStatus"
+									[(ngModel)]="rowData.status"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								></p-dropdown>
+							</td>
+							<td>
+								<p-dropdown
+									appendTo="body"
+									[disabled]="!editMode"
+									[options]="sportPassportBasis"
+									[(ngModel)]="rowData.basis"
+									[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+									[dropdownIcon]="!editMode ? 'none' : 'fa-solid fa-chevron-down'"
+								></p-dropdown>
+							</td>
+							<td>
+								<input pInputText [disabled]="!editMode" type="text" [(ngModel)]="rowData.notes" />
+							</td>
+							<td>
+								<i
+									class="fas fa-folder-open"
+									(click)="openFileDialog('sportPassport', rowIndex)"
+									pTooltip="{{ 'dialog.file.showDialog' | translate }}"
+								></i>
+							</td>
+							<td>
+								<i
+									*ngIf="editMode"
+									class="fas fa-trash"
+									(click)="deleteRow('sportPassport', rowIndex)"
+									pTooltip="{{ 'buttons.delete' | translate }}"
+								></i>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			</p-accordionTab>
+		</p-accordion>
+	</div>
+</div>
+
+<iterpro-multiple-file-upload
+	*ngIf="visible"
+	[visible]="visible"
+	[editMode]="editMode"
+	[attachmentModel]="dialogType._attachments"
+	(save)="onSaveAttachments($event)"
+	(discard)="onDiscardAttachments()"
+/>
+
+<p-dialog
+	*ngIf="changeTeamDialog"
+	[(visible)]="changeTeamDialog"
+	[showHeader]="true"
+	[draggable]="false"
+	[resizable]="false"
+	modal="modal"
+>
+	<div class="pflex-flex pflex-flex-column">
+		<span>
+			{{ person.displayName }} will be removed from the current seasonal lineup of
+			{{ oldTeamId | teamName: club.teams }}.
+		</span>
+		<span style="margin-top: 1em">
+			Do you want to add him in the current seasonal lineup of the {{ newTeamId | teamName: club.teams }}?
+		</span>
+	</div>
+	<p-footer>
+		<p-button size="small" type="button" (click)="closeTeamDialog(true)" label="{{ 'yes' | translate }}"></p-button>
+		<p-button size="small" type="button" (click)="closeTeamDialog(false)" label="{{ 'no' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

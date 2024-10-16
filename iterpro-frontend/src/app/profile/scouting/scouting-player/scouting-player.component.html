@@ -1,0 +1,102 @@
+<p-tabView class="mainMenu" [activeIndex]="tabIndex" (onChange)="onTabChange($event)">
+	<p-tabPanel [disabled]="editMode" class="info selected" header="{{ 'squads.players.tabs.overview' | translate }}">
+		<iterpro-scouting-details
+			*ngIf="tabIndex === 0"
+			[player]="player"
+			[players]="clubPlayers"
+			[editMode]="editMode"
+			[sportType]="sportType"
+			[scoutingPlayers]="scoutingPlayers"
+			[scenarioRoles]="scenarioRoles"
+			[tableGames]="scoutingPlayerGamesTable$ | async"
+			[customers]="customers"
+			[scenarios]="scenarios"
+			(scenariosEmitter)="onScenariosUpdate($event)"
+			(onSavePlayer)="savePlayer($event)"
+		/>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="!scenarioRoles"
+		[disabled]="editMode"
+		class="info"
+		header="{{ 'profile.tabs.playerReport' | translate }}"
+	>
+		<iterpro-player-report
+			*ngIf="tabIndex === 1"
+			[showCalculatedBy]="false"
+			[player]="player"
+			[type]="'PlayerScouting'"
+			[scoutingMode]="'redirectToReports'"
+			[scoutingGames]="games$ | async"
+			[scoutingPlayers]="scoutingPlayers"
+			[seasons]="seasons"
+			[sportType]="sportType"
+			(scoutingRedirect)="redirectTo($event)"
+			(downloadEntirePdf)="downloadProfilePdf()"
+			(playerReportEmitter)="playerReportEmitter.emit($event)"
+		/>
+	</p-tabPanel>
+	<p-tabPanel [disabled]="editMode" class="info selected" header="{{ 'squads.players.tabs.career' | translate }}">
+		<ng-container *ngIf="tabIndex === 2">
+			<ng-container *ngIf="(isSwiss$ | async) === false; else swissPlayerAttributesHeader">
+				<iterpro-scouting-player-header [player]="player" [sportType]="sportType" />
+			</ng-container>
+
+			<iterpro-scouting-career [player]="player" />
+		</ng-container>
+	</p-tabPanel>
+
+	<p-tabPanel
+		*ngIf="hasPermissionScoutingGames"
+		[disabled]="editMode"
+		class="info selected"
+		header="{{ 'squads.players.tabs.games' | translate }}"
+	>
+		<ng-container *ngIf="tabIndex === 3">
+			<ng-container *ngIf="(isSwiss$ | async) === false; else swissPlayerAttributesHeader">
+				<iterpro-scouting-player-header [player]="player" [sportType]="sportType" />
+			</ng-container>
+
+			<iterpro-scouting-player-games
+				[player]="player"
+				[customers]="customers"
+				[recap]="scoutingPlayerGamesRecap$ | async"
+				[tableGames]="scoutingPlayerGamesTable$ | async"
+				(action)="onScoutingGameAction($event)"
+				(selectedGameEmitter)="selectGame($event)"
+			/>
+		</ng-container>
+	</p-tabPanel>
+	<p-tabPanel [disabled]="editMode" class="info selected" header="{{ 'squads.players.tabs.notes' | translate }}">
+		<ng-container *ngIf="hasPermissionScoutingGames ? tabIndex === 4 : tabIndex === 3">
+			<div class="tw-mb-4" *ngIf="(isSwiss$ | async) === false; else swissPlayerAttributesHeader">
+				<iterpro-scouting-player-header [player]="player" [sportType]="sportType" />
+			</div>
+
+			<iterpro-scouting-notes [player]="player" (onSavePlayer)="savePlayer($event, false)" [editMode]="editMode" />
+		</ng-container>
+	</p-tabPanel>
+</p-tabView>
+
+<ng-template #swissPlayerAttributesHeader>
+	<div class="player-attributes-header-container">
+		<div class="pic">
+			<h4>{{ player?.displayName }}</h4>
+			<img
+				style="background-color: white"
+				class="player-pic"
+				src="{{ profileUrl }}"
+				onError="this.src='assets/img/default_icon.png';"
+			/>
+		</div>
+		<iterpro-tipss-scouting-header
+			[player]="player"
+			[customers]="customers"
+			[type]="'PlayerScouting'"
+			[showCalculatedBy]="false"
+			[scoutingMode]="'showAttributes'"
+			(scoutingRedirect)="redirectTo($event)"
+		/>
+	</div>
+</ng-template>

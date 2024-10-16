@@ -1,0 +1,78 @@
+{
+	"name": "ScoutingGameReport",
+	"base": "PlayerReport",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"denormalizedScoutingGameFields": {
+			"start": "date",
+			"homeTeam": "string",
+			"awayTeam": "string",
+			"title": "string",
+			"history": "object",
+			"thirdPartyProvider": "string",
+			"assignedTo": "string"
+		},
+		"report": {
+			"type": "string"
+		},
+		"level": {
+			"type": "string"
+		},
+		"thirdPartyProviderTeamId": {
+			"type": "number"
+		},
+		"thirdPartyProviderId": {
+			"type": "number"
+		},
+		"teamName": {
+			"type": "string"
+		},
+		"completed": {
+			"type": "boolean"
+		},
+		"history": {
+			"type": "array"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"scoutingGame": {
+			"type": "belongsTo",
+			"model": "ScoutingGame",
+			"foreignKey": ""
+		},
+		"playerScouting": {
+			"type": "belongsTo",
+			"model": "PlayerScouting",
+			"foreignKey": ""
+		},
+		"scout": {
+			"type": "belongsTo",
+			"model": "Customer",
+			"foreignKey": ""
+		},
+		"videos": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_videos",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"documents": {
+			"type": "embedsMany",
+			"model": "Attachment",
+			"property": "_documents",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		}
+	},
+	"acls": [],
+	"methods": {}
+}

@@ -1,0 +1,231 @@
+<div class="main">
+	<div>
+
+		<!-- Header -->
+		<header class="header">
+			<h1 translate>workloadAnalysis</h1>
+		</header>
+
+		<!-- Main -->
+		<div class="tw-grid tw-grid-cols-12 tw-gap-4">
+
+			<!-- Content -->
+			<div class="tw-col-span-12 tw-relative" [ngClass]="{ 'lg:tw-col-span-10': !isFullscreen }">
+				<!-- SESSION TAB -->
+				<p-tabView *ngIf="sidebarIndex === 0" class="colView-3 mainMenuInner" [activeIndex]="sessionView"
+					(onChange)="onChangeTab($event)">
+					<!-- Session Summary -->
+					<p-tabPanel [header]="'workload.sessionSummary' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-session-summary [session]="selectedSession" [sessionPlayers]="sessionPlayers"
+							[players]="selectedPlayers" #summary />
+					</p-tabPanel>
+
+					<!-- Player Comparison -->
+					<p-tabPanel [header]="'workload.playerComparison' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-player-comparison [session]="selectedSession" [sessionPlayers]="sessionPlayers"
+							[sessionName]="selectedSessionName" [players]="selectedPlayers" [metrics]="selectedMetrics"
+							[labels]="labels" #comparison />
+					</p-tabPanel>
+					<!-- Drills Breakdown -->
+					<p-tabPanel [header]="'workload.drillsBreakdown' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-drills-breakdown [session]="selectedSession" [sessionPlayers]="sessionPlayers"
+							[sessionName]="selectedSessionName" [players]="selectedPlayers" [labels]="labels" #drills />
+					</p-tabPanel>
+				</p-tabView>
+
+				@if (sessionView === 1 && sidebarIndex === 0 && comparisonComponent) {
+					<!-- Player Comparison Team Stats -->
+					<div class="tw-bg-shark-950 tw-bg-opacity-95 tw-p-5 tw-rounded-lg tw-mt-4">
+						<iterpro-table-stats [headers]="comparisonComponent?.headers" [rows]="comparisonComponent?.rows">
+							<ng-template #headersTemplate let-headers>
+								<th
+									*ngFor="let header of headers; let i = index"
+									pFrozenColumn
+									[frozen]="i === 0"
+									[style.width]="i === 0 ? '200px': 'unset'"
+								>
+									{{ header }}
+								</th>
+							</ng-template>
+
+							<ng-template #rowsTemplate let-row>
+								<td
+									*ngFor="let field of row; let i = index"
+									pFrozenColumn
+									[frozen]="i === 0"
+									[pTooltip]="i !== 0 && comparisonComponent.headers[i] + ': ' + field"
+									[ngStyle]="i === 0 && { width: '200px' }"
+								>
+									{{ field }}
+								</td>
+							</ng-template>
+						</iterpro-table-stats>
+					</div>
+				}
+
+				<!--- PERIOD TAB -->
+				<p-tabView *ngIf="sidebarIndex === 1" class="colView-3 mainMenuInner" [activeIndex]="periodView"
+					(onChange)="onChangeTabPeriod($event)">
+
+					<!-- Period Breakdown -->
+					<p-tabPanel [header]="'workload.periodBreakdown' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-period-breakdown [data]="periodResults" [players]="selectedPlayers" [datePeriod]="datePeriod"
+							[periodResults]="periodResults" [labels]="labels" #period />
+					</p-tabPanel>
+
+					<!-- Workload Distribution -->
+					<p-tabPanel [header]="'workload.workloadDistribution' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-workload-distribution [data]="periodResults" [period]="datePeriod" [labels]="labels"
+							#distribution />
+					</p-tabPanel>
+
+					<!-- Stress Balance -->
+					<p-tabPanel [header]="'workload.stressBalance' | translate">
+						<!-- ACTIONS -->
+						<ng-container *ngTemplateOutlet="actionIcons"></ng-container>
+						<iterpro-stress-balance [data]="periodResults" [period]="datePeriod" [metric]="selectedStressBalanceMetric"
+							[trendPlayer]="trendPlayer" [labels]="labels" #stress />
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+
+			<!-- Sidebar -->
+			<div class="tw-col-span-12" [ngClass]="{ 'lg:tw-col-span-2': !isFullscreen }">
+				<p-tabView [activeIndex]="sidebarIndex" (onChange)="onChangeAnalysisTab($event)">
+					<p-tabPanel [header]="'sidebar.session' | translate">
+
+						<!-- Season -->
+						<h3 class="spacing greyed" translate>profile.season</h3>
+						<iterpro-change-season />
+
+						<!-- Session -->
+						<h3 class="spacing greyed" translate>sidebar.session</h3>
+						<p-dropdown [options]="sessions" [ngModel]="selectedSession" (onChange)="onChangeSession($event)">
+							<ng-template pTemplate="selectedItem">
+								<ng-container *ngIf="selectedSession">
+									{{ selectedSession | sessionGD }}
+								</ng-container>
+							</ng-template>
+							<ng-template let-session pTemplate="item">
+								{{ session | sessionGD }}
+							</ng-template>
+						</p-dropdown>
+
+						<h3 *ngIf="sessionView !== 0" class="spacing greyed" translate>sidebar.player</h3>
+						<p-multiSelect *ngIf="sessionView !== 0" appendTo="body" [style]="{ 'z-index': 'auto !important' }"
+							[options]="playerOptions" selectedItemsLabel="{0} selected" maxSelectedLabels="1"
+							[(ngModel)]="selectedPlayers" (onChange)="onChangePlayers($event)">
+						</p-multiSelect>
+
+						<h3 *ngIf="sessionView === 1" class="spacing greyed" translate>sidebar.metrics</h3>
+						<p-multiSelect *ngIf="sessionView === 1" appendTo="body" [style]="{ 'z-index': 'auto !important' }"
+							[options]="metricsOptions" selectedItemsLabel="{0} selected" maxSelectedLabels="1"
+							[(ngModel)]="selectedMetrics" (onChange)="onChangeMetrics($event)">
+						</p-multiSelect>
+
+						<div class="spacing" style="display: flex; justify-content: center; align-items: center; margin: 1.5rem">
+							<p-button size="small" type="text" class="buttons-panel" [disabled]="!selectedSession"
+								[routerLink]="['/manager/video-gallery', { id: selectedSession?.id, from: 'workload' }]" [label]="'buttons.video' | translate">
+							</p-button>
+						</div>
+					</p-tabPanel>
+
+					<p-tabPanel header="{{ 'sidebar.period' | translate }}">
+						<h3 class="spacing greyed" translate>sidebar.period</h3>
+						<p-calendar class="calendar-width-215" showButtonBar="true" [(ngModel)]="datePeriod"
+							(onSelect)="onChangePeriod($event)" selectionMode="range" [maxDate]="today"
+												[clearButtonStyleClass]="'p-button-sm'"
+												[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+
+						<h3 class="spacing greyed" translate>sidebar.counterDays</h3>
+						<span style="font-size: 0.85rem" *ngIf="periodResults">{{ periodResults.general.totalDays }}</span>
+						<h3 class="spacing greyed" translate>sidebar.trainingCounter</h3>
+						<span style="font-size: 0.85rem" *ngIf="periodResults">{{ periodResults.general.trainingSessions }}</span>
+						<h3 class="spacing greyed" translate>sidebar.gamesCounter</h3>
+						<span style="font-size: 0.85rem" *ngIf="periodResults">{{ periodResults.general.games }}</span>
+
+						<h3 class="greyed spacing" translate>sidebar.filter</h3>
+						<p-dropdown [style]="{ width: '100%' }" [options]="sessionItems" [(ngModel)]="modified"
+							(onChange)="onChangeModified($event)"></p-dropdown>
+
+						<h3 class="greyed spacing" translate>sidebar.individual</h3>
+						<p-dropdown [style]="{ width: '100%' }" [options]="individualItems" [(ngModel)]="individual"
+							(onChange)="onChangeIndividual($event)"></p-dropdown>
+
+						<div *ngIf="periodView === 2">
+							<div class="inline-cont">
+								<h3 class="spacing greyed" translate>sidebar.metrics</h3>
+								<div class="graph-actions" style="padding-left: 1em">
+									<div pTooltip="{{ 'alert.advancedLoading' | translate }}">
+										<p-progressSpinner *ngIf="advancedProgressFlag" [style]="{ width: '15px', height: '15px' }"
+											strokeWidth="6"></p-progressSpinner>
+									</div>
+									<i class="fas fa-check" *ngIf="advancedAvailableFlag"
+										[pTooltip]="'alert.advancedAnalysisAvailable' | translate"></i>
+									<i class="fas fa-times" *ngIf="noAdvancedFlag"
+										[pTooltip]="'alert.noAdvancedAnalysis' | translate"></i>
+								</div>
+							</div>
+							<p-dropdown appendTo="body" [style]="{ 'z-index': 'auto !important' }"
+								[options]="stressBalanceMetricsOptions" [(ngModel)]="selectedStressBalanceMetric"
+								(onChange)="onChangeMetricsPeriod($event)" [placeholder]="'dropdown.placeholder' | translate">
+							</p-dropdown>
+						</div>
+						<h3 class="spacing greyed">
+							{{ (periodView === 2 ? 'sidebar.player-group1' : 'sidebar.player') | translate }}
+						</h3>
+						<p-multiSelect [options]="playerOptions" selectedItemsLabel="{0} selected" maxSelectedLabels="1"
+							[(ngModel)]="selectedPlayers" (onChange)="onChangePlayers($event)">
+						</p-multiSelect>
+						<div *ngIf="periodView === 2 && selectedStressBalanceMetric === 'readiness'">
+							<h3 class="spacing greyed" translate>sidebar.player-group2</h3>
+							<p-multiSelect [placeholder]="'multiselect.placeholder' | translate" [options]="playerOptions"
+								selectedItemsLabel="{0} selected" maxSelectedLabels="1" (onChange)="onChangeTrendPlayer($event)">
+							</p-multiSelect>
+						</div>
+					</p-tabPanel>
+				</p-tabView>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #actionIcons>
+	<div
+		class="tw-flex tw-items-center tw-justify-end tw-gap-4">
+		<!-- ATTACHMENTS -->
+		<i [ngClass]="!uploadDialogVisibility ? 'fas fa-folder-open tw-cursor-pointer' : 'fas fa-folder-open fa-active tw-cursor-pointer'"
+			 (click)="uploadDialogVisibility = true" [pTooltip]="
+							selectedSession?._attachments?.length > 0
+								? ('dialog.file.showDialog' | translate) + ' (' + selectedSession?._attachments?.length + ')'
+								: ('dialog.file.noFileAttached' | translate)
+						"></i>
+		<!-- CALENDAR -->
+		<i class="fas fa-calendar-day tw-cursor-pointer" [pTooltip]="'profile.tabs.openPlanning' | translate"
+			 [routerLink]="getLinkPlanning()"></i>
+		<!-- LABELS -->
+		<i class="fas fa-tag tw-block tw-cursor-pointer" [ngClass]="{ 'fa-active': labels }"
+			 [pTooltip]="'sessionAnalysis.labels' | translate" (click)="onToggleLabels()"></i>
+		<!-- DOWNLOAD -->
+		<iterpro-report-download (downloadPDF)="getReportPdf()" (downloadCSV)="getReportCsv()" />
+		<!-- SIDEBAR -->
+		<i [ngClass]="!isFullscreen ? 'fas fa-expand tw-cursor-pointer' : 'fas fa-compress fa-active tw-cursor-pointer'"
+			 [pTooltip]="!isFullscreen ? ('button.expand' | translate) : ('button.collapse' | translate)"
+			 (click)="isFullscreen = !isFullscreen">
+		</i>
+	</div>
+</ng-template>
+
+<iterpro-multiple-file-upload *ngIf="uploadDialogVisibility" [visible]="uploadDialogVisibility" [editMode]="true"
+	[attachmentModel]="selectedSession._attachments" (save)="saveAttachments($event)"
+	(discard)="uploadDialogVisibility = false" />

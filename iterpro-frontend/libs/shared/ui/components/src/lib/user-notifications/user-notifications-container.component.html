@@ -1,0 +1,40 @@
+@if (!!club && !!teamList) {
+	<!-- NEW NOTIFICATIONS -->
+	@if (!!newNotifications && newNotifications.length) {
+		<div class="pflex-flex pflex-row pflex-justify-content-between">
+			<h5 class="pflex-text-sm pflex-uppercase pflex-mb-2 pflex-underline">{{ 'notifications.new' | translate }}</h5>
+			<span (click)="markAllAsRead()" class="pflex-underline pflex-text-sm pflex-cursor-pointer pflex-text-shark-300">
+				{{ 'notifications.markAll' | translate }}
+			</span>
+		</div>
+
+		<div class="pflex-mb-4 menu-header">
+			@for (notification of newNotifications; track $index) {
+				<iterpro-single-notification
+					[notification]="notification"
+					[club]="club"
+					[teams]="teamList"
+					(notificationClicked)="onNotificationClicked($event)"
+					(markAsReadClicked)="onMarkedAsRead($event)"
+				/>
+			}
+		</div>
+	}
+
+	<!-- READ NOTIFICATIONS -->
+	@if (!!readNotifications && readNotifications.length) {
+		<h5 class="pflex-text-sm pflex-uppercase pflex-mb-2 pflex-underline menu-header">
+			{{ 'notifications.earlier' | translate }}
+		</h5>
+		<div>
+			@for (notification of readNotifications; track $index) {
+				<iterpro-single-notification
+					[notification]="notification"
+					[club]="club"
+					[teams]="teamList"
+					(notificationClicked)="onNotificationClicked($event)"
+				/>
+			}
+		</div>
+	}
+}

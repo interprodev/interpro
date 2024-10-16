@@ -1,0 +1,30 @@
+<ng-container>
+	<div
+		class="pflex-w-full pflex-h-full pflex-flex pflex-flex-row pflex-align-items-center pflex-gap-4"
+		[ngClass]="{ 'pflex-flex-row-reverse': isPurchase }"
+	>
+		<!-- Board Data -->
+		@if (boardData) {
+		<div class="pflex-flex pflex-w-full pflex-flex-column pflex-gap-2 pflex-align-items-end pflex-text-lg">
+			<div class="pflex-flex pflex-justify-content-center pflex-flex-align-items-center pflex-gap-4">
+				<span class="pflex-opacity-70">{{ 'admin.transfers.trading.numSales' | translate }}:</span>
+				<span class="pflex-font-bold">{{ boardData.deals }}</span>
+			</div>
+			<div class="pflex-flex pflex-justify-content-center pflex-flex-align-items-center pflex-gap-4">
+				<span class="pflex-opacity-70">{{ 'admin.transfers.trading.sales' | translate }}:</span>
+				<span class="pflex-font-bold">{{ boardData.purchases }}</span>
+			</div>
+			<div class="pflex-flex pflex-justify-content-center pflex-flex-align-items-center pflex-gap-4">
+				<span class="pflex-opacity-70">{{ 'admin.transfers.trading.loan' | translate }}:</span>
+				<span class="pflex-font-bold">{{ boardData.loans }}</span>
+			</div>
+		</div>
+
+		<!-- Amount -->
+		<div class="pflex-w-full pflex-flex pflex-align-items-baseline pflex-justify-content-center">
+			<pre class="pflex-text-5xl">{{ currency }}</pre>
+			<span class="pflex-text-7xl">{{ boardData.amount | shortNumber : true }}</span>
+		</div>
+		}
+	</div>
+</ng-container>

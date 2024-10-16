@@ -1,0 +1,101 @@
+<div class="main">
+	<div>
+
+		<!-- Header -->
+		<header class="header tw-flex tw-items-center tw-justify-between">
+			<h1 translate>navigator.readiness</h1>
+			<div class="tw-flex tw-gap-4">
+				<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+					@if (viewState === viewTypes.Table || sessionState === sessionViews.List || sidebarState === sidebarViews.Period) {
+						<iterpro-report-download (downloadPDF)="downloadPDF()" (downloadCSV)="downloadCSV()" />
+					}
+					@if (viewState === viewTypes.Default && sessionComponent) {
+						<iterpro-report-download (downloadPDF)="sessionComponent?.downloadPDF()" />
+					}
+				</div>
+				<div class="tw-flex tw-items-center tw-gap-6 tw-bg-shark-950 tw-bg-opacity-85 tw-px-4 tw-py-2 tw-rounded">
+					<iterpro-icon-button [icon]="'fas fa-id-card'" [tooltip]="'admin.squads.cardView' | translate"
+						[opaque]="viewState !== viewTypes.Default" (click)="setViewType(viewTypes.Default)">
+					</iterpro-icon-button>
+					<iterpro-icon-button [icon]="'fas fa-list'" [tooltip]="'admin.squads.tableView' | translate"
+						[opaque]="viewState !== viewTypes.Table" (click)="setViewType(viewTypes.Table)">
+					</iterpro-icon-button>
+				</div>
+			</div>
+		</header>
+
+		<!-- Default view -->
+		<ng-container *ngIf="viewState === viewTypes.Default; else table">
+			<div class="tw-grid tw-grid-cols-12 tw-gap-4" *blockUI="'containerRead'">
+				<div class="tw-col-span-10">
+					<ng-container *ngIf="sidebarState === sidebarViews.Session; else period">
+						<iterpro-readiness-list *ngIf="sessionState === sessionViews.List; else detail"
+							[list]="readinessList" [selectedDate]="selectedDate"
+							(onClickPlayerEmitter)="onClickPlayerCard($event)" />
+
+						<ng-template #detail>
+							<iterpro-readiness-session [playerData]="readinessPlayer$ | async" [wellnessEnabled]="wellnessEnabled" />
+						</ng-template>
+					</ng-container>
+
+					<ng-template #period>
+						<iterpro-readiness-period [player]="selectedPlayer" [metrics]="selectedMetrics" [metricsList]="metricsList"
+							[periodData]="readinessPeriod$ | async" [datePeriod]="selectedPeriod" [currentTeam]="currentTeam"
+							[currentViewState]="sidebarState" />
+					</ng-template>
+				</div>
+				<!-- Sidebar -->
+				<div class="tw-col-span-2">
+					<p-tabView (onChange)="onChangeTab($event)">
+						<p-tabPanel header="{{ 'sidebar.session' | translate }}">
+							<h3 class="spacing grayed" translate>sidebar.date</h3>
+							<p-calendar showButtonBar="true" *ngIf="selectedDate" [(ngModel)]="selectedDate" [maxDate]="today"
+								(onSelect)="onDateSelect($event)" [style]="{ width: '100%' }"
+													[clearButtonStyleClass]="'p-button-sm'"
+													[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+
+							<h3 class="spacing grayed" translate>sidebar.type</h3>
+							<div>{{ getDateFormat(selectedDate) }}</div>
+
+							<div *ngIf="sessionState === sessionViews.Detail" style="position: relative">
+								<h3 class="spacing grayed" translate>sidebar.player</h3>
+								<iterpro-player-dropdown [options]="readinessList" optionLabel="displayName"
+									[playerId]="selectedPlayer?.id" [style]="{ width: '100%', display: 'flex', 'align-items': 'center' }"
+									(playerIdChanged)="onPlayerSelect($event)" />
+								<br />
+								<br />
+								<p-button size="small" *ngIf="sessionState === sessionViews.Detail" class="infoSmaller"
+									(click)="onBackToTeamView()" [label]="'buttons.teamView' | translate">
+								</p-button>
+							</div>
+						</p-tabPanel>
+
+						<p-tabPanel header="{{ 'sidebar.period' | translate }}">
+							<h3 class="spacing grayed" translate>sidebar.dates</h3>
+							<p-calendar class="calendar-width-215" showButtonBar="true" *ngIf="selectedPeriod"
+								[(ngModel)]="selectedPeriod" [maxDate]="today" selectionMode="range"
+								(onSelect)="onPeriodSelect()"
+													[clearButtonStyleClass]="'p-button-sm'"
+													[todayButtonStyleClass]="'p-button-sm'"></p-calendar>
+							<h3 class="spacing grayed" translate>sidebar.player</h3>
+							<iterpro-player-dropdown [options]="playerList" optionLabel="displayName" [playerId]="selectedPlayer?.id"
+								[style]="{ width: '100%', display: 'flex', 'align-items': 'center' }"
+								(playerIdChanged)="onPlayerPeriodSelect($event)" />
+							<h3 class="spacing grayed" translate>sidebar.metrics</h3>
+							<p-multiSelect appendTo="body" [selectionLimit]="2" [options]="metricsList" [(ngModel)]="selectedMetrics"
+								[style]="{ width: '100%' }" (onChange)="onMetricSelect($event)"
+								placeholder="{{ 'dropdown.placeholder' | translate }}"></p-multiSelect>
+						</p-tabPanel>
+					</p-tabView>
+				</div>
+			</div>
+		</ng-container>
+
+		<!-- Table view -->
+		<ng-template #table>
+			<iterpro-readiness-table [list]="readinessList" [selectedDate]="selectedDate"
+				(playerClicked)="onClickPlayerCard($event)" />
+		</ng-template>
+
+	</div>
+</div>

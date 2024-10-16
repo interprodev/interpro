@@ -1,0 +1,176 @@
+<div class="tw-relative tw-padding-4">
+	<div class="tw-w-full tw-flex tw-justify-end tw-items-center tw-mb-4">
+		<iterpro-report-download class="download" (downloadPDF)="downloadReport()" />
+	</div>
+	<p-table *ngIf="period" [value]="structure">
+		<ng-template pTemplate="header">
+			<tr>
+				<th style="width: 16%">
+					<div class="week-container">
+						<input style="width: unset" [ngModel]="startWeek" (change)="goToWeek($event)" type="week" required />
+					</div>
+				</th>
+				<th class="tw-text-center caret">
+					<i style="font-size: 1.5rem; cursor: pointer" (click)="toWeekBefore()" class="fas fa-caret-left"></i>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[0])">{{
+						period[0].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[1])">{{
+						period[1].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[2])">{{
+						period[2].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[3])">{{
+						period[3].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[4])">{{
+						period[4].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center" style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[5])">{{
+						period[5].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th style="width: 13%">
+					<span class="border-bottom" [style.border-bottom-color]="getBorderColor(period[6])">{{
+						period[6].format('ddd DD, MMM')
+					}}</span>
+				</th>
+				<th class="tw-text-center caret">
+					<i style="font-size: 1.5rem; cursor: pointer" (click)="toWeekAfter()" class="fas fa-caret-right"></i>
+				</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-rowData>
+			<tr class="tw-h-28 prevention-diary-table">
+				<td colspan="2" class="no-border" style="width: 16%">
+					<div class="tw-font-bold">{{getIconTitle(rowData.label)}}</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[0]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['1']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[1]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['2']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[2]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['3']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[3]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['4']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[4]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['5']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[5]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['6']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td [ngStyle]="{ 'background-color': getColumnColor(period[6]) }">
+					<div class="element-container">
+						<span
+							*ngFor="let element of rowData['7']"
+							href="#"
+							(click)="getTestLink(element)"
+							[style.color]="getCompleteClass(element, rowData.label, rowData.icon).color"
+							pTooltip="{{ getCompleteTitle(element, rowData.label) }}"
+							[style.font-size]="'1.5em'"
+							[style.cursor]="'pointer'"
+							class="fas"
+							[ngClass]="getCompleteClass(element, rowData.label, rowData.icon).class"
+						>
+						</span>
+					</div>
+				</td>
+				<td class="no-border caret"></td>
+			</tr>
+		</ng-template>
+	</p-table>
+</div>

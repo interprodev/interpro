@@ -1,0 +1,35 @@
+<div #container
+  [ngClass]="{'p-dropdown p-component ui-helper-clearfix':true,'p-disabled':disabled,'p-dropdown-open':panelVisible,'p-focus':focus}"
+  (click)="onMouseclick($event)" [ngStyle]="style" [class]="styleClass" [style.width]="'unset'">
+  <div class="p-hidden-accessible">
+    <input #in [attr.id]="inputId" type="text" [attr.aria-label]="selectedOption ? selectedOption.label : ' '" readonly
+      (focus)="onInputFocus($event)" aria-haspopup="listbox" (blur)="onInputBlur($event)" (keydown)="onKeydown($event)"
+      [disabled]="disabled" [attr.tabindex]="tabindex" [attr.autofocus]="autofocus">
+  </div>
+  <div class="p-dropdown-trigger p-component">
+    <span class="fas fa-plus" [style.font-size]="'1.3rem'" [style.color]="disabled ? '#757575' : '#ddd'"></span>
+  </div>
+  <div #panel [ngClass]="'p-dropdown-panel p-component'"
+    [@panelState]="panelVisible ? 'visible' : 'hidden'" [style.display]="panelVisible ? 'block' : 'none'"
+    [ngStyle]="panelStyle" [class]="panelStyleClass">
+    <div *ngIf="filter" class="p-dropdown-filter-container" (input)="onFilter($event)"
+      (click)="$event.stopPropagation()">
+      <input #filter type="text" autocomplete="off"
+        class="p-dropdown-filter p-inputtext p-component"
+        [attr.placeholder]="filterPlaceholder" (keydown.enter)="$event.preventDefault()" (keydown)="onKeydown($event)">
+      <span class="fas fa-search"></span>
+    </div>
+    <div #itemswrapper class="p-dropdown-items-wrapper" [style.max-height]="scrollHeight||'auto'" style="overflow: auto">
+      <ul class="p-dropdown-items p-component ui-helper-reset"
+        *ngIf="lazy ? panelVisible : true">
+        <li *ngFor="let option of optionsToDisplay;let i=index" [ngClass]="{'p-dropdown-item':true, 'p-highlight':(selectedOption === option),
+									'p-dropdown-empty-message':!option.label||option.label.length === 0}" (click)="onItemClick($event, option)">
+          <div class="ui-helper-clearfix" style="display:flex;align-items:center;">
+            <span style="margin-left:7px;">{{option.label}}</span>
+          </div>
+        </li>
+        <li *ngIf="filter && optionsToDisplay && optionsToDisplay.length === 0">{{emptyFilterMessage}}</li>
+      </ul>
+    </div>
+  </div>
+</div>

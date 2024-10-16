@@ -1,0 +1,9 @@
+p-footer {
+	position: fixed;
+	width: calc(100% - 12px);
+	bottom: 0;
+	left: 0;
+	padding: 1rem;
+	display: flex;
+	justify-content: flex-end;
+}

@@ -1,0 +1,229 @@
+<!-- Filter toggle button -->
+<div class="tw-flex tw-gap-4 tw-items-center tw-justify-end tw-mb-4">
+	@if (filteredTableValues?.length > 0) {
+		<div class="tw-px-4 tw-py-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+			<iterpro-report-download
+				(downloadPDF)="downloadPdf()"
+				(downloadCSV)="downloadCsv()"
+				[isLoading]="isCsvDownloading"
+			/>
+		</div>
+	}
+	<div class="tw-px-4 tw-py-2 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+		<iterpro-icon-button
+			[icon]="showFilters || showFilters ? 'fas fa-filter-slash' : 'fas fa-filter'"
+			[tooltip]="(showFilters || showFilters ? 'buttons.hideFilters' : 'buttons.showFilters') | translate"
+			(click)="showFilters = !showFilters">
+		</iterpro-icon-button>
+	</div>
+</div>
+<div [class.tw-invisible]="!showFilters" [class.tw-h-0]="!showFilters">
+	<!-- Table Filter Template -->
+	<iterpro-table-filter-template
+		*ngIf="showFilterTemplateSelection"
+		[tableId]="'scouting_game_reports_table'"
+		[filters]="filtersForTemplate"
+		[visibility]="visibleColumns"
+		(templateChanged)="handleFilterTemplateChanged($event)"
+	/>
+	<!-- FILTERS -->
+	<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-85 tw-rounded tw-mb-4">
+		<div class="tw-w-full tw-flex tw-justify-end">
+			<!-- Card View / List View -->
+			<p-tabMenu [model]="filtersTabTypes" [activeItem]="activeFilterTabType">
+				<ng-template pTemplate="item" let-item>
+					<a class="p-menuitem-link tw-px-2 tw-py-1">
+						<span class="p-menuitem-text tw-text-sm">{{ item.label | translate }}</span>
+						<i class="tw-ml-2" [class]="item.icon"></i>
+					</a>
+				</ng-template>
+			</p-tabMenu>
+		</div>
+		<div>
+			@switch (activeFilterTabType) {
+				@case (filtersTabTypes[0]) {
+					<iterpro-table-filter
+						[extractedSource]="initialTableFilters"
+						[options]="filterOptions"
+						[hideReset]="true"
+						[customers]="customers"
+						[competitions]="wyscoutCompetitions"
+						[periodDates]="selectedDates"
+						(extractedEmitter)="handleExtractedState($event)"
+						(filterEmitter)="handleFilterStateUpdated($event)"
+						(periodChangedEmitter)="onPeriodChange($event)"
+					/>
+				}
+				@case (filtersTabTypes[1]) {
+					<iterpro-table-column-filter [options]="columnOptions" [hideReset]="true" (onChange)="changeViewableColumns($event)">
+					</iterpro-table-column-filter>
+				}
+			}
+		</div>
+	</div>
+</div>
+<div class="with-tooltips">
+	<div>
+		<div class="tw-w-full tw-flex tw-justify-end tw-gap-4 tw-items-center tw-mb-4">
+			<iterpro-action-buttons [buttonTypes]="['delete']" [deleteCounter]="selectedTableValues?.length" [editMode]="true" [pTooltip]="'Delete selected game reports' | translate" (click)="askToDeleteGameReports()"></iterpro-action-buttons>
+		</div>
+		<div class="tw-p-4 tw-bg-shark-950 tw-bg-opacity-95 tw-rounded">
+			@if (filteredTableValues && filteredTableValues.length > 0) {
+				<p-table
+					[value]="filteredTableValues"
+					[columns]="columns | filterHideInTable"
+					[scrollable]="true"
+					scrollHeight="400px"
+					[paginator]="true"
+					[rows]="pageSize"
+					[styleClass]="'p-datatable-striped'"
+					[rowHover]="true"
+					[(selection)]="selectedTableValues"
+					(onLazyLoad)="onPageChange($event)"
+					[totalRecords]="totalRecords"
+				>
+					<ng-template pTemplate="header">
+						<tr class="tw-h-10">
+							<th style="width: 3rem">
+								<p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+							</th>
+							<th></th>
+							<th
+								*ngFor="let col of columns | filterHideInTable"
+								[ngStyle]="{
+								textAlign: !!col.align ? col.align : 'center',
+								width: !!col.width ? col.width : '200px',
+								minWidth: !!col.width ? col.width : '200px'
+							}"
+								[pSortableColumn]="col.sortable ? col.group === 'reportData' ? col.field + '.value' : col.field : null"
+							>
+								<div
+									class="pflex-flex pflex-align-items-center pflex-gap-2"
+									[ngClass]="col.align === 'left' ? 'pflex-justify-content-start' : 'pflex-justify-content-center'"
+								>
+									<p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
+									<span pTooltip="{{ col.header | translate }}">{{ col.header | translate }}</span>
+								</div>
+							</th>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns">
+						<tr class="tw-h-10">
+							<td>
+								<p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+							</td>
+							<td>
+								<i
+									(click)="onRowClick(rowData)"
+									aria-hidden="true"
+									class="fas fa-eye iterpro-clickable-icon"
+									pTooltip="{{ 'bonus.detail' | translate }}"
+								></i>
+							</td>
+							<td
+								*ngFor="let col of columns; trackBy: ngForTrackByFn"
+								[ngStyle]="{
+								textAlign: !!col.align ? col.align : 'center',
+								width: !!col.width ? col.width : '200px',
+								minWidth: !!col.width ? col.width : '200px'
+							}"
+							>
+								<ng-container [ngSwitch]="col.type">
+									<ng-container *ngSwitchCase="'date'">
+										{{ rowData[col.field] | formatDateBySetting }}
+									</ng-container>
+									<ng-container *ngSwitchCase="'datetime'">
+										{{ rowData[col.field] | formatDateBySetting : 'HH:mm:ss' }}
+									</ng-container>
+									<ng-container *ngSwitchCase="'translate'">
+										<ng-container *ngIf="!!rowData[col.field]">
+										<span [pTooltip]="rowData[col.field] | translate">
+											{{ rowData[col.field] | translate }}
+										</span>
+										</ng-container>
+									</ng-container>
+									<ng-container *ngSwitchCase="'withTooltip'">
+									<span [pTooltip]="rowData[col.field].tooltip" tooltipStyleClass="longTooltip">
+										{{ rowData[col.field].value }}
+									</span>
+									</ng-container>
+									<ng-container *ngSwitchCase="'report'">
+										<i *ngIf="rowData[col.field]" class="fas fa-search" [pTooltip]="rowData[col.field]" tooltipStyleClass="longTooltip"></i>
+									</ng-container>
+									<ng-container *ngSwitchCase="'video'">
+										<iterpro-icon-modal-preview [url]="rowData[col.field]?.downloadUrl | azureUrl" [name]="rowData[col.field]?.name" />
+										{{ rowData[col.field]?.name }}
+									</ng-container>
+									<ng-container *ngSwitchCase="'doc'">
+										<i
+											*ngIf="rowData[col.field]"
+											class="fas fa-download"
+											[pTooltip]="rowData[col.field].name"
+											(click)="downloadFile(rowData[col.field])"
+										></i>
+									</ng-container>
+									<ng-container>
+									<span *ngSwitchCase="'completion'">
+										<i *ngIf="rowData[col.field] === completionStatuses.Completed" class="fas fa-check" style="color: green"></i>
+										<i *ngIf="rowData[col.field] === completionStatuses.Pending" class="fas fa-clock" style="color: white"></i>
+										<i *ngIf="rowData[col.field] === completionStatuses.NotCompleted" class="fas fa-close" style="color: red"></i>
+									</span>
+									</ng-container>
+									<ng-container *ngSwitchCase="'flag'">
+										<iterpro-player-flag [lang]="rowData[col.field]" />
+									</ng-container>
+									<ng-container *ngSwitchCase="'colorType'">
+									<span *ngIf="rowData[col.field]" [style.color]="rowData[col.field].color">
+										{{ rowData[col.field].value || '-' }}
+									</span>
+										<span class="margin-left">
+										<i *ngIf="rowData[col.field]?.comment" class="fas fa-search" [pTooltip]="rowData[col.field].comment"></i>
+									</span>
+									</ng-container>
+									<ng-container *ngSwitchCase="'pointType'">
+									<span *ngIf="rowData[col.field]"
+									>{{ rowData[col.field].value || '-' }}
+										<span
+											*ngIf="rowData[col.field].value && rowData[col.field].color"
+											class="iterpro-point"
+											[style.background-color]="rowData[col.field].color"
+										></span
+										></span>
+										<span class="margin-left">
+										<i *ngIf="rowData[col.field]?.comment" class="fas fa-search" [pTooltip]="rowData[col.field].comment"></i>
+									</span>
+									</ng-container>
+									<ng-container *ngSwitchCase="'booleanType'">
+										<ng-container *ngIf="rowData[col.field]">
+											<i *ngIf="rowData[col.field].value === true" class="fas fa-check" [style.color]="'#009900'"></i>
+											<i *ngIf="rowData[col.field].value === false" class="fas fa-close" [style.color]="'#dd0000'"></i>
+											<span class="margin-left">
+											<i *ngIf="rowData[col.field]?.comment" class="fas fa-search" [pTooltip]="rowData[col.field].comment"></i>
+										</span>
+										</ng-container>
+									</ng-container>
+									<ng-container *ngSwitchDefault>
+									<span [pTooltip]="rowData[col.field]">
+										{{ rowData[col.field] }}
+									</span>
+									</ng-container>
+								</ng-container>
+							</td>
+						</tr>
+					</ng-template>
+
+					<ng-template pTemplate="loadingbody" let-columns="columns">
+						<tr style="height: 34px">
+							<td *ngFor="let col of columns">
+								<div class="loading-text"></div>
+							</td>
+						</tr>
+					</ng-template>
+				</p-table>
+			} @else {
+				<div><span translate>No results found</span>. <span translate>alert.tryToSelectAnotherPeriod</span></div>
+			}
+		</div>
+	</div>
+</div>

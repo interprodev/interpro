@@ -1,0 +1,14 @@
+<div class="pflex-pb-2">
+	<h4 class="pflex-mb-2">{{ 'chat.chooseGroupName' | translate }}</h4>
+	<form [formGroup]="groupForm">
+		<div class="pflex-mb-4">
+			<label for="group-name">{{ 'chat.groupName' | translate }}</label>
+			<input formControlName="name" id="group-name" type="text" pInputText class="pflex-mb-1" />
+			<small class="pflex-text-xs pflex-font-italic">{{ 'chat.groupNameHint' | translate }}</small>
+		</div>
+		<div class="pflex-flex pflex-align-items-center pflex-justify-content-end">
+			<p-button size="small" class="buttons-panel pflex-mb-2" (click)="closeDialog()" [label]="'chat.open' | translate">
+			</p-button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,45 @@
+<div class="card">
+
+  <div class="survey-header">
+    <h3 translate>surveys.rpe</h3>
+    <div class="floating">
+			<i (click)="save()" class="fas fa-save" pTooltip="{{'buttons.save' | translate}}"></i>
+			<i *ngIf="session" (click)="delete()" class="fas fa-trash" pTooltip="{{'buttons.delete' | translate}}"></i>
+    </div>
+  </div>
+
+  <form id="rpeForm">
+    <div>
+      <input
+        [(ngModel)]="rpe"
+        [ngModelOptions]="{standalone: true}"
+        class="slider range survey-range"
+        type="range"
+        min="0"
+        max="10"
+        step="0.5"
+        list="steplist"
+      />
+      <datalist id="steplist">
+        <option>0</option>
+        <option style="margin-left: 3px;">1</option>
+        <option style="margin-left: 2px;">2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option style="margin-right: -5px;">9</option>
+        <option>10</option>
+      </datalist>
+    </div>
+    <div class="rpe-survey-efforts">
+      <div *ngFor="let eff of efforts">
+        {{eff}}
+      </div>
+    </div>
+	</form>
+	
+  <div class="rpe-survey-selected" translate>surveys.rpe.selected<span>{{rpe}}</span></div>
+</div>

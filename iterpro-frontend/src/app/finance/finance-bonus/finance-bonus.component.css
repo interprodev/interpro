@@ -1,0 +1,24 @@
+.header-buttons {
+	display: flex;
+}
+.header-buttons > * {
+	margin-left: 1em;
+}
+.no-club-season {
+	display: flex;
+	height: 75vh;
+	flex-wrap: wrap;
+	background-color: var(--color-bg-600);
+	padding: 1em;
+	min-width: 300px;
+}
+.no-club-season > div {
+	width: 100%;
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
+.no-club-season > div > * {
+	margin: 3vh;
+}

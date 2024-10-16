@@ -1,0 +1,58 @@
+{
+	"name": "InjuryExam",
+	"base": "PersistedModel",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"date": {
+			"type": "date"
+		},
+		"exam": {
+			"type": "string"
+		},
+		"description": {
+			"type": "string"
+		},
+		"cloudUrl": {
+			"type": "string"
+		},
+		"complete": {
+			"type": "boolean"
+		}
+	},
+	"validations": [],
+	"relations": {
+		"event": {
+			"type": "belongsTo",
+			"model": "Event"
+		},
+		"injury": {
+			"type": "belongsTo",
+			"model": "Injury",
+			"foreignKey": ""
+		},
+		"attachments": {
+			"type": "embedsOne",
+			"model": "Attachment",
+			"options": {
+				"validate": false,
+				"forceId": false
+			}
+		},
+		"author": {
+			"type": "belongsTo",
+			"model": "Customer"
+		}
+	},
+	"acls": [
+		{
+			"accessType": "*",
+			"principalType": "ROLE",
+			"principalId": "botadmin",
+			"permission": "ALLOW"
+		}
+	],
+	"methods": {}
+}

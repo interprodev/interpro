@@ -1,0 +1,13 @@
+@if (showTitle) {
+	<h3 class="tw-pb-3 tw-uppercase" translate><p-skeleton width="150px"></p-skeleton></h3>
+}
+
+@for (row of rows | arrayFromNumber; track row) {
+	<div [class]="'tw-grid tw-grid-cols-12 tw-p-2 tw-gap-x-2 tw-gap-y-' + gap">
+		@for (col of columns | arrayFromNumber; track $index) {
+			<div [class]="'tw-col-span-' + span">
+				<p-skeleton [styleClass]="skeletonStyleClass"></p-skeleton>
+			</div>
+		}
+	</div>
+}

@@ -1,0 +1,18 @@
+<div class="pflex-flex pflex-justify-content-between pflex-align-items-center pflex-mb-4">
+	<h1 class="pflex-capitalize pflex-text-2xl">{{ 'notifications' | translate }}</h1>
+	<iterpro-icon-button
+		[icon]="'fas fa-arrow-up-right-from-square'"
+		[tooltip]="'notifications.seeAll' | translate"
+		[tooltipPosition]="'left'"
+		(click)="goToNotifications()"
+	/>
+</div>
+
+<iterpro-user-notifications-container
+	[notifications]="notifications$ | async"
+	[club]="club"
+	[teamList]="teamList$ | async"
+	(markAllClicked)="onClickMarkAllAsRead()"
+	(markAsReadClicked)="setNotificationAsRead($event)"
+	(notificationClicked)="onClickNotification($event)"
+/>

@@ -1,0 +1,39 @@
+.top-input-section {
+	margin: 12px 0;
+}
+.reply-div {
+	display: flex;
+	align-items: center;
+	margin: 10px 0;
+}
+.reply-div > span {
+	color: #ffffffc9;
+	margin-right: 5px;
+	flex-shrink: 0;
+	white-space: nowrap;
+	font-size: 13px;
+}
+.reply-div hr {
+	flex-grow: 1;
+	border: 0px solid #000;
+	border-bottom: 1px solid #ffffff6e;
+	margin: 1px 0 0 0;
+}
+.subcomments {
+	margin-top: 12px;
+}
+.subcomments .comments-list {
+	max-height: none;
+	overflow-y: visible;
+}
+.comments-list {
+}
+.comments-list > li {
+	margin: 38px 0;
+}
+.comments-list > li:first-child {
+	margin-top: 0;
+}
+.comments-list > li:last-child {
+	margin-bottom: 0;
+}

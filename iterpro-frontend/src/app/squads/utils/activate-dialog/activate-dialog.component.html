@@ -1,0 +1,33 @@
+<p-dialog [visible]="true" [showHeader]="true" [closable]="false" [closeOnEscape]="true"
+	[draggable]="false" [resizable]="false" modal="modal" [style]="{ width: '700px' }">
+	<p-header *ngIf="element">{{ element.displayName | capitalize }}</p-header>
+	<div *ngIf="element">
+		<div translate>profile.active.selectMotivation</div>
+		<div class="ui-g" style="margin: 10px 0">
+			<div *ngIf="isExpiredSoldSwapLoan(element) || personType !== 'Player'" class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="renewed" label="{{ 'profile.active.status.renewed' | translate }}"
+					[(ngModel)]="toMotivation" inputId="activeOpt1"></p-radioButton>
+			</div>
+			<div *ngIf="personType === 'Player' && isOutOfTeam(element)" class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="backInTeam"
+					label="{{ 'profile.active.status.backInTeam' | translate }}" [(ngModel)]="toMotivation" inputId="activeOpt2">
+				</p-radioButton>
+			</div>
+			<div *ngIf="personType === 'Player' && isNotCalledUp(element)" class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="calledUp" label="{{ 'profile.active.status.calledUp' | translate }}"
+					[(ngModel)]="toMotivation" inputId="activeOpt3"></p-radioButton>
+			</div>
+			<div *ngIf="personType === 'Player' && isOnLoan(element)" class="pflex-col-12">
+				<p-radioButton name="currentStatus" value="backFromLoan"
+					label="{{ 'profile.active.status.backFromLoan' | translate }}" [(ngModel)]="toMotivation"
+					inputId="activeOpt4"></p-radioButton>
+			</div>
+		</div>
+	</div>
+	<p-footer *ngIf="element">
+		<p-button size="small" icon="fas fa-check" styleClass="p-button-primary" (click)="save(element)"
+			label="{{ 'buttons.save' | translate }}"></p-button>
+		<p-button size="small" icon="fas fa-times" (click)="discard()"
+							label="{{ 'buttons.discard' | translate }}"></p-button>
+	</p-footer>
+</p-dialog>

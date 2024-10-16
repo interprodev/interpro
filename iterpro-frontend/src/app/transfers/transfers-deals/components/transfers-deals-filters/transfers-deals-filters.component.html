@@ -1,0 +1,83 @@
+<ng-container>
+	<!-- Open Filters Button -->
+	<p-button (click)="op.toggle($event)" [size]="'small'" icon="fas fa-filter"></p-button>
+
+	<!-- Filters Overlay Panel -->
+	<p-overlayPanel #op [showCloseIcon]="true" appendTo="body" [style]="{ 'background-color': 'black' }">
+		<div class="pflex-p-4">
+			<form [formGroup]="filtersForm" class="pflex-flex pflex-flex-column pflex-gap-4">
+				<!-- Contract Types -->
+				<div>
+					<label class="pflex-mb-4 pflex-block pflex-font-bold pflex-text-base">{{ 'admin.contracts.type' | translate }}</label>
+					<div class="pflex-flex pflex-flex-column pflex-gap-2">
+						@for(type of contractTypes; track $index) {
+						<p-checkbox
+							name="contractTypes"
+							formControlName="contractTypes"
+							[label]="type.label | translate"
+							[value]="type.value"
+						></p-checkbox>
+						} @empty {
+						<span class="pflex-text-sm">{{ 'primeng.emptyMessage' | translate }}</span>
+						}
+					</div>
+				</div>
+
+				<!-- Positions -->
+				<div>
+					<label class="pflex-mb-4 pflex-block pflex-font-bold pflex-text-base">{{ 'profile.role' | translate }}</label>
+					<div class="pflex-flex pflex-flex-column pflex-gap-2">
+						<p-multiSelect
+							[placeholder]="'dropdown.placeholder' | translate"
+							[options]="positions"
+							[emptyMessage]="'primeng.emptyMessage' | translate"
+							formControlName="positions"
+							optionLabel="label"
+							optionValue="value"
+						></p-multiSelect>
+					</div>
+				</div>
+
+				<!-- Age -->
+				<div>
+					<label class="pflex-mb-4 pflex-block pflex-font-bold pflex-text-base">
+						{{ 'profile.overview.age' | translate }}:
+						<small>{{ filtersForm.value.ageRange[0] }} - {{ filtersForm.value.ageRange[1] }}</small>
+					</label>
+					<div class="pflex-p-2">
+						<p-slider [range]="true" [min]="ageRange.min" [max]="ageRange.max" formControlName="ageRange"></p-slider>
+					</div>
+				</div>
+
+				<!-- Cost -->
+				@if (costRange.min !== costRange.max) {
+				<div>
+					<label class="pflex-mb-4 pflex-block pflex-font-bold pflex-text-base">
+						{{ 'admin.squads.player.purchaseCost' | translate }}:
+						<small>{{ filtersForm.value.costRange?.[0] }}{{ currency }} - {{ filtersForm.value.costRange?.[1] }}{{ currency }}</small>
+					</label>
+					<div class="pflex-p-2">
+						<p-slider
+							[range]="true"
+							[step]="costRange.step"
+							[min]="costRange.min"
+							[max]="costRange.max"
+							formControlName="costRange"
+						></p-slider>
+					</div>
+				</div>
+				}
+			</form>
+
+			<div class="pflex-flex pflex-justify-content-between pflex-gap-4 pflex-mt-8">
+				<p-button [size]="'small'" (click)="resetFilters()" [label]="'buttons.resetFilters' | translate"></p-button>
+				<p-button
+					[size]="'small'"
+					[disabled]="!filtersForm.valid || filtersForm.pristine"
+					(click)="applyFilters()"
+					[label]="'buttons.filterPlayers' | translate"
+				></p-button>
+			</div>
+		</div>
+	</p-overlayPanel>
+</ng-container>

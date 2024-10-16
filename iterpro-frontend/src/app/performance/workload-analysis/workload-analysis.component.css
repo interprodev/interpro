@@ -1,0 +1,13 @@
+.graph-actions {
+	top: 10px;
+	right: 50px;
+	display: flex;
+	flex-direction: row-reverse;
+	padding-right: 2em;
+}
+
+.inline-cont {
+	display: flex;
+	/* justify-content: space-between; */
+	align-items: baseline;
+}

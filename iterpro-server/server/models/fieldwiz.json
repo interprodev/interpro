@@ -1,0 +1,43 @@
+{
+	"name": "Fieldwiz",
+	"plural": "Fieldwiz",
+	"base": "Model",
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"createFieldwizAthlete": {
+			"accepts": [
+				{
+					"arg": "teamId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "player",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"description": "create an athlete profile on the Fieldwiz platform and should return the created user",
+			"http": {
+				"path": "/createFieldwizAthlete",
+				"verb": "post"
+			}
+		}
+	}
+}

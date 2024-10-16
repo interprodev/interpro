@@ -1,0 +1,88 @@
+<table class="test-table" cellspacing="0" cellpadding="0">
+	<thead>
+		<tr>
+			<th>
+				<span #overlayPanelAnchor> &nbsp; </span>
+			</th>
+			<td class="semaphore">
+				<span> &nbsp; </span>
+			</td>
+			<td>
+				<span> {{ 'thresholds.custom' | translate }} </span>
+			</td>
+			<td>
+				<span> {{ 'thresholds.lastMonth' | translate }} </span>
+			</td>
+			<td>
+				<span> {{ 'thresholds.season' | translate }} </span>
+			</td>
+			<td>
+				<span> {{ 'thresholds.best' | translate }} </span>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr
+			*ngFor="let thr of playerThresholdsTests | activeThrTestFilter : teamMetricsTests"
+			[ngClass]="editMode ? 'threshold-item-hover' : 'item-disabled'"
+			(click)="openDialog(thr)"
+			pTooltip="{{ editMode ? ('setThresholds' | translate) : '' }}"
+		>
+			<th [ngClass]="isThresholdGoScore(thr) ? 'threshold-item-left-orange' : 'threshold-item-left'">
+				<span>{{ thr.name }} - {{ thr.metric }}</span>
+			</th>
+			<td class="semaphore">
+				<iterpro-threshold-semaphore-type [type]="thr.semaphoreType" />
+			</td>
+			<td>
+				<span>
+					<div
+						class="point inline-flex"
+						[style.visibility]="
+							thr.semaphoreType > 0 && !!thr.customValue && (!thr.format || thr.format === 'customValue')
+								? 'visible'
+								: 'hidden'
+						"
+					></div>
+					{{ thr.customValue ? thr.customValue.toFixed(1) : '-' }}
+				</span>
+			</td>
+			<td>
+				<span>
+					<div
+						class="point inline-flex"
+						[style.visibility]="thr.semaphoreType > 0 && thr.format === 'last30Value' ? 'visible' : 'hidden'"
+					></div>
+					{{ thr.last30Value ? thr.last30Value.toFixed(1) : '-' }}
+				</span>
+			</td>
+			<td>
+				<span>
+					<div
+						class="point inline-flex"
+						[style.visibility]="thr.semaphoreType > 0 && thr.format === 'seasonValue' ? 'visible' : 'hidden'"
+					></div>
+					{{ thr.seasonValue ? thr.seasonValue.toFixed(1) : '-' }}
+				</span>
+			</td>
+			<td>
+				<span>
+					<div
+						class="point inline-flex"
+						[style.visibility]="thr.semaphoreType > 0 && thr.format === 'bestValue' ? 'visible' : 'hidden'"
+					></div>
+					{{ thr.bestValue ? thr.bestValue.toFixed(1) : '-' }}
+				</span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<iterpro-threshold-semaphore-dialog
+	*ngIf="showSemaphoreDialog"
+	[category]="category"
+	[dialogAbsMode]="dialogAbsMode"
+	[dialogModel]="dialogModel"
+	(discard)="discard()"
+	(saveDialog)="saveDialog()"
+/>

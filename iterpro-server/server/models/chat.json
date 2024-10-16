@@ -1,0 +1,241 @@
+{
+	"name": "Chat",
+	"plural": "Chat",
+	"base": "Model",
+	"public": true,
+	"properties": {},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {
+		"addPerson": {
+			"accepts": [
+				{
+					"arg": "user",
+					"type": "object",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/create-user",
+				"verb": "post"
+			}
+		},
+		"addToConversation": {
+			"accepts": [
+				{
+					"arg": "conversationId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "userId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/add-to-conversation",
+				"verb": "post"
+			}
+		},
+		"removeFromConversation": {
+			"accepts": [
+				{
+					"arg": "conversationId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "userId",
+					"type": "string",
+					"http": {
+						"source": "form"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/remove-from-conversation",
+				"verb": "post"
+			}
+		},
+		"getConversation": {
+			"accepts": [
+				{
+					"arg": "conversationId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "object",
+				"root": true
+			},
+			"http": {
+				"path": "/conversation",
+				"verb": "get"
+			}
+		},
+		"getPlayers": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/players",
+				"verb": "get"
+			}
+		},
+		"getStaffs": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "array",
+				"root": true
+			},
+			"http": {
+				"path": "/staffs",
+				"verb": "get"
+			}
+		},
+		"getSignature": {
+			"accepts": [
+				{
+					"arg": "userId",
+					"type": "string",
+					"http": {
+						"source": "query"
+					}
+				},
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "string",
+				"root": true
+			},
+			"http": {
+				"path": "/signature",
+				"verb": "get"
+			}
+		},
+		"sendNotification": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/notifications",
+				"verb": "post"
+			}
+		},
+		"isEnabled": {
+			"accepts": [
+				{
+					"arg": "req",
+					"type": "object",
+					"http": {
+						"source": "req"
+					}
+				}
+			],
+			"returns": {
+				"arg": "response",
+				"type": "boolean",
+				"root": true
+			},
+			"http": {
+				"path": "/enabled",
+				"verb": "get"
+			}
+		}
+	}
+}

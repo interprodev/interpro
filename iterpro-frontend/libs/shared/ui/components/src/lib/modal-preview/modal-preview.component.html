@@ -1,0 +1,10 @@
+<iterpro-handler-ng-content [onClick]="openModal">
+  <ng-content select="[handler]"></ng-content>
+</iterpro-handler-ng-content>
+
+<div *ngIf="open" class="lightbox" (click)="closeModal($event)" [@fadeInOut]>
+  <div class="lightbox-content">
+    <ng-content select="[content]"></ng-content>
+  </div>
+  <i class="fas fa-close" (click)="closeModal($event)"></i>
+</div>

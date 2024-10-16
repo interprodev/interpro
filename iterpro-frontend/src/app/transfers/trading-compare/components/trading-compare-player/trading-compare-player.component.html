@@ -1,0 +1,37 @@
+@if(playerCompare) {
+<div class="pflex-flex pflex-gap-6 pflex-mb-4" [class.pflex-flex-row-reverse]="isRightPlayer">
+	<!-- Selection - Picture - Tactic -->
+	<div class="pflex-flex pflex-flex-column pflex-gap-4">
+		<p-dropdown
+			class="pflex-w-auto pflex-p-2 pflex-bg-primary pflex-border-round-sm"
+			[options]="playerOptions"
+			[ngModel]="playerCompare?.transfer"
+			[placeholder]="'dropdown.placeholderPlayer' | translate"
+			(onChange)="onPlayerChange($event)"
+		/>
+
+		<iterpro-picture class="pflex-block pflex-w-8rem pflex-bg-white pflex-border-round-sm" [photoUrl]="playerCompare.pic" />
+
+		<iterpro-tactic-board
+			class="pflex-block pflex-w-8rem"
+			[first]="playerCompare.position"
+			[second]="playerCompare.position2"
+			[third]="playerCompare.position3"
+			[sportType]="sportType"
+		/>
+	</div>
+
+	<!-- Player Overview -->
+	<div class="pflex-flex pflex-gap-2 pflex-flex-column pflex-w-full">
+		@for (item of playerCompare.overview; track $index) {
+		<div
+			class="pflex-flex pflex-w-full pflex-justify-content-between pflex-py-1 pflex-px-2 pflex-border-round-sm"
+			[class.pflex-flex-row-reverse]="isRightPlayer"
+		>
+			<label class="pflex-text-sm pflex-opacity-70">{{ item.label }}</label>
+			<span>{{ item.value }}</span>
+		</div>
+		}
+	</div>
+</div>
+}

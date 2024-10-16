@@ -1,0 +1,64 @@
+
+.overlay {
+	background: rgba(0, 0, 0, 0.75);
+	opacity: 0;
+	-webkit-transition: opacity 0.25s ease;
+	transition: .5s ease;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.profile-picture {
+	overflow: hidden;
+	position: relative;
+	box-shadow: inset 1px 1px 40px #00000073;
+	background: white;
+}
+
+.profile-picture img {
+	width: 100%;
+}
+.profile-picture:hover .overlay {
+	opacity: 1;
+}
+h3 {
+	text-transform: uppercase;
+}
+
+.p-inputgroup-addon {
+	text-transform: capitalize;
+	font-weight: normal;
+}
+
+.pos-table tr td {
+	width: 50%;
+}
+.pos-table tr td {
+	vertical-align: top;
+}
+.pos-table .scenario-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.scout-table th {
+	width: 190px;
+}
+
+.author-edit {
+	text-align: right;
+	font-style: italic;
+}
+.author-edit label {
+	color: #999;
+}
+.button-disabled {
+	pointer-events: none;
+	opacity: 0.6;
+}

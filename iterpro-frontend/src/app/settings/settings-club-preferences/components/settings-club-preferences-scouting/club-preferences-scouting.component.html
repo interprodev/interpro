@@ -1,0 +1,79 @@
+<div class="tw-flex tw-items-center tw-justify-between">
+	<iterpro-settings-header [section]="'settings.clubPreferences'" [title]="'settings.scouting'"></iterpro-settings-header>
+	<iterpro-action-buttons [editMode]="editMode"
+													[buttonTypes]="scoutingForm?.dirty ?  ['edit', 'save', 'discard'] :  ['edit', 'discard']"
+													[loading]="isLoading" (edit)="edit()" (discard)="discard()" (save)="save()"></iterpro-action-buttons>
+</div>
+@if (!isLoading) {
+	<div class="tw-grid tw-grid-cols-12 tw-mt-8">
+		<div class="tw-col-span-12 lg:tw-col-span-6 2xl:tw-col-span-6" [formGroup]="scoutingForm">
+			<h4 class="tw-pb-3 tw-uppercase" translate>club.settings.scoutingSettings</h4>
+			<div class="tw-flex tw-flex-col">
+				<div class="tw-grid tw-grid-cols-3 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-2">
+						<span class="tw-text-sm iterpro-text-color-900" translate>club.settings.scouting.profileCreation</span>
+					</div>
+					<div class="tw-col-span-1 tw-flex tw-justify-end">
+						<p-dropdown
+							formControlName="profileCreation"
+							[options]="profileCreationOptions"
+							[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+							[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+						></p-dropdown>
+					</div>
+				</div>
+				<div class="tw-my-1">
+					<iterpro-form-feedback [clickedCondition]="saveClicked" [field]="'profileCreation'" [label]="'club.settings.scouting.profileCreation' | translate"></iterpro-form-feedback>
+				</div>
+
+				<div class="tw-grid tw-grid-cols-6 tw-items-center iterpro-item-container">
+					<div class="tw-col-span-2">
+						<span class="tw-text-sm iterpro-text-color-900" translate>scouting.gameReportTemplate</span>
+					</div>
+					<div class="tw-col-span-4">
+						<div class="tw-flex tw-justify-end tw-gap-3">
+							<p-dropdown
+								formControlName="activeGameReportTemplate"
+								[options]="templatesOptions"
+								[dropdownIcon]="editMode ? 'fas fa-chevron-down' : 'none'"
+								[placeholder]="editMode ? ('dropdown.placeholder' | translate) : null"
+							>
+							</p-dropdown>
+							@if (editMode) {
+								@if (scoutingForm.get('activeGameReportTemplate')?.value?.id) {
+									<iterpro-icon-button
+										[icon]="'fas fa-pencil'"
+										[tooltip]="'buttons.edit' | translate"
+										(click)="onOpenCustomTemplate()"
+									></iterpro-icon-button>
+									<iterpro-icon-button
+										[icon]="'fas fa-copy'"
+										[tooltip]="'buttons.duplicate' | translate"
+										(click)="onOpenCustomTemplate(true, true)"
+									></iterpro-icon-button>
+								}
+								<iterpro-icon-button
+									[icon]="'fas fa-plus'"
+									[tooltip]="'buttons.addNew' | translate"
+									(click)="onOpenCustomTemplate(true)"></iterpro-icon-button>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+} @else {
+	<div class="tw-mt-8">
+		<iterpro-skeleton-grid [columns]="2" [rows]="2" [span]="3" [showTitle]="true"></iterpro-skeleton-grid>
+	</div>
+}
+
+@if(showTemplateEditor) {
+	<iterpro-custom-report-template-editor
+		[show]="showTemplateEditor"
+		[template]="templateToEdit"
+		(save)="onSaveCustomTemplate($event)"
+		(discard)="onCloseCustomTemplate()"
+	/>
+}
